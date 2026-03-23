@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<LangVersion>preview</LangVersion>
+		<TargetFramework>net10.0</TargetFramework>
+		<NoWarn>1701;1702;1591</NoWarn>
+		<DocumentationFile>Gentle.Web.Core.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Gentle.Web.Core.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Gentle.Application\Gentle.Application.csproj" />
+		<ProjectReference Include="..\Gentle.Database.Migrations\Gentle.Database.Migrations.csproj" />
+	</ItemGroup>
+
+</Project>

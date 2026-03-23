@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm install:*)",
+      "Bash(netstat -ano)",
+      "Bash(tasklist)",
+      "Bash(timeout 10 cat \"C:\\\\Users\\\\hansh\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-hansh-Desktop-StayAtYourHouse\\\\e4b66e3d-7b4e-498c-83de-57747e3c186e\\\\tasks\\\\bylapa0or.output\")"
+    ]
+  }
+}
