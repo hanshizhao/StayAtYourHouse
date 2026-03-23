@@ -10,6 +10,7 @@ Hans/build/
 Hans/dist/
 Gentle/**/bin/
 Gentle/**/obj/
+Gentle/**/obj/
 
 # Environment files
 .env
