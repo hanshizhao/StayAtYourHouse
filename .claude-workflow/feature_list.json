@@ -38,10 +38,10 @@
         }
       ],
       "test_file": "tests/e2e/feat-001-community-entity.spec.ts",
-      "status": "pending",
+      "status": "completed",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true
       }
     },
     {

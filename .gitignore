@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+frontend/.next/
+frontend/out/
+Hans/build/
+Hans/dist/
+Gentle/**/bin/
+Gentle/**/obj/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Backend environment-specific config files
+Gentle/**/appsettings.Development.json
+Gentle/**/appsettings.Production.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache
+.cache/
+.parcel-cache/
+*.tsbuildinfo
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Clerk
+frontend/.clerk/
+
+# Test coverage
+coverage/
+
+# Misc
+.claude/
+
+# Test
+test-results/
+playwright-report/
+playwright/.cache/

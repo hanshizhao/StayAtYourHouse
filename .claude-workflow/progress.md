@@ -28,7 +28,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-001 | Community 实体 | ⏳ 待开始 | - |
+| FEAT-001 | Community 实体 | ✅ 已完成 | ✓ |
 | FEAT-002 | Room 实体 | ⏳ 待开始 | - |
 | FEAT-003 | Community CRUD API | ⏳ 待开始 | - |
 | FEAT-004 | Room CRUD API | ⏳ 待开始 | - |
@@ -110,3 +110,4 @@
 - 初始化工作流环境
 - 创建功能清单（30 个功能）
 - 创建测试目录结构
+- ✅ FEAT-001: Community 实体 + DbContext 配置完成（9/9 测试通过）
