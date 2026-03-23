@@ -58,7 +58,7 @@ test.describe('FEAT-002: Room 实体', () => {
 
   // ==================== 实体属性测试 ====================
 
-  test('5. 验证实体类声明', async () => {
+  test('5. 验证实体类声明（继承 Entity<int>）', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -66,10 +66,11 @@ test.describe('FEAT-002: Room 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+class\s+Room/);
+    // Furion 最佳实践：实体应继承 Entity<int> 基类
+    expect(content).toMatch(/public\s+class\s+Room\s*:\s*Entity<int>/);
   });
 
-  test('6. 验证基本属性 - Id, Building, RoomNumber', async () => {
+  test('6. 验证基本属性 - Building, RoomNumber（Id 由 Entity<int> 基类提供）', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -77,7 +78,7 @@ test.describe('FEAT-002: Room 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+int\s+Id\s*\{\s*get;\s*set;\s*\}/);
+    // 注意：Id 由 Entity<int> 基类提供，无需手动定义
     expect(content).toMatch(/public\s+string\s+Building\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+string\s+RoomNumber\s*\{\s*get;\s*set;\s*\}/);
   });
@@ -151,15 +152,19 @@ test.describe('FEAT-002: Room 实体', () => {
 
   // ==================== DbContext 配置测试 ====================
 
-  test('12. 验证 DbContext 包含 Rooms DbSet', async () => {
-    if (!fs.existsSync(dbContextPath)) {
-      test.skip('DbContext 文件不存在');
+  test('12. 验证 Furion 自动发现实体（无需手动配置 DbSet）', async () => {
+    // Furion 最佳实践：继承 Entity<int> 的实体会被自动发现
+    // 无需在 DbContext 中手动添加 DbSet<Room>
+    // 构建成功即证明实体配置正确
+    if (!fs.existsSync(entityPath)) {
+      test.skip('实体文件不存在');
       return;
     }
 
-    const content = fs.readFileSync(dbContextPath, 'utf-8');
+    const content = fs.readFileSync(entityPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+DbSet<Room>\s+Rooms\s*\{\s*get;\s*set;\s*\}/);
+    // 验证实体继承了 Entity<int>（Furion 会自动发现）
+    expect(content).toMatch(/:\s*Entity<int>/);
   });
 
   // ==================== 构建测试 ====================
