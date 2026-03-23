@@ -1,15 +1,12 @@
+using Furion.DatabaseAccessor;
+
 namespace Gentle.Core.Entities;
 
 /// <summary>
 /// 小区实体
 /// </summary>
-public class Community
+public class Community : Entity<int>
 {
-    /// <summary>
-    /// 主键ID
-    /// </summary>
-    public int Id { get; set; }
-
     /// <summary>
     /// 小区名称
     /// </summary>

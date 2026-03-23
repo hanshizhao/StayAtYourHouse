@@ -5,9 +5,12 @@
  *
  * 测试覆盖：
  * 1. 实体文件存在性
- * 2. 实体属性完整性
- * 3. DbContext 配置
+ * 2. 实体继承 Entity<int> 基类
+ * 3. 实体属性完整性
  * 4. 项目构建成功
+ *
+ * 注意：Furion 框架会自动发现实现 IEntity 接口的实体，
+ * 无需在 DbContext 中手动添加 DbSet<T>
  */
 import { test, expect } from '@playwright/test';
 import * as path from 'path';
@@ -20,15 +23,6 @@ test.describe('FEAT-001: Community 实体', () => {
   const entityPath = path.join(serverPath, 'Gentle.Core/Entities/Community.cs');
   const dbContextPath = path.join(serverPath, 'Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs');
 
-  // 期望的实体属性
-  const expectedProperties = [
-    { name: 'Id', type: 'int' },
-    { name: 'Name', type: 'string' },
-    { name: 'Address', type: 'string?' },
-    { name: 'PropertyPhone', type: 'string?' },
-    { name: 'Remark', type: 'string?' },
-  ];
-
   // ==================== 文件存在性测试 ====================
 
   test('1. 检查实体文件存在', async () => {
@@ -39,31 +33,33 @@ test.describe('FEAT-001: Community 实体', () => {
     expect(fs.existsSync(dbContextPath)).toBeTruthy();
   });
 
+  // ==================== 实体继承测试 ====================
+
+  test('3. 验证实体类继承 Entity<int> 基类', async () => {
+    if (!fs.existsSync(entityPath)) {
+      test.skip('实体文件不存在');
+      return;
+    }
+
+    const content = fs.readFileSync(entityPath, 'utf-8');
+
+    // 验证继承 Entity<int>（Furion 框架要求）
+    expect(content).toMatch(/public\s+class\s+Community\s*:\s*Entity\s*<\s*int\s*>/);
+  });
+
+  test('4. 验证实体引用 Furion.DatabaseAccessor 命名空间', async () => {
+    if (!fs.existsSync(entityPath)) {
+      test.skip('实体文件不存在');
+      return;
+    }
+
+    const content = fs.readFileSync(entityPath, 'utf-8');
+
+    // 验证 using Furion.DatabaseAccessor
+    expect(content).toMatch(/using\s+Furion\.DatabaseAccessor/);
+  });
+
   // ==================== 实体属性测试 ====================
-
-  test('3. 验证实体类声明', async () => {
-    if (!fs.existsSync(entityPath)) {
-      test.skip('实体文件不存在');
-      return;
-    }
-
-    const content = fs.readFileSync(entityPath, 'utf-8');
-
-    // 验证类声明
-    expect(content).toMatch(/public\s+class\s+Community/);
-  });
-
-  test('4. 验证实体的 Id 属性', async () => {
-    if (!fs.existsSync(entityPath)) {
-      test.skip('实体文件不存在');
-      return;
-    }
-
-    const content = fs.readFileSync(entityPath, 'utf-8');
-
-    // 验证 Id 属性
-    expect(content).toMatch(/public\s+int\s+Id\s*\{\s*get;\s*set;\s*\}/);
-  });
 
   test('5. 验证实体的 Name 属性（必填字段）', async () => {
     if (!fs.existsSync(entityPath)) {
@@ -93,7 +89,7 @@ test.describe('FEAT-001: Community 实体', () => {
 
   // ==================== DbContext 配置测试 ====================
 
-  test('7. 验证 DbContext 包含 Communities DbSet', async () => {
+  test('7. 验证 DbContext 继承 AppDbContext（Furion 自动发现实体）', async () => {
     if (!fs.existsSync(dbContextPath)) {
       test.skip('DbContext 文件不存在');
       return;
@@ -101,8 +97,8 @@ test.describe('FEAT-001: Community 实体', () => {
 
     const content = fs.readFileSync(dbContextPath, 'utf-8');
 
-    // 验证 DbSet 声明
-    expect(content).toMatch(/public\s+DbSet<Community>\s+Communities\s*\{\s*get;\s*set;\s*\}/);
+    // 验证继承 AppDbContext（Furion 会自动发现 IEntity 实体）
+    expect(content).toMatch(/class\s+DefaultDbContext\s*:\s*AppDbContext\s*<\s*DefaultDbContext\s*>/);
   });
 
   // ==================== 构建测试 ====================
