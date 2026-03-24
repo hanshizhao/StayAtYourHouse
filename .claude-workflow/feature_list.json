@@ -169,11 +169,13 @@
         }
       ],
       "test_file": "tests/e2e/feat-004-room-api.spec.ts",
-      "status": "pending",
+      "status": "completed",
       "verification": {
-        "api_routes_checked": false,
+        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-24T12:30:00Z",
+        "tests_count": 16,
         "api_routes": {
           "base": "/api/room-app",
           "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]

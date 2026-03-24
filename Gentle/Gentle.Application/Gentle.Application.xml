@@ -54,6 +54,36 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.RoomAppService">
+            <summary>
+            房间管理应用服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RoomAppService.GetList(System.Nullable{System.Int32},System.Nullable{Gentle.Core.Enums.RoomStatus})">
+            <summary>
+            获取房间列表（支持按小区和状态筛选）
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RoomAppService.GetById(System.Int32)">
+            <summary>
+            根据ID获取房间
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RoomAppService.Add(Gentle.Application.Dtos.Room.CreateRoomInput)">
+            <summary>
+            新增房间
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RoomAppService.Edit(Gentle.Application.Dtos.Room.UpdateRoomInput)">
+            <summary>
+            更新房间
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RoomAppService.Remove(System.Int32)">
+            <summary>
+            删除房间
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Apps.UserAppService">
             <summary>den
             用户管理服务
@@ -258,6 +288,241 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Room.CreateRoomInput">
+            <summary>
+            创建房间请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.CommunityId">
+            <summary>
+            所属小区ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.Building">
+            <summary>
+            楼栋号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.RoomNumber">
+            <summary>
+            房间号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.Area">
+            <summary>
+            面积（平方米）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.RoomType">
+            <summary>
+            房间类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.CostPrice">
+            <summary>
+            成本价（月租金成本）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.RentPrice">
+            <summary>
+            出租价（月租金）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.Deposit">
+            <summary>
+            押金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.Status">
+            <summary>
+            房间状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.ContractImage">
+            <summary>
+            合同图片路径
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Room.RoomDto">
+            <summary>
+            房间列表项
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.Id">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.CommunityId">
+            <summary>
+            所属小区ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.CommunityName">
+            <summary>
+            所属小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.Building">
+            <summary>
+            楼栋号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.RoomNumber">
+            <summary>
+            房间号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.Area">
+            <summary>
+            面积（平方米）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.RoomType">
+            <summary>
+            房间类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.CostPrice">
+            <summary>
+            成本价（月租金成本）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.RentPrice">
+            <summary>
+            出租价（月租金）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.Profit">
+            <summary>
+            利润（出租价 - 成本价）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.Deposit">
+            <summary>
+            押金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.Status">
+            <summary>
+            房间状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.ContractImage">
+            <summary>
+            合同图片路径
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Room.UpdateRoomInput">
+            <summary>
+            更新房间请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.Id">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.CommunityId">
+            <summary>
+            所属小区ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.Building">
+            <summary>
+            楼栋号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.RoomNumber">
+            <summary>
+            房间号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.Area">
+            <summary>
+            面积（平方米）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.RoomType">
+            <summary>
+            房间类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.CostPrice">
+            <summary>
+            成本价（月租金成本）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.RentPrice">
+            <summary>
+            出租价（月租金）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.Deposit">
+            <summary>
+            押金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.Status">
+            <summary>
+            房间状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.ContractImage">
+            <summary>
+            合同图片路径
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.User.CreateUserInput">
             <summary>
             创建用户请求
@@ -387,6 +652,56 @@
             <summary>
             删除小区
             </summary>
+        </member>
+        <member name="T:Gentle.Application.Services.IRoomService">
+            <summary>
+            房间服务接口
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRoomService.GetListAsync(System.Nullable{System.Int32},System.Nullable{Gentle.Core.Enums.RoomStatus})">
+            <summary>
+            获取房间列表（支持按小区和状态筛选）
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRoomService.GetByIdAsync(System.Int32)">
+            <summary>
+            根据ID获取房间
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRoomService.AddAsync(Gentle.Application.Dtos.Room.CreateRoomInput)">
+            <summary>
+            新增房间
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRoomService.UpdateAsync(Gentle.Application.Dtos.Room.UpdateRoomInput)">
+            <summary>
+            更新房间
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRoomService.DeleteAsync(System.Int32)">
+            <summary>
+            删除房间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Services.RoomService">
+            <summary>
+            房间服务实现
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.RoomService.GetListAsync(System.Nullable{System.Int32},System.Nullable{Gentle.Core.Enums.RoomStatus})">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RoomService.GetByIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RoomService.AddAsync(Gentle.Application.Dtos.Room.CreateRoomInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RoomService.UpdateAsync(Gentle.Application.Dtos.Room.UpdateRoomInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RoomService.DeleteAsync(System.Int32)">
+            <inheritdoc />
         </member>
     </members>
 </doc>

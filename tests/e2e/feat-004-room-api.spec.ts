@@ -29,16 +29,16 @@ test.describe('FEAT-004: Room API', () => {
    */
   async function getAdminToken(request: APIRequestContext): Promise<string> {
     const loginResponse = await request.post(`${API_BASE}/api/auth/login`, {
-      data: { username: 'admin', password: 'admin123' }
+      data: { account: 'zhs', password: 'gentle8023' }
     });
 
     expect(loginResponse.status()).toBe(200);
 
     const result = await loginResponse.json();
     expect(result.succeeded).toBe(true);
-    expect(result.data).toHaveProperty('accessToken');
+    expect(result.data).toHaveProperty('token');
 
-    return result.data.accessToken;
+    return result.data.token;
   }
 
   /**
@@ -234,7 +234,7 @@ test.describe('FEAT-004: Room API', () => {
     const result = await response.json();
     expect(result.succeeded).toBe(false);
     expect(result).toHaveProperty('errors');
-    expect(result.errors).toHaveProperty('building');
+    expect(result.errors).toHaveProperty('Building');
   });
 
   test('8. 创建接口 - 必填字段验证（缺少 roomNumber）', async ({ request }) => {
@@ -255,7 +255,7 @@ test.describe('FEAT-004: Room API', () => {
     const result = await response.json();
     expect(result.succeeded).toBe(false);
     expect(result).toHaveProperty('errors');
-    expect(result.errors).toHaveProperty('roomNumber');
+    expect(result.errors).toHaveProperty('RoomNumber');
   });
 
   test('9. 创建接口 - 价格验证（负数价格）', async ({ request }) => {
