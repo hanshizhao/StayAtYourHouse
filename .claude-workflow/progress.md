@@ -31,8 +31,8 @@
 | FEAT-001 | Community 实体 | ✅ 已完成 | ✓ |
 | FEAT-002 | Room 实体 | ✅ 已完成 | ✓ |
 | FEAT-003 | Community CRUD API | ✅ 已完成 | ✓ |
-| FEAT-004 | Room CRUD API | ⏳ 待开始 | - |
-| FEAT-005 | 小区列表页 | ⏳ 待开始 | - |
+| FEAT-004 | Room CRUD API | ✅ 已完成 | ✓ |
+| FEAT-005 | 小区列表页 | 🚧 进行中 | - |
 | FEAT-006 | 房间列表页 | ⏳ 待开始 | - |
 | FEAT-007 | 房间详情页 | ⏳ 待开始 | - |
 
@@ -132,3 +132,21 @@
   **验证通过 (10:30):**
   - 13/13 E2E 测试通过
   - 提交: a2f168e
+
+- ✅ FEAT-005: 小区列表页（已完成）
+  - 创建 API 服务（Hans/src/api/community.ts）
+  - 创建类型定义（Hans/src/api/model/communityModel.ts）
+  - 创建页面组件（Hans/src/pages/housing/community/index.vue）
+  - 配置路由（Hans/src/router/modules/housing.ts）
+  - 修复 Furion 框架响应类型定义（Hans/src/types/axios.d.ts）
+
+  **代码审查 (14:00):**
+  - 审查结果：通过（0 Critical, 0 Important, 0 Minor）
+  - Important 问题已修复：
+    1. 添加前端分页说明注释
+    2. 修复搜索分页重置注释
+    3. 修复 E2E 测试路径（/housing/community）
+  - Minor 问题已修复：
+    1. 定义 HeaderAffixedTopConfig 接口，移除 as any 类型断言
+    2. 定义 CommunityFormData 接口，优化表单数据类型
+    3. 实现 E2E 测试 afterAll 清理逻辑

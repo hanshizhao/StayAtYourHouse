@@ -1,0 +1,19 @@
+import Layout from '@/layouts/index.vue';
+
+export default [
+  {
+    path: '/housing',
+    name: 'housing',
+    component: Layout,
+    redirect: '/housing/community',
+    meta: { title: { zh_CN: '房源管理', en_US: 'Housing' }, icon: 'home' },
+    children: [
+      {
+        path: 'community',
+        name: 'HousingCommunity',
+        component: () => import('@/pages/housing/community/index.vue'),
+        meta: { title: { zh_CN: '小区管理', en_US: 'Community' } },
+      },
+    ],
+  },
+];
