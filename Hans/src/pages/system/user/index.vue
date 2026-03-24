@@ -9,7 +9,13 @@
           </t-button>
         </div>
         <div class="search-input">
-          <t-input v-model="searchValue" placeholder="搜索用户名/显示名称" clearable @enter="handleSearch" @clear="handleSearch">
+          <t-input
+            v-model="searchValue"
+            placeholder="搜索用户名/显示名称"
+            clearable
+            @enter="handleSearch"
+            @clear="handleSearch"
+          >
             <template #suffix-icon>
               <search-icon size="16px" @click="handleSearch" />
             </template>
@@ -20,7 +26,7 @@
       <t-table
         :data="filteredData"
         :columns="columns"
-        :row-key="'id'"
+        row-key="id"
         vertical-align="top"
         :hover="true"
         :pagination="pagination"
@@ -78,9 +84,15 @@
       header="重置密码"
       :confirm-btn="{ content: '确定', loading: submitLoading }"
       :on-confirm="handleResetPasswordSubmit"
-      :on-close="() => resetPasswordVisible = false"
+      :on-close="() => (resetPasswordVisible = false)"
     >
-      <t-form ref="resetFormRef" :data="resetPasswordData" :rules="resetPasswordRules" label-align="right" label-width="80px">
+      <t-form
+        ref="resetFormRef"
+        :data="resetPasswordData"
+        :rules="resetPasswordRules"
+        label-align="right"
+        label-width="80px"
+      >
         <t-form-item label="新密码" name="newPassword">
           <t-input v-model="resetPasswordData.newPassword" type="password" placeholder="请输入新密码（至少6位）" />
         </t-form-item>
@@ -88,7 +100,6 @@
     </t-dialog>
   </div>
 </template>
-
 <script setup lang="ts">
 import { AddIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
@@ -168,9 +179,7 @@ const filteredData = computed(() => {
   if (!searchValue.value) return data.value;
   const keyword = searchValue.value.toLowerCase();
   return data.value.filter(
-    item =>
-      item.username.toLowerCase().includes(keyword)
-      || item.displayName.toLowerCase().includes(keyword),
+    (item) => item.username.toLowerCase().includes(keyword) || item.displayName.toLowerCase().includes(keyword),
   );
 });
 
@@ -203,11 +212,9 @@ async function fetchData() {
     const res = await getUserList();
     data.value = res || [];
     pagination.value.total = data.value.length;
-  }
-  catch (e: any) {
+  } catch (e: any) {
     MessagePlugin.error(e.message || '获取用户列表失败');
-  }
-  finally {
+  } finally {
     loading.value = false;
   }
 }
@@ -252,18 +259,15 @@ async function handleSubmit() {
     if (dialogType.value === 'create') {
       await createUser(formData.value as CreateUserParams);
       MessagePlugin.success('创建用户成功');
-    }
-    else {
+    } else {
       await updateUser(editingUserId.value!, { displayName: formData.value.displayName });
       MessagePlugin.success('更新用户成功');
     }
     dialogVisible.value = false;
     fetchData();
-  }
-  catch (e: any) {
+  } catch (e: any) {
     MessagePlugin.error(e.message || '操作失败');
-  }
-  finally {
+  } finally {
     submitLoading.value = false;
   }
 }
@@ -291,11 +295,9 @@ async function handleResetPasswordSubmit() {
     await resetPasswordApi(resetPasswordUserId.value!, resetPasswordData.value);
     MessagePlugin.success('重置密码成功');
     resetPasswordVisible.value = false;
-  }
-  catch (e: any) {
+  } catch (e: any) {
     MessagePlugin.error(e.message || '重置密码失败');
-  }
-  finally {
+  } finally {
     submitLoading.value = false;
   }
 }
@@ -306,8 +308,7 @@ async function handleToggle(row: UserItem) {
     await toggleUser(row.id);
     MessagePlugin.success(row.isEnabled ? '已禁用用户' : '已启用用户');
     fetchData();
-  }
-  catch (e: any) {
+  } catch (e: any) {
     MessagePlugin.error(e.message || '操作失败');
   }
 }
@@ -316,7 +317,6 @@ onMounted(() => {
   fetchData();
 });
 </script>
-
 <style lang="less" scoped>
 .user-management {
   .list-card-container {

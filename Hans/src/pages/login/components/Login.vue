@@ -1,12 +1,5 @@
 <template>
-  <t-form
-    ref="form"
-    class="item-container"
-    :data="formData"
-    :rules="FORM_RULES"
-    label-width="0"
-    @submit="onSubmit"
-  >
+  <t-form ref="form" class="item-container" :data="formData" :rules="FORM_RULES" label-width="0" @submit="onSubmit">
     <t-form-item name="account">
       <t-input v-model="formData.account" size="large" placeholder="请输入账号">
         <template #prefix-icon>
@@ -41,7 +34,6 @@
     </t-form-item>
   </t-form>
 </template>
-
 <script setup lang="ts">
 import type { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
@@ -87,7 +79,6 @@ const onSubmit = async (ctx: SubmitContext) => {
   }
 };
 </script>
-
 <style lang="less" scoped>
 @import '../index.less';
 </style>

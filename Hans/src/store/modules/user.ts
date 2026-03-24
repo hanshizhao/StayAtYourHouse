@@ -39,8 +39,7 @@ export const useUserStore = defineStore('user', {
         if (this.token) {
           await logout();
         }
-      }
-      catch {
+      } catch {
         // 忽略 logout 失败，继续清理本地状态
       }
       this.token = '';
