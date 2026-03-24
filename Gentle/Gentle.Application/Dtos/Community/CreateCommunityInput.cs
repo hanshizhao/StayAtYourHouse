@@ -1,12 +1,11 @@
 using System.ComponentModel.DataAnnotations;
-using Furion.DatabaseAccessor;
 
-namespace Gentle.Core.Entities;
+namespace Gentle.Application.Dtos.Community;
 
 /// <summary>
-/// 小区实体
+/// 创建小区请求
 /// </summary>
-public class Community : Entity<int>
+public class CreateCommunityInput
 {
     /// <summary>
     /// 小区名称
@@ -18,11 +17,13 @@ public class Community : Entity<int>
     /// <summary>
     /// 小区地址
     /// </summary>
+    [MaxLength(200, ErrorMessage = "地址长度不能超过200个字符")]
     public string? Address { get; set; }
 
     /// <summary>
     /// 物业电话
     /// </summary>
+    [MaxLength(20, ErrorMessage = "电话长度不能超过20个字符")]
     public string? PropertyPhone { get; set; }
 
     /// <summary>

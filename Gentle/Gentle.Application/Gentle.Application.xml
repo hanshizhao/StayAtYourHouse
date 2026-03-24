@@ -39,12 +39,12 @@
             根据ID获取小区
             </summary>
         </member>
-        <member name="M:Gentle.Application.Apps.CommunityAppService.Add(Gentle.Core.Entities.Community)">
+        <member name="M:Gentle.Application.Apps.CommunityAppService.Add(Gentle.Application.Dtos.Community.CreateCommunityInput)">
             <summary>
             新增小区
             </summary>
         </member>
-        <member name="M:Gentle.Application.Apps.CommunityAppService.Edit(Gentle.Core.Entities.Community)">
+        <member name="M:Gentle.Application.Apps.CommunityAppService.Edit(Gentle.Application.Dtos.Community.UpdateCommunityInput)">
             <summary>
             更新小区
             </summary>
@@ -55,7 +55,7 @@
             </summary>
         </member>
         <member name="T:Gentle.Application.Apps.UserAppService">
-            <summary>
+            <summary>den
             用户管理服务
             </summary>
         </member>
@@ -168,6 +168,96 @@
             显示名称
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Community.CommunityDto">
+            <summary>
+            小区列表项
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CommunityDto.Id">
+            <summary>
+            小区ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CommunityDto.Name">
+            <summary>
+            小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CommunityDto.Address">
+            <summary>
+            小区地址
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CommunityDto.PropertyPhone">
+            <summary>
+            物业电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CommunityDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CommunityDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Community.CreateCommunityInput">
+            <summary>
+            创建小区请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CreateCommunityInput.Name">
+            <summary>
+            小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CreateCommunityInput.Address">
+            <summary>
+            小区地址
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CreateCommunityInput.PropertyPhone">
+            <summary>
+            物业电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.CreateCommunityInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Community.UpdateCommunityInput">
+            <summary>
+            更新小区请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.UpdateCommunityInput.Id">
+            <summary>
+            小区ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.UpdateCommunityInput.Name">
+            <summary>
+            小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.UpdateCommunityInput.Address">
+            <summary>
+            小区地址
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.UpdateCommunityInput.PropertyPhone">
+            <summary>
+            物业电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Community.UpdateCommunityInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.User.CreateUserInput">
             <summary>
             创建用户请求
@@ -259,13 +349,10 @@
         <member name="M:Gentle.Application.Services.CommunityService.GetByIdAsync(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Gentle.Application.Services.CommunityService.AddAsync(Gentle.Core.Entities.Community)">
+        <member name="M:Gentle.Application.Services.CommunityService.AddAsync(Gentle.Application.Dtos.Community.CreateCommunityInput)">
             <inheritdoc />
         </member>
-        <member name="M:Gentle.Application.Services.CommunityService.SaveAsync(Gentle.Core.Entities.Community)">
-            <inheritdoc />
-        </member>
-        <member name="M:Gentle.Application.Services.CommunityService.UpdateAsync(Gentle.Core.Entities.Community)">
+        <member name="M:Gentle.Application.Services.CommunityService.UpdateAsync(Gentle.Application.Dtos.Community.UpdateCommunityInput)">
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.CommunityService.DeleteAsync(System.Int32)">
@@ -286,17 +373,12 @@
             根据ID获取小区
             </summary>
         </member>
-        <member name="M:Gentle.Application.Services.ICommunityService.AddAsync(Gentle.Core.Entities.Community)">
+        <member name="M:Gentle.Application.Services.ICommunityService.AddAsync(Gentle.Application.Dtos.Community.CreateCommunityInput)">
             <summary>
             新增小区
             </summary>
         </member>
-        <member name="M:Gentle.Application.Services.ICommunityService.SaveAsync(Gentle.Core.Entities.Community)">
-            <summary>
-            保存小区（新增或更新）
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Services.ICommunityService.UpdateAsync(Gentle.Core.Entities.Community)">
+        <member name="M:Gentle.Application.Services.ICommunityService.UpdateAsync(Gentle.Application.Dtos.Community.UpdateCommunityInput)">
             <summary>
             更新小区
             </summary>

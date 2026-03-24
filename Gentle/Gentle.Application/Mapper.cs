@@ -1,3 +1,4 @@
+using Gentle.Application.Dtos.Community;
 using Gentle.Application.Dtos.User;
 using Gentle.Core.Entities;
 using Mapster;
@@ -13,5 +14,14 @@ public class Mapper : IRegister
     {
         // User -> UserDto 映射配置
         config.NewConfig<User, UserDto>();
+
+        // Community -> CommunityDto 映射配置
+        config.NewConfig<Community, CommunityDto>();
+
+        // CreateCommunityInput -> Community 映射配置
+        config.NewConfig<CreateCommunityInput, Community>();
+
+        // UpdateCommunityInput -> Community 映射配置
+        config.NewConfig<UpdateCommunityInput, Community>();
     }
 }

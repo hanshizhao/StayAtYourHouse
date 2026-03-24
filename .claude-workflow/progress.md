@@ -30,7 +30,7 @@
 |----|------|------|------|
 | FEAT-001 | Community 实体 | ✅ 已完成 | ✓ |
 | FEAT-002 | Room 实体 | ✅ 已完成 | ✓ |
-| FEAT-003 | Community CRUD API | ⏳ 待开始 | - |
+| FEAT-003 | Community CRUD API | ✅ 已完成 | ✓ |
 | FEAT-004 | Room CRUD API | ⏳ 待开始 | - |
 | FEAT-005 | 小区列表页 | ⏳ 待开始 | - |
 | FEAT-006 | 房间列表页 | ⏳ 待开始 | - |
@@ -112,3 +112,19 @@
 - 创建测试目录结构
 - ✅ FEAT-001: Community 实体 + DbContext 配置完成（9/9 测试通过）
 - ✅ FEAT-002: Room 实体 + DbContext 配置完成（14/14 测试通过）
+
+### 2026-03-24
+
+- ✅ FEAT-003: Community CRUD API 完成（13/13 测试通过）
+  - 创建 ICommunityService 接口（ITransient 自动注册）
+  - 实现 CommunityService（使用 IRepository<Community>）
+  - 创建 CommunityAppService（IDynamicApiController）
+  - 添加 [Authorize] 认证保护
+  - 添加 [Required] 验证到 Name 字段
+  - API 路由: /api/community/{list|{id}|add|edit|remove/{id}}
+
+  **代码审查修复 (IMPORTANT 问题):**
+  - ✅ 添加 DTO 层（CommunityDto, CreateCommunityInput, UpdateCommunityInput）
+  - ✅ 修复 Update 并发问题（使用 SaveNowAsync）
+  - ✅ 添加名称重复校验
+  - ✅ 更新 Mapper 配置（Mapster）

@@ -1,5 +1,6 @@
+using Gentle.Application.Dtos.Community;
 using Gentle.Application.Services;
-using Gentle.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gentle.Application.Apps;
@@ -7,7 +8,9 @@ namespace Gentle.Application.Apps;
 /// <summary>
 /// 小区管理应用服务
 /// </summary>
+[ApiDescriptionSettings("Housing", Name = "Community", Order = 1)]
 [Route("api/community")]
+[Authorize]
 public class CommunityAppService : IDynamicApiController
 {
     private readonly ICommunityService _communityService;
@@ -21,7 +24,7 @@ public class CommunityAppService : IDynamicApiController
     /// 获取小区列表
     /// </summary>
     [HttpGet("list")]
-    public async Task<List<Community>> GetList()
+    public async Task<List<CommunityDto>> GetList()
     {
         return await _communityService.GetListAsync();
     }
@@ -30,7 +33,7 @@ public class CommunityAppService : IDynamicApiController
     /// 根据ID获取小区
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<Community> GetById(int id)
+    public async Task<CommunityDto> GetById(int id)
     {
         return await _communityService.GetByIdAsync(id);
     }
@@ -39,18 +42,18 @@ public class CommunityAppService : IDynamicApiController
     /// 新增小区
     /// </summary>
     [HttpPost("add")]
-    public async Task<Community> Add(Community community)
+    public async Task<CommunityDto> Add(CreateCommunityInput input)
     {
-        return await _communityService.AddAsync(community);
+        return await _communityService.AddAsync(input);
     }
 
     /// <summary>
     /// 更新小区
     /// </summary>
     [HttpPut("edit")]
-    public async Task<Community> Edit(Community community)
+    public async Task<CommunityDto> Edit(UpdateCommunityInput input)
     {
-        return await _communityService.UpdateAsync(community);
+        return await _communityService.UpdateAsync(input);
     }
 
     /// <summary>

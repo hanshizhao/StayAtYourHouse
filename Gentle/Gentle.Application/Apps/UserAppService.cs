@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gentle.Application.Apps;
 
-/// <summary>
+/// <summary>den
 /// 用户管理服务
 /// </summary>
 [ApiDescriptionSettings("System", Name = "User", Order = 2)]

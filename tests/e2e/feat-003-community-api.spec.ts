@@ -27,7 +27,7 @@ test.describe('FEAT-003: Community API', () => {
    */
   async function getAdminToken(request: APIRequestContext): Promise<string> {
     const loginResponse = await request.post(`${API_BASE}/api/auth/login`, {
-      data: { username: 'admin', password: 'admin123' }
+      data: { account: 'zhs', password: 'gentle8023' }
     });
 
     // 严格断言：只接受 200
@@ -35,9 +35,9 @@ test.describe('FEAT-003: Community API', () => {
 
     const result = await loginResponse.json();
     expect(result.succeeded).toBe(true);
-    expect(result.data).toHaveProperty('accessToken');
+    expect(result.data).toHaveProperty('token');
 
-    return result.data.accessToken;
+    return result.data.token;
   }
 
   /**
@@ -168,7 +168,8 @@ test.describe('FEAT-003: Community API', () => {
     // 验证有错误信息
     expect(result.succeeded).toBe(false);
     expect(result).toHaveProperty('errors');
-    expect(result.errors).toHaveProperty('name');
+    // .NET 返回 PascalCase 属性名
+    expect(result.errors).toHaveProperty('Name');
   });
 
   test('6. 创建接口 - 名称重复验证', async ({ request }) => {
@@ -188,7 +189,9 @@ test.describe('FEAT-003: Community API', () => {
     // 应返回错误（取决于业务规则）
     const result = await response.json();
     if (!result.succeeded) {
-      expect(result.message).toContain(/重复|已存在/);
+      // 检查错误信息包含"已存在"或"重复"
+      const errorMsg = result.message || result.errors || '';
+      expect(errorMsg).toMatch(/重复|已存在/);
     }
   });
 

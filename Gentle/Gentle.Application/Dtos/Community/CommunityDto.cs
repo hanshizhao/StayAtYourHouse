@@ -1,18 +1,18 @@
-using System.ComponentModel.DataAnnotations;
-using Furion.DatabaseAccessor;
-
-namespace Gentle.Core.Entities;
+namespace Gentle.Application.Dtos.Community;
 
 /// <summary>
-/// 小区实体
+/// 小区列表项
 /// </summary>
-public class Community : Entity<int>
+public class CommunityDto
 {
+    /// <summary>
+    /// 小区ID
+    /// </summary>
+    public int Id { get; set; }
+
     /// <summary>
     /// 小区名称
     /// </summary>
-    [Required(ErrorMessage = "小区名称不能为空")]
-    [MaxLength(100, ErrorMessage = "小区名称长度不能超过100个字符")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
@@ -29,4 +29,9 @@ public class Community : Entity<int>
     /// 备注
     /// </summary>
     public string? Remark { get; set; }
+
+    /// <summary>
+    /// 创建时间
+    /// </summary>
+    public DateTimeOffset CreatedTime { get; set; }
 }

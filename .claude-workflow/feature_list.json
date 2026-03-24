@@ -122,14 +122,16 @@
         }
       ],
       "test_file": "tests/e2e/feat-003-community-api.spec.ts",
-      "status": "in_progress",
+      "status": "completed",
       "verification": {
-        "api_routes_checked": false,
+        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-24T10:30:00Z",
+        "tests_count": 13,
         "api_routes": {
-          "base": "/api/community-app",
-          "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]
+          "base": "/api/community",
+          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
         }
       }
     },
