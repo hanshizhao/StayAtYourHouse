@@ -4,5 +4,125 @@
         <name>Gentle.Core</name>
     </assembly>
     <members>
+        <member name="T:Gentle.Core.Entities.Community">
+            <summary>
+            小区实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Community.Name">
+            <summary>
+            小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Community.Address">
+            <summary>
+            小区地址
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Community.PropertyPhone">
+            <summary>
+            物业电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Community.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.Room">
+            <summary>
+            房间实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.CommunityId">
+            <summary>
+            所属小区 ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.Community">
+            <summary>
+            所属小区
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.Building">
+            <summary>
+            楼栋号
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.RoomNumber">
+            <summary>
+            房间号
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.Area">
+            <summary>
+            面积（平方米）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.RoomType">
+            <summary>
+            房间类型（如：一室一厅、两室一厅）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.CostPrice">
+            <summary>
+            成本价（月租金成本）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.RentPrice">
+            <summary>
+            出租价（月租金）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.Deposit">
+            <summary>
+            押金
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.Status">
+            <summary>
+            房间状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.ContractImage">
+            <summary>
+            合同图片路径
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.RoomStatus">
+            <summary>
+            房间状态枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.RoomStatus.Vacant">
+            <summary>
+            空置
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.RoomStatus.Rented">
+            <summary>
+            已出租
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.RoomStatus.Renovating">
+            <summary>
+            装修中
+            </summary>
+        </member>
     </members>
 </doc>

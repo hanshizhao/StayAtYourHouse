@@ -4,16 +4,113 @@
         <name>Gentle.Application</name>
     </assembly>
     <members>
-        <member name="T:Gentle.Application.SystemAppService">
+        <member name="T:Gentle.Application.Apps.AuthAppService">
             <summary>
-            系统服务接口
+            认证服务（临时实现，用于测试）
             </summary>
         </member>
-        <member name="M:Gentle.Application.SystemAppService.GetDescription">
+        <member name="M:Gentle.Application.Apps.AuthAppService.Login(Gentle.Application.Apps.LoginDto)">
             <summary>
-            获取系统描述
+            登录接口
             </summary>
-            <returns></returns>
+        </member>
+        <member name="T:Gentle.Application.Apps.LoginDto">
+            <summary>
+            登录请求 DTO
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Apps.LoginResult">
+            <summary>
+            登录结果
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Apps.CommunityAppService">
+            <summary>
+            小区管理应用服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.CommunityAppService.GetList">
+            <summary>
+            获取小区列表
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.CommunityAppService.GetById(System.Int32)">
+            <summary>
+            根据ID获取小区
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.CommunityAppService.Add(Gentle.Core.Entities.Community)">
+            <summary>
+            新增小区
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.CommunityAppService.Edit(Gentle.Core.Entities.Community)">
+            <summary>
+            更新小区
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.CommunityAppService.Remove(System.Int32)">
+            <summary>
+            删除小区
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Services.CommunityService">
+            <summary>
+            小区服务实现
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.CommunityService.GetListAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.CommunityService.GetByIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.CommunityService.AddAsync(Gentle.Core.Entities.Community)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.CommunityService.SaveAsync(Gentle.Core.Entities.Community)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.CommunityService.UpdateAsync(Gentle.Core.Entities.Community)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.CommunityService.DeleteAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="T:Gentle.Application.Services.ICommunityService">
+            <summary>
+            小区服务接口
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ICommunityService.GetListAsync">
+            <summary>
+            获取小区列表
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ICommunityService.GetByIdAsync(System.Int32)">
+            <summary>
+            根据ID获取小区
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ICommunityService.AddAsync(Gentle.Core.Entities.Community)">
+            <summary>
+            新增小区
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ICommunityService.SaveAsync(Gentle.Core.Entities.Community)">
+            <summary>
+            保存小区（新增或更新）
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ICommunityService.UpdateAsync(Gentle.Core.Entities.Community)">
+            <summary>
+            更新小区
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ICommunityService.DeleteAsync(System.Int32)">
+            <summary>
+            删除小区
+            </summary>
         </member>
     </members>
 </doc>

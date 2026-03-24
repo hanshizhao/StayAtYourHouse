@@ -98,8 +98,8 @@
       "acceptance_criteria": [
         "创建 ICommunityService 接口",
         "实现 CommunityService 服务类",
-        "创建 CommunityController（显式路由）",
-        "API 启动成功，可调用 list/add/edit/remove 接口"
+        "创建 CommunityAppService（Application/Apps 目录）",
+        "API 启动成功，可调用 get-list/get-by-id/add/edit/remove 接口"
       ],
       "implementation_steps": [
         {
@@ -112,24 +112,24 @@
           "step": 2,
           "action": "实现服务类",
           "file": "Gentle/Gentle.Application/Services/CommunityService.cs",
-          "code_hint": "public class CommunityService : ICommunityService { private readonly DefaultDbContext _db; public CommunityService(DefaultDbContext db) { _db = db; } ... }"
+          "code_hint": "public class CommunityService : ICommunityService { private readonly IRepository<Community> _repository; public CommunityService(IRepository<Community> repository) { _repository = repository; } ... }"
         },
         {
           "step": 3,
-          "action": "创建 Controller",
-          "file": "Gentle/Gentle.Web.Entry/Controllers/CommunityController.cs",
-          "code_hint": "[Route(\"community\")] public class CommunityController : IDynamicApiController { [HttpGet(\"list\")] [HttpPost(\"add\")] [HttpPut(\"edit\")] [HttpDelete(\"remove/{id}\")] ... }"
+          "action": "创建 AppService（动态 WebAPI）",
+          "file": "Gentle/Gentle.Application/Apps/CommunityAppService.cs",
+          "code_hint": "public class CommunityAppService : IDynamicApiController { public async Task<List<Community>> GetList() { ... } public async Task<Community> GetById(int id) { ... } public async Task<Community> Add(Community community) { ... } public async Task<Community> Edit(Community community) { ... } public async Task Remove(int id) { ... } }"
         }
       ],
       "test_file": "tests/e2e/feat-003-community-api.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "api_routes_checked": false,
         "e2e_tests_created": true,
         "e2e_tests_passed": false,
         "api_routes": {
-          "base": "/api/community",
-          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
+          "base": "/api/community-app",
+          "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]
         }
       }
     },
@@ -143,7 +143,7 @@
       "acceptance_criteria": [
         "创建 IRoomService 接口",
         "实现 RoomService 服务类（含按小区/状态筛选）",
-        "创建 RoomController（显式路由）",
+        "创建 RoomAppService（Application/Apps 目录）",
         "API 启动成功，可调用各接口"
       ],
       "implementation_steps": [
@@ -161,9 +161,9 @@
         },
         {
           "step": 3,
-          "action": "创建 Controller",
-          "file": "Gentle/Gentle.Web.Entry/Controllers/RoomController.cs",
-          "code_hint": "[Route(\"room\")] public class RoomController : IDynamicApiController { ... }"
+          "action": "创建 AppService（动态 WebAPI）",
+          "file": "Gentle/Gentle.Application/Apps/RoomAppService.cs",
+          "code_hint": "public class RoomAppService : IDynamicApiController { public async Task<List<Room>> GetList(int? communityId, RoomStatus? status) { ... } ... }"
         }
       ],
       "test_file": "tests/e2e/feat-004-room-api.spec.ts",
@@ -173,8 +173,8 @@
         "e2e_tests_created": true,
         "e2e_tests_passed": false,
         "api_routes": {
-          "base": "/api/room",
-          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
+          "base": "/api/room-app",
+          "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]
         }
       }
     },
@@ -386,7 +386,7 @@
       "acceptance_criteria": [
         "创建 ITenantService 接口",
         "实现 TenantService 服务类",
-        "创建 TenantController",
+        "创建 TenantAppService（Application/Apps 目录）",
         "API 启动成功"
       ],
       "implementation_steps": [
@@ -404,9 +404,9 @@
         },
         {
           "step": 3,
-          "action": "创建 Controller",
-          "file": "Gentle/Gentle.Web.Entry/Controllers/TenantController.cs",
-          "code_hint": "[Route(\"tenant\")] public class TenantController : IDynamicApiController { ... }"
+          "action": "创建 AppService（动态 WebAPI）",
+          "file": "Gentle/Gentle.Application/Apps/TenantAppService.cs",
+          "code_hint": "public class TenantAppService : IDynamicApiController { ... }"
         }
       ],
       "test_file": "tests/e2e/feat-010-tenant-api.spec.ts",
@@ -416,8 +416,8 @@
         "e2e_tests_created": true,
         "e2e_tests_passed": false,
         "api_routes": {
-          "base": "/api/tenant",
-          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
+          "base": "/api/tenant-app",
+          "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]
         }
       }
     },
@@ -431,13 +431,14 @@
       "acceptance_criteria": [
         "实现入住办理（更新房间状态、生成第一期账单）",
         "实现退租结算（计算结算金额、处理押金、更新房间状态）",
+        "创建 RentalAppService（Application/Apps 目录）",
         "API 启动成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
           "action": "创建入住 DTO",
-          "file": "Gentle/Gentle.Application/Dto/CheckInDto.cs",
+          "file": "Gentle/Gentle.Application/Dtos/CheckInDto.cs",
           "code_hint": "public class CheckInDto { public int TenantId { get; set; } public int RoomId { get; set; } public DateTime CheckInDate { get; set; } public LeaseType LeaseType { get; set; } public decimal MonthlyRent { get; set; } public decimal Deposit { get; set; } }"
         },
         {
@@ -448,9 +449,9 @@
         },
         {
           "step": 3,
-          "action": "创建 Controller",
-          "file": "Gentle/Gentle.Web.Entry/Controllers/RentalRecordController.cs",
-          "code_hint": "[Route(\"rental\")] public class RentalRecordController : IDynamicApiController { [HttpPost(\"check-in\")] [HttpPost(\"check-out\")] ... }"
+          "action": "创建 AppService（动态 WebAPI）",
+          "file": "Gentle/Gentle.Application/Apps/RentalAppService.cs",
+          "code_hint": "public class RentalAppService : IDynamicApiController { public async Task CheckIn(CheckInDto dto) { ... } public async Task CheckOut(CheckOutDto dto) { ... } ... }"
         }
       ],
       "test_file": "tests/e2e/feat-011-checkin-checkout-api.spec.ts",
@@ -460,8 +461,8 @@
         "e2e_tests_created": true,
         "e2e_tests_passed": false,
         "api_routes": {
-          "base": "/api/rental",
-          "endpoints": ["check-in", "check-out", "list", "{id}"]
+          "base": "/api/rental-app",
+          "endpoints": ["check-in", "check-out", "get-list", "get-by-id/{id}"]
         }
       }
     },
@@ -662,6 +663,7 @@
         "创建 IBillService 接口",
         "实现账单列表、催收功能",
         "催收成功时自动生成下一期账单",
+        "创建 BillAppService（Application/Apps 目录）",
         "API 启动成功"
       ],
       "implementation_steps": [
@@ -679,9 +681,9 @@
         },
         {
           "step": 3,
-          "action": "创建 Controller",
-          "file": "Gentle/Gentle.Web.Entry/Controllers/BillController.cs",
-          "code_hint": "[Route(\"bill\")] public class BillController : IDynamicApiController { ... }"
+          "action": "创建 AppService（动态 WebAPI）",
+          "file": "Gentle/Gentle.Application/Apps/BillAppService.cs",
+          "code_hint": "public class BillAppService : IDynamicApiController { public async Task<List<Bill>> GetList(BillStatus? status, int? month) { ... } public async Task Collect(int billId, CollectDto dto) { ... } ... }"
         }
       ],
       "test_file": "tests/e2e/feat-017-bill-api.spec.ts",
@@ -691,8 +693,8 @@
         "e2e_tests_created": true,
         "e2e_tests_passed": false,
         "api_routes": {
-          "base": "/api/bill",
-          "endpoints": ["list", "today-todos", "collect", "{id}"]
+          "base": "/api/bill-app",
+          "endpoints": ["get-list", "get-today-todos", "collect", "get-by-id/{id}"]
         }
       }
     },
@@ -845,6 +847,7 @@
       "acceptance_criteria": [
         "实现抄表录入（自动计算用量和费用）",
         "实现水电账单生成",
+        "创建 MeterAppService（Application/Apps 目录）",
         "API 启动成功"
       ],
       "implementation_steps": [
@@ -856,9 +859,9 @@
         },
         {
           "step": 2,
-          "action": "创建 Controller",
-          "file": "Gentle/Gentle.Web.Entry/Controllers/MeterController.cs",
-          "code_hint": "[Route(\"meter\")] public class MeterController : IDynamicApiController { ... }"
+          "action": "创建 AppService（动态 WebAPI）",
+          "file": "Gentle/Gentle.Application/Apps/MeterAppService.cs",
+          "code_hint": "public class MeterAppService : IDynamicApiController { public async Task<List<MeterRecord>> GetList(int? communityId) { ... } public async Task<MeterRecord> Record(RecordMeterDto dto) { ... } ... }"
         }
       ],
       "test_file": "tests/e2e/feat-022-meter-api.spec.ts",
@@ -868,8 +871,8 @@
         "e2e_tests_created": true,
         "e2e_tests_passed": false,
         "api_routes": {
-          "base": "/api/meter",
-          "endpoints": ["list", "record", "utility-bills"]
+          "base": "/api/meter-app",
+          "endpoints": ["get-list", "record", "get-utility-bills"]
         }
       }
     },
@@ -954,6 +957,7 @@
         "实现房源概览接口",
         "实现利润排行接口",
         "实现催收统计接口",
+        "创建 ReportAppService（Application/Apps 目录）",
         "API 启动成功"
       ],
       "implementation_steps": [
@@ -965,9 +969,9 @@
         },
         {
           "step": 2,
-          "action": "创建 Controller",
-          "file": "Gentle/Gentle.Web.Entry/Controllers/ReportController.cs",
-          "code_hint": "[Route(\"report\")] public class ReportController : IDynamicApiController { ... }"
+          "action": "创建 AppService（动态 WebAPI）",
+          "file": "Gentle/Gentle.Application/Apps/ReportAppService.cs",
+          "code_hint": "public class ReportAppService : IDynamicApiController { public async Task<IncomeReport> GetIncomeReport(int year) { ... } public async Task<HousingOverview> GetHousingOverview() { ... } ... }"
         }
       ],
       "test_file": "tests/e2e/feat-025-report-api.spec.ts",
@@ -977,8 +981,8 @@
         "e2e_tests_created": true,
         "e2e_tests_passed": false,
         "api_routes": {
-          "base": "/api/report",
-          "endpoints": ["income", "housing-overview", "profit-ranking", "collection"]
+          "base": "/api/report-app",
+          "endpoints": ["get-income-report", "get-housing-overview", "get-profit-ranking", "get-collection-report"]
         }
       }
     },
