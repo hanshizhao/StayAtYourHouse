@@ -104,6 +104,41 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.User">
+            <summary>
+            用户实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.User.Username">
+            <summary>
+            用户名（登录账号）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.User.PasswordHash">
+            <summary>
+            密码哈希
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.User.DisplayName">
+            <summary>
+            显示名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.User.IsEnabled">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.User.LastLoginTime">
+            <summary>
+            最后登录时间
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.User.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            配置种子数据
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.RoomStatus">
             <summary>
             房间状态枚举

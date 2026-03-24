@@ -6,22 +6,22 @@
     <members>
         <member name="T:Gentle.Application.Apps.AuthAppService">
             <summary>
-            认证服务（临时实现，用于测试）
+            认证服务
             </summary>
         </member>
-        <member name="M:Gentle.Application.Apps.AuthAppService.Login(Gentle.Application.Apps.LoginDto)">
+        <member name="M:Gentle.Application.Apps.AuthAppService.Login(Gentle.Application.Dtos.Auth.LoginInput)">
             <summary>
-            登录接口
+            登录
             </summary>
         </member>
-        <member name="T:Gentle.Application.Apps.LoginDto">
+        <member name="M:Gentle.Application.Apps.AuthAppService.Profile">
             <summary>
-            登录请求 DTO
+            获取当前用户信息
             </summary>
         </member>
-        <member name="T:Gentle.Application.Apps.LoginResult">
+        <member name="M:Gentle.Application.Apps.AuthAppService.Logout">
             <summary>
-            登录结果
+            登出
             </summary>
         </member>
         <member name="T:Gentle.Application.Apps.CommunityAppService">
@@ -52,6 +52,200 @@
         <member name="M:Gentle.Application.Apps.CommunityAppService.Remove(System.Int32)">
             <summary>
             删除小区
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Apps.UserAppService">
+            <summary>
+            用户管理服务
+            </summary>
+        </member>
+        <member name="F:Gentle.Application.Apps.UserAppService.ProtectedUsernames">
+            <summary>
+            受保护的用户名列表（种子数据用户，不可修改/删除/禁用）
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.UserAppService.CheckProtectedUser(Gentle.Core.Entities.User)">
+            <summary>
+            检查用户是否受保护
+            </summary>
+            <param name="user">用户实体</param>
+            <exception cref="T:System.SystemException">如果用户受保护则抛出异常</exception>
+        </member>
+        <member name="M:Gentle.Application.Apps.UserAppService.GetList">
+            <summary>
+            获取用户列表
+            </summary>
+            <returns>用户列表</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.UserAppService.GetById(System.Int32)">
+            <summary>
+            获取用户详情
+            </summary>
+            <param name="id">用户ID</param>
+            <returns>用户详情</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.UserAppService.Create(Gentle.Application.Dtos.User.CreateUserInput)">
+            <summary>
+            创建用户
+            </summary>
+            <param name="input">创建用户输入</param>
+            <returns>创建的用户</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.UserAppService.Update(System.Int32,Gentle.Application.Dtos.User.UpdateUserInput)">
+            <summary>
+            更新用户
+            </summary>
+            <param name="id">用户ID</param>
+            <param name="input">更新用户输入</param>
+            <returns>更新后的用户</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.UserAppService.ResetPassword(System.Int32,Gentle.Application.Dtos.User.ResetPasswordInput)">
+            <summary>
+            重置密码
+            </summary>
+            <param name="id">用户ID</param>
+            <param name="input">重置密码输入</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.UserAppService.Toggle(System.Int32)">
+            <summary>
+            禁用/启用用户
+            </summary>
+            <param name="id">用户ID</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.UserAppService.Delete(System.Int32)">
+            <summary>
+            删除用户
+            </summary>
+            <param name="id">用户ID</param>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Auth.LoginInput">
+            <summary>
+            登录请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Auth.LoginInput.Account">
+            <summary>
+            账号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Auth.LoginInput.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Auth.LoginOutput">
+            <summary>
+            登录响应
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Auth.LoginOutput.Token">
+            <summary>
+            JWT Token
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Auth.LoginOutput.ExpiresIn">
+            <summary>
+            过期时间（秒）
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Auth.ProfileOutput">
+            <summary>
+            当前用户信息
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Auth.ProfileOutput.Id">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Auth.ProfileOutput.Username">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Auth.ProfileOutput.DisplayName">
+            <summary>
+            显示名称
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.User.CreateUserInput">
+            <summary>
+            创建用户请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.CreateUserInput.Username">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.CreateUserInput.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.CreateUserInput.DisplayName">
+            <summary>
+            显示名称
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.User.ResetPasswordInput">
+            <summary>
+            重置密码请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.ResetPasswordInput.NewPassword">
+            <summary>
+            新密码
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.User.UpdateUserInput">
+            <summary>
+            更新用户请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.UpdateUserInput.DisplayName">
+            <summary>
+            显示名称
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.User.UserDto">
+            <summary>
+            用户列表项
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.UserDto.Id">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.UserDto.Username">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.UserDto.DisplayName">
+            <summary>
+            显示名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.UserDto.IsEnabled">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.UserDto.LastLoginTime">
+            <summary>
+            最后登录时间
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.User.UserDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Mapper">
+            <summary>
+            Mapster 映射配置
             </summary>
         </member>
         <member name="T:Gentle.Application.Services.CommunityService">

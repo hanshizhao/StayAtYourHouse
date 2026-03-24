@@ -4,6 +4,7 @@ using Furion.DataEncryption;
 using Furion.FriendlyException;
 using Gentle.Application.Dtos.Auth;
 using Gentle.Core.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gentle.Application.Apps;
@@ -27,6 +28,12 @@ public class AuthAppService : IDynamicApiController
     [AllowAnonymous]
     public async Task<LoginOutput> Login(LoginInput input)
     {
+        // 参数校验
+        if (input == null || string.IsNullOrEmpty(input.Account) || string.IsNullOrEmpty(input.Password))
+        {
+            throw Oops.Oh("账号和密码不能为空");
+        }
+
         // 查找用户
         var user = await _userRepository.AsQueryable(false)
             .FirstOrDefaultAsync(u => u.Username == input.Account);
@@ -69,6 +76,7 @@ public class AuthAppService : IDynamicApiController
     /// <summary>
     /// 获取当前用户信息
     /// </summary>
+    [HttpGet]
     public async Task<ProfileOutput> Profile()
     {
         var userId = App.User?.FindFirst("UserId")?.Value;

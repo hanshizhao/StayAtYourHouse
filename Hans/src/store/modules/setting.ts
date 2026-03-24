@@ -36,6 +36,13 @@ export const useSettingStore = defineStore('setting', {
       return state.mode as ModeType;
     },
     displaySideMode: (state): ModeType => {
+      if (state.sideMode === 'auto') {
+        const media = window.matchMedia('(prefers-color-scheme:dark)');
+        if (media.matches) {
+          return 'dark';
+        }
+        return 'light';
+      }
       return state.sideMode as ModeType;
     },
   },

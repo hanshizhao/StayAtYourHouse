@@ -37,7 +37,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       vueJsx(),
       viteMockServe({
         mockPath: 'mock',
-        enable: true,
+        enable: false,
       }),
       svgLoader(),
     ],
@@ -46,7 +46,10 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       port: 3002,
       host: '0.0.0.0',
       proxy: {
-        [VITE_API_URL_PREFIX]: 'http://127.0.0.1:3000/',
+        [VITE_API_URL_PREFIX]: {
+          target: 'http://localhost:5000',
+          changeOrigin: true,
+        },
       },
     },
   };

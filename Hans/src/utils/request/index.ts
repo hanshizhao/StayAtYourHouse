@@ -43,16 +43,16 @@ const transform: AxiosTransform = {
       throw new Error('请求接口错误');
     }
 
-    //  这里 code为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
-    const { code } = data;
+    //  Furion 框架统一响应格式：succeeded, statusCode, data, errors
+    const { succeeded, statusCode, errors, data: responseData } = data;
 
     // 这里逻辑可以根据项目进行修改
-    const hasSuccess = data && code === 0;
+    const hasSuccess = data && succeeded === true;
     if (hasSuccess) {
-      return data.data;
+      return responseData;
     }
 
-    throw new Error(`请求接口错误, 错误码: ${code}`);
+    throw new Error(errors || `请求接口错误, 状态码: ${statusCode}`);
   },
 
   // 请求前处理配置
@@ -157,7 +157,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
       <CreateAxiosOptions>{
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes
         // 例如: authenticationScheme: 'Bearer'
-        authenticationScheme: '',
+        authenticationScheme: 'Bearer',
         // 超时
         timeout: 10 * 1000,
         // 携带Cookie

@@ -25,8 +25,10 @@ public class Startup : AppStartup
         {
             app.UseDeveloperExceptionPage();
         }
-
-        app.UseHttpsRedirection();
+        else
+        {
+            app.UseHttpsRedirection();
+        }
 
         app.UseRouting();
 

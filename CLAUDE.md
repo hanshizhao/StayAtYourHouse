@@ -73,28 +73,6 @@ dotnet ef database update --project Gentle.Database.Migrations --startup-project
 
 API 响应格式要求 `{ code: 0, data: T }` 结构。
 
-### 后端（Gentle）
-
-- **框架**: Furion（高度封装的 .NET 框架）
-- **数据库**: SQLite + Entity Framework Core
-- **认证**: JWT，自定义 `JwtHandler`
-- **API**: 通过 `IDynamicApiController` 实现动态 API 控制器
-
-项目分层：
-
-- `Gentle.Web.Entry` - 入口项目，最小化配置
-- `Gentle.Web.Core` - 启动配置、中间件、JWT 处理器
-- `Gentle.Application` - 应用服务、DTO、接口定义
-- `Gentle.EntityFramework.Core` - DbContext 配置
-- `Gentle.Database.Migrations` - EF Core 迁移文件
-- `Gentle.Core` - 领域实体和核心逻辑
-
-服务模式：
-
-- 接口定义在 `Gentle.Application/System/Services/IXxxService.cs`
-- 实现类通过依赖注入范围标记（`ITransient`、`IScoped`、`ISingleton`）
-- 控制器实现 `IDynamicApiController` 接口以自动生成 API 路由
-
 ## 开发规范
 
 ### 前端
@@ -106,10 +84,25 @@ API 响应格式要求 `{ code: 0, data: T }` 结构。
 
 ### 后端
 
-- 使用 .NET 10，启用预览版语言特性
-- 遵循 Furion 框架的动态 API 约定
-- 使用 Mapster 进行对象映射
-- 全局 using 定义在 `Gentle.Application/GlobalUsings.cs`
+**⚠️ Furion 框架强制规范（开发后端前必读）**
+
+开发 .NET 后端时，**必须先调用 `furion-best-practices` skill**：
+
+- 在对话开始时说 "使用 furion-best-practices skill"
+- 或直接输入 `/furion-best-practices`
+
+核心速查：
+
+| 功能      | ✅ Furion 方式                             | ❌ 传统方式                      |
+| --------- | ------------------------------------------ | -------------------------------- |
+| 实体定义  | `class Xxx : Entity<int>`                  | 手动定义 Id                      |
+| DbContext | 继承`AppDbContext<T>`，无需 DbSet          | 手动添加`DbSet<Xxx>`             |
+| 种子数据  | `IEntitySeedData<TEntity, TLocator>`       | `OnModelCreating` 中 `HasData()` |
+| 创建 API  | `class XxxService : IDynamicApiController` | `class XxxController`            |
+| API 位置  | `Application/Apps/` 目录                   | `Web.Entry/Controllers/`         |
+| 服务注册  | `class Xxx : ITransient`                   | `services.AddTransient()`        |
+| 异常抛出  | `throw Oops.Oh("消息")`                    | `throw new Exception()`          |
+| 仓储注入  | `IRepository<TEntity>` 构造函数注入        | `DbContext` 直接使用             |
 
 ## 环境配置
 
