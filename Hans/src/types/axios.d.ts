@@ -88,9 +88,16 @@ export interface RequestOptions {
   };
 }
 
+/**
+ * Furion 框架统一响应格式
+ */
 export interface Result<T = any> {
-  code: number;
+  succeeded: boolean;
+  statusCode: number;
   data: T;
+  errors?: string | string[] | Record<string, string[]>;
+  extras?: Record<string, any>;
+  timestamp?: number;
 }
 
 export interface AxiosRequestConfigRetry extends AxiosRequestConfig {

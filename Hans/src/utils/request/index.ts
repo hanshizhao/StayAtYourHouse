@@ -52,7 +52,9 @@ const transform: AxiosTransform = {
       return responseData;
     }
 
-    throw new Error(errors || `请求接口错误, 状态码: ${statusCode}`);
+    throw new Error(
+      (typeof errors === 'string' ? errors : JSON.stringify(errors)) || `请求接口错误, 状态码: ${statusCode}`,
+    );
   },
 
   // 请求前处理配置
