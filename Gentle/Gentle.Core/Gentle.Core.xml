@@ -104,6 +104,46 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.Tenant">
+            <summary>
+            租客实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Tenant.Name">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Tenant.Phone">
+            <summary>
+            联系电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Tenant.IdCard">
+            <summary>
+            身份证号
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Tenant.Gender">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Tenant.EmergencyContact">
+            <summary>
+            紧急联系人
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Tenant.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.Tenant.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            配置种子数据
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.User">
             <summary>
             用户实体
@@ -137,6 +177,21 @@
         <member name="M:Gentle.Core.Entities.User.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
             <summary>
             配置种子数据
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.Gender">
+            <summary>
+            性别枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.Gender.Male">
+            <summary>
+            男
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.Gender.Female">
+            <summary>
+            女
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.RoomStatus">

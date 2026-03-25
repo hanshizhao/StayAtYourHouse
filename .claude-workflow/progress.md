@@ -40,7 +40,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-008 | Tenant 实体 | ⏳ 待开始 | - |
+| FEAT-008 | Tenant 实体 | ✅ 已完成 | ✓ |
 | FEAT-009 | RentalRecord 实体 | ⏳ 待开始 | - |
 | FEAT-010 | Tenant CRUD API | ⏳ 待开始 | - |
 | FEAT-011 | 入住/退租 API | ⏳ 待开始 | - |
@@ -152,6 +152,13 @@
     3. 实现 E2E 测试 afterAll 清理逻辑
 
 ### 2026-03-25
+
+- ✅ FEAT-008: Tenant（租客）实体（已完成）
+  - 创建 Gender 枚举（Male = 0, Female = 1）
+  - 创建 Tenant 实体类（继承 Entity<int>）
+  - 实体属性：Name, Phone, IdCard?, Gender, EmergencyContact?, Remark?
+  - Furion 框架自动发现实体，无需手动配置 DbSet
+  - 12/12 静态测试通过
 
 - ✅ FEAT-007: 房间详情页（已完成）
   - 创建详情页面组件（Hans/src/pages/housing/room/detail.vue）
