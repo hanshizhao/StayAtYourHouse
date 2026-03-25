@@ -14,6 +14,12 @@ export default [
         component: () => import('@/pages/housing/community/index.vue'),
         meta: { title: { zh_CN: '小区管理', en_US: 'Community' } },
       },
+      {
+        path: 'room',
+        name: 'HousingRoom',
+        component: () => import('@/pages/housing/room/index.vue'),
+        meta: { title: { zh_CN: '房间管理', en_US: 'Room' } },
+      },
     ],
   },
 ];

@@ -54,7 +54,7 @@
           <span v-else class="text-secondary">-</span>
         </template>
         <template #createdTime="{ row }">
-          {{ formatDate(row.createdTime) }}
+          {{ formatDateTime(row.createdTime) }}
         </template>
         <template #op="{ row }">
           <t-space>
@@ -135,6 +135,7 @@ import { createCommunity, deleteCommunity, getCommunityList, updateCommunity } f
 import type { CommunityItem } from '@/api/model/communityModel';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
+import { formatDateTime } from '@/utils/date';
 
 defineOptions({
   name: 'HousingCommunity',
@@ -229,19 +230,6 @@ const headerAffixedTop = computed<HeaderAffixedTopConfig>(() => ({
   container: `.${prefix}-layout`,
 }));
 
-// 格式化日期
-function formatDate(dateStr: string) {
-  if (!dateStr) return '-';
-  const date = new Date(dateStr);
-  return date.toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
 // 获取小区列表
 async function fetchData() {
   loading.value = true;
@@ -321,7 +309,7 @@ async function handleSubmit() {
       MessagePlugin.success('更新小区成功');
     }
     dialogVisible.value = false;
-    await fetchData();  // 等待数据刷新完成
+    await fetchData(); // 等待数据刷新完成
   } catch (e: any) {
     MessagePlugin.error(e.message || '操作失败');
   } finally {
@@ -350,7 +338,7 @@ async function onConfirmDelete() {
     await deleteCommunity(deletingCommunity.value.id);
     MessagePlugin.success('删除成功');
     deleteConfirmVisible.value = false;
-    await fetchData();  // 等待数据刷新完成
+    await fetchData(); // 等待数据刷新完成
   } catch (e: any) {
     MessagePlugin.error(e.message || '删除失败');
   } finally {

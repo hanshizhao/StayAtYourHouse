@@ -26,7 +26,7 @@ router.beforeEach(async (to, from, next) => {
     try {
       await userStore.getUserInfo();
 
-      const { asyncRoutes, routesBuilt } = permissionStore;
+      const { routesBuilt } = permissionStore;
 
       if (!routesBuilt) {
         const routeList = await permissionStore.buildAsyncRoutes();
