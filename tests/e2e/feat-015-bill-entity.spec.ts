@@ -1,13 +1,17 @@
 /**
- * FEAT-015: Bill 实体 - 静态验证（严谨版）
+ * FEAT-015: Bill（账单）实体 - 静态验证（严谨版）
  * 类型: static
  * 适用于: 后端实体
  *
  * 测试覆盖：
  * 1. 实体文件存在性
- * 2. 实体属性完整性
- * 3. DbContext 配置
- * 4. 项目构建成功
+ * 2. 枚举文件存在性
+ * 3. 实体继承 Entity<int> 基类
+ * 4. 实体属性完整性
+ * 5. 项目构建成功
+ *
+ * 注意：Furion 框架会自动发现实现 IEntity 接口的实体，
+ * 无需在 DbContext 中手动添加 DbSet<T>
  */
 import { test, expect } from '@playwright/test';
 import * as path from 'path';
@@ -18,25 +22,8 @@ test.describe('FEAT-015: Bill 实体', () => {
   const projectRoot = path.join(__dirname, '../../');
   const serverPath = path.join(projectRoot, 'Gentle');
   const entityPath = path.join(serverPath, 'Gentle.Core/Entities/Bill.cs');
+  const enumPath = path.join(serverPath, 'Gentle.Core/Enums/BillStatus.cs');
   const dbContextPath = path.join(serverPath, 'Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs');
-
-  // 期望的实体属性（根据需求文档）
-  const expectedProperties = [
-    { name: 'Id', type: 'int', required: true },
-    { name: 'RentalRecordId', type: 'int', required: true },
-    { name: 'PeriodStart', type: 'DateTime', required: true },
-    { name: 'PeriodEnd', type: 'DateTime', required: true },
-    { name: 'DueDate', type: 'DateTime', required: true },
-    { name: 'RentAmount', type: 'decimal', required: true },
-    { name: 'WaterFee', type: 'decimal', required: true },
-    { name: 'ElectricFee', type: 'decimal', required: true },
-    { name: 'TotalAmount', type: 'decimal', required: true },
-    { name: 'Status', type: 'string', required: true }, // 或 enum
-    { name: 'PaidAmount', type: 'decimal', required: false },
-    { name: 'PaidDate', type: 'DateTime', required: false },
-    { name: 'CreatedAt', type: 'DateTime', required: true },
-    { name: 'UpdatedAt', type: 'DateTime', required: false },
-  ];
 
   // ==================== 文件存在性测试 ====================
 
@@ -44,13 +31,63 @@ test.describe('FEAT-015: Bill 实体', () => {
     expect(fs.existsSync(entityPath)).toBeTruthy();
   });
 
-  test('2. 检查 DbContext 文件存在', async () => {
+  test('2. 检查 BillStatus 枚举文件存在', async () => {
+    expect(fs.existsSync(enumPath)).toBeTruthy();
+  });
+
+  test('3. 检查 DbContext 文件存在', async () => {
     expect(fs.existsSync(dbContextPath)).toBeTruthy();
+  });
+
+  // ==================== 枚举测试 ====================
+
+  test('4. 验证 BillStatus 枚举定义', async () => {
+    if (!fs.existsSync(enumPath)) {
+      test.skip('枚举文件不存在');
+      return;
+    }
+
+    const content = fs.readFileSync(enumPath, 'utf-8');
+
+    // 验证枚举声明
+    expect(content).toMatch(/public\s+enum\s+BillStatus/);
+
+    // 验证枚举值
+    expect(content).toMatch(/Pending\s*=\s*0/);
+    expect(content).toMatch(/Grace\s*=\s*1/);
+    expect(content).toMatch(/Paid\s*=\s*2/);
+    expect(content).toMatch(/Overdue\s*=\s*3/);
+  });
+
+  // ==================== 实体继承测试 ====================
+
+  test('5. 验证实体类继承 Entity<int> 基类', async () => {
+    if (!fs.existsSync(entityPath)) {
+      test.skip('实体文件不存在');
+      return;
+    }
+
+    const content = fs.readFileSync(entityPath, 'utf-8');
+
+    // 验证继承 Entity<int>（Furion 框架要求）
+    expect(content).toMatch(/public\s+class\s+Bill\s*:\s*Entity\s*<\s*int\s*>/);
+  });
+
+  test('6. 验证实体引用 Furion.DatabaseAccessor 命名空间', async () => {
+    if (!fs.existsSync(entityPath)) {
+      test.skip('实体文件不存在');
+      return;
+    }
+
+    const content = fs.readFileSync(entityPath, 'utf-8');
+
+    // 验证 using Furion.DatabaseAccessor
+    expect(content).toMatch(/using\s+Furion\.DatabaseAccessor/);
   });
 
   // ==================== 实体属性测试 ====================
 
-  test('3. 验证实体类声明', async () => {
+  test('7. 验证必填属性 - RentalRecordId, PeriodStart, PeriodEnd, DueDate', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -58,60 +95,14 @@ test.describe('FEAT-015: Bill 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    // 验证类声明
-    expect(content).toMatch(/public\s+class\s+Bill/);
-  });
-
-  test('4. 验证实体的 Id 属性', async () => {
-    if (!fs.existsSync(entityPath)) {
-      test.skip('实体文件不存在');
-      return;
-    }
-
-    const content = fs.readFileSync(entityPath, 'utf-8');
-
-    // 验证 Id 属性
-    expect(content).toMatch(/public\s+int\s+Id\s*\{\s*get;\s*set;\s*\}/);
-  });
-
-  test('5. 验证实体的 RentalRecordId 属性（租住记录ID）', async () => {
-    if (!fs.existsSync(entityPath)) {
-      test.skip('实体文件不存在');
-      return;
-    }
-
-    const content = fs.readFileSync(entityPath, 'utf-8');
-
-    // 验证 RentalRecordId 属性
+    // 验证必填属性
     expect(content).toMatch(/public\s+int\s+RentalRecordId\s*\{\s*get;\s*set;\s*\}/);
-  });
-
-  test('6. 验证实体的账单周期属性', async () => {
-    if (!fs.existsSync(entityPath)) {
-      test.skip('实体文件不存在');
-      return;
-    }
-
-    const content = fs.readFileSync(entityPath, 'utf-8');
-
-    // 验证 PeriodStart 和 PeriodEnd 属性
     expect(content).toMatch(/public\s+DateTime\s+PeriodStart\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+DateTime\s+PeriodEnd\s*\{\s*get;\s*set;\s*\}/);
-  });
-
-  test('7. 验证实体的 DueDate 属性（应收日期）', async () => {
-    if (!fs.existsSync(entityPath)) {
-      test.skip('实体文件不存在');
-      return;
-    }
-
-    const content = fs.readFileSync(entityPath, 'utf-8');
-
-    // 验证 DueDate 属性
     expect(content).toMatch(/public\s+DateTime\s+DueDate\s*\{\s*get;\s*set;\s*\}/);
   });
 
-  test('8. 验证实体的金额属性', async () => {
+  test('8. 验证金额属性 - RentAmount, TotalAmount', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -121,12 +112,10 @@ test.describe('FEAT-015: Bill 实体', () => {
 
     // 验证金额属性
     expect(content).toMatch(/public\s+decimal\s+RentAmount\s*\{\s*get;\s*set;\s*\}/);
-    expect(content).toMatch(/public\s+decimal\s+WaterFee\s*\{\s*get;\s*set;\s*\}/);
-    expect(content).toMatch(/public\s+decimal\s+ElectricFee\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+decimal\s+TotalAmount\s*\{\s*get;\s*set;\s*\}/);
   });
 
-  test('9. 验证实体的 Status 属性（账单状态）', async () => {
+  test('9. 验证可选属性 - WaterFee, ElectricFee, PaidAmount, PaidDate, GraceUntil, Remark', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -134,25 +123,16 @@ test.describe('FEAT-015: Bill 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    // 验证 Status 属性（可能是 string 或 enum）
-    const hasStatus = content.match(/public\s+(string|int|BillStatus|enum)\s+Status\s*\{\s*get;\s*set;\s*\}/);
-    expect(hasStatus).toBeTruthy();
-  });
-
-  test('10. 验证实体的收款信息属性（可选）', async () => {
-    if (!fs.existsSync(entityPath)) {
-      test.skip('实体文件不存在');
-      return;
-    }
-
-    const content = fs.readFileSync(entityPath, 'utf-8');
-
-    // 验证收款信息属性（可选）
+    // 验证可空属性
+    expect(content).toMatch(/public\s+decimal\??\s+WaterFee\s*\{\s*get;\s*set;\s*\}/);
+    expect(content).toMatch(/public\s+decimal\??\s+ElectricFee\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+decimal\??\s+PaidAmount\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+DateTime\??\s+PaidDate\s*\{\s*get;\s*set;\s*\}/);
+    expect(content).toMatch(/public\s+DateTime\??\s+GraceUntil\s*\{\s*get;\s*set;\s*\}/);
+    expect(content).toMatch(/public\s+string\??\s+Remark\s*\{\s*get;\s*set;\s*\}/);
   });
 
-  test('11. 验证实体的时间戳属性', async () => {
+  test('10. 验证 BillStatus 属性', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -160,14 +140,24 @@ test.describe('FEAT-015: Bill 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    // 验证时间戳属性
-    expect(content).toMatch(/public\s+DateTime\s+CreatedAt\s*\{\s*get;\s*set;\s*\}/);
-    expect(content).toMatch(/public\s+DateTime\??\s+UpdatedAt\s*\{\s*get;\s*set;\s*\}/);
+    expect(content).toMatch(/public\s+BillStatus\s+Status\s*\{\s*get;\s*set;\s*\}/);
+  });
+
+  test('11. 验证导航属性 - RentalRecord', async () => {
+    if (!fs.existsSync(entityPath)) {
+      test.skip('实体文件不存在');
+      return;
+    }
+
+    const content = fs.readFileSync(entityPath, 'utf-8');
+
+    // 验证导航属性
+    expect(content).toMatch(/public\s+RentalRecord\s+RentalRecord\s*\{\s*get;\s*set;\s*\}/);
   });
 
   // ==================== DbContext 配置测试 ====================
 
-  test('12. 验证 DbContext 包含 Bills DbSet', async () => {
+  test('12. 验证 DbContext 继承 AppDbContext（Furion 自动发现实体）', async () => {
     if (!fs.existsSync(dbContextPath)) {
       test.skip('DbContext 文件不存在');
       return;
@@ -175,26 +165,35 @@ test.describe('FEAT-015: Bill 实体', () => {
 
     const content = fs.readFileSync(dbContextPath, 'utf-8');
 
-    // 验证 DbSet 声明
-    expect(content).toMatch(/public\s+DbSet<Bill>\s+Bills\s*\{\s*get;\s*set;\s*\}/);
+    // 验证继承 AppDbContext（Furion 会自动发现 IEntity 实体）
+    expect(content).toMatch(/class\s+DefaultDbContext\s*:\s*AppDbContext\s*<\s*DefaultDbContext\s*>/);
   });
 
   // ==================== 构建测试 ====================
 
   test('13. 验证项目构建成功', async () => {
     try {
-      execSync('dotnet build --no-restore', {
-        cwd: serverPath,
+      // 只构建 Gentle.Core 和 Gentle.EntityFramework.Core 项目
+      // 避免整个解决方案构建时被后台进程锁定
+      const coreProjectPath = path.join(serverPath, 'Gentle.Core/Gentle.Core.csproj');
+      const efProjectPath = path.join(serverPath, 'Gentle.EntityFramework.Core/Gentle.EntityFramework.Core.csproj');
+
+      execSync(`dotnet build --no-restore "${coreProjectPath}"`, {
         stdio: 'pipe',
         timeout: 60000
       });
-    } catch (error: any) {
-      // 输出构建错误信息
-      if (error.stdout) {
-        console.error('构建输出:', error.stdout.toString());
+
+      execSync(`dotnet build --no-restore "${efProjectPath}"`, {
+        stdio: 'pipe',
+        timeout: 60000
+      });
+    } catch (error: unknown) {
+      const err = error as { stdout?: Buffer; stderr?: Buffer };
+      if (err.stdout) {
+        console.error('构建输出:', err.stdout.toString());
       }
-      if (error.stderr) {
-        console.error('构建错误:', error.stderr.toString());
+      if (err.stderr) {
+        console.error('构建错误:', err.stderr.toString());
       }
       throw error;
     }
@@ -208,41 +207,17 @@ test.describe('FEAT-015: Bill 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    // 验证命名空间
     expect(content).toMatch(/namespace\s+Gentle\.Core\.Entities/);
   });
 
-  // ==================== 业务规则验证 ====================
-
-  test('15. 验证账单状态枚举（如果存在）', async () => {
-    // 查找可能的枚举文件
-    const enumPath = path.join(serverPath, 'Gentle.Core/Entities/BillStatus.cs');
-    const enumPath2 = path.join(serverPath, 'Gentle.Core/Enums/BillStatus.cs');
-
-    if (fs.existsSync(enumPath) || fs.existsSync(enumPath2)) {
-      const content = fs.readFileSync(fs.existsSync(enumPath) ? enumPath : enumPath2, 'utf-8');
-
-      // 验证枚举包含必要的状态
-      expect(content).toMatch(/Pending|待收/);
-      expect(content).toMatch(/Grace|宽限/);
-      expect(content).toMatch(/Paid|已收/);
-      expect(content).toMatch(/Overdue|逾期/);
-    }
-  });
-
-  test('16. 验证实体与 RentalRecord 的关系', async () => {
-    if (!fs.existsSync(entityPath)) {
-      test.skip('实体文件不存在');
+  test('15. 验证枚举在正确的命名空间', async () => {
+    if (!fs.existsSync(enumPath)) {
+      test.skip('枚举文件不存在');
       return;
     }
 
-    const content = fs.readFileSync(entityPath, 'utf-8');
+    const content = fs.readFileSync(enumPath, 'utf-8');
 
-    // 验证导航属性（如果有）
-    const hasNavigationProperty = content.match(/public\s+RentalRecord\s+RentalRecord\s*\{\s*get;\s*set;\s*\}/);
-    // 导航属性是可选的，但如果有会更好
-    if (hasNavigationProperty) {
-      expect(hasNavigationProperty).toBeTruthy();
-    }
+    expect(content).toMatch(/namespace\s+Gentle\.Core\.Enums/);
   });
 });

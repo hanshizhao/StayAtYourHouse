@@ -16,8 +16,8 @@
 | 模块 | 优先级 | 功能数 | 状态 |
 |------|--------|--------|------|
 | 房源管理 | P0 | 7 | ✅ 已完成 |
-| 租客管理 | P0 | 7 | 待开始 |
-| 收租管理 | P0 | 6 | 待开始 |
+| 租客管理 | P0 | 7 | ✅ 已完成 |
+| 收租管理 | P0 | 6 | 🚧 进行中 (1/6) |
 | 水电抄表 | P1 | 4 | 待开始 |
 | 统计报表 | P1 | 5 | 待开始 |
 | 集成测试 | - | 1 | 待开始 |
@@ -52,7 +52,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-015 | Bill 实体 | ⏳ 待开始 | - |
+| FEAT-015 | Bill 实体 | ✅ 已完成 | ✓ |
 | FEAT-016 | CollectionRecord 实体 | ⏳ 待开始 | - |
 | FEAT-017 | 账单 + 催收 API | ⏳ 待开始 | - |
 | FEAT-018 | 账单列表页 | ⏳ 待开始 | - |
@@ -312,3 +312,38 @@
     - CheckInInput -> RentalRecord
   - dotnet build 构建成功
 
+
+### 2026-03-25 (续)
+
+- ✅ FEAT-015: Bill（账单）实体（已完成）
+  - 创建 BillStatus 枚举（Pending = 0, Grace = 1, Paid = 2, Overdue = 3）
+  - 创建 Bill 实体类（继承 Entity<int>）
+  - 实体属性：
+    - RentalRecordId（租住记录ID，必填）
+    - PeriodStart（账单周期开始日期，必填）
+    - PeriodEnd（账单周期结束日期，必填）
+    - DueDate（应收日期，必填）
+    - RentAmount（租金金额，必填）
+    - WaterFee（水费，可选）
+    - ElectricFee（电费，可选）
+    - TotalAmount（总金额，必填）
+    - Status（账单状态，默认 Pending）
+    - PaidAmount（实收金额，可选）
+    - PaidDate（收款日期，可选）
+    - GraceUntil（宽限截止日期，可选）
+    - Remark（备注，可选）
+  - 外键关系：RentalRecord
+  - 验证特性：
+    - 账单周期结束日期必须晚于开始日期
+    - 应收日期不能早于账单周期开始日期
+    - 实收金额不能超过总金额
+  - Furion 框架自动发现实体，无需手动配置 DbSet
+  - 15/15 静态测试通过
+  - **代码审查 (25T23:30):**
+    - 审查结果：通过（0 Critical, 0 Important, 0 Minor）
+    - Important 修复：
+      - 金额验证边界修复：RentAmount 和 TotalAmount 从 Range(0, ...) 改为 Range(0.01, ...)，防止零金额账单
+    - Suggestions（后续优化）：
+      - 日期类型精度优化：可添加 [Column(TypeName = "date")] 特性
+      - 账单周期验证增强：可添加周期不超过一年的验证
+      - 外键索引优化：可添加 [Index] 特性到 RentalRecordId
