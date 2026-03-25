@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Furion.DatabaseAccessor;
 using Gentle.Core.Enums;
-using Microsoft.EntityFrameworkCore;
 
-namespace Gentle.Core.Entities;
+namespace Gentle.Application.Dtos.Tenant;
 
 /// <summary>
-/// 租客实体
+/// 创建租客请求
 /// </summary>
-public class Tenant : Entity<int>, IEntitySeedData<Tenant>
+public class CreateTenantInput
 {
     /// <summary>
     /// 租客姓名
@@ -50,13 +46,4 @@ public class Tenant : Entity<int>, IEntitySeedData<Tenant>
     /// 备注
     /// </summary>
     public string? Remark { get; set; }
-
-    /// <summary>
-    /// 配置种子数据
-    /// </summary>
-    public IEnumerable<Tenant> HasData(DbContext dbContext, Type dbContextLocator)
-    {
-        // 种子数据通过迁移脚本插入，避免 DateTimeOffset 时区问题
-        return Array.Empty<Tenant>();
-    }
 }

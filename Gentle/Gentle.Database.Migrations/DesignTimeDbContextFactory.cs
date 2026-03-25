@@ -1,4 +1,5 @@
 using System;
+using Gentle.Core.Enums;
 using Gentle.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -38,6 +39,8 @@ public class DesignTimeDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Community> Communities => Set<Community>();
     public DbSet<Room> Rooms => Set<Room>();
+    public DbSet<Tenant> Tenants => Set<Tenant>();
+    public DbSet<RentalRecord> RentalRecords => Set<RentalRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -83,6 +86,28 @@ public class DesignTimeDbContext : DbContext
             entity.Property(e => e.Building).IsRequired().HasMaxLength(20);
             entity.Property(e => e.RoomNumber).IsRequired().HasMaxLength(20);
             entity.Property(e => e.RoomType).HasMaxLength(20);
+        });
+
+        // 配置 Tenant 实体
+        modelBuilder.Entity<Tenant>(entity =>
+        {
+            entity.ToTable("tenant");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.Phone).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.IdCard).HasMaxLength(18);
+            entity.Property(e => e.EmergencyContact).HasMaxLength(100);
+        });
+
+        // 配置 RentalRecord 实体
+        modelBuilder.Entity<RentalRecord>(entity =>
+        {
+            entity.ToTable("rental_record");
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Renter).WithMany().HasForeignKey(e => e.RenterId);
+            entity.HasOne(e => e.Room).WithMany().HasForeignKey(e => e.RoomId);
+            entity.Property(e => e.Remark).HasMaxLength(500);
+            entity.Property(e => e.CheckOutRemark).HasMaxLength(500);
         });
     }
 }

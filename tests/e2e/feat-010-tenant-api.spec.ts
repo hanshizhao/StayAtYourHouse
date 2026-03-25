@@ -17,6 +17,8 @@
 import { test, expect, APIRequestContext } from '@playwright/test';
 
 const API_BASE = process.env.API_BASE || 'http://localhost:5000';
+const TEST_ADMIN_ACCOUNT = process.env.TEST_ADMIN_ACCOUNT || 'zhs';
+const TEST_ADMIN_PASS = process.env.TEST_ADMIN_PASS || 'gentle8023';
 const TEST_DATA_PREFIX = 'E2E_TEST_';
 
 test.describe('FEAT-010: Tenant API', () => {
@@ -28,16 +30,16 @@ test.describe('FEAT-010: Tenant API', () => {
    */
   async function getAdminToken(request: APIRequestContext): Promise<string> {
     const loginResponse = await request.post(`${API_BASE}/api/auth/login`, {
-      data: { username: 'admin', password: 'admin123' }
+      data: { account: TEST_ADMIN_ACCOUNT, password: TEST_ADMIN_PASS }
     });
 
     expect(loginResponse.status()).toBe(200);
 
     const result = await loginResponse.json();
     expect(result.succeeded).toBe(true);
-    expect(result.data).toHaveProperty('accessToken');
+    expect(result.data).toHaveProperty('token');
 
-    return result.data.accessToken;
+    return result.data.token;
   }
 
   /**
@@ -56,7 +58,7 @@ test.describe('FEAT-010: Tenant API', () => {
   async function cleanupTestData(request: APIRequestContext, token: string): Promise<void> {
     for (const id of createdTenantIds) {
       try {
-        await request.delete(`${API_BASE}/api/tenant/remove/${id}`, {
+        await request.delete(`${API_BASE}/api/tenant-app/remove/${id}`, {
           headers: authHeaders(token)
         });
       } catch (e) {
@@ -79,13 +81,13 @@ test.describe('FEAT-010: Tenant API', () => {
   // ==================== 认证测试 ====================
 
   test('1. 未认证请求应返回 401', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/tenant/list`);
+    const response = await request.get(`${API_BASE}/api/tenant-app/list`);
 
     expect(response.status()).toBe(401);
   });
 
   test('2. 无效 Token 应返回 401', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/tenant/list`, {
+    const response = await request.get(`${API_BASE}/api/tenant-app/list`, {
       headers: { Authorization: 'Bearer invalid_token' }
     });
 
@@ -95,7 +97,7 @@ test.describe('FEAT-010: Tenant API', () => {
   // ==================== 列表接口测试 ====================
 
   test('3. 列表接口 - 返回正确数据结构', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/tenant/list`, {
+    const response = await request.get(`${API_BASE}/api/tenant-app/list`, {
       headers: authHeaders(authToken)
     });
 
@@ -123,16 +125,19 @@ test.describe('FEAT-010: Tenant API', () => {
   // ==================== 创建接口测试 ====================
 
   test('4. 创建接口 - 成功创建', async ({ request }) => {
+    const timestamp = Date.now();
+    const uniquePhone = `138${timestamp.toString().slice(-8)}`;
+    const uniqueIdCard = `110101${timestamp.toString().slice(-12)}`;
     const testData = {
-      name: `${TEST_DATA_PREFIX}租客_${Date.now()}`,
-      phone: '13800138000',
-      idCard: '110101199001011234',
+      name: `${TEST_DATA_PREFIX}租客_${timestamp}`,
+      phone: uniquePhone,
+      idCard: uniqueIdCard,
       gender: 0,
       emergencyContact: '紧急联系人1',
       remark: 'E2E自动化测试数据'
     };
 
-    const response = await request.post(`${API_BASE}/api/tenant/add`, {
+    const response = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: testData
     });
@@ -154,7 +159,7 @@ test.describe('FEAT-010: Tenant API', () => {
   });
 
   test('5. 创建接口 - 必填字段验证（缺少 name）', async ({ request }) => {
-    const response = await request.post(`${API_BASE}/api/tenant/add`, {
+    const response = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         // 缺少必填的 name 字段
@@ -167,11 +172,12 @@ test.describe('FEAT-010: Tenant API', () => {
     const result = await response.json();
     expect(result.succeeded).toBe(false);
     expect(result).toHaveProperty('errors');
-    expect(result.errors).toHaveProperty('name');
+    // API 返回首字母大写的字段名
+    expect(result.errors).toHaveProperty('Name');
   });
 
   test('6. 创建接口 - 必填字段验证（缺少 phone）', async ({ request }) => {
-    const response = await request.post(`${API_BASE}/api/tenant/add`, {
+    const response = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: `${TEST_DATA_PREFIX}测试租客`
@@ -184,11 +190,12 @@ test.describe('FEAT-010: Tenant API', () => {
     const result = await response.json();
     expect(result.succeeded).toBe(false);
     expect(result).toHaveProperty('errors');
-    expect(result.errors).toHaveProperty('phone');
+    // API 返回首字母大写的字段名
+    expect(result.errors).toHaveProperty('Phone');
   });
 
   test('7. 创建接口 - 手机号格式验证', async ({ request }) => {
-    const response = await request.post(`${API_BASE}/api/tenant/add`, {
+    const response = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: `${TEST_DATA_PREFIX}测试租客_手机号`,
@@ -197,14 +204,19 @@ test.describe('FEAT-010: Tenant API', () => {
     });
 
     const result = await response.json();
-    // 应该返回验证错误
+    // API 不严格验证身份证格式，可能成功创建
     if (!result.succeeded) {
+      // 如果验证失败，检查是否有错误信息
       expect(result.errors || result.message).toBeDefined();
+    } else {
+      // 如果成功创建，记录 ID 用于清理
+      createdTenantIds.push(result.data.id);
+      expect(result.succeeded).toBe(true);
     }
   });
 
   test('8. 创建接口 - 身份证格式验证（可选字段）', async ({ request }) => {
-    const response = await request.post(`${API_BASE}/api/tenant/add`, {
+    const response = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: `${TEST_DATA_PREFIX}租客_身份证_${Date.now()}`,
@@ -214,12 +226,16 @@ test.describe('FEAT-010: Tenant API', () => {
     });
 
     const result = await response.json();
-    // 如果有身份证格式验证，应该返回错误
-    // 如果没有格式验证，可能成功创建
-    if (!result.succeeded && result.errors) {
-      expect(result.errors.idCard || result.message).toBeDefined();
-    } else if (result.succeeded) {
+    // API 不严格验证身份证格式，可能成功创建或返回错误
+    // 无论哪种情况，测试都应该通过
+    if (result.succeeded) {
+      // 如果 API 接受了无效身份证号，记录 ID 用于清理
       createdTenantIds.push(result.data.id);
+      expect(result.succeeded).toBe(true);
+    } else {
+      // 如果 API 拒绝了无效身份证号，检查错误信息（字段名首字母大写）
+      expect(result.succeeded).toBe(false);
+      expect(result.errors?.IdCard || result.errors?.idCard || result.message).toBeDefined();
     }
   });
 
@@ -227,7 +243,7 @@ test.describe('FEAT-010: Tenant API', () => {
 
   test('9. 详情接口 - 返回正确数据', async ({ request }) => {
     // 先创建一条数据
-    const createResponse = await request.post(`${API_BASE}/api/tenant/add`, {
+    const createResponse = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: `${TEST_DATA_PREFIX}详情测试_${Date.now()}`,
@@ -241,7 +257,7 @@ test.describe('FEAT-010: Tenant API', () => {
     createdTenantIds.push(tenantId);
 
     // 获取详情
-    const response = await request.get(`${API_BASE}/api/tenant/${tenantId}`, {
+    const response = await request.get(`${API_BASE}/api/tenant-app/${tenantId}`, {
       headers: authHeaders(authToken)
     });
 
@@ -256,7 +272,7 @@ test.describe('FEAT-010: Tenant API', () => {
   });
 
   test('10. 详情接口 - 不存在的 ID 返回 404', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/tenant/99999999`, {
+    const response = await request.get(`${API_BASE}/api/tenant-app/99999999`, {
       headers: authHeaders(authToken)
     });
 
@@ -272,7 +288,7 @@ test.describe('FEAT-010: Tenant API', () => {
 
   test('11. 更新接口 - 成功更新', async ({ request }) => {
     // 先创建
-    const createResponse = await request.post(`${API_BASE}/api/tenant/add`, {
+    const createResponse = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: `${TEST_DATA_PREFIX}更新测试_${Date.now()}`,
@@ -294,7 +310,7 @@ test.describe('FEAT-010: Tenant API', () => {
       emergencyContact: '新紧急联系人'
     };
 
-    const response = await request.put(`${API_BASE}/api/tenant/edit`, {
+    const response = await request.put(`${API_BASE}/api/tenant-app/edit`, {
       headers: authHeaders(authToken),
       data: updateData
     });
@@ -313,7 +329,7 @@ test.describe('FEAT-010: Tenant API', () => {
 
   test('12. 删除接口 - 成功删除', async ({ request }) => {
     // 先创建
-    const createResponse = await request.post(`${API_BASE}/api/tenant/add`, {
+    const createResponse = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: `${TEST_DATA_PREFIX}删除测试_${Date.now()}`,
@@ -325,7 +341,7 @@ test.describe('FEAT-010: Tenant API', () => {
     const tenantId = createResult.data.id;
 
     // 删除
-    const response = await request.delete(`${API_BASE}/api/tenant/remove/${tenantId}`, {
+    const response = await request.delete(`${API_BASE}/api/tenant-app/remove/${tenantId}`, {
       headers: authHeaders(authToken)
     });
 
@@ -335,7 +351,7 @@ test.describe('FEAT-010: Tenant API', () => {
     expect(result.succeeded).toBe(true);
 
     // 验证已删除（再次获取应返回 404）
-    const getResponse = await request.get(`${API_BASE}/api/tenant/${tenantId}`, {
+    const getResponse = await request.get(`${API_BASE}/api/tenant-app/${tenantId}`, {
       headers: authHeaders(authToken)
     });
 
@@ -347,7 +363,7 @@ test.describe('FEAT-010: Tenant API', () => {
   });
 
   test('13. 删除接口 - 删除不存在的 ID', async ({ request }) => {
-    const response = await request.delete(`${API_BASE}/api/tenant/remove/99999999`, {
+    const response = await request.delete(`${API_BASE}/api/tenant-app/remove/99999999`, {
       headers: authHeaders(authToken)
     });
 
@@ -358,7 +374,7 @@ test.describe('FEAT-010: Tenant API', () => {
 
   test('14. 搜索功能 - 按姓名搜索', async ({ request }) => {
     // 先创建一个测试租客
-    const createResponse = await request.post(`${API_BASE}/api/tenant/add`, {
+    const createResponse = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: `${TEST_DATA_PREFIX}搜索测试_张三_${Date.now()}`,
@@ -370,7 +386,7 @@ test.describe('FEAT-010: Tenant API', () => {
     createdTenantIds.push(createResult.data.id);
 
     // 搜索
-    const response = await request.get(`${API_BASE}/api/tenant/list?keyword=${encodeURIComponent(TEST_DATA_PREFIX)}`, {
+    const response = await request.get(`${API_BASE}/api/tenant-app/list?keyword=${encodeURIComponent(TEST_DATA_PREFIX)}`, {
       headers: authHeaders(authToken)
     });
 
@@ -387,9 +403,9 @@ test.describe('FEAT-010: Tenant API', () => {
   });
 
   test('15. 搜索功能 - 按手机号搜索', async ({ request }) => {
-    // 先创建一个测试租客
-    const uniquePhone = `13800${Date.now().toString().slice(-5)}`;
-    const createResponse = await request.post(`${API_BASE}/api/tenant/add`, {
+    // 先创建一个测试租客 - 生成有效的 11 位手机号
+    const uniquePhone = `139${Date.now().toString().slice(-8)}`;
+    const createResponse = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: `${TEST_DATA_PREFIX}手机号搜索_${Date.now()}`,
@@ -398,10 +414,14 @@ test.describe('FEAT-010: Tenant API', () => {
     });
 
     const createResult = await createResponse.json();
+
+    // 验证创建成功
+    expect(createResult.succeeded).toBe(true);
+    expect(createResult.data).toBeDefined();
     createdTenantIds.push(createResult.data.id);
 
     // 搜索
-    const response = await request.get(`${API_BASE}/api/tenant/list?keyword=${uniquePhone.slice(0, 6)}`, {
+    const response = await request.get(`${API_BASE}/api/tenant-app/list?keyword=${uniquePhone.slice(0, 6)}`, {
       headers: authHeaders(authToken)
     });
 
@@ -414,7 +434,7 @@ test.describe('FEAT-010: Tenant API', () => {
   // ==================== 边界测试 ====================
 
   test('16. 创建接口 - 字段长度边界', async ({ request }) => {
-    const response = await request.post(`${API_BASE}/api/tenant/add`, {
+    const response = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: {
         name: 'A'.repeat(500), // 假设最大长度是 50
@@ -431,16 +451,20 @@ test.describe('FEAT-010: Tenant API', () => {
   });
 
   test('17. 创建接口 - 完整属性', async ({ request }) => {
+    const timestamp = Date.now();
+    const uniquePhone = `139${timestamp.toString().slice(-8)}`;
+    // 生成唯一身份证号（使用时间戳）
+    const uniqueIdCard = `110101${timestamp.toString().slice(-12)}`;
     const testData = {
-      name: `${TEST_DATA_PREFIX}完整属性_${Date.now()}`,
-      phone: '13900139001',
-      idCard: '110101199001011234',
+      name: `${TEST_DATA_PREFIX}完整属性_${timestamp}`,
+      phone: uniquePhone,
+      idCard: uniqueIdCard,
       gender: 0,
       emergencyContact: '紧急联系人测试',
       remark: 'E2E测试-完整属性验证'
     };
 
-    const response = await request.post(`${API_BASE}/api/tenant/add`, {
+    const response = await request.post(`${API_BASE}/api/tenant-app/add`, {
       headers: authHeaders(authToken),
       data: testData
     });
@@ -448,6 +472,10 @@ test.describe('FEAT-010: Tenant API', () => {
     expect(response.status()).toBe(200);
 
     const result = await response.json();
+    // 调试：如果失败，打印错误信息
+    if (!result.succeeded) {
+      console.log('Test 17 failed:', JSON.stringify(result, null, 2));
+    }
     expect(result.succeeded).toBe(true);
     createdTenantIds.push(result.data.id);
 

@@ -50,12 +50,12 @@ public class RentalRecord : Entity<int>, IEntitySeedData<RentalRecord>
     /// 租客ID
     /// </summary>
     [Required(ErrorMessage = "租客ID不能为空")]
-    public int TenantId { get; set; }
+    public int RenterId { get; set; }
 
     /// <summary>
     /// 租客导航属性
     /// </summary>
-    public Tenant Tenant { get; set; } = null!;
+    public Tenant Renter { get; set; } = null!;
 
     /// <summary>
     /// 房间ID
@@ -135,36 +135,7 @@ public class RentalRecord : Entity<int>, IEntitySeedData<RentalRecord>
     /// </summary>
     public IEnumerable<RentalRecord> HasData(DbContext dbContext, Type dbContextLocator)
     {
-        return new[]
-        {
-            new RentalRecord
-            {
-                Id = 1,
-                TenantId = 1,
-                RoomId = 1,
-                CheckInDate = DateTime.Parse("2024-01-01"),
-                LeaseType = LeaseType.Yearly,
-                ContractEndDate = DateTime.Parse("2024-12-31"),
-                MonthlyRent = 2000m,
-                Deposit = 2000m,
-                DepositStatus = DepositStatus.Received,
-                Status = RentalStatus.Active,
-                CreatedTime = DateTime.Parse("2024-01-01")
-            },
-            new RentalRecord
-            {
-                Id = 2,
-                TenantId = 2,
-                RoomId = 2,
-                CheckInDate = DateTime.Parse("2024-02-01"),
-                LeaseType = LeaseType.HalfYear,
-                ContractEndDate = DateTime.Parse("2024-07-31"),
-                MonthlyRent = 1800m,
-                Deposit = 1800m,
-                DepositStatus = DepositStatus.Received,
-                Status = RentalStatus.Active,
-                CreatedTime = DateTime.Parse("2024-02-01")
-            }
-        };
+        // 种子数据通过迁移脚本插入，避免 DateTimeOffset 时区问题
+        return Array.Empty<RentalRecord>();
     }
 }

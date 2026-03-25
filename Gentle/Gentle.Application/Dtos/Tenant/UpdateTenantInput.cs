@@ -1,17 +1,19 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Furion.DatabaseAccessor;
 using Gentle.Core.Enums;
-using Microsoft.EntityFrameworkCore;
 
-namespace Gentle.Core.Entities;
+namespace Gentle.Application.Dtos.Tenant;
 
 /// <summary>
-/// 租客实体
+/// 更新租客请求
 /// </summary>
-public class Tenant : Entity<int>, IEntitySeedData<Tenant>
+public class UpdateTenantInput
 {
+    /// <summary>
+    /// 租客ID
+    /// </summary>
+    [Required(ErrorMessage = "租客ID不能为空")]
+    public int Id { get; set; }
+
     /// <summary>
     /// 租客姓名
     /// </summary>
@@ -38,7 +40,7 @@ public class Tenant : Entity<int>, IEntitySeedData<Tenant>
     /// <summary>
     /// 性别
     /// </summary>
-    public Gender Gender { get; set; } = Gender.Male;
+    public Gender Gender { get; set; }
 
     /// <summary>
     /// 紧急联系人
@@ -50,13 +52,4 @@ public class Tenant : Entity<int>, IEntitySeedData<Tenant>
     /// 备注
     /// </summary>
     public string? Remark { get; set; }
-
-    /// <summary>
-    /// 配置种子数据
-    /// </summary>
-    public IEnumerable<Tenant> HasData(DbContext dbContext, Type dbContextLocator)
-    {
-        // 种子数据通过迁移脚本插入，避免 DateTimeOffset 时区问题
-        return Array.Empty<Tenant>();
-    }
 }

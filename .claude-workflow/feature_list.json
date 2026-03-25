@@ -486,14 +486,17 @@
         }
       ],
       "test_file": "tests/e2e/feat-010-tenant-api.spec.ts",
-      "status": "pending",
+      "status": "completed",
+      "completed_at": "2026-03-25T11:05:00Z",
       "verification": {
-        "api_routes_checked": false,
+        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "tests_count": 17,
+        "verified_at": "2026-03-25T11:05:00Z",
         "api_routes": {
           "base": "/api/tenant-app",
-          "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]
+          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
         }
       }
     },
