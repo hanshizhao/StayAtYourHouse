@@ -7,12 +7,43 @@ export enum Gender {
 }
 
 /**
- * 性别文本映射
+ * 租住状态枚举
  */
-export const GenderTextMap: Record<Gender, string> = {
-  [Gender.Male]: '男',
-  [Gender.Female]: '女',
-};
+export enum RentalStatus {
+  Active = 0,
+  Terminated = 1,
+}
+
+/**
+ * 当前房间信息
+ */
+export interface CurrentRoomInfo {
+  roomId: number;
+  communityName: string;
+  building: string;
+  roomNumber: string;
+  fullInfo: string;
+}
+
+/**
+ * 租客列表查询参数
+ */
+export interface TenantListParams {
+  /** 搜索关键字（姓名/电话/身份证号） */
+  keyword?: string;
+  /** 页码（从1开始） */
+  page: number;
+  /** 每页数量 */
+  pageSize: number;
+}
+
+/**
+ * 分页租客列表结果
+ */
+export interface TenantListResult {
+  list: TenantItem[];
+  total: number;
+}
 
 /**
  * 租客列表项
@@ -27,6 +58,12 @@ export interface TenantItem {
   emergencyContact?: string;
   remark?: string;
   createdTime: string;
+  /** 当前房间信息(如果有活跃租住记录) */
+  currentRoom?: CurrentRoomInfo;
+  /** 租住状态(如果有活跃租住记录) */
+  status?: RentalStatus;
+  /** 租住状态文本 */
+  statusText?: string;
 }
 
 /**

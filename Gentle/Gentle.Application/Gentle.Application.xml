@@ -122,11 +122,13 @@
             租客管理应用服务
             </summary>
         </member>
-        <member name="M:Gentle.Application.Apps.TenantAppService.GetList(System.String)">
+        <member name="M:Gentle.Application.Apps.TenantAppService.GetList(System.String,System.Int32,System.Int32)">
             <summary>
-            获取租客列表（支持关键字搜索）
+            获取租客分页列表（支持关键字搜索）
             </summary>
             <param name="keyword">搜索关键字（姓名/电话/身份证号）</param>
+            <param name="page">页码（从1开始）</param>
+            <param name="pageSize">每页数量</param>
         </member>
         <member name="M:Gentle.Application.Apps.TenantAppService.GetById(System.Int32)">
             <summary>
@@ -802,6 +804,71 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Tenant.TenantListInput">
+            <summary>
+            租客列表查询参数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantListInput.Keyword">
+            <summary>
+            搜索关键字（姓名/电话/身份证号/房间信息）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantListInput.Page">
+            <summary>
+            页码（从1开始）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantListInput.PageSize">
+            <summary>
+            每页数量
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Tenant.TenantListResult">
+            <summary>
+            分页租客列表结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantListResult.List">
+            <summary>
+            租客列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantListResult.Total">
+            <summary>
+            总数量
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Tenant.CurrentRoomInfoDto">
+            <summary>
+            当前房间信息（简化版)
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.CurrentRoomInfoDto.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.CurrentRoomInfoDto.CommunityName">
+            <summary>
+            小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.CurrentRoomInfoDto.Building">
+            <summary>
+            楼栋
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.CurrentRoomInfoDto.RoomNumber">
+            <summary>
+            房间号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.CurrentRoomInfoDto.FullInfo">
+            <summary>
+            完整房间信息(如: "xx小区 1栋 101")
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Tenant.TenantDto">
             <summary>
             租客列表项
@@ -850,6 +917,21 @@
         <member name="P:Gentle.Application.Dtos.Tenant.TenantDto.CreatedTime">
             <summary>
             创建时间
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantDto.CurrentRoom">
+            <summary>
+            当前房间信息(如果有活跃租住记录)
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantDto.Status">
+            <summary>
+            租住状态(如果有活跃租住记录)
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantDto.StatusText">
+            <summary>
+            租住状态文本
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.Tenant.UpdateTenantInput">
@@ -1090,9 +1172,9 @@
             租客服务接口
             </summary>
         </member>
-        <member name="M:Gentle.Application.Services.ITenantService.GetListAsync(System.String)">
+        <member name="M:Gentle.Application.Services.ITenantService.GetListAsync(Gentle.Application.Dtos.Tenant.TenantListInput)">
             <summary>
-            获取租客列表
+            获取租客分页列表
             </summary>
         </member>
         <member name="M:Gentle.Application.Services.ITenantService.GetByIdAsync(System.Int32)">
@@ -1170,7 +1252,7 @@
             租客服务实现
             </summary>
         </member>
-        <member name="M:Gentle.Application.Services.TenantService.GetListAsync(System.String)">
+        <member name="M:Gentle.Application.Services.TenantService.GetListAsync(Gentle.Application.Dtos.Tenant.TenantListInput)">
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.TenantService.GetByIdAsync(System.Int32)">

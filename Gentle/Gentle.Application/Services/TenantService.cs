@@ -1,4 +1,5 @@
 using Gentle.Application.Dtos.Tenant;
+using Gentle.Core.Enums;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,30 +11,73 @@ namespace Gentle.Application.Services;
 public class TenantService : ITenantService
 {
     private readonly IRepository<Core.Entities.Tenant> _repository;
+    private readonly IRepository<Core.Entities.RentalRecord> _rentalRecordRepository;
 
-    public TenantService(IRepository<Core.Entities.Tenant> repository)
+    public TenantService(
+        IRepository<Core.Entities.Tenant> repository,
+        IRepository<Core.Entities.RentalRecord> rentalRecordRepository)
     {
         _repository = repository;
+        _rentalRecordRepository = rentalRecordRepository;
     }
 
     /// <inheritdoc />
-    public async Task<List<TenantDto>> GetListAsync(string? keyword)
+    public async Task<TenantListResult> GetListAsync(TenantListInput input)
     {
         var query = _repository.AsQueryable(false);
 
         // 关键字搜索（姓名、电话、身份证号）
-        if (!string.IsNullOrWhiteSpace(keyword))
+        if (!string.IsNullOrWhiteSpace(input.Keyword))
         {
             query = query.Where(t =>
-                t.Name.Contains(keyword) ||
-                t.Phone.Contains(keyword) ||
-                (t.IdCard != null && t.IdCard.Contains(keyword)));
+                t.Name.Contains(input.Keyword) ||
+                t.Phone.Contains(input.Keyword) ||
+                (t.IdCard != null && t.IdCard.Contains(input.Keyword)));
         }
 
-        var list = await query.ToListAsync();
-        return list
+        // 先获取总数
+        var total = await query.CountAsync();
+
+        // 分页查询
+        var pagedQuery = query
             .OrderByDescending(t => t.CreatedTime)
-            .Adapt<List<TenantDto>>();
+            .Skip((input.Page - 1) * input.PageSize)
+            .Take(input.PageSize);
+
+        // 使用单次 JOIN 查询：租客 LEFT JOIN 活跃租住记录（含房间和小区）
+        // 优化：避免 N+1 查询问题
+        var result = await pagedQuery
+            .GroupJoin(
+                _rentalRecordRepository.AsQueryable(false)
+                    .Include(r => r.Room)
+                    .ThenInclude(r => r.Community)
+                    .Where(r => r.Status == RentalStatus.Active),
+                tenant => tenant.Id,
+                rental => rental.RenterId,
+                (tenant, rentals) => new { Tenant = tenant, Rentals = rentals })
+            .ToListAsync();
+
+        // 手动映射，添加房间信息
+        var list = result.Select(item =>
+        {
+            var dto = item.Tenant.Adapt<TenantDto>();
+            // 取最新的活跃租住记录（业务上每个租客最多一条活跃记录）
+            var latestRental = item.Rentals.OrderByDescending(r => r.CreatedTime).FirstOrDefault();
+            if (latestRental != null)
+            {
+                dto.CurrentRoom = new CurrentRoomInfoDto
+                {
+                    RoomId = latestRental.RoomId,
+                    CommunityName = latestRental.Room.Community.Name,
+                    Building = latestRental.Room.Building,
+                    RoomNumber = latestRental.Room.RoomNumber
+                };
+                dto.Status = latestRental.Status;
+            }
+            return dto;
+        }).ToList();
+
+        return new TenantListResult { List = list, Total = total };
     }
 
     /// <inheritdoc />
@@ -129,12 +173,12 @@ public class TenantService : ITenantService
             throw Oops.Oh($"租客 {id} 不存在");
         }
 
-        // TODO: 检查是否有关联的租住记录，如果有则不允许删除
-        // var hasRentals = await _rentalRecordRepository.AsQueryable(false).AnyAsync(r => r.TenantId == id);
-        // if (hasRentals)
-        // {
-        //     throw Oops.Oh("该租客存在租住记录，无法删除");
-        // }
+        // 检查是否有关联的租住记录，如果有则不允许删除
+        var hasRentals = await _rentalRecordRepository.AsQueryable(false).AnyAsync(r => r.RenterId == id);
+        if (hasRentals)
+        {
+            throw Oops.Oh("该租客存在租住记录，无法删除");
+        }
 
         await _repository.DeleteAsync(tenant);
         await _repository.SaveNowAsync();

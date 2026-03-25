@@ -8,9 +8,9 @@ namespace Gentle.Application.Services;
 public interface ITenantService : ITransient
 {
     /// <summary>
-    /// 获取租客列表
+    /// 获取租客分页列表
     /// </summary>
-    Task<List<TenantDto>> GetListAsync(string? keyword);
+    Task<TenantListResult> GetListAsync(TenantListInput input);
 
     /// <summary>
     /// 根据ID获取租客

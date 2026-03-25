@@ -68,7 +68,7 @@
             <span class="price">¥{{ roomDetail.rentPrice?.toFixed(2) ?? '-' }}</span>
           </t-descriptions-item>
           <t-descriptions-item label="利润">
-            <span :class="['price', (roomDetail.profit ?? 0) >= 0 ? 'profit-positive' : 'profit-negative']">
+            <span class="price" :class="[(roomDetail.profit ?? 0) >= 0 ? 'profit-positive' : 'profit-negative']">
               ¥{{ roomDetail.profit?.toFixed(2) ?? '-' }}
             </span>
           </t-descriptions-item>
@@ -107,7 +107,6 @@
     </template>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ChevronLeftIcon, EditIcon } from 'tdesign-icons-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
@@ -188,7 +187,6 @@ onMounted(() => {
   fetchRoomDetail();
 });
 </script>
-
 <style lang="less" scoped>
 .room-detail {
   .header-card {

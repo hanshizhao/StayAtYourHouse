@@ -1,4 +1,4 @@
-import type { CreateTenantParams, TenantItem, UpdateTenantParams } from '@/api/model/tenantModel';
+import type { CreateTenantParams, TenantItem, TenantListParams, TenantListResult, UpdateTenantParams } from '@/api/model/tenantModel';
 import { request } from '@/utils/request';
 
 const Api = {
@@ -10,13 +10,14 @@ const Api = {
 };
 
 /**
- * 获取租客列表
- * @param keyword 搜索关键字（姓名/电话/身份证号）
+ * 获取租客分页列表
+ * @description 获取租客分页列表，含当前房间和租住状态信息
+ * @param params 分页参数（page, pageSize, keyword）
  */
-export function getTenantList(keyword?: string) {
-  return request.get<TenantItem[]>({
+export function getTenantList(params: TenantListParams) {
+  return request.get<TenantListResult>({
     url: Api.List,
-    params: keyword ? { keyword } : undefined,
+    params,
   });
 }
 

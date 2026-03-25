@@ -21,13 +21,20 @@ public class TenantAppService : IDynamicApiController
     }
 
     /// <summary>
-    /// 获取租客列表（支持关键字搜索）
+    /// 获取租客分页列表（支持关键字搜索）
     /// </summary>
     /// <param name="keyword">搜索关键字（姓名/电话/身份证号）</param>
+    /// <param name="page">页码（从1开始）</param>
+    /// <param name="pageSize">每页数量</param>
     [HttpGet("list")]
-    public async Task<List<TenantDto>> GetList(string? keyword = null)
+    public async Task<TenantListResult> GetList(string? keyword = null, int page = 1, int pageSize = 20)
     {
-        return await _tenantService.GetListAsync(keyword);
+        return await _tenantService.GetListAsync(new TenantListInput
+        {
+            Keyword = keyword,
+            Page = page,
+            PageSize = pageSize
+        });
     }
 
     /// <summary>

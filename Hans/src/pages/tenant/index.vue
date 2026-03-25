@@ -15,11 +15,10 @@
             placeholder="搜索租客姓名/电话/身份证号"
             clearable
             data-testid="search-input"
-            @enter="handleSearch"
-            @clear="handleSearch"
+            @clear="handleSearchClear"
           >
             <template #suffix-icon>
-              <search-icon size="16px" @click="handleSearch" />
+              <search-icon size="16px" />
             </template>
           </t-input>
         </div>
@@ -27,7 +26,7 @@
 
       <!-- 数据表格 -->
       <t-table
-        :data="filteredData"
+        :data="data"
         :columns="columns"
         row-key="id"
         vertical-align="top"
@@ -45,12 +44,24 @@
           <span>{{ row.phone }}</span>
         </template>
         <template #idCard="{ row }">
-          <span>{{ row.idCard || '-' }}</span>
+          <span>{{ maskIdCard(row.idCard) }}</span>
         </template>
         <template #gender="{ row }">
           <t-tag :theme="row.gender === Gender.Male ? 'primary' : 'warning'" variant="light">
             {{ row.genderText }}
           </t-tag>
+        </template>
+        <template #currentRoom="{ row }">
+          <span v-if="row.currentRoom" class="room-info">
+            {{ row.currentRoom.fullInfo }}
+          </span>
+          <span v-else class="text-secondary">-</span>
+        </template>
+        <template #status="{ row }">
+          <t-tag v-if="row.status !== undefined" :theme="getStatusTheme(row.status)" variant="light">
+            {{ row.statusText }}
+          </t-tag>
+          <span v-else class="text-secondary">-</span>
         </template>
         <template #emergencyContact="{ row }">
           <span>{{ row.emergencyContact || '-' }}</span>
@@ -72,7 +83,6 @@
         </template>
       </t-table>
     </t-card>
-
     <!-- 创建/编辑对话框 -->
     <t-dialog
       v-model:visible="dialogVisible"
@@ -133,7 +143,6 @@
         </t-form-item>
       </t-form>
     </t-dialog>
-
     <!-- 删除确认对话框 -->
     <t-dialog
       v-model:visible="deleteConfirmVisible"
@@ -151,10 +160,10 @@
 import { AddIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import type { TenantItem } from '@/api/model/tenantModel';
-import { Gender } from '@/api/model/tenantModel';
+import { Gender, RentalStatus } from '@/api/model/tenantModel';
 import { createTenant, deleteTenant, getTenantList, updateTenant } from '@/api/tenant';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
@@ -184,7 +193,6 @@ interface HeaderAffixedTopConfig {
 }
 
 // ==================== 状态 ====================
-
 const settingStore = useSettingStore();
 
 // 表格列配置
@@ -194,6 +202,8 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'phone', title: '联系电话', width: 140 },
   { colKey: 'idCard', title: '身份证号', width: 180 },
   { colKey: 'gender', title: '性别', width: 80 },
+  { colKey: 'currentRoom', title: '当前房间', width: 200, ellipsis: true },
+  { colKey: 'status', title: '状态', width: 100 },
   { colKey: 'emergencyContact', title: '紧急联系人', width: 150 },
   { colKey: 'remark', title: '备注', width: 200, ellipsis: true },
   { colKey: 'createdTime', title: '创建时间', width: 180 },
@@ -205,9 +215,9 @@ const loading = ref(false);
 const data = ref<TenantItem[]>([]);
 const searchValue = ref('');
 const pagination = ref({
-  defaultPageSize: 20,
+  pageSize: 20,
   total: 0,
-  defaultCurrent: 1,
+  current: 1,
 });
 
 // 对话框状态
@@ -229,8 +239,8 @@ const formData = ref<TenantFormData>({
 
 // 手机号验证正则
 const phoneRegex = /^1[3-9]\d{9}$/;
-// 身份证号验证正则（15位纯数字 或 18位，最后一位可能是数字或X）
-const idCardRegex = /^(\d{15}|\d{17}[\dX])$/i;
+// 身份证号验证正则（15位纯数字 或 18位纯数字 或 17位数字+X/x）
+const idCardRegex = /^(\d{15}|\d{18}|\d{17}[\dXx])$/;
 
 const formRules: Record<string, FormRule[]> = {
   name: [{ required: true, message: '请输入租客姓名', trigger: 'blur' }],
@@ -245,23 +255,12 @@ const formRules: Record<string, FormRule[]> = {
 const deleteConfirmVisible = ref(false);
 const deleteLoading = ref(false);
 const deletingTenant = ref<TenantItem | null>(null);
+
 const deleteConfirmBody = computed(() => {
   if (deletingTenant.value) {
     return `确定要删除租客「${deletingTenant.value.name}」吗？删除后无法恢复。`;
   }
   return '';
-});
-
-// 过滤数据
-// 注意：当前使用前端分页和搜索过滤，适用于租客数量较少（<1000）的场景
-// 如需支持大数据量，建议改为后端分页，在 API 请求时传递分页参数和搜索关键词
-const filteredData = computed(() => {
-  if (!searchValue.value) return data.value;
-  const keyword = searchValue.value.toLowerCase();
-  return data.value.filter(
-    (item) =>
-      item.name.toLowerCase().includes(keyword) || item.phone.includes(keyword) || item.idCard?.includes(keyword),
-  );
 });
 
 // 固定表头
@@ -270,13 +269,38 @@ const headerAffixedTop = computed<HeaderAffixedTopConfig>(() => ({
   container: `.${prefix}-layout`,
 }));
 
-// 获取租客列表
-async function fetchData() {
+// ==================== 搜索防抖（300ms）==================
+let searchTimer: ReturnType<typeof setTimeout> | null = null;
+watch(searchValue, (value) => {
+  if (searchTimer) {
+    clearTimeout(searchTimer);
+  }
+  searchTimer = setTimeout(() => {
+    // 搜索时重置到第一页并重新获取数据
+    pagination.value.current = 1;
+    fetchData(value);
+  }, 300);
+});
+
+// 清空搜索
+function handleSearchClear() {
+  pagination.value.current = 1;
+  fetchData('');
+}
+
+// ==================== 数据获取 ====================
+
+// 获取租客列表（后端分页）
+async function fetchData(keyword?: string) {
   loading.value = true;
   try {
-    const res = await getTenantList();
-    data.value = res || [];
-    pagination.value.total = data.value.length;
+    const res = await getTenantList({
+      keyword: keyword || searchValue.value || undefined,
+      page: pagination.value.current,
+      pageSize: pagination.value.pageSize,
+    });
+    data.value = res?.list || [];
+    pagination.value.total = res?.total || 0;
   } catch (e: any) {
     MessagePlugin.error(e.message || '获取租客列表失败');
   } finally {
@@ -284,16 +308,14 @@ async function fetchData() {
   }
 }
 
-// 搜索：重置到第一页
-function handleSearch() {
-  pagination.value.defaultCurrent = 1;
+// 分页变化
+function handlePageChange(pageInfo: PageInfo) {
+  pagination.value.current = pageInfo.current;
+  pagination.value.pageSize = pageInfo.pageSize;
+  fetchData();
 }
 
-// 分页
-function handlePageChange(pageInfo: PageInfo) {
-  pagination.value.defaultCurrent = pageInfo.current;
-  pagination.value.defaultPageSize = pageInfo.pageSize;
-}
+// ==================== CRUD 操作 ====================
 
 // 创建租客
 function handleCreate() {
@@ -343,8 +365,13 @@ async function handleSubmit() {
       });
       MessagePlugin.success('创建租客成功');
     } else {
+      const tenantId = editingTenantId.value;
+      if (tenantId === null) {
+        MessagePlugin.error('编辑失败：租客ID不存在');
+        return;
+      }
       await updateTenant({
-        id: editingTenantId.value!,
+        id: tenantId,
         name: formData.value.name,
         phone: formData.value.phone,
         idCard: formData.value.idCard || undefined,
@@ -393,8 +420,34 @@ async function onConfirmDelete() {
   }
 }
 
+// ==================== 辅助函数 ====================
+
+// 获取状态标签主题
+function getStatusTheme(status: RentalStatus) {
+  return status === RentalStatus.Active ? 'success' : 'default';
+}
+
+// 身份证号脱敏显示（保留前4位和后4位）
+function maskIdCard(idCard?: string): string {
+  if (!idCard || idCard.length < 8) return idCard || '-';
+  const front = idCard.slice(0, 4);
+  const back = idCard.slice(-4);
+  const masked = '*'.repeat(idCard.length - 8);
+  return `${front}${masked}${back}`;
+}
+
+// ==================== 生命周期 ====================
+
 onMounted(() => {
   fetchData();
+});
+
+// 组件卸载时清理定时器，防止内存泄漏
+onUnmounted(() => {
+  if (searchTimer) {
+    clearTimeout(searchTimer);
+    searchTimer = null;
+  }
 });
 </script>
 <style lang="less" scoped>
@@ -420,6 +473,10 @@ onMounted(() => {
 
   .tenant-name {
     font-weight: 500;
+    color: var(--td-text-color-primary);
+  }
+
+  .room-info {
     color: var(--td-text-color-primary);
   }
 
