@@ -131,6 +131,11 @@ public class TenantDto
     public CurrentRoomInfoDto? CurrentRoom { get; set; }
 
     /// <summary>
+    /// 当前活跃租住记录ID(用于退租)
+    /// </summary>
+    public int? RentalRecordId { get; set; }
+
+    /// <summary>
     /// 租住状态(如果有活跃租住记录)
     /// </summary>
     public RentalStatus? Status { get; set; }

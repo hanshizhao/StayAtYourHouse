@@ -72,6 +72,7 @@ public class TenantService : ITenantService
                     Building = latestRental.Room.Building,
                     RoomNumber = latestRental.Room.RoomNumber
                 };
+                dto.RentalRecordId = latestRental.Id;
                 dto.Status = latestRental.Status;
             }
             return dto;

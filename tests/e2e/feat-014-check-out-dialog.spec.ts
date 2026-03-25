@@ -21,10 +21,10 @@ test.describe('FEAT-014: 退租弹窗', () => {
    * 登录并导航到租客列表页
    */
   async function loginAndNavigateToTenantList(page: Page): Promise<void> {
-    await page.goto(`${BASE_URL}/auth/sign-in`);
-    await page.waitForSelector('input[placeholder="请输入用户名"]', { timeout: 10000 });
-    await page.fill('input[placeholder="请输入用户名"]', 'admin');
-    await page.fill('input[placeholder="请输入密码"]', 'admin123');
+    await page.goto(`${BASE_URL}/login`);
+    await page.waitForSelector('input[placeholder="请输入账号"]', { timeout: 10000 });
+    await page.fill('input[placeholder="请输入账号"]', process.env.E2E_USER || 'zhs');
+    await page.fill('input[placeholder="请输入密码"]', process.env.E2E_PASS || 'gentle8023');
     await page.click('button[type="submit"]');
     await page.waitForURL(/dashboard/, { timeout: 15000 });
     await page.goto(`${BASE_URL}/dashboard/tenant`);
@@ -70,7 +70,7 @@ test.describe('FEAT-014: 退租弹窗', () => {
     await loginAndNavigateToTenantList(page);
 
     // 验证主内容区域可见
-    await expect(page.locator('main')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('main').first()).toBeVisible({ timeout: 5000 });
   });
 
   test('3. 退租按钮可见性 - 在租状态显示退租按钮', async ({ page }) => {

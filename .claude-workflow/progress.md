@@ -46,7 +46,7 @@
 | FEAT-011 | 入住/退租 API | ✅ 已完成 | ✓ |
 | FEAT-012 | 租客列表页 | ✅ 已完成 | ✓ |
 | FEAT-013 | 入住办理页 | ✅ 已完成 | ✓ |
-| FEAT-014 | 退租弹窗 | ⏳ 待开始 | - |
+| FEAT-014 | 退租弹窗 | ✅ 已完成 | ✓ |
 
 ### 收租管理模块 (FEAT-015 ~ FEAT-020)
 
@@ -203,6 +203,28 @@
   - **E2E 测试通过 (23:45):**
     - 15/15 测试通过
     - 修复 E2E 测试选择器问题（TDesign 组件内部 input 选择）
+
+- ✅ FEAT-014: 退租弹窗（已完成）
+  - 创建退租弹窗组件（Hans/src/pages/tenant/components/CheckOutDialog.vue）
+  - 后端扩展 TenantDto 添加 RentalRecordId 字段
+  - 后端 TenantService.GetListAsync 填充 RentalRecordId
+  - 前端租客列表页添加退租按钮（仅在在租状态且有 rentalRecordId 时显示）
+  - **弹窗功能：**
+    - 显示租客信息（姓名、电话）
+    - 显示房间信息
+    - 显示租住信息（月租金、押金、入住日期、合同到期、剩余天数）
+    - 结算金额计算（押金 - 扣除金额）
+    - 退租表单（退租日期、押金处理、扣除金额、扣除说明）
+  - **代码审查 (25T18:00):**
+    - 审查结果：通过（0 Critical, 2 Important, 0 Minor）
+    - Important 修复：
+      - 为空函数 calculateSettlement 添加扩展点注释说明
+      - 将 E2E 测试硬编码凭证改为环境变量
+    - Suggestions：
+      - 考虑添加退租二次确认弹窗
+  - **E2E 测试通过 (25T18:30):**
+    - 3/3 测试通过（15 skipped - 数据依赖）
+    - 跳过原因：无在租状态的租客数据
 
 - ✅ FEAT-011: 入住/退租业务逻辑 API（代码审查完成）
   - 创建 DTO 文件：

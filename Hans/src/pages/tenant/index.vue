@@ -81,6 +81,14 @@
         </template>
         <template #op="{ row }">
           <t-space>
+            <t-link
+              v-if="row.status === RentalStatus.Active && row.rentalRecordId"
+              theme="warning"
+              data-testid="checkout-button"
+              @click="handleCheckOut(row)"
+            >
+              退租
+            </t-link>
             <t-link theme="primary" data-testid="edit-button" @click="handleEdit(row)">编辑</t-link>
             <t-link theme="danger" data-testid="delete-button" @click="handleDelete(row)">删除</t-link>
           </t-space>
@@ -158,6 +166,12 @@
     >
       <p data-testid="confirm-dialog-message">{{ deleteConfirmBody }}</p>
     </t-dialog>
+    <!-- 退租弹窗 -->
+    <CheckOutDialog
+      v-model:visible="checkOutDialogVisible"
+      :tenant="checkingOutTenant"
+      @success="handleCheckOutSuccess"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -173,6 +187,8 @@ import { createTenant, deleteTenant, getTenantList, updateTenant } from '@/api/t
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
 import { formatDateTime } from '@/utils/date';
+
+import CheckOutDialog from './components/CheckOutDialog.vue';
 
 defineOptions({
   name: 'TenantList',
@@ -268,6 +284,10 @@ const deleteConfirmBody = computed(() => {
   }
   return '';
 });
+
+// 退租弹窗状态
+const checkOutDialogVisible = ref(false);
+const checkingOutTenant = ref<TenantItem | null>(null);
 
 // 固定表头
 const headerAffixedTop = computed<HeaderAffixedTopConfig>(() => ({
@@ -429,6 +449,19 @@ async function onConfirmDelete() {
     deleteLoading.value = false;
     deletingTenant.value = null;
   }
+}
+
+// ==================== 退租操作 ====================
+
+// 打开退租弹窗
+function handleCheckOut(row: TenantItem) {
+  checkingOutTenant.value = row;
+  checkOutDialogVisible.value = true;
+}
+
+// 退租成功回调
+function handleCheckOutSuccess() {
+  fetchData();
 }
 
 // ==================== 辅助函数 ====================

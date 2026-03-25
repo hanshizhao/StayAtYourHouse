@@ -929,6 +929,11 @@
             当前房间信息(如果有活跃租住记录)
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantDto.RentalRecordId">
+            <summary>
+            当前活跃租住记录ID(用于退租)
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Tenant.TenantDto.Status">
             <summary>
             租住状态(如果有活跃租住记录)
