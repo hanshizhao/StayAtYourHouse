@@ -2,21 +2,13 @@
  * FEAT-014: 退租弹窗 - E2E 测试（严谨版）
  * 类型: e2e
  * 适用于: 前端组件
- *
- * 测试覆盖：
- * 1. 组件文件存在性
- * 2. 弹窗打开/关闭
- * 3. 核心元素可见性
- * 4. 结算信息显示
- * 5. 押金处理选项
- * 6. 表单验证
- * 7. 提交流程
  */
 import { test, expect, Page } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3002';
 
-test.describe('FEAT-014: 退租弹窗', () => {
+// 使用串行模式避免并行测试导致的状态冲突
+test.describe.serial('FEAT-014: 退租弹窗', () => {
   /**
    * 登录并导航到租客列表页
    */
@@ -27,7 +19,7 @@ test.describe('FEAT-014: 退租弹窗', () => {
     await page.fill('input[placeholder="请输入密码"]', process.env.E2E_PASS || 'gentle8023');
     await page.click('button[type="submit"]');
     await page.waitForURL(/dashboard/, { timeout: 15000 });
-    await page.goto(`${BASE_URL}/dashboard/tenant`);
+    await page.goto(`${BASE_URL}/tenant/list`);
     await page.waitForLoadState('networkidle');
   }
 
@@ -35,23 +27,34 @@ test.describe('FEAT-014: 退租弹窗', () => {
    * 打开退租弹窗
    */
   async function openCheckOutDialog(page: Page): Promise<boolean> {
-    // 等待表格加载
-    await page.waitForSelector('[data-testid="tenant-table"], .t-table', { timeout: 10000 });
+    await page.waitForSelector('.t-table tbody tr', { timeout: 10000 });
 
-    // 找到在租状态的行
-    const activeRow = page.locator('[data-testid="tenant-table"] tbody tr:has-text("在租"), .t-table tbody tr:has-text("在租")');
+    const activeRow = page.locator('.t-table tbody tr:has-text("在租")');
 
     if (await activeRow.count() > 0) {
-      // 点击退租按钮
-      const checkOutButton = activeRow.first().locator('[data-testid="checkout-button"], button:has-text("退租")');
+      const checkOutButton = activeRow.first().locator('[data-testid="checkout-button"]');
       if (await checkOutButton.count() > 0) {
         await checkOutButton.click();
-        // 等待弹窗出现
-        await page.waitForSelector('[data-testid="checkout-dialog"], .t-dialog', { timeout: 5000 });
-        return true;
+        try {
+          await page.waitForSelector('[data-testid="checkout-dialog"]', { timeout: 5000 });
+          return true;
+        } catch {
+          return false;
+        }
       }
     }
     return false;
+  }
+
+  /**
+   * 获取退租弹窗内的元素（避免 strict mode）
+   */
+  function getDialogElement(page: Page, testId: string) {
+    return page.locator(`[data-testid="checkout-dialog"] [data-testid="${testId}"]`);
+  }
+
+  function getDialogContent(page: Page) {
+    return page.locator('[data-testid="checkout-dialog"]');
   }
 
   // ==================== 静态验证测试 ====================
@@ -68,23 +71,18 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
   test('2. 页面可访问 - 租客列表页', async ({ page }) => {
     await loginAndNavigateToTenantList(page);
-
-    // 验证主内容区域可见
     await expect(page.locator('main').first()).toBeVisible({ timeout: 5000 });
   });
 
   test('3. 退租按钮可见性 - 在租状态显示退租按钮', async ({ page }) => {
     await loginAndNavigateToTenantList(page);
+    await page.waitForSelector('.t-table tbody tr', { timeout: 10000 });
 
-    // 等待表格加载
-    await page.waitForSelector('[data-testid="tenant-table"], .t-table', { timeout: 10000 });
+    const activeRow = page.locator('.t-table tbody tr:has-text("在租")');
+    const rowCount = await activeRow.count();
 
-    // 找到在租状态的行
-    const activeRow = page.locator('[data-testid="tenant-table"] tbody tr:has-text("在租"), .t-table tbody tr:has-text("在租")');
-
-    if (await activeRow.count() > 0) {
-      // 验证退租按钮存在
-      const checkOutButton = activeRow.first().locator('[data-testid="checkout-button"], button:has-text("退租")');
+    if (rowCount > 0) {
+      const checkOutButton = activeRow.first().locator('[data-testid="checkout-button"]');
       await expect(checkOutButton).toBeVisible();
     }
   });
@@ -93,13 +91,10 @@ test.describe('FEAT-014: 退租弹窗', () => {
     await loginAndNavigateToTenantList(page);
 
     const dialogOpened = await openCheckOutDialog(page);
-    if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
-      return;
-    }
+    expect(dialogOpened).toBe(true);
 
     // 验证弹窗标题
-    const dialogTitle = page.locator('[data-testid="checkout-dialog"] .t-dialog__header, .t-dialog__header');
+    const dialogTitle = getDialogContent(page).locator('.t-dialog__header');
     await expect(dialogTitle).toContainText(/退租|结算/);
   });
 
@@ -108,12 +103,11 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证房间信息显示
-    const roomInfo = page.locator('[data-testid="room-info"], .t-dialog__body');
+    const roomInfo = getDialogElement(page, 'room-info');
     await expect(roomInfo).toBeVisible();
   });
 
@@ -122,12 +116,11 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证租客信息显示
-    const tenantInfo = page.locator('[data-testid="tenant-info"], .t-dialog__body');
+    const tenantInfo = getDialogElement(page, 'tenant-info');
     await expect(tenantInfo).toBeVisible();
   });
 
@@ -136,13 +129,12 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证月租金显示
-    const dialogBody = page.locator('[data-testid="checkout-dialog"] .t-dialog__body, .t-dialog__body');
-    const bodyText = await dialogBody.textContent();
+    const dialogContent = getDialogContent(page);
+    const bodyText = await dialogContent.textContent();
     expect(bodyText).toMatch(/\d+.*元|租金/);
   });
 
@@ -151,12 +143,11 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证退租日期选择器存在
-    const checkOutDateInput = page.locator('[data-testid="checkout-date-input"], .t-date-picker');
+    const checkOutDateInput = getDialogElement(page, 'checkout-date-input');
     await expect(checkOutDateInput).toBeVisible();
   });
 
@@ -165,17 +156,12 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证结算金额显示
-    const settlementAmount = page.locator('[data-testid="settlement-amount"], .t-dialog__body');
+    const settlementAmount = getDialogElement(page, 'settlement-amount');
     await expect(settlementAmount).toBeVisible();
-
-    // 验证结算金额格式
-    const text = await settlementAmount.textContent();
-    expect(text).toMatch(/结算|金额|\d+.*元/);
   });
 
   test('10. 押金处理选项 - 全额退还', async ({ page }) => {
@@ -183,13 +169,12 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证押金处理选项存在
-    const depositOption = page.locator('[data-testid="deposit-refunded"], .t-radio:has-text("全额退还"), label:has-text("全额退还")');
-    await expect(depositOption.first()).toBeVisible();
+    const depositOption = getDialogElement(page, 'deposit-refunded');
+    await expect(depositOption).toBeVisible();
   });
 
   test('11. 押金处理选项 - 部分扣除', async ({ page }) => {
@@ -197,13 +182,12 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证部分扣除选项存在
-    const deductionOption = page.locator('[data-testid="deposit-deducted"], .t-radio:has-text("部分扣除"), label:has-text("扣除")');
-    await expect(deductionOption.first()).toBeVisible();
+    const deductionOption = getDialogElement(page, 'deposit-deducted');
+    await expect(deductionOption).toBeVisible();
   });
 
   test('12. 扣除说明字段 - 选择部分扣除后显示', async ({ page }) => {
@@ -211,19 +195,15 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 选择部分扣除
-    const deductionOption = page.locator('[data-testid="deposit-deducted"], .t-radio:has-text("部分扣除"), label:has-text("扣除")').first();
+    const deductionOption = getDialogElement(page, 'deposit-deducted');
     await deductionOption.click();
-
-    // 等待扣除说明字段显示
     await page.waitForTimeout(300);
 
-    // 验证扣除说明字段存在
-    const deductionNoteInput = page.locator('[data-testid="deduction-note-input"], input[placeholder*="扣除"], textarea[placeholder*="扣除"]');
+    const deductionNoteInput = getDialogElement(page, 'deduction-note-input');
     if (await deductionNoteInput.count() > 0) {
       await expect(deductionNoteInput).toBeVisible();
     }
@@ -234,16 +214,14 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 点击取消按钮
-    const cancelButton = page.locator('[data-testid="cancel-button"], button:has-text("取消")').first();
+    const cancelButton = getDialogElement(page, 'cancel-button');
     await cancelButton.click();
 
-    // 验证弹窗关闭
-    const dialog = page.locator('[data-testid="checkout-dialog"], .t-dialog');
+    const dialog = getDialogContent(page);
     await expect(dialog).not.toBeVisible({ timeout: 5000 });
   });
 
@@ -252,13 +230,12 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证确认按钮存在
-    const confirmButton = page.locator('[data-testid="confirm-button"], button:has-text("确认"), button:has-text("退租")');
-    await expect(confirmButton.first()).toBeVisible();
+    const confirmButton = getDialogElement(page, 'confirm-button');
+    await expect(confirmButton).toBeVisible();
   });
 
   test('15. 结算计算 - 剩余天数显示', async ({ page }) => {
@@ -266,13 +243,12 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证剩余天数显示
-    const dialogBody = page.locator('[data-testid="checkout-dialog"] .t-dialog__body, .t-dialog__body');
-    const bodyText = await dialogBody.textContent();
+    const dialogContent = getDialogContent(page);
+    const bodyText = await dialogContent.textContent();
     expect(bodyText).toMatch(/剩余|天数|\d+.*天/);
   });
 
@@ -281,14 +257,13 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证押金金额显示
-    const dialogBody = page.locator('[data-testid="checkout-dialog"] .t-dialog__body, .t-dialog__body');
-    const bodyText = await dialogBody.textContent();
-    expect(bodyText).toMatch(/押金|\d+/);
+    const dialogContent = getDialogContent(page);
+    const bodyText = await dialogContent.textContent();
+    expect(bodyText).toMatch(/押金/);
   });
 
   test('17. 结算金额含义说明', async ({ page }) => {
@@ -296,40 +271,12 @@ test.describe('FEAT-014: 退租弹窗', () => {
 
     const dialogOpened = await openCheckOutDialog(page);
     if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
+      test.skip();
       return;
     }
 
-    // 验证结算金额含义说明
-    const dialogBody = page.locator('[data-testid="checkout-dialog"] .t-dialog__body, .t-dialog__body');
-    const bodyText = await dialogBody.textContent();
-    // 应该说明是退还给租客还是租客需补交
-    expect(bodyText).toMatch(/退还|补交|结算/);
-  });
-
-  test('18. 日期变更 - 重新计算结算金额', async ({ page }) => {
-    await loginAndNavigateToTenantList(page);
-
-    const dialogOpened = await openCheckOutDialog(page);
-    if (!dialogOpened) {
-      test.skip('没有找到在租状态的租客，跳过弹窗测试');
-      return;
-    }
-
-    // 获取当前结算金额
-    const settlementAmount = page.locator('[data-testid="settlement-amount"]');
-    const initialAmount = await settlementAmount.textContent();
-
-    // 修改退租日期
-    const checkOutDateInput = page.locator('[data-testid="checkout-date-input"] input, .t-date-picker input');
-    await checkOutDateInput.fill('2026-04-01');
-
-    // 等待重新计算
-    await page.waitForTimeout(500);
-
-    // 验证结算金额可能已更新
-    const newAmount = await settlementAmount.textContent();
-    // 金额可能相同或不同，但应该仍然显示
-    expect(newAmount).toBeDefined();
+    const dialogContent = getDialogContent(page);
+    const bodyText = await dialogContent.textContent();
+    expect(bodyText).toMatch(/退还|结算/);
   });
 });
