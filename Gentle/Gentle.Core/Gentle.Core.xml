@@ -4,6 +4,91 @@
         <name>Gentle.Core</name>
     </assembly>
     <members>
+        <member name="T:Gentle.Core.Entities.BillValidationAttribute">
+            <summary>
+            账单实体验证特性
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.Bill">
+            <summary>
+            账单实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.RentalRecordId">
+            <summary>
+            租住记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.RentalRecord">
+            <summary>
+            租住记录导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.PeriodStart">
+            <summary>
+            账单周期开始日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.PeriodEnd">
+            <summary>
+            账单周期结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.DueDate">
+            <summary>
+            应收日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.RentAmount">
+            <summary>
+            租金金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.WaterFee">
+            <summary>
+            水费
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.ElectricFee">
+            <summary>
+            电费
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.TotalAmount">
+            <summary>
+            总金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.Status">
+            <summary>
+            账单状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.PaidAmount">
+            <summary>
+            实收金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.PaidDate">
+            <summary>
+            收款日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.GraceUntil">
+            <summary>
+            宽限截止日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Bill.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.Bill.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            配置种子数据
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.Community">
             <summary>
             小区实体
@@ -267,6 +352,31 @@
         <member name="M:Gentle.Core.Entities.User.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
             <summary>
             配置种子数据
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.BillStatus">
+            <summary>
+            账单状态枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.BillStatus.Pending">
+            <summary>
+            待收款
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.BillStatus.Grace">
+            <summary>
+            宽限中
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.BillStatus.Paid">
+            <summary>
+            已收款
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.BillStatus.Overdue">
+            <summary>
+            已逾期
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.DepositStatus">
