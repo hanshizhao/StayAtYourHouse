@@ -127,8 +127,12 @@ public class RentalRecordService : IRentalRecordService
 
         var entry = await _repository.InsertAsync(record);
 
-        // 更新房间状态为已出租
+        // 更新房间状态为已出租，同时更新合同图片
         room.Status = RoomStatus.Rented;
+        if (!string.IsNullOrEmpty(input.ContractImage))
+        {
+            room.ContractImage = input.ContractImage;
+        }
         await _roomRepository.UpdateAsync(room);
 
         await _repository.SaveNowAsync();

@@ -8,6 +8,10 @@
             <template #icon><add-icon /></template>
             新建租客
           </t-button>
+          <t-button theme="success" data-testid="check-in-button" @click="handleGoCheckIn">
+            <template #icon><home-icon /></template>
+            入住办理
+          </t-button>
         </div>
         <div class="search-input">
           <t-input
@@ -157,10 +161,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { AddIcon, SearchIcon } from 'tdesign-icons-vue-next';
+import { AddIcon, HomeIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 import type { TenantItem } from '@/api/model/tenantModel';
 import { Gender, RentalStatus } from '@/api/model/tenantModel';
@@ -194,6 +199,7 @@ interface HeaderAffixedTopConfig {
 
 // ==================== 状态 ====================
 const settingStore = useSettingStore();
+const router = useRouter();
 
 // 表格列配置
 const columns: PrimaryTableCol[] = [
@@ -329,6 +335,11 @@ function handleCreate() {
     remark: '',
   };
   dialogVisible.value = true;
+}
+
+// 跳转入住办理
+function handleGoCheckIn() {
+  router.push('/tenant/check-in');
 }
 
 // 编辑租客

@@ -45,7 +45,7 @@
 | FEAT-010 | Tenant CRUD API | ✅ 已完成 | ✓ |
 | FEAT-011 | 入住/退租 API | ✅ 已完成 | ✓ |
 | FEAT-012 | 租客列表页 | ✅ 已完成 | ✓ |
-| FEAT-013 | 入住办理页 | ⏳ 待开始 | - |
+| FEAT-013 | 入住办理页 | ✅ 已完成 | ✓ |
 | FEAT-014 | 退租弹窗 | ⏳ 待开始 | - |
 
 ### 收租管理模块 (FEAT-015 ~ FEAT-020)
@@ -153,7 +153,7 @@
 
 ### 2026-03-25
 
-- 🚧 FEAT-012: 租客列表页（代码审查完成，待 E2E 测试）
+- ✅ FEAT-012: 租客列表页（已完成）
   - **代码审查 (20:30):**
     - 审查结果：通过（0 Critical, 0 Important, 5 Minor）
     - Important 修复：
@@ -178,6 +178,31 @@
     - Important: 分页改为后端分页 - 通过 page/pageSize 参数请求后端，total 由后端返回
     - Important: 修复非空断言风险 - 使用显式 null 检查
     - Minor: 移除 API 中未使用的 keyword 参数
+  - **E2E 测试通过 (22:45):**
+    - 12/13 测试通过（1 个 skip - 退租功能在 FEAT-014 实现）
+
+- 🚧 FEAT-013: 入住办理页（代码审查完成，待 E2E 测试）
+  - 创建入住办理页面组件（Hans/src/pages/tenant/check-in.vue）
+  - 创建租住 API 服务（Hans/src/api/rental.ts）
+  - 创建租住类型定义（Hans/src/api/model/rentalModel.ts）
+  - 配置路由（Hans/src/router/modules/tenant.ts）
+  - 更新后端 CheckInInput 添加 ContractImage 字段
+  - 更新后端 RentalRecordService 保存合同图片
+  - **代码审查 (23:00):**
+    - 审查结果：通过（0 Critical, 0 Important, 0 Minor）
+    - Critical 修复：
+      - 添加文件上传响应格式验证 - isValidUploadResponse 类型守卫
+    - Important 修复：
+      - 修复非空断言风险 - 显式检查必填字段
+      - 修复日期时区问题 - 使用 getLocalDateString 本地日期函数
+      - 移除冗余的租客选择提示 - 简化 handleTenantChange
+    - Minor 修复（已全部完成）：
+      - 分页数据加载限制 - 添加 TODO 注释说明后续优化方向
+      - 合同到期日期计算抽取为工具函数 - calculateContractEndDate
+      - E2E 测试优化 - 移除 test.skip()，使用 expect 断言替代条件跳过
+  - **E2E 测试通过 (23:45):**
+    - 15/15 测试通过
+    - 修复 E2E 测试选择器问题（TDesign 组件内部 input 选择）
 
 - ✅ FEAT-011: 入住/退租业务逻辑 API（代码审查完成）
   - 创建 DTO 文件：

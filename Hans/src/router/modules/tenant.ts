@@ -14,6 +14,12 @@ export default [
         component: () => import('@/pages/tenant/index.vue'),
         meta: { title: { zh_CN: '租客列表', en_US: 'Tenant List' } },
       },
+      {
+        path: 'check-in',
+        name: 'CheckIn',
+        component: () => import('@/pages/tenant/check-in.vue'),
+        meta: { title: { zh_CN: '入住办理', en_US: 'Check In' } },
+      },
     ],
   },
 ];

@@ -47,4 +47,9 @@ public class CheckInInput
     /// 备注
     /// </summary>
     public string? Remark { get; set; }
+
+    /// <summary>
+    /// 合同图片路径（上传到服务器后的路径）
+    /// </summary>
+    public string? ContractImage { get; set; }
 }

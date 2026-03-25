@@ -394,6 +394,11 @@
             备注
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.ContractImage">
+            <summary>
+            合同图片路径（上传到服务器后的路径）
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.RentalRecord.CheckOutInput">
             <summary>
             退租请求
