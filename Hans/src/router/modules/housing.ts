@@ -20,6 +20,12 @@ export default [
         component: () => import('@/pages/housing/room/index.vue'),
         meta: { title: { zh_CN: '房间管理', en_US: 'Room' } },
       },
+      {
+        path: 'room/detail/:id',
+        name: 'RoomDetail',
+        component: () => import('@/pages/housing/room/detail.vue'),
+        meta: { title: { zh_CN: '房间详情', en_US: 'Room Detail' }, hidden: true },
+      },
     ],
   },
 ];
