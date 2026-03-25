@@ -103,7 +103,7 @@ test.describe('FEAT-009: RentalRecord 实体', () => {
     expect(content).toMatch(/public\s+class\s+RentalRecord/);
   });
 
-  test('10. 验证基本属性 - Id', async () => {
+  test('10. 验证实体继承 Entity<int>（Furion 框架自动提供 Id）', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -111,7 +111,8 @@ test.describe('FEAT-009: RentalRecord 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+int\s+Id\s*\{\s*get;\s*set;\s*\}/);
+    // Furion 框架：继承 Entity<int> 自动获得 Id 属性，无需手动定义
+    expect(content).toMatch(/public\s+class\s+RentalRecord\s*:\s*Entity<int>/);
   });
 
   test('11. 验证日期属性 - CheckInDate, ContractEndDate, CheckOutDate', async () => {
@@ -196,15 +197,24 @@ test.describe('FEAT-009: RentalRecord 实体', () => {
 
   // ==================== DbContext 配置测试 ====================
 
-  test('17. 验证 DbContext 包含 RentalRecords DbSet', async () => {
-    if (!fs.existsSync(dbContextPath)) {
-      test.skip('DbContext 文件不存在');
+  test('17. 验证 Furion 框架自动发现实体（无需手动配置 DbSet）', async () => {
+    // Furion 框架会自动发现所有继承 Entity<T> 的实体
+    // 验证实体文件存在且继承 Entity<int> 即可
+    if (!fs.existsSync(entityPath)) {
+      test.skip('实体文件不存在');
       return;
     }
 
-    const content = fs.readFileSync(dbContextPath, 'utf-8');
+    const content = fs.readFileSync(entityPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+DbSet<RentalRecord>\s+RentalRecords\s*\{\s*get;\s*set;\s*\}/);
+    // 验证实体实现 IEntity 接口（通过继承 Entity<int>）
+    expect(content).toMatch(/public\s+class\s+RentalRecord\s*:\s*Entity<int>/);
+
+    // 验证 DbContext 继承 AppDbContext（Furion 自动发现机制）
+    if (fs.existsSync(dbContextPath)) {
+      const dbContent = fs.readFileSync(dbContextPath, 'utf-8');
+      expect(dbContent).toMatch(/AppDbContext/);
+    }
   });
 
   // ==================== 构建测试 ====================

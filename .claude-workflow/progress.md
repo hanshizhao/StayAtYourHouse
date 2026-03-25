@@ -41,7 +41,7 @@
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
 | FEAT-008 | Tenant 实体 | ✅ 已完成 | ✓ |
-| FEAT-009 | RentalRecord 实体 | ⏳ 待开始 | - |
+| FEAT-009 | RentalRecord 实体 | ✅ 已完成 | ✓ |
 | FEAT-010 | Tenant CRUD API | ⏳ 待开始 | - |
 | FEAT-011 | 入住/退租 API | ⏳ 待开始 | - |
 | FEAT-012 | 租客列表页 | ⏳ 待开始 | - |
@@ -159,6 +159,16 @@
   - 实体属性：Name, Phone, IdCard?, Gender, EmergencyContact?, Remark?
   - Furion 框架自动发现实体，无需手动配置 DbSet
   - 12/12 静态测试通过
+
+- ✅ FEAT-009: RentalRecord（租住记录）实体（已完成）
+  - 创建 LeaseType 枚举（Monthly = 0, HalfYear = 1, Yearly = 2）
+  - 创建 RentalStatus 枚举（Active = 0, Terminated = 1）
+  - 创建 DepositStatus 枚举（Received = 0, Refunded = 1, Deducted = 2）
+  - 创建 RentalRecord 实体类（继承 Entity<int>）
+  - 实体属性：TenantId, RoomId, CheckInDate, LeaseType, ContractEndDate, CheckOutDate?, MonthlyRent, Deposit, DepositDeduction?, DepositStatus, Status, Remark?, CheckOutRemark?
+  - 外键关系：Tenant, Room
+  - Furion 框架自动发现实体
+  - 19/19 静态测试通过
 
 - ✅ FEAT-007: 房间详情页（已完成）
   - 创建详情页面组件（Hans/src/pages/housing/room/detail.vue）

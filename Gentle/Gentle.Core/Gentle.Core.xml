@@ -29,6 +29,96 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.RentalRecordValidationAttribute">
+            <summary>
+            租住记录实体验证特性
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.RentalRecord">
+            <summary>
+            租住记录实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.TenantId">
+            <summary>
+            租客ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.Tenant">
+            <summary>
+            租客导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.Room">
+            <summary>
+            房间导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.CheckInDate">
+            <summary>
+            入住日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.LeaseType">
+            <summary>
+            租期类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.ContractEndDate">
+            <summary>
+            合同结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.MonthlyRent">
+            <summary>
+            月租金
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.Deposit">
+            <summary>
+            押金
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.DepositStatus">
+            <summary>
+            押金状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.DepositDeduction">
+            <summary>
+            押金抵扣金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.Status">
+            <summary>
+            租住状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.CheckOutDate">
+            <summary>
+            退租日期（如有）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.CheckOutRemark">
+            <summary>
+            退租备注
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.RentalRecord.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            配置种子数据
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.Room">
             <summary>
             房间实体
@@ -179,6 +269,26 @@
             配置种子数据
             </summary>
         </member>
+        <member name="T:Gentle.Core.Enums.DepositStatus">
+            <summary>
+            押金状态枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.DepositStatus.Received">
+            <summary>
+            已收取
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.DepositStatus.Refunded">
+            <summary>
+            已退还
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.DepositStatus.Deducted">
+            <summary>
+            已抵扣
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.Gender">
             <summary>
             性别枚举
@@ -192,6 +302,41 @@
         <member name="F:Gentle.Core.Enums.Gender.Female">
             <summary>
             女
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.LeaseType">
+            <summary>
+            租期类型枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.LeaseType.Monthly">
+            <summary>
+            月租
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.LeaseType.HalfYear">
+            <summary>
+            半年租
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.LeaseType.Yearly">
+            <summary>
+            年租
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.RentalStatus">
+            <summary>
+            租住状态枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.RentalStatus.Active">
+            <summary>
+            在租中
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.RentalStatus.Terminated">
+            <summary>
+            已终止
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.RoomStatus">
