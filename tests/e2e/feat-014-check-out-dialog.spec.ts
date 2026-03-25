@@ -218,8 +218,14 @@ test.describe.serial('FEAT-014: 退租弹窗', () => {
       return;
     }
 
-    const cancelButton = getDialogElement(page, 'cancel-button');
-    await cancelButton.click();
+    // 使用 TDesign Dialog 内置的关闭按钮（右上角 X）
+    const closeButton = page.locator('[data-testid="checkout-dialog"] .t-dialog__close');
+    if (await closeButton.count() > 0) {
+      await closeButton.click();
+    } else {
+      // 备选方案：按 ESC 键关闭
+      await page.keyboard.press('Escape');
+    }
 
     const dialog = getDialogContent(page);
     await expect(dialog).not.toBeVisible({ timeout: 5000 });
@@ -234,7 +240,8 @@ test.describe.serial('FEAT-014: 退租弹窗', () => {
       return;
     }
 
-    const confirmButton = getDialogElement(page, 'confirm-button');
+    // 使用 TDesign Dialog 内置的确认按钮（通过按钮文本定位）
+    const confirmButton = page.locator('[data-testid="checkout-dialog"] button:has-text("确认退租")');
     await expect(confirmButton).toBeVisible();
   });
 

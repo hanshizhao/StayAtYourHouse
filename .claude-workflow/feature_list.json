@@ -758,17 +758,21 @@
         ]
       },
       "review": {
-        "last_review_at": "2026-03-25T17:00:00Z",
+        "last_review_at": "2026-03-25T18:00:00Z",
         "reviewer": "superpowers:code-reviewer",
         "status": "passed",
         "issues": {
           "critical": 0,
-          "important": 2,
+          "important": 0,
           "minor": 0
         },
         "fixed_issues": [
-          "CheckOutDialog.vue: 为空函数 calculateSettlement 添加扩展点注释说明",
-          "feat-014-check-out-dialog.spec.ts: 将硬编码凭证改为环境变量"
+          "CheckOutDialog.vue: 错误处理使用 e: unknown 替代 e: any",
+          "CheckOutDialog.vue: 添加 formatMoney 函数正确处理 0 值显示",
+          "CheckOutDialog.vue: 移除重复的自定义按钮，使用 Dialog 内置确认/关闭按钮",
+          "CheckOutDialog.vue: 提取 MS_PER_DAY 常量消除魔法数字",
+          "CheckOutDialog.vue: 移除未使用的 dialog-footer 样式",
+          "feat-014-check-out-dialog.spec.ts: 更新测试选择器适配 Dialog 内置按钮"
         ],
         "suggestions": [
           "考虑添加退租二次确认弹窗"

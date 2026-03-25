@@ -167,7 +167,7 @@
       <p data-testid="confirm-dialog-message">{{ deleteConfirmBody }}</p>
     </t-dialog>
     <!-- 退租弹窗 -->
-    <CheckOutDialog
+    <check-out-dialog
       v-model:visible="checkOutDialogVisible"
       :tenant="checkingOutTenant"
       @success="handleCheckOutSuccess"
@@ -262,7 +262,7 @@ const formData = ref<TenantFormData>({
 // 手机号验证正则
 const phoneRegex = /^1[3-9]\d{9}$/;
 // 身份证号验证正则（15位纯数字 或 18位纯数字 或 17位数字+X/x）
-const idCardRegex = /^(\d{15}|\d{18}|\d{17}[\dXx])$/;
+const idCardRegex = /^(\d{15}|\d{18}|\d{17}[\dX])$/i;
 
 const formRules: Record<string, FormRule[]> = {
   name: [{ required: true, message: '请输入租客姓名', trigger: 'blur' }],

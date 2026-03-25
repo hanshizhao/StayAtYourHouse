@@ -1,4 +1,10 @@
-import type { CreateTenantParams, TenantItem, TenantListParams, TenantListResult, UpdateTenantParams } from '@/api/model/tenantModel';
+import type {
+  CreateTenantParams,
+  TenantItem,
+  TenantListParams,
+  TenantListResult,
+  UpdateTenantParams,
+} from '@/api/model/tenantModel';
 import { request } from '@/utils/request';
 
 const Api = {

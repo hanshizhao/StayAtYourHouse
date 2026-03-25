@@ -1,9 +1,9 @@
 <template>
   <t-dialog
-    v-model:visible="visible"
+    v-model:visible="dialogVisible"
     header="退租办理"
     width="520px"
-    :confirm-btn="{ content: '确认退租', loading: loading }"
+    :confirm-btn="{ content: '确认退租', loading }"
     data-testid="checkout-dialog"
     :on-confirm="handleSubmit"
     :on-close="handleClose"
@@ -36,7 +36,7 @@
         <div class="info-title">租住信息</div>
         <div class="info-row">
           <span class="label">月租金：</span>
-          <span class="value">{{ rentalRecord?.monthlyRent ?? '-' }} 元</span>
+          <span class="value">{{ formatMoney(rentalRecord?.monthlyRent) }} 元</span>
         </div>
         <div class="info-row">
           <span class="label">押金：</span>
@@ -61,7 +61,9 @@
         <div class="info-title">结算信息</div>
         <div class="info-row highlight" data-testid="settlement-amount">
           <span class="label">结算金额：</span>
-          <span class="value amount">{{ settlementAmount >= 0 ? '退还租客' : '租客补交' }} {{ Math.abs(settlementAmount) }} 元</span>
+          <span class="value amount"
+            >{{ settlementAmount >= 0 ? '退还租客' : '租客补交' }} {{ Math.abs(settlementAmount) }} 元</span
+          >
         </div>
       </div>
 
@@ -92,11 +94,7 @@
           </t-radio-group>
         </t-form-item>
 
-        <t-form-item
-          v-if="formData.depositStatus === DepositStatus.Deducted"
-          label="扣除金额"
-          name="depositDeduction"
-        >
+        <t-form-item v-if="formData.depositStatus === DepositStatus.Deducted" label="扣除金额" name="depositDeduction">
           <t-input-number
             v-model="formData.depositDeduction"
             :min="0"
@@ -108,11 +106,7 @@
           <span class="input-suffix">元（最高 {{ maxDeduction }} 元）</span>
         </t-form-item>
 
-        <t-form-item
-          v-if="formData.depositStatus === DepositStatus.Deducted"
-          label="扣除说明"
-          name="checkOutRemark"
-        >
+        <t-form-item v-if="formData.depositStatus === DepositStatus.Deducted" label="扣除说明" name="checkOutRemark">
           <t-textarea
             v-model="formData.checkOutRemark"
             placeholder="请输入扣除原因"
@@ -122,32 +116,12 @@
           />
         </t-form-item>
       </t-form>
-
-      <!-- 操作按钮 -->
-      <div class="dialog-footer">
-        <t-button
-          variant="outline"
-          data-testid="cancel-button"
-          @click="handleClose"
-        >
-          取消
-        </t-button>
-        <t-button
-          theme="primary"
-          :loading="loading"
-          data-testid="confirm-button"
-          @click="handleSubmit"
-        >
-          确认退租
-        </t-button>
-      </div>
     </div>
     <div v-else class="loading-placeholder">
       <t-loading text="加载中..." />
     </div>
   </t-dialog>
 </template>
-
 <script setup lang="ts">
 import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
@@ -159,6 +133,24 @@ import type { TenantItem } from '@/api/model/tenantModel';
 import { checkOut, getRentalById } from '@/api/rental';
 import { getLocalDateString } from '@/utils/date';
 
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: 'update:visible', visible: boolean): void;
+  (e: 'success'): void;
+}>();
+
+// ==================== 常量 ====================
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+// ==================== 工具函数 ====================
+/**
+ * 格式化金额显示，正确处理 0 值
+ */
+function formatMoney(value: number | undefined | null): string {
+  return value !== undefined && value !== null ? String(value) : '-';
+}
+
 // ==================== Props & Emits ====================
 interface Props {
   /** 弹窗可见性 */
@@ -167,12 +159,11 @@ interface Props {
   tenant: TenantItem | null;
 }
 
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  (e: 'update:visible', visible: boolean): void;
-  (e: 'success'): void;
-}>();
+// 使用 computed 处理 v-model
+const dialogVisible = computed({
+  get: () => props.visible,
+  set: (val: boolean) => emit('update:visible', val),
+});
 
 // ==================== 类型定义 ====================
 interface CheckOutFormData {
@@ -204,7 +195,7 @@ const remainingDays = computed(() => {
   const today = new Date();
   const endDate = new Date(rentalRecord.value.contractEndDate);
   const diffTime = endDate.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffDays = Math.ceil(diffTime / MS_PER_DAY);
   return Math.max(0, diffDays);
 });
 
@@ -248,8 +239,9 @@ watch(
         const record = await getRentalById(props.tenant.rentalRecordId);
         rentalRecord.value = record;
         deposit.value = record.deposit;
-      } catch (e: any) {
-        MessagePlugin.error(e.message || '获取租住记录失败');
+      } catch (e: unknown) {
+        const errorMessage = e instanceof Error ? e.message : '获取租住记录失败';
+        MessagePlugin.error(errorMessage);
         emit('update:visible', false);
       }
     }
@@ -308,17 +300,16 @@ async function handleSubmit() {
       checkOutDate: formData.value.checkOutDate,
       depositStatus: formData.value.depositStatus,
       depositDeduction:
-        formData.value.depositStatus === DepositStatus.Deducted
-          ? formData.value.depositDeduction
-          : undefined,
+        formData.value.depositStatus === DepositStatus.Deducted ? formData.value.depositDeduction : undefined,
       checkOutRemark: formData.value.checkOutRemark || undefined,
     });
 
     MessagePlugin.success('退租成功');
     emit('update:visible', false);
     emit('success');
-  } catch (e: any) {
-    MessagePlugin.error(e.message || '退租失败');
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : '退租失败';
+    MessagePlugin.error(errorMessage);
   } finally {
     loading.value = false;
   }
@@ -329,7 +320,6 @@ function handleClose() {
   emit('update:visible', false);
 }
 </script>
-
 <style lang="less" scoped>
 .check-out-content {
   .info-section {
@@ -392,13 +382,6 @@ function handleClose() {
       font-size: 12px;
       color: var(--td-text-color-secondary);
     }
-  }
-
-  .dialog-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
   }
 }
 

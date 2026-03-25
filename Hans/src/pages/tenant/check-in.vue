@@ -33,7 +33,7 @@
             </div>
             <t-row :gutter="24">
               <t-col :span="6">
-                    <t-form-item label="选择租客" name="tenantId">
+                <t-form-item label="选择租客" name="tenantId">
                   <t-select
                     v-model="formData.tenantId"
                     placeholder="请选择租客"
@@ -42,12 +42,7 @@
                     data-testid="tenant-select"
                     @change="handleTenantChange"
                   >
-                    <t-option
-                      v-for="tenant in tenantOptions"
-                      :key="tenant.id"
-                      :value="tenant.id"
-                      :label="tenant.name"
-                    >
+                    <t-option v-for="tenant in tenantOptions" :key="tenant.id" :value="tenant.id" :label="tenant.name">
                       <div class="tenant-option">
                         <span class="tenant-name">{{ tenant.name }}</span>
                         <span class="tenant-phone">{{ tenant.phone }}</span>
@@ -76,12 +71,7 @@
                     data-testid="room-select"
                     @change="handleRoomChange"
                   >
-                    <t-option
-                      v-for="room in roomOptions"
-                      :key="room.id"
-                      :value="room.id"
-                      :label="room.fullInfo"
-                    >
+                    <t-option v-for="room in roomOptions" :key="room.id" :value="room.id" :label="room.fullInfo">
                       <div class="room-option">
                         <span class="room-info">{{ room.fullInfo }}</span>
                         <span class="room-price">¥{{ room.rentPrice }}/月</span>
@@ -117,8 +107,7 @@
               <div class="info-item">
                 <span class="info-label">水电单价</span>
                 <span class="info-value">
-                  水 {{ selectedRoom.waterPrice || '-' }} 元/吨
-                  / 电 {{ selectedRoom.electricPrice || '-' }} 元/度
+                  水 {{ selectedRoom.waterPrice || '-' }} 元/吨 / 电 {{ selectedRoom.electricPrice || '-' }} 元/度
                 </span>
               </div>
             </div>
@@ -192,7 +181,9 @@
             <!-- 合同到期日期提示 -->
             <div v-if="contractEndDate" class="contract-end-tip">
               <info-circle-icon class="tip-icon" />
-              <span>合同将于 <strong>{{ contractEndDate }}</strong> 到期</span>
+              <span
+                >合同将于 <strong>{{ contractEndDate }}</strong> 到期</span
+              >
             </div>
           </div>
 
@@ -253,12 +244,7 @@
           <!-- 提交按钮 -->
           <div class="form-actions">
             <t-button variant="outline" @click="handleBack">取消</t-button>
-            <t-button
-              theme="primary"
-              type="submit"
-              :loading="submitLoading"
-              data-testid="submit-button"
-            >
+            <t-button theme="primary" type="submit" :loading="submitLoading" data-testid="submit-button">
               确认入住
             </t-button>
           </div>
@@ -267,7 +253,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import {
   ChevronLeftIcon,
@@ -278,19 +263,27 @@ import {
   InfoCircleIcon,
   UserIcon,
 } from 'tdesign-icons-vue-next';
-import { formatDate, calculateContractEndDate, getLocalDateString, LeaseType } from '@/utils/date';
-import type { FormInstanceFunctions, FormRule, SelectOption, SelectValue, UploadFile, SuccessContext, UploadFailContext } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  SelectOption,
+  SelectValue,
+  SuccessContext,
+  UploadFailContext,
+  UploadFile,
+} from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import type { TenantItem } from '@/api/model/tenantModel';
-import { getTenantList } from '@/api/tenant';
-import { checkIn } from '@/api/rental';
-import type { RoomItem } from '@/api/model/roomModel';
-import { getRoomList } from '@/api/room';
 import { LeaseTypeText } from '@/api/model/rentalModel';
+import type { RoomItem } from '@/api/model/roomModel';
 import { RoomStatus } from '@/api/model/roomModel';
+import type { TenantItem } from '@/api/model/tenantModel';
+import { checkIn } from '@/api/rental';
+import { getRoomList } from '@/api/room';
+import { getTenantList } from '@/api/tenant';
+import { calculateContractEndDate, formatDate, getLocalDateString, LeaseType } from '@/utils/date';
 
 defineOptions({
   name: 'CheckIn',
@@ -462,9 +455,7 @@ function isValidUploadResponse(res: unknown): res is { url: string } {
 // 上传成功
 function handleUploadSuccess(context: SuccessContext) {
   try {
-    const res = typeof context.response === 'string'
-      ? JSON.parse(context.response)
-      : context.response;
+    const res = typeof context.response === 'string' ? JSON.parse(context.response) : context.response;
 
     if (isValidUploadResponse(res)) {
       formData.value.contractImage = res.url;
@@ -489,8 +480,7 @@ async function handleSubmit() {
 
   // 显式检查必填字段（避免非空断言风险）
   const { tenantId, roomId, monthlyRent, deposit } = formData.value;
-  if (tenantId === undefined || roomId === undefined
-      || monthlyRent === undefined || deposit === undefined) {
+  if (tenantId === undefined || roomId === undefined || monthlyRent === undefined || deposit === undefined) {
     MessagePlugin.error('请完整填写必填信息');
     return;
   }
@@ -523,7 +513,6 @@ onMounted(() => {
   loadVacantRooms();
 });
 </script>
-
 <style lang="less" scoped>
 .check-in-page {
   padding: 24px;
