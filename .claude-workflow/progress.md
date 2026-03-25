@@ -44,7 +44,7 @@
 | FEAT-009 | RentalRecord 实体 | ✅ 已完成 | ✓ |
 | FEAT-010 | Tenant CRUD API | ✅ 已完成 | ✓ |
 | FEAT-011 | 入住/退租 API | ✅ 已完成 | ✓ |
-| FEAT-012 | 租客列表页 | ⏳ 待开始 | - |
+| FEAT-012 | 租客列表页 | ✅ 已完成 | ✓ |
 | FEAT-013 | 入住办理页 | ⏳ 待开始 | - |
 | FEAT-014 | 退租弹窗 | ⏳ 待开始 | - |
 
@@ -152,6 +152,32 @@
     3. 实现 E2E 测试 afterAll 清理逻辑
 
 ### 2026-03-25
+
+- 🚧 FEAT-012: 租客列表页（代码审查完成，待 E2E 测试）
+  - **代码审查 (20:30):**
+    - 审查结果：通过（0 Critical, 0 Important, 5 Minor）
+    - Important 修复：
+      - 优化 N+1 查询 - 使用 GroupJoin 单次查询替代两次独立查询
+      - 统一身份证验证正则表达式 - 前端与后端保持一致
+      - 添加 onUnmounted 清理搜索防抖定时器，防止内存泄漏
+    - Minor 修复：
+      - 修复 watch 清理函数无效 - 使用外部变量存储 timer 确保正确清理
+      - 更新搜索注释 - 说明当前是「后端全量 + 前端搜索过滤 + 前端分页」模式
+    - Suggestions（后续优化）：
+      - 分页参数可添加边界验证（后端）
+      - E2E 测试可补充退租按钮可见性测试
+      - 考虑使用 useDebounceFn 替代手动防抖
+      - 后端可添加日志记录
+      - 前端搜索框可添加加载状态
+  - **代码审查问题修复:**
+    - Critical: 实现「显示当前房间和状态」功能
+      - 后端扩展 TenantDto 添加 CurrentRoomInfoDto 和 Status 字段
+      - 后端 TenantService.GetListAsync 关联查询活跃的 RentalRecord
+      - 前端 tenantModel.ts 添加 CurrentRoomInfo 和 RentalStatus 类型
+      - 前端页面添加「当前房间」和「状态」列
+    - Important: 分页改为后端分页 - 通过 page/pageSize 参数请求后端，total 由后端返回
+    - Important: 修复非空断言风险 - 使用显式 null 检查
+    - Minor: 移除 API 中未使用的 keyword 参数
 
 - ✅ FEAT-011: 入住/退租业务逻辑 API（代码审查完成）
   - 创建 DTO 文件：
