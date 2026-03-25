@@ -516,9 +516,9 @@
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建入住 DTO",
-          "file": "Gentle/Gentle.Application/Dtos/CheckInDto.cs",
-          "code_hint": "public class CheckInDto { public int TenantId { get; set; } public int RoomId { get; set; } public DateTime CheckInDate { get; set; } public LeaseType LeaseType { get; set; } public decimal MonthlyRent { get; set; } public decimal Deposit { get; set; } }"
+          "action": "创建入住/退租 DTO",
+          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/",
+          "code_hint": "CheckInInput.cs, CheckOutInput.cs, RentalRecordDto.cs"
         },
         {
           "step": 2,
@@ -534,14 +534,45 @@
         }
       ],
       "test_file": "tests/e2e/feat-011-checkin-checkout-api.spec.ts",
-      "status": "pending",
+      "status": "completed",
+      "completed_at": "2026-03-25T12:25:00Z",
       "verification": {
-        "api_routes_checked": false,
+        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "tests_count": 16,
+        "verified_at": "2026-03-25T12:25:00Z",
         "api_routes": {
-          "base": "/api/rental-app",
-          "endpoints": ["check-in", "check-out", "get-list", "get-by-id/{id}"]
+          "base": "/api/rental",
+          "endpoints": ["list", "{id}", "check-in", "check-out", "remove/{id}"]
+        }
+      },
+      "review": {
+        "last_review_at": "2026-03-25T16:30:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "fixed_issues": [
+          "并发安全：添加 [UnitOfWork] 特性到 CheckInAsync/CheckOutAsync/DeleteAsync",
+          "押金验证：添加抵扣金额不能超过押金的验证",
+          "押金状态一致性：验证押金状态为「已抵扣」时必须填写抵扣金额",
+          "代码清理：移除未使用的 _communityRepository 依赖",
+          "文档更新：修正 DTO 文件命名描述"
+        ]
+      },
+      "verification": {
+        "api_routes_checked": true,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "tests_count": 16,
+        "verified_at": "2026-03-25T12:25:00Z",
+        "api_routes": {
+          "base": "/api/rental",
+          "endpoints": ["list", "{id}", "check-in", "check-out", "remove/{id}"]
         }
       }
     },

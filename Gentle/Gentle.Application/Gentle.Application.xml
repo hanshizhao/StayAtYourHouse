@@ -54,6 +54,39 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.RentalAppService">
+            <summary>
+            租住管理应用服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RentalAppService.GetList(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            获取租住记录列表
+            </summary>
+            <param name="status">状态筛选（active/terminated）</param>
+            <param name="roomId">房间ID筛选</param>
+            <param name="tenantId">租客ID筛选</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.RentalAppService.GetById(System.Int32)">
+            <summary>
+            根据ID获取租住记录
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RentalAppService.CheckIn(Gentle.Application.Dtos.RentalRecord.CheckInInput)">
+            <summary>
+            入住办理
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RentalAppService.CheckOut(Gentle.Application.Dtos.RentalRecord.CheckOutInput)">
+            <summary>
+            退租办理
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.RentalAppService.Remove(System.Int32)">
+            <summary>
+            删除租住记录
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Apps.RoomAppService">
             <summary>
             房间管理应用服务
@@ -317,6 +350,186 @@
         <member name="P:Gentle.Application.Dtos.Community.UpdateCommunityInput.Remark">
             <summary>
             备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.RentalRecord.CheckInInput">
+            <summary>
+            入住请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.TenantId">
+            <summary>
+            租客ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.CheckInDate">
+            <summary>
+            入住日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.LeaseType">
+            <summary>
+            租期类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.MonthlyRent">
+            <summary>
+            月租金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.Deposit">
+            <summary>
+            押金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.RentalRecord.CheckOutInput">
+            <summary>
+            退租请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckOutInput.RentalRecordId">
+            <summary>
+            租住记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckOutInput.CheckOutDate">
+            <summary>
+            退租日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckOutInput.DepositStatus">
+            <summary>
+            押金处理方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckOutInput.DepositDeduction">
+            <summary>
+            押金抵扣金额（当押金状态为 Deducted 时使用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckOutInput.DeductionNote">
+            <summary>
+            抵扣说明
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckOutInput.CheckOutRemark">
+            <summary>
+            退租备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.RentalRecord.RentalRecordDto">
+            <summary>
+            租住记录 DTO
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.Id">
+            <summary>
+            记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.TenantId">
+            <summary>
+            租客ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.TenantName">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.RoomInfo">
+            <summary>
+            房间信息（小区+楼栋+房间号）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.CheckInDate">
+            <summary>
+            入住日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.LeaseType">
+            <summary>
+            租期类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.LeaseTypeText">
+            <summary>
+            租期类型文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.ContractEndDate">
+            <summary>
+            合同结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.MonthlyRent">
+            <summary>
+            月租金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.Deposit">
+            <summary>
+            押金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.DepositStatus">
+            <summary>
+            押金状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.DepositStatusText">
+            <summary>
+            押金状态文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.DepositDeduction">
+            <summary>
+            押金抵扣金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.Status">
+            <summary>
+            租住状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.StatusText">
+            <summary>
+            租住状态文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.CheckOutDate">
+            <summary>
+            退租日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.CheckOutRemark">
+            <summary>
+            退租备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.CreatedTime">
+            <summary>
+            创建时间
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.Room.CreateRoomInput">
@@ -809,6 +1022,39 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Services.IRentalRecordService">
+            <summary>
+            租住记录服务接口
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRentalRecordService.GetListAsync(System.Nullable{Gentle.Core.Enums.RentalStatus},System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            获取租住记录列表
+            </summary>
+            <param name="status">状态筛选（可选）</param>
+            <param name="roomId">房间ID筛选（可选）</param>
+            <param name="tenantId">租客ID筛选（可选）</param>
+        </member>
+        <member name="M:Gentle.Application.Services.IRentalRecordService.GetByIdAsync(System.Int32)">
+            <summary>
+            根据ID获取租住记录
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRentalRecordService.CheckInAsync(Gentle.Application.Dtos.RentalRecord.CheckInInput)">
+            <summary>
+            入住办理
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRentalRecordService.CheckOutAsync(Gentle.Application.Dtos.RentalRecord.CheckOutInput)">
+            <summary>
+            退租办理
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IRentalRecordService.DeleteAsync(System.Int32)">
+            <summary>
+            删除租住记录
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Services.IRoomService">
             <summary>
             房间服务接口
@@ -867,6 +1113,36 @@
         <member name="M:Gentle.Application.Services.ITenantService.DeleteAsync(System.Int32)">
             <summary>
             删除租客
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Services.RentalRecordService">
+            <summary>
+            租住记录服务实现
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.GetListAsync(System.Nullable{Gentle.Core.Enums.RentalStatus},System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.GetByIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.CheckInAsync(Gentle.Application.Dtos.RentalRecord.CheckInInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.CheckOutAsync(Gentle.Application.Dtos.RentalRecord.CheckOutInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.DeleteAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.CalculateContractEndDate(System.DateTime,Gentle.Core.Enums.LeaseType)">
+            <summary>
+            计算合同结束日期
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.GetRoomStatusText(Gentle.Core.Enums.RoomStatus)">
+            <summary>
+            获取房间状态文本
             </summary>
         </member>
         <member name="T:Gentle.Application.Services.RoomService">

@@ -42,8 +42,8 @@
 |----|------|------|------|
 | FEAT-008 | Tenant 实体 | ✅ 已完成 | ✓ |
 | FEAT-009 | RentalRecord 实体 | ✅ 已完成 | ✓ |
-| FEAT-010 | Tenant CRUD API | ⏳ 待开始 | - |
-| FEAT-011 | 入住/退租 API | ⏳ 待开始 | - |
+| FEAT-010 | Tenant CRUD API | ✅ 已完成 | ✓ |
+| FEAT-011 | 入住/退租 API | ✅ 已完成 | ✓ |
 | FEAT-012 | 租客列表页 | ⏳ 待开始 | - |
 | FEAT-013 | 入住办理页 | ⏳ 待开始 | - |
 | FEAT-014 | 退租弹窗 | ⏳ 待开始 | - |
@@ -153,6 +153,37 @@
 
 ### 2026-03-25
 
+- ✅ FEAT-011: 入住/退租业务逻辑 API（代码审查完成）
+  - 创建 DTO 文件：
+    - RentalRecordDto（租住记录响应）
+    - CheckInInput（入住请求）
+    - CheckOutInput（退租请求）
+  - 创建服务接口和实现：
+    - IRentalRecordService（继承 ITransient）
+    - RentalRecordService（注入 IRepository<RentalRecord>, IRepository<Tenant>, IRepository<Room>）
+    - 实现方法：GetListAsync, GetByIdAsync, CheckInAsync, CheckOutAsync, DeleteAsync
+  - 创建 RentalAppService（IDynamicApiController）：
+    - [Route("api/rental")]
+    - GET /list - 获取租住记录列表
+    - GET /{id} - 获取租住记录详情
+    - POST /check-in - 入住办理
+    - POST /check-out - 退租办理
+    - DELETE /remove/{id} - 删除租住记录
+  - 业务逻辑：
+    - 入住：验证租客/房间存在、验证房间状态为空置、创建租住记录、更新房间状态为已出租
+    - 退租：验证租住记录存在、验证状态为活跃、更新租住记录状态为已终止、更新房间状态为空置
+  - 配置 Mapster 映射：
+    - RentalRecord -> RentalRecordDto（含 TenantName, RoomInfo 映射）
+    - CheckInInput -> RentalRecord
+  - dotnet build 构建成功
+
+  **代码审查修复 (16:30):**
+  - ✅ Critical: 添加 [UnitOfWork] 特性到 CheckInAsync/CheckOutAsync/DeleteAsync 方法
+  - ✅ Important: 添加押金抵扣金额验证（不能超过押金）
+  - ✅ Important: 添加押金状态与抵扣金额一致性验证
+  - ✅ Important: 移除未使用的 _communityRepository 依赖
+  - ✅ Minor: 更新文档中 DTO 文件命名描述
+
 - ✅ FEAT-008: Tenant（租客）实体（已完成）
   - 创建 Gender 枚举（Male = 0, Female = 1）
   - 创建 Tenant 实体类（继承 Entity<int>）
@@ -181,4 +212,28 @@
     - 当前租客卡片（预留，待 FEAT-008~014 实现）
     - 出租记录卡片（预留，待 FEAT-009~011 实现）
   - 12/12 E2E 测试通过
+
+- ✅ FEAT-011: 入住/退租业务逻辑 API（已完成）
+  - 创建 DTO 文件：
+    - RentalRecordDto（租住记录响应）
+    - CheckInInput（入住请求）
+    - CheckOutInput（退租请求）
+  - 创建服务接口和实现：
+    - IRentalRecordService（继承 ITransient）
+    - RentalRecordService（注入 IRepository<RentalRecord>, IRepository<Tenant>, IRepository<Room>, IRepository<Community>）
+    - 实现方法：GetListAsync, GetByIdAsync, CheckInAsync, CheckOutAsync, DeleteAsync
+  - 创建 RentalAppService（IDynamicApiController）：
+    - [Route("api/rental")]
+    - GET /list - 获取租住记录列表
+    - GET /{id} - 获取租住记录详情
+    - POST /check-in - 入住办理
+    - POST /check-out - 退租办理
+    - DELETE /remove/{id} - 删除租住记录
+  - 业务逻辑：
+    - 入住：验证租客/房间存在、验证房间状态为空置、创建租住记录、更新房间状态为已出租
+    - 退租：验证租住记录存在、验证状态为活跃、更新租住记录状态为已终止、更新房间状态为空置
+  - 配置 Mapster 映射：
+    - RentalRecord -> RentalRecordDto（含 TenantName, RoomInfo 映射）
+    - CheckInInput -> RentalRecord
+  - dotnet build 构建成功
 

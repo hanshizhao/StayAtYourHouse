@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Furion.DatabaseAccessor;
 using Gentle.Core.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,7 @@ public class RentalRecordValidationAttribute : ValidationAttribute
 /// 租住记录实体
 /// </summary>
 [RentalRecordValidation]
+[Table("rental_record")]
 public class RentalRecord : Entity<int>, IEntitySeedData<RentalRecord>
 {
     /// <summary>
