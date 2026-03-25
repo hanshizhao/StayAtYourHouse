@@ -39,12 +39,12 @@
             租住记录实体
             </summary>
         </member>
-        <member name="P:Gentle.Core.Entities.RentalRecord.TenantId">
+        <member name="P:Gentle.Core.Entities.RentalRecord.RenterId">
             <summary>
             租客ID
             </summary>
         </member>
-        <member name="P:Gentle.Core.Entities.RentalRecord.Tenant">
+        <member name="P:Gentle.Core.Entities.RentalRecord.Renter">
             <summary>
             租客导航属性
             </summary>
