@@ -29,7 +29,7 @@
         row-key="id"
         vertical-align="top"
         :hover="true"
-        :pagination="pagination"
+        :pagination="paginationConfig"
         :loading="loading"
         :header-affixed-top="headerAffixedTop"
         data-testid="meter-table"
@@ -48,14 +48,10 @@
           <span>{{ row.electricReading.toFixed(2) }}</span>
         </template>
         <template #waterUsage="{ row }">
-          <span :class="{ 'usage-warning': row.waterUsage > 50 }">
-            {{ row.waterUsage.toFixed(2) }} 吨
-          </span>
+          <span :class="{ 'usage-warning': row.waterUsage > 50 }"> {{ row.waterUsage.toFixed(2) }} 吨 </span>
         </template>
         <template #electricUsage="{ row }">
-          <span :class="{ 'usage-warning': row.electricUsage > 200 }">
-            {{ row.electricUsage.toFixed(2) }} 度
-          </span>
+          <span :class="{ 'usage-warning': row.electricUsage > 200 }"> {{ row.electricUsage.toFixed(2) }} 度 </span>
         </template>
         <template #waterFee="{ row }">
           <span>¥{{ formatMoney(row.waterFee) }}</span>
@@ -82,12 +78,7 @@
         </template>
         <template #op="{ row }">
           <t-space>
-            <t-link
-              v-if="!row.hasBill"
-              theme="primary"
-              data-testid="delete-button"
-              @click="handleDelete(row)"
-            >
+            <t-link v-if="!row.hasBill" theme="primary" data-testid="delete-button" @click="handleDelete(row)">
               删除
             </t-link>
             <t-tooltip v-else content="已生成账单，无法删除" placement="top">
@@ -238,7 +229,6 @@
     </t-dialog>
   </div>
 </template>
-
 <script setup lang="ts">
 import { AddIcon } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SelectOption } from 'tdesign-vue-next';
@@ -246,11 +236,11 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 import { getCommunityList } from '@/api/community';
+import { deleteMeter, getLastReadings, getMeterList, recordMeter } from '@/api/meter';
 import type { CommunityItem } from '@/api/model/communityModel';
 import type { LastReadingsResult, MeterRecordItem, RecordMeterInput } from '@/api/model/meterModel';
 import type { RoomItem } from '@/api/model/roomModel';
 import { RoomStatus } from '@/api/model/roomModel';
-import { deleteMeter, getLastReadings, getMeterList, recordMeter } from '@/api/meter';
 import { getRoomList } from '@/api/room';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
@@ -303,9 +293,9 @@ const columns: PrimaryTableCol[] = [
 const loading = ref(false);
 const data = ref<MeterRecordItem[]>([]);
 const pagination = ref({
-  defaultPageSize: 20,
+  pageSize: 20,
   total: 0,
-  defaultCurrent: 1,
+  current: 1,
 });
 
 // 筛选
@@ -313,9 +303,7 @@ const filterCommunityId = ref<number | undefined>(undefined);
 
 // 小区选项
 const communities = ref<CommunityItem[]>([]);
-const communityOptions = computed<SelectOption[]>(() =>
-  communities.value.map((c) => ({ label: c.name, value: c.id })),
-);
+const communityOptions = computed<SelectOption[]>(() => communities.value.map((c) => ({ label: c.name, value: c.id })));
 
 // 已出租房间选项（用于抄表录入）
 const rentedRooms = ref<RoomItem[]>([]);
@@ -358,12 +346,14 @@ const formRules: Record<string, FormRule[]> = {
 
 // 计算用量
 const calculatedUsage = computed(() => {
-  const water = formData.value.waterReading && formData.value.waterReading >= lastReadings.value.waterReading
-    ? formData.value.waterReading - lastReadings.value.waterReading
-    : 0;
-  const electric = formData.value.electricReading && formData.value.electricReading >= lastReadings.value.electricReading
-    ? formData.value.electricReading - lastReadings.value.electricReading
-    : 0;
+  const water =
+    formData.value.waterReading && formData.value.waterReading >= lastReadings.value.waterReading
+      ? formData.value.waterReading - lastReadings.value.waterReading
+      : 0;
+  const electric =
+    formData.value.electricReading && formData.value.electricReading >= lastReadings.value.electricReading
+      ? formData.value.electricReading - lastReadings.value.electricReading
+      : 0;
   return { water, electric };
 });
 
@@ -404,6 +394,12 @@ const tableData = computed(() => {
 // 同步过滤后的总数到分页
 const filteredTotal = computed(() => tableData.value.length);
 
+// 分页配置（使用前端筛选后的 total）
+const paginationConfig = computed(() => ({
+  ...pagination.value,
+  total: filteredTotal.value,
+}));
+
 // 固定表头
 const headerAffixedTop = computed<HeaderAffixedTopConfig>(() => ({
   offsetTop: settingStore.isUseTabsRouter ? 48 : 0,
@@ -439,11 +435,11 @@ async function fetchData() {
   loading.value = true;
   try {
     const res = await getMeterList({
-      page: pagination.value.defaultCurrent,
-      pageSize: pagination.value.defaultPageSize,
+      page: 1, // 获取全量数据，前端筛选和分页
+      pageSize: 1000,
     });
     data.value = res?.items || [];
-    pagination.value.total = res?.total || 0;
+    // total 由 computed filteredTotal 动态计算
   } catch (e: unknown) {
     const error = e as { message?: string };
     MessagePlugin.error(error.message || '获取抄表记录失败');
@@ -454,13 +450,13 @@ async function fetchData() {
 
 /** 筛选变化 */
 function handleFilterChange() {
-  pagination.value.defaultCurrent = 1;
+  pagination.value.current = 1;
 }
 
 /** 分页 */
 function handlePageChange(pageInfo: PageInfo) {
-  pagination.value.defaultCurrent = pageInfo.current;
-  pagination.value.defaultPageSize = pageInfo.pageSize;
+  pagination.value.current = pageInfo.current;
+  pagination.value.pageSize = pageInfo.pageSize;
 }
 
 /** 打开抄表录入对话框 */
@@ -582,7 +578,6 @@ onMounted(() => {
   fetchData();
 });
 </script>
-
 <style lang="less" scoped>
 .meter-management {
   .list-card-container {
