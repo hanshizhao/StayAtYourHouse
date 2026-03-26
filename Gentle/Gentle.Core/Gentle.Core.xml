@@ -24,6 +24,11 @@
             租住记录导航属性
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.Bill.CollectionRecords">
+            <summary>
+            催收记录集合
+            </summary>
+        </member>
         <member name="P:Gentle.Core.Entities.Bill.PeriodStart">
             <summary>
             账单周期开始日期
@@ -85,6 +90,51 @@
             </summary>
         </member>
         <member name="M:Gentle.Core.Entities.Bill.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            配置种子数据
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.CollectionRecordValidationAttribute">
+            <summary>
+            催收记录实体验证特性
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.CollectionRecord">
+            <summary>
+            催收记录实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.CollectionRecord.BillId">
+            <summary>
+            账单ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.CollectionRecord.Bill">
+            <summary>
+            账单导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.CollectionRecord.CollectDate">
+            <summary>
+            催收日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.CollectionRecord.Result">
+            <summary>
+            催收结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.CollectionRecord.GraceUntil">
+            <summary>
+            宽限截止日期（仅当结果为宽限时有效）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.CollectionRecord.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.CollectionRecord.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
             <summary>
             配置种子数据
             </summary>
@@ -377,6 +427,26 @@
         <member name="F:Gentle.Core.Enums.BillStatus.Overdue">
             <summary>
             已逾期
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.CollectResult">
+            <summary>
+            催收结果枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.CollectResult.Success">
+            <summary>
+            催收成功
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.CollectResult.Grace">
+            <summary>
+            宽限处理
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.CollectResult.Refuse">
+            <summary>
+            拒绝支付
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.DepositStatus">

@@ -60,6 +60,11 @@ public class Bill : Entity<int>, IEntitySeedData<Bill>
     public RentalRecord RentalRecord { get; set; } = null!;
 
     /// <summary>
+    /// 催收记录集合
+    /// </summary>
+    public ICollection<CollectionRecord> CollectionRecords { get; set; } = new List<CollectionRecord>();
+
+    /// <summary>
     /// 账单周期开始日期
     /// </summary>
     [Required(ErrorMessage = "账单周期开始日期不能为空")]

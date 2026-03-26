@@ -874,10 +874,48 @@
         }
       ],
       "test_file": "tests/e2e/feat-016-collection-record-entity.spec.ts",
-      "status": "pending",
+      "status": "completed",
+      "completed_at": "2026-03-26T01:00:00Z",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_count": 11,
+        "verified_at": "2026-03-26T01:00:00Z",
+      },
+      "review": {
+        "last_review_at": "2026-03-26T00:30:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "fixed_issues": [
+          "验证逻辑补充：非宽限情况下 GraceUntil 应为空"
+        ],
+        "suggestions": [
+          "日期类型精度优化:可添加 [Column(TypeName = \"date\")] 特性",
+          "外键索引优化:可添加 [Index] 特性到 BillId"
+        ]
+      }
+    },
+      "review": {
+        "last_review_at": "2026-03-26T00:30:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "fixed_issues": [
+          "验证逻辑补充：非宽限情况下 GraceUntil 应为空"
+        ],
+        "suggestions": [
+          "日期类型精度优化：可添加 [Column(TypeName = \"date\")] 特性",
+          "外键索引优化：可添加 [Index] 特性到 BillId"
+        ]
       }
     },
     {
