@@ -85,15 +85,14 @@
     </div>
   </t-dialog>
 </template>
-
 <script setup lang="ts">
 import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, ref, watch } from 'vue';
 
+import { collectBill } from '@/api/bill';
 import type { BillItem, CollectInput } from '@/api/model/billModel';
 import { CollectResult } from '@/api/model/billModel';
-import { collectBill } from '@/api/bill';
 import { formatDate, formatMoney } from '@/utils/date';
 
 interface Props {
@@ -226,7 +225,7 @@ function handleDialogClose() {
 }
 
 // 获取催收结果标签主题
-function getResultTheme(result: CollectResult): string {
+function getResultTheme(result: CollectResult): 'default' | 'warning' | 'success' | 'primary' | 'danger' {
   switch (result) {
     case CollectResult.Success:
       return 'success';
@@ -239,7 +238,6 @@ function getResultTheme(result: CollectResult): string {
   }
 }
 </script>
-
 <style lang="less" scoped>
 .collect-dialog-content {
   .bill-info {

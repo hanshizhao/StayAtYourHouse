@@ -1,5 +1,7 @@
 <template>
   <div>
+    <!-- 待办提醒 -->
+    <todo-panel class="row-container" data-testid="todo-section" />
     <!-- 顶部 card  -->
     <top-panel class="row-container" />
     <!-- 中部图表  -->
@@ -14,6 +16,7 @@
 import MiddleChart from './components/MiddleChart.vue';
 import OutputOverview from './components/OutputOverview.vue';
 import RankList from './components/RankList.vue';
+import TodoPanel from './components/TodoPanel.vue';
 import TopPanel from './components/TopPanel.vue';
 
 defineOptions({

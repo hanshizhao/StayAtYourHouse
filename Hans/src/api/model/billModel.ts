@@ -101,3 +101,35 @@ export interface CollectInput {
   graceUntil?: string;
   remark?: string;
 }
+
+/**
+ * 待办汇总（与后端 TodoSummary 保持一致）
+ */
+export interface TodoSummary {
+  /** 逾期数量 */
+  overdueCount: number;
+  /** 宽限到期数量 */
+  graceExpiringCount: number;
+  /** 今日到期数量 */
+  dueTodayCount: number;
+  /** 即将到期数量 */
+  upcomingCount: number;
+  /** 总待办数量 */
+  totalCount: number;
+}
+
+/**
+ * 待办账单 DTO（与后端 TodoBillsDto 保持一致）
+ */
+export interface TodoBillsDto {
+  /** 逾期账单（已超过应收日期且未收款） */
+  overdue: BillItem[];
+  /** 宽限到期账单（今日宽限截止） */
+  graceExpiring: BillItem[];
+  /** 今日到期账单（应收日期为今日） */
+  dueToday: BillItem[];
+  /** 即将到期账单（3天内到期） */
+  upcoming: BillItem[];
+  /** 各类待办数量汇总 */
+  summary: TodoSummary;
+}

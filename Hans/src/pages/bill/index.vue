@@ -64,7 +64,10 @@
           </t-tag>
         </template>
         <template #daysRemaining="{ row }">
-          <span v-if="row.daysRemaining !== null && row.daysRemaining !== undefined" :class="getDaysRemainingClass(row.daysRemaining)">
+          <span
+            v-if="row.daysRemaining !== null && row.daysRemaining !== undefined"
+            :class="getDaysRemainingClass(row.daysRemaining)"
+          >
             {{ getDaysRemainingText(row.daysRemaining) }}
           </span>
           <span v-else class="text-secondary">-</span>
@@ -97,11 +100,7 @@
     </t-card>
 
     <!-- 催收弹窗 -->
-    <collect-dialog
-      v-model:visible="collectDialogVisible"
-      :bill="collectingBill"
-      @success="handleCollectSuccess"
-    />
+    <collect-dialog v-model:visible="collectDialogVisible" :bill="collectingBill" @success="handleCollectSuccess" />
 
     <!-- 删除确认对话框 -->
     <t-dialog
@@ -116,16 +115,15 @@
     </t-dialog>
   </div>
 </template>
-
 <script setup lang="ts">
 import type { PageInfo, PrimaryTableCol, SelectOption } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
-import type { BillItem, BillListParams } from '@/api/model/billModel';
-import { BillStatus } from '@/api/model/billModel';
 import { deleteBill, getBillList } from '@/api/bill';
 import { getCommunityList } from '@/api/community';
+import type { BillItem, BillListParams } from '@/api/model/billModel';
+import { BillStatus } from '@/api/model/billModel';
 import type { CommunityItem } from '@/api/model/communityModel';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
@@ -305,7 +303,7 @@ async function onConfirmDelete() {
 // ==================== 辅助函数 ====================
 
 // 获取状态标签主题
-function getStatusTheme(status: BillStatus): string {
+function getStatusTheme(status: BillStatus): 'default' | 'warning' | 'success' | 'primary' | 'danger' {
   switch (status) {
     case BillStatus.Pending:
       return 'warning';
@@ -341,7 +339,6 @@ onMounted(() => {
   fetchData();
 });
 </script>
-
 <style lang="less" scoped>
 .bill-list {
   .list-card-container {

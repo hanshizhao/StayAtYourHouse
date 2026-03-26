@@ -15,16 +15,18 @@
 import { test, expect, Page } from '@playwright/test';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3002';
+const USERNAME = process.env.E2E_USERNAME || 'zhs';
+const PASSWORD = process.env.E2E_PASSWORD || 'gentle8023';
 
 test.describe('FEAT-020: 首页待办提醒', () => {
   /**
    * 登录并导航到首页
    */
   async function loginAndNavigateToDashboard(page: Page): Promise<void> {
-    await page.goto(`${BASE_URL}/auth/sign-in`);
-    await page.waitForSelector('input[placeholder="请输入用户名"]', { timeout: 10000 });
-    await page.fill('input[placeholder="请输入用户名"]', 'admin');
-    await page.fill('input[placeholder="请输入密码"]', 'admin123');
+    await page.goto(`${BASE_URL}/login`);
+    await page.waitForSelector('input[placeholder*="账号"]', { timeout: 10000 });
+    await page.fill('input[placeholder*="账号"]', USERNAME);
+    await page.fill('input[placeholder*="密码"]', PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL(/dashboard/, { timeout: 15000 });
     await page.waitForLoadState('networkidle');
@@ -69,8 +71,8 @@ test.describe('FEAT-020: 首页待办提醒', () => {
 
     await loginAndNavigateToDashboard(page);
 
-    // 验证主内容区域可见
-    await expect(page.locator('main')).toBeVisible({ timeout: 5000 });
+    // 验证主内容区域可见（使用 .first() 避免 strict mode）
+    await expect(page.locator('main').first()).toBeVisible({ timeout: 5000 });
 
     // 验证无关键错误
     const criticalErrors = getCriticalErrors(consoleErrors);
@@ -262,8 +264,8 @@ test.describe('FEAT-020: 首页待办提醒', () => {
       await refreshButton.click();
       await page.waitForTimeout(500);
 
-      // 验证页面仍然正常
-      await expect(page.locator('main')).toBeVisible();
+      // 验证页面仍然正常（使用 .first() 避免 strict mode）
+      await expect(page.locator('main').first()).toBeVisible();
     }
   });
 
@@ -301,8 +303,8 @@ test.describe('FEAT-020: 首页待办提醒', () => {
 
     await loginAndNavigateToDashboard(page);
 
-    // 验证主内容区域仍然可见
-    await expect(page.locator('main')).toBeVisible({ timeout: 5000 });
+    // 验证主内容区域仍然可见（使用 .first() 避免 strict mode）
+    await expect(page.locator('main').first()).toBeVisible({ timeout: 5000 });
 
     // 验证待办区域仍然可见
     const todoSection = page.locator('[data-testid="todo-section"], .todo-section, .dashboard-card:has-text("待办")');

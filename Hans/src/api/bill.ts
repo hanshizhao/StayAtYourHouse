@@ -1,4 +1,4 @@
-import type { BillItem, BillListParams, BillListResult, CollectInput } from '@/api/model/billModel';
+import type { BillItem, BillListParams, BillListResult, CollectInput, TodoBillsDto } from '@/api/model/billModel';
 import { request } from '@/utils/request';
 
 const Api = {
@@ -6,6 +6,7 @@ const Api = {
   Detail: '/bill-app/get-by-id',
   Collect: '/bill-app/collect',
   Delete: '/bill-app/remove',
+  Todos: '/bill-app/get-today-todos',
 };
 
 /**
@@ -43,5 +44,14 @@ export function collectBill(data: CollectInput) {
 export function deleteBill(id: number) {
   return request.delete<void>({
     url: `${Api.Delete}/${id}`,
+  });
+}
+
+/**
+ * 获取今日待办账单
+ */
+export function getTodayTodos() {
+  return request.get<TodoBillsDto>({
+    url: Api.Todos,
   });
 }
