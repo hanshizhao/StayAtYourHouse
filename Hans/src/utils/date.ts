@@ -29,9 +29,14 @@ export function formatDateTime(dateStr?: string | null): string {
  * @param dateStr 日期字符串
  * @returns 格式化后的日期字符串，如 "2024/03/25"
  */
-export function formatDate(dateStr?: string | null): string {
+export function formatDate(dateStr?: string | Date | null): string {
   if (!dateStr) return '-';
-  return dayjs(dateStr).format('YYYY/MM/DD');
+  try {
+    const date = typeof dateStr === 'string' ? dayjs(dateStr) : dayjs(dateStr);
+    return date.format('YYYY/MM/DD');
+  } catch {
+    return '-';
+  }
 }
 
 import { LeaseType } from '@/api/model/rentalModel';
@@ -81,4 +86,17 @@ export function getLocalDateString(): string {
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const day = String(now.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+/**
+ * 格式化金额
+ * @param amount 金额
+ * @returns 格式化后的金额字符串，如 "1,234.56"
+ */
+export function formatMoney(amount?: number | null): string {
+  if (amount === null || amount === undefined) return '0.00';
+  return amount.toLocaleString('zh-CN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
