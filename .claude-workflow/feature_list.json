@@ -953,15 +953,41 @@
         }
       ],
       "test_file": "tests/e2e/feat-017-bill-api.spec.ts",
-      "status": "pending",
+      "status": "completed",
+      "completed_at": "2026-03-26T10:38:00+08:00",
       "verification": {
-        "api_routes_checked": false,
+        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "tests_count": 15,
+        "tests_skipped": 4,
+        "verified_at": "2026-03-26T10:38:00+08:00",
         "api_routes": {
           "base": "/api/bill-app",
-          "endpoints": ["get-list", "get-today-todos", "collect", "get-by-id/{id}"]
+          "endpoints": ["get-list", "get-today-todos", "collect", "get-by-id/{id}", "remove/{id}"]
         }
+      },
+      "review": {
+        "last_review_at": "2026-03-26T12:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 4
+        },
+        "fixed_issues": [
+          "移除 CollectAsync 中冗余的 SaveNowAsync 调用（与 UnitOfWork 冲突）",
+          "修复 TodoBillsDto 重复定义导致的命名冲突",
+          "修复 DesignTimeDbContextFactory 中 sys_user 表名错误为 user",
+          "添加 Bill 和 CollectionRecord 表的数据库迁移"
+        ],
+        "suggestions": [
+          "添加分页参数边界验证",
+          "添加无效状态参数日志",
+          "添加 N+1 查询说明注释",
+          "MapToDto 空值处理可优化"
+        ]
       }
     },
     {

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gentle.Database.Migrations.Migrations
 {
     [DbContext(typeof(DesignTimeDbContext))]
-    [Migration("20260325035334_FixRentalRecordIdAutoIncrement")]
-    partial class FixRentalRecordIdAutoIncrement
+    [Migration("20260326023619_AddBillAndCollectionRecordOnly")]
+    partial class AddBillAndCollectionRecordOnly
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,106 @@ namespace Gentle.Database.Migrations.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("Gentle.Core.Entities.Bill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal?>("ElectricFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("GraceUntil")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal?>("PaidAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("PaidDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("PeriodEnd")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("PeriodStart")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<decimal>("RentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("RentalRecordId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset?>("UpdatedTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal?>("WaterFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RentalRecordId");
+
+                    b.ToTable("bill", (string)null);
+                });
+
+            modelBuilder.Entity("Gentle.Core.Entities.CollectionRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CollectDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("GraceUntil")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int>("Result")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTimeOffset?>("UpdatedTime")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BillId");
+
+                    b.ToTable("collection_record", (string)null);
+                });
 
             modelBuilder.Entity("Gentle.Core.Entities.Community", b =>
                 {
@@ -271,7 +371,7 @@ namespace Gentle.Database.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("sys_user", (string)null);
+                    b.ToTable("user", (string)null);
 
                     b.HasData(
                         new
@@ -280,9 +380,31 @@ namespace Gentle.Database.Migrations.Migrations
                             CreatedTime = new DateTimeOffset(new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 8, 0, 0, 0)),
                             DisplayName = "管理员",
                             IsEnabled = true,
-                            PasswordHash = "$2a$11$4rjf76jDX1MA6ZQXoG3NfOPaNElgk2E5OVxzgnIyzPvtJNFA9Js2O",
+                            PasswordHash = "$2a$11$sezJHIDHouppe6smmsZVuOj/WkFyvYN5UUNFzOwVr02RaWZeLGHla",
                             Username = "zhs"
                         });
+                });
+
+            modelBuilder.Entity("Gentle.Core.Entities.Bill", b =>
+                {
+                    b.HasOne("Gentle.Core.Entities.RentalRecord", "RentalRecord")
+                        .WithMany("Bills")
+                        .HasForeignKey("RentalRecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RentalRecord");
+                });
+
+            modelBuilder.Entity("Gentle.Core.Entities.CollectionRecord", b =>
+                {
+                    b.HasOne("Gentle.Core.Entities.Bill", "Bill")
+                        .WithMany("CollectionRecords")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
                 });
 
             modelBuilder.Entity("Gentle.Core.Entities.RentalRecord", b =>
@@ -313,6 +435,16 @@ namespace Gentle.Database.Migrations.Migrations
                         .IsRequired();
 
                     b.Navigation("Community");
+                });
+
+            modelBuilder.Entity("Gentle.Core.Entities.Bill", b =>
+                {
+                    b.Navigation("CollectionRecords");
+                });
+
+            modelBuilder.Entity("Gentle.Core.Entities.RentalRecord", b =>
+                {
+                    b.Navigation("Bills");
                 });
 #pragma warning restore 612, 618
         }

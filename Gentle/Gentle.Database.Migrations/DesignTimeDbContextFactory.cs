@@ -41,6 +41,8 @@ public class DesignTimeDbContext : DbContext
     public DbSet<Room> Rooms => Set<Room>();
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<RentalRecord> RentalRecords => Set<RentalRecord>();
+    public DbSet<Bill> Bills => Set<Bill>();
+    public DbSet<CollectionRecord> CollectionRecords => Set<CollectionRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,7 +51,7 @@ public class DesignTimeDbContext : DbContext
         // 配置 User 实体
         modelBuilder.Entity<User>(entity =>
         {
-            entity.ToTable("sys_user");
+            entity.ToTable("user");
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Username).IsRequired().HasMaxLength(50);
             entity.Property(e => e.PasswordHash).IsRequired().HasMaxLength(200);
@@ -108,6 +110,24 @@ public class DesignTimeDbContext : DbContext
             entity.HasOne(e => e.Room).WithMany().HasForeignKey(e => e.RoomId);
             entity.Property(e => e.Remark).HasMaxLength(500);
             entity.Property(e => e.CheckOutRemark).HasMaxLength(500);
+        });
+
+        // 配置 Bill 实体
+        modelBuilder.Entity<Bill>(entity =>
+        {
+            entity.ToTable("bill");
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.RentalRecord).WithMany(r => r.Bills).HasForeignKey(e => e.RentalRecordId);
+            entity.Property(e => e.Remark).HasMaxLength(500);
+        });
+
+        // 配置 CollectionRecord 实体
+        modelBuilder.Entity<CollectionRecord>(entity =>
+        {
+            entity.ToTable("collection_record");
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Bill).WithMany(b => b.CollectionRecords).HasForeignKey(e => e.BillId);
+            entity.Property(e => e.Remark).HasMaxLength(500);
         });
     }
 }

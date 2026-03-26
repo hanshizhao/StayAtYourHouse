@@ -53,7 +53,7 @@
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
 | FEAT-015 | Bill 实体 | ✅ 已完成 | ✓ |
-| FEAT-016 | CollectionRecord 实体 | ⏳ 待开始 | - |
+| FEAT-016 | CollectionRecord 实体 | ✅ 已完成 | ✅ |
 | FEAT-017 | 账单 + 催收 API | ⏳ 待开始 | - |
 | FEAT-018 | 账单列表页 | ⏳ 待开始 | - |
 | FEAT-019 | 催收弹窗 | ⏳ 待开始 | - |
@@ -347,3 +347,56 @@
       - 日期类型精度优化：可添加 [Column(TypeName = "date")] 特性
       - 账单周期验证增强：可添加周期不超过一年的验证
       - 外键索引优化：可添加 [Index] 特性到 RentalRecordId
+
+### 2026-03-26
+
+- ✅ FEAT-016: CollectionRecord（催收记录）实体（已完成）
+  - 创建 CollectResult 枚举（Success = 0, Grace = 1, Refuse = 2）
+  - 创建 CollectionRecord 实体类（继承 Entity<int>）
+  - 实体属性：
+    - BillId（账单ID，必填）
+    - CollectDate（催收日期，必填）
+    - Result（催收结果，使用 CollectResult 枚举）
+    - GraceUntil（宽限截止日期，可选）
+    - Remark（备注，可选）
+  - 外键关系：Bill
+  - 验证特性：
+    - 非宽限情况下 GraceUntil 应为空
+    - 宽限截止日期必须晚于催收日期
+  - Furion 框架自动发现实体，无需手动配置 DbSet
+  - 16/16 E2E 测试通过
+  - **代码审查 (26T01:00):**
+    - 审查结果：通过（0 Critical, 0 Important, 2 Minor）
+    - Minor Suggestions（后续优化）:
+      - 日期类型精度优化: 可添加 [Column(TypeName = "date")] 特性
+      - 外键索引优化: 可添加 [Index] 特性到 BillId
+
+- 🚧 FEAT-017: 账单 + 催收 API（代码审查完成，待 E2E 测试）
+  - 创建 IBillService 接口（继承 ITransient）
+  - 创建 BillService 服务实现：
+    - GetListAsync: 账单列表（支持状态/小区/月份筛选，分页）
+    - GetByIdAsync: 账单详情
+    - CollectAsync: 催收处理（成功/宽限/拒付）+ [UnitOfWork]
+    - GetTodayTodosAsync: 今日待办账单
+    - DeleteAsync: 删除账单
+  - 创建 BillAppService（IDynamicApiController）：
+    - 路由: /api/bill-app
+    - 端点: get-list, get-by-id/{id}, collect, get-today-todos, remove/{id}
+  - 创建 DTO 文件：
+    - BillDto（含 PeriodText、StatusText、DaysRemaining 计算属性）
+    - CollectInput（含验证特性）
+    - CollectionRecordDto
+    - TodoBillsDto（Overdue、GraceExpiring、DueToday、Upcoming）
+    - TodoSummary
+    - BillListResult
+  - 配置 Mapster 映射
+  - **代码审查 (26T12:00):**
+    - 审查结果：通过（0 Critical, 0 Important, 4 Minor）
+    - Important 修复：
+      - 移除 CollectAsync 中冗余的 SaveNowAsync 调用（与 UnitOfWork 冲突）
+      - 修复 TodoBillsDto 重复定义导致的命名冲突
+    - Minor Suggestions（后续优化）：
+      - 添加分页参数边界验证
+      - 添加无效状态参数日志
+      - 添加 N+1 查询说明注释
+      - MapToDto 空值处理可优化

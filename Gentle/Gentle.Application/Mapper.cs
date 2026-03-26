@@ -1,3 +1,4 @@
+using Gentle.Application.Dtos.Bill;
 using Gentle.Application.Dtos.Community;
 using Gentle.Application.Dtos.RentalRecord;
 using Gentle.Application.Dtos.Room;
@@ -48,5 +49,11 @@ public class Mapper : IRegister
         // CheckInInput -> RentalRecord 映射配置
         config.NewConfig<CheckInInput, RentalRecord>()
             .Map(dest => dest.RenterId, src => src.TenantId);
+
+        // Bill -> BillDto 映射配置
+        config.NewConfig<Bill, BillDto>();
+
+        // CollectionRecord -> CollectionRecordDto 映射配置
+        config.NewConfig<CollectionRecord, CollectionRecordDto>();
     }
 }
