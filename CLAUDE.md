@@ -49,8 +49,10 @@ dotnet run --project Gentle.Web.Entry
 dotnet build
 
 # Entity Framework 数据库迁移
+# 注意：必须指定 --startup-project 参数，让 EF Core 从依赖注入中获取 DbContext
 dotnet ef migrations add <MigrationName> --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry
 dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry
+dotnet ef migrations list --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry
 ```
 
 ## 架构

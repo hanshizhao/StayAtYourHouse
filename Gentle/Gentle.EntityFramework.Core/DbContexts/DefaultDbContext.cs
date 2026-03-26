@@ -12,4 +12,15 @@ public class DefaultDbContext : AppDbContext<DefaultDbContext>
     public DefaultDbContext(DbContextOptions<DefaultDbContext> options) : base(options)
     {
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+
+        // 配置迁移程序集
+        optionsBuilder.UseMySQL(
+            DbProvider.GetConnectionString<DefaultDbContext>(),
+            mysqlOptions => mysqlOptions.MigrationsAssembly("Gentle.Database.Migrations")
+        );
+    }
 }
