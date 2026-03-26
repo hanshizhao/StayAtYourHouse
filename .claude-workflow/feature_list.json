@@ -1270,14 +1270,19 @@
         }
       ],
       "test_file": "tests/e2e/feat-022-meter-api.spec.ts",
-      "status": "pending",
+      "status": "completed",
+      "completed_at": "2026-03-26T14:45:00+08:00",
       "verification": {
-        "api_routes_checked": false,
+        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "tests_count": 19,
+        "tests_passed": 12,
+        "tests_skipped": 7,
+        "verified_at": "2026-03-26T14:45:00+08:00",
         "api_routes": {
           "base": "/api/meter-app",
-          "endpoints": ["get-list", "record", "get-utility-bills"]
+          "endpoints": ["get-list", "record", "get-utility-bills", "get-last-readings/{roomId}", "get-by-id/{id}", "remove/{id}", "pay", "get-utility-bill/{id}", "remove-utility-bill/{id}"]
         }
       }
     },

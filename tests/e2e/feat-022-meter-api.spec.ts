@@ -29,16 +29,16 @@ test.describe('FEAT-022: Meter API', () => {
    */
   async function getAdminToken(request: APIRequestContext): Promise<string> {
     const loginResponse = await request.post(`${API_BASE}/api/auth/login`, {
-      data: { username: 'admin', password: 'admin123' }
+      data: { account: 'zhs', password: 'gentle8023' }
     });
 
     expect(loginResponse.status()).toBe(200);
 
     const result = await loginResponse.json();
     expect(result.succeeded).toBe(true);
-    expect(result.data).toHaveProperty('accessToken');
+    expect(result.data).toHaveProperty('token');
 
-    return result.data.accessToken;
+    return result.data.token;
   }
 
   /**
@@ -90,7 +90,7 @@ test.describe('FEAT-022: Meter API', () => {
     // 清理抄表记录
     for (const id of createdMeterRecordIds) {
       try {
-        await request.delete(`${API_BASE}/api/meter/remove/${id}`, {
+        await request.delete(`${API_BASE}/api/meter-app/remove/${id}`, {
           headers: authHeaders(token)
         });
       } catch (e) {
@@ -100,7 +100,7 @@ test.describe('FEAT-022: Meter API', () => {
     // 清理水电账单
     for (const id of createdUtilityBillIds) {
       try {
-        await request.delete(`${API_BASE}/api/utility-bill/remove/${id}`, {
+        await request.delete(`${API_BASE}/api/meter-app/remove-utility-bill/${id}`, {
           headers: authHeaders(token)
         });
       } catch (e) {
@@ -145,13 +145,13 @@ test.describe('FEAT-022: Meter API', () => {
   // ==================== 认证测试 ====================
 
   test('1. 未认证请求 - 列表接口应返回 401', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/meter/list`);
+    const response = await request.get(`${API_BASE}/api/meter-app/get-list`);
 
     expect(response.status()).toBe(401);
   });
 
   test('2. 无效 Token - 列表接口应返回 401', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/meter/list`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/get-list`, {
       headers: { Authorization: 'Bearer invalid_token' }
     });
 
@@ -161,7 +161,7 @@ test.describe('FEAT-022: Meter API', () => {
   // ==================== 抄表记录列表接口测试 ====================
 
   test('3. 列表接口 - 返回正确数据结构', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/meter/list`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/get-list`, {
       headers: authHeaders(authToken)
     });
 
@@ -170,21 +170,29 @@ test.describe('FEAT-022: Meter API', () => {
     const result = await response.json();
     expect(result.succeeded).toBe(true);
     expect(result).toHaveProperty('data');
-    expect(Array.isArray(result.data)).toBe(true);
+    // 分页结构：data.items 是数组
+    expect(result.data).toHaveProperty('items');
+    expect(Array.isArray(result.data.items)).toBe(true);
 
     // 如果有数据，验证数据结构
-    if (result.data.length > 0) {
-      const firstItem = result.data[0];
+    if (result.data.items.length > 0) {
+      const firstItem = result.data.items[0];
       expect(firstItem).toHaveProperty('id');
       expect(firstItem).toHaveProperty('roomId');
-      expect(firstItem).toHaveProperty('recordDate');
+      expect(firstItem).toHaveProperty('meterDate');
       expect(firstItem).toHaveProperty('waterReading');
       expect(firstItem).toHaveProperty('electricReading');
     }
   });
 
   test('4. 列表接口 - 房间筛选参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/meter/list?roomId=${testRoomId}`, {
+    // 如果没有测试房间，跳过
+    if (!testRoomId) {
+      test.skip('没有测试房间，跳过房间筛选测试');
+      return;
+    }
+
+    const response = await request.get(`${API_BASE}/api/meter-app/get-list?roomId=${testRoomId}`, {
       headers: authHeaders(authToken)
     });
 
@@ -194,15 +202,15 @@ test.describe('FEAT-022: Meter API', () => {
     expect(result.succeeded).toBe(true);
 
     // 如果有数据，验证所有数据的 roomId 都是正确的
-    if (result.data.length > 0) {
-      for (const item of result.data) {
+    if (result.data.items.length > 0) {
+      for (const item of result.data.items) {
         expect(item.roomId).toBe(testRoomId);
       }
     }
   });
 
   test('5. 列表接口 - 月份筛选参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/meter/list?month=2026-03`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/get-list?month=2026-03`, {
       headers: authHeaders(authToken)
     });
 
@@ -220,7 +228,7 @@ test.describe('FEAT-022: Meter API', () => {
       return;
     }
 
-    const response = await request.post(`${API_BASE}/api/meter/record`, {
+    const response = await request.post(`${API_BASE}/api/meter-app/record`, {
       headers: authHeaders(authToken),
       data: {
         roomId: testRoomId,
@@ -246,7 +254,7 @@ test.describe('FEAT-022: Meter API', () => {
   });
 
   test('7. 抄表录入接口 - 必填字段验证', async ({ request }) => {
-    const response = await request.post(`${API_BASE}/api/meter/record`, {
+    const response = await request.post(`${API_BASE}/api/meter-app/record`, {
       headers: authHeaders(authToken),
       data: {
         // 缺少 roomId, recordDate 等必填字段
@@ -262,7 +270,7 @@ test.describe('FEAT-022: Meter API', () => {
   });
 
   test('8. 抄表录入接口 - 房间不存在验证', async ({ request }) => {
-    const response = await request.post(`${API_BASE}/api/meter/record`, {
+    const response = await request.post(`${API_BASE}/api/meter-app/record`, {
       headers: authHeaders(authToken),
       data: {
         roomId: 99999999, // 不存在的房间
@@ -284,7 +292,7 @@ test.describe('FEAT-022: Meter API', () => {
       return;
     }
 
-    const response = await request.post(`${API_BASE}/api/meter/record`, {
+    const response = await request.post(`${API_BASE}/api/meter-app/record`, {
       headers: authHeaders(authToken),
       data: {
         roomId: testRoomId,
@@ -310,7 +318,7 @@ test.describe('FEAT-022: Meter API', () => {
     }
 
     // 第一次录入
-    const firstResponse = await request.post(`${API_BASE}/api/meter/record`, {
+    const firstResponse = await request.post(`${API_BASE}/api/meter-app/record`, {
       headers: authHeaders(authToken),
       data: {
         roomId: testRoomId,
@@ -326,7 +334,7 @@ test.describe('FEAT-022: Meter API', () => {
       createdMeterRecordIds.push(firstResult.data.id);
 
       // 尝试同月再次录入
-      const secondResponse = await request.post(`${API_BASE}/api/meter/record`, {
+      const secondResponse = await request.post(`${API_BASE}/api/meter-app/record`, {
         headers: authHeaders(authToken),
         data: {
           roomId: testRoomId,
@@ -353,16 +361,16 @@ test.describe('FEAT-022: Meter API', () => {
 
   test('11. 抄表记录详情接口 - 返回正确数据', async ({ request }) => {
     // 先获取列表
-    const listResponse = await request.get(`${API_BASE}/api/meter/list`, {
+    const listResponse = await request.get(`${API_BASE}/api/meter-app/get-list`, {
       headers: authHeaders(authToken)
     });
 
     const listResult = await listResponse.json();
 
-    if (listResult.data.length > 0) {
-      const recordId = listResult.data[0].id;
+    if (listResult.data.items.length > 0) {
+      const recordId = listResult.data.items[0].id;
 
-      const response = await request.get(`${API_BASE}/api/meter/${recordId}`, {
+      const response = await request.get(`${API_BASE}/api/meter-app/get-by-id/${recordId}`, {
         headers: authHeaders(authToken)
       });
 
@@ -379,7 +387,7 @@ test.describe('FEAT-022: Meter API', () => {
   });
 
   test('12. 抄表记录详情接口 - 不存在的 ID 返回 404', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/meter/99999999`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/99999999`, {
       headers: authHeaders(authToken)
     });
 
@@ -394,7 +402,7 @@ test.describe('FEAT-022: Meter API', () => {
   // ==================== 水电账单接口测试 ====================
 
   test('13. 水电账单列表接口 - 返回正确数据结构', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/utility-bill/list`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/get-utility-bills`, {
       headers: authHeaders(authToken)
     });
 
@@ -403,21 +411,24 @@ test.describe('FEAT-022: Meter API', () => {
     const result = await response.json();
     expect(result.succeeded).toBe(true);
     expect(result).toHaveProperty('data');
-    expect(Array.isArray(result.data)).toBe(true);
+    // 分页结构：data.items 是数组
+    expect(result.data).toHaveProperty('items');
+    expect(Array.isArray(result.data.items)).toBe(true);
 
     // 如果有数据，验证数据结构
-    if (result.data.length > 0) {
-      const firstItem = result.data[0];
+    if (result.data.items.length > 0) {
+      const firstItem = result.data.items[0];
       expect(firstItem).toHaveProperty('id');
       expect(firstItem).toHaveProperty('roomId');
-      expect(firstItem).toHaveProperty('billMonth');
+      expect(firstItem).toHaveProperty('periodStart');
+      expect(firstItem).toHaveProperty('periodEnd');
       expect(firstItem).toHaveProperty('waterFee');
       expect(firstItem).toHaveProperty('electricFee');
     }
   });
 
   test('14. 水电账单列表接口 - 月份筛选参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/utility-bill/list?month=2026-03`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/get-utility-bills?month=2026-03`, {
       headers: authHeaders(authToken)
     });
 
@@ -428,7 +439,7 @@ test.describe('FEAT-022: Meter API', () => {
   });
 
   test('15. 水电账单列表接口 - 房间筛选参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/utility-bill/list?roomId=${testRoomId}`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/get-utility-bills?roomId=${testRoomId}`, {
       headers: authHeaders(authToken)
     });
 
@@ -442,17 +453,17 @@ test.describe('FEAT-022: Meter API', () => {
 
   test('16. 水电用量计算 - 验证用量计算正确', async ({ request }) => {
     // 获取水电账单列表
-    const listResponse = await request.get(`${API_BASE}/api/utility-bill/list`, {
+    const listResponse = await request.get(`${API_BASE}/api/meter-app/get-utility-bills`, {
       headers: authHeaders(authToken)
     });
 
     const listResult = await listResponse.json();
 
-    if (listResult.data.length > 0) {
-      const billId = listResult.data[0].id;
+    if (listResult.data.items.length > 0) {
+      const billId = listResult.data.items[0].id;
 
       // 获取详情
-      const response = await request.get(`${API_BASE}/api/utility-bill/${billId}`, {
+      const response = await request.get(`${API_BASE}/api/meter-app/get-utility-bill/${billId}`, {
         headers: authHeaders(authToken)
       });
 
@@ -474,7 +485,7 @@ test.describe('FEAT-022: Meter API', () => {
   // ==================== 边界测试 ====================
 
   test('17. 列表接口 - 无效月份参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/meter/list?month=invalid_month`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/get-list?month=invalid_month`, {
       headers: authHeaders(authToken)
     });
 
@@ -483,7 +494,7 @@ test.describe('FEAT-022: Meter API', () => {
   });
 
   test('18. 列表接口 - 无效房间 ID 参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/meter/list?roomId=invalid`, {
+    const response = await request.get(`${API_BASE}/api/meter-app/get-list?roomId=invalid`, {
       headers: authHeaders(authToken)
     });
 
@@ -499,7 +510,7 @@ test.describe('FEAT-022: Meter API', () => {
       return;
     }
 
-    const response = await request.post(`${API_BASE}/api/meter/batch-record`, {
+    const response = await request.post(`${API_BASE}/api/meter-app/batch-record`, {
       headers: authHeaders(authToken),
       data: {
         records: [

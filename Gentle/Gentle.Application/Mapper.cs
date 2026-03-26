@@ -1,5 +1,6 @@
 using Gentle.Application.Dtos.Bill;
 using Gentle.Application.Dtos.Community;
+using Gentle.Application.Dtos.Meter;
 using Gentle.Application.Dtos.RentalRecord;
 using Gentle.Application.Dtos.Room;
 using Gentle.Application.Dtos.User;
@@ -55,5 +56,12 @@ public class Mapper : IRegister
 
         // CollectionRecord -> CollectionRecordDto 映射配置
         config.NewConfig<CollectionRecord, CollectionRecordDto>();
+
+        // MeterRecord -> MeterRecordDto 映射配置
+        config.NewConfig<MeterRecord, MeterRecordDto>();
+
+        // UtilityBill -> UtilityBillDto 映射配置
+        config.NewConfig<UtilityBill, UtilityBillDto>()
+            .Map(dest => dest.TenantId, src => src.BillTenantId);
     }
 }

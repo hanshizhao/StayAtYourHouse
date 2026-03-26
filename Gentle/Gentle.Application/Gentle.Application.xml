@@ -114,6 +114,81 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.MeterAppService">
+            <summary>
+            水电抄表管理应用服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.GetList(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            获取抄表记录列表
+            </summary>
+            <param name="communityId">小区ID筛选</param>
+            <param name="roomId">房间ID筛选</param>
+            <param name="page">页码</param>
+            <param name="pageSize">每页数量</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.GetLastReadings(System.Int32)">
+            <summary>
+            获取房间上次抄表读数
+            </summary>
+            <param name="roomId">房间ID</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.Record(Gentle.Application.Dtos.Meter.RecordMeterInput)">
+            <summary>
+            录入抄表记录
+            </summary>
+            <param name="input">抄表录入输入</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.Remove(System.Int32)">
+            <summary>
+            删除抄表记录
+            </summary>
+            <param name="id">抄表记录ID</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.GetUtilityBills(System.String,System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
+            <summary>
+            获取水电账单列表
+            </summary>
+            <param name="status">状态筛选（pending/paid/merged）</param>
+            <param name="communityId">小区ID筛选</param>
+            <param name="month">月份筛选（格式：yyyy-MM）</param>
+            <param name="page">页码</param>
+            <param name="pageSize">每页数量</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.GetUtilityBill(System.Int32)">
+            <summary>
+            根据ID获取水电账单详情
+            </summary>
+            <param name="id">账单ID</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.Pay(Gentle.Application.Dtos.Meter.PayUtilityBillInput)">
+            <summary>
+            收取水电费
+            </summary>
+            <param name="input">收款输入</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.RemoveUtilityBill(System.Int32)">
+            <summary>
+            删除水电账单
+            </summary>
+            <param name="id">账单ID</param>
+        </member>
+        <member name="T:Gentle.Application.Apps.LastReadingsResult">
+            <summary>
+            上次抄表读数结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Apps.LastReadingsResult.WaterReading">
+            <summary>
+            上次水表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Apps.LastReadingsResult.ElectricReading">
+            <summary>
+            上次电表读数
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Apps.RentalAppService">
             <summary>
             租住管理应用服务
@@ -657,6 +732,311 @@
         <member name="P:Gentle.Application.Dtos.Community.UpdateCommunityInput.Remark">
             <summary>
             备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Meter.MeterListResult">
+            <summary>
+            抄表记录列表结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterListResult.Items">
+            <summary>
+            抄表记录列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterListResult.Total">
+            <summary>
+            总数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterListResult.Page">
+            <summary>
+            当前页码
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterListResult.PageSize">
+            <summary>
+            每页数量
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Meter.UtilityBillListResult">
+            <summary>
+            水电账单列表结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillListResult.Items">
+            <summary>
+            水电账单列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillListResult.Total">
+            <summary>
+            总数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillListResult.Page">
+            <summary>
+            当前页码
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillListResult.PageSize">
+            <summary>
+            每页数量
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Meter.MeterRecordDto">
+            <summary>
+            抄表记录 DTO
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.Id">
+            <summary>
+            记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.RoomInfo">
+            <summary>
+            房间信息（小区+楼栋+房间号）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.MeterDate">
+            <summary>
+            抄表日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.MeterDateText">
+            <summary>
+            抄表日期文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.WaterReading">
+            <summary>
+            本次水表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.ElectricReading">
+            <summary>
+            本次电表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.PrevWaterReading">
+            <summary>
+            上次水表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.PrevElectricReading">
+            <summary>
+            上次电表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.WaterUsage">
+            <summary>
+            本次用水量（吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.ElectricUsage">
+            <summary>
+            本次用电量（度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.WaterFee">
+            <summary>
+            水费（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.ElectricFee">
+            <summary>
+            电费（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.TotalFee">
+            <summary>
+            总费用（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.HasBill">
+            <summary>
+            是否已生成账单
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Meter.PayUtilityBillInput">
+            <summary>
+            水电账单收款输入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.PayUtilityBillInput.BillId">
+            <summary>
+            账单ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.PayUtilityBillInput.PaidAmount">
+            <summary>
+            实收金额（可选，默认为总金额）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.PayUtilityBillInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Meter.RecordMeterInput">
+            <summary>
+            抄表录入输入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.RecordMeterInput.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.RecordMeterInput.MeterDate">
+            <summary>
+            抄表日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.RecordMeterInput.WaterReading">
+            <summary>
+            本次水表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.RecordMeterInput.ElectricReading">
+            <summary>
+            本次电表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.RecordMeterInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Meter.UtilityBillDto">
+            <summary>
+            水电账单 DTO
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.Id">
+            <summary>
+            账单ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.RoomInfo">
+            <summary>
+            房间信息（小区+楼栋+房间号）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.TenantId">
+            <summary>
+            租客ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.TenantName">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.MeterRecordId">
+            <summary>
+            抄表记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.PeriodStart">
+            <summary>
+            账单周期开始日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.PeriodEnd">
+            <summary>
+            账单周期结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.PeriodText">
+            <summary>
+            账单周期文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.WaterUsage">
+            <summary>
+            用水量（吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.ElectricUsage">
+            <summary>
+            用电量（度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.WaterFee">
+            <summary>
+            水费（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.ElectricFee">
+            <summary>
+            电费（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.TotalAmount">
+            <summary>
+            总金额（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.Status">
+            <summary>
+            账单状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.StatusText">
+            <summary>
+            账单状态文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.PaidAmount">
+            <summary>
+            实收金额（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.PaidDate">
+            <summary>
+            收款日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.CreatedTime">
+            <summary>
+            创建时间
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.RentalRecord.CheckInInput">
@@ -1496,6 +1876,72 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Services.IMeterService">
+            <summary>
+            水电抄表服务接口
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IMeterService.GetListAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            获取抄表记录列表
+            </summary>
+            <param name="communityId">小区ID筛选</param>
+            <param name="roomId">房间ID筛选</param>
+            <param name="page">页码</param>
+            <param name="pageSize">每页数量</param>
+            <returns>抄表记录列表和总数</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMeterService.GetLastReadingsAsync(System.Int32)">
+            <summary>
+            获取房间上次抄表读数
+            </summary>
+            <param name="roomId">房间ID</param>
+            <returns>上次抄表读数（水表、电表），如果没有记录返回 (0, 0)</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMeterService.RecordAsync(Gentle.Application.Dtos.Meter.RecordMeterInput)">
+            <summary>
+            录入抄表记录（自动计算用量和费用，生成水电账单）
+            </summary>
+            <param name="input">抄表录入输入</param>
+            <returns>抄表记录</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMeterService.GetBillsAsync(System.Nullable{Gentle.Core.Enums.UtilityBillStatus},System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
+            <summary>
+            获取水电账单列表
+            </summary>
+            <param name="status">状态筛选</param>
+            <param name="communityId">小区ID筛选</param>
+            <param name="month">月份筛选（格式：yyyy-MM）</param>
+            <param name="page">页码</param>
+            <param name="pageSize">每页数量</param>
+            <returns>水电账单列表和总数</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMeterService.GetBillByIdAsync(System.Int32)">
+            <summary>
+            根据ID获取水电账单详情
+            </summary>
+            <param name="id">账单ID</param>
+            <returns>水电账单详情</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMeterService.PayAsync(Gentle.Application.Dtos.Meter.PayUtilityBillInput)">
+            <summary>
+            收取水电费
+            </summary>
+            <param name="input">收款输入</param>
+            <returns>更新后的账单</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMeterService.DeleteRecordAsync(System.Int32)">
+            <summary>
+            删除抄表记录（仅限未生成账单或账单为待收取状态的记录）
+            </summary>
+            <param name="id">抄表记录ID</param>
+        </member>
+        <member name="M:Gentle.Application.Services.IMeterService.DeleteBillAsync(System.Int32)">
+            <summary>
+            删除水电账单（仅限待收取状态）
+            </summary>
+            <param name="id">账单ID</param>
+        </member>
         <member name="T:Gentle.Application.Services.IRentalRecordService">
             <summary>
             租住记录服务接口
@@ -1587,6 +2033,55 @@
         <member name="M:Gentle.Application.Services.ITenantService.DeleteAsync(System.Int32)">
             <summary>
             删除租客
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Services.MeterService">
+            <summary>
+            水电抄表服务实现
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.GetListAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.GetLastReadingsAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.RecordAsync(Gentle.Application.Dtos.Meter.RecordMeterInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.GetBillsAsync(System.Nullable{Gentle.Core.Enums.UtilityBillStatus},System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.GetBillByIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.PayAsync(Gentle.Application.Dtos.Meter.PayUtilityBillInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.DeleteRecordAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.DeleteBillAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.CreateUtilityBillAsync(Gentle.Core.Entities.MeterRecord,Gentle.Core.Entities.Room)">
+            <summary>
+            创建水电账单
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.GetMeterRecordByIdAsync(System.Int32)">
+            <summary>
+            获取抄表记录详情
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.MapToMeterRecordDto(Gentle.Core.Entities.MeterRecord)">
+            <summary>
+            映射到 MeterRecordDto
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.MapToUtilityBillDto(Gentle.Core.Entities.UtilityBill)">
+            <summary>
+            映射到 UtilityBillDto
             </summary>
         </member>
         <member name="T:Gentle.Application.Services.RentalRecordService">
