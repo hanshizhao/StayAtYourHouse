@@ -1188,10 +1188,58 @@
         }
       ],
       "test_file": "tests/e2e/feat-021-meter-utility-entity.spec.ts",
-      "status": "pending",
+      "status": "completed",
+      "completed_at": "2026-03-26T21:45:00+08:00",
       "verification": {
+        "build_passed": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_count": 14,
+        "tests_passed": 13,
+        "tests_skipped": 1,
+        "verified_at": "2026-03-26T21:45:00+08:00"
+      },
+      "review": {
+        "last_review_at": "2026-03-26T21:40:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "fixed_issues": [
+          "添加 MeterRecordValidationAttribute 验证读数递增和用量计算",
+          "添加 UtilityBillValidationAttribute 验证账单周期、金额和状态一致性",
+          "添加用量属性精度 [Column(TypeName = \"decimal(10,2)\")]",
+          "Room 实体添加反向导航属性 MeterRecords 和 UtilityBills",
+          "E2E 测试更新：修复属性名期望值（MeterDate, PeriodStart/End）",
+          "E2E 测试更新：验证 Furion 框架规范和自定义验证特性"
+        ]
+      },
+      "implementation": {
+        "files_created": [
+          "Gentle/Gentle.Core/Enums/UtilityBillStatus.cs",
+          "Gentle/Gentle.Core/Entities/MeterRecord.cs",
+          "Gentle/Gentle.Core/Entities/UtilityBill.cs"
+        ],
+        "files_modified": [
+          "Gentle/Gentle.Core/Entities/Room.cs"
+        ],
+        "entities": [
+          {
+            "name": "MeterRecord",
+            "description": "抄表记录实体",
+            "properties": ["RoomId", "MeterDate", "WaterReading", "ElectricReading", "PrevWaterReading", "PrevElectricReading", "WaterUsage", "ElectricUsage", "WaterFee", "ElectricFee", "Remark"],
+            "validation": ["MeterRecordValidation", "读数递增验证", "用量计算验证"]
+          },
+          {
+            "name": "UtilityBill",
+            "description": "水电账单实体",
+            "properties": ["RoomId", "BillTenantId", "MeterRecordId", "PeriodStart", "PeriodEnd", "WaterUsage", "ElectricUsage", "WaterFee", "ElectricFee", "TotalAmount", "Status", "PaidAmount", "PaidDate", "Remark"],
+            "validation": ["UtilityBillValidation", "账单周期验证", "金额验证", "状态一致性验证"]
+          }
+        ]
       }
     },
     {

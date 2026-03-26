@@ -18,7 +18,7 @@
 | 房源管理 | P0 | 7 | ✅ 已完成 |
 | 租客管理 | P0 | 7 | ✅ 已完成 |
 | 收租管理 | P0 | 6 | ✅ 已完成 |
-| 水电抄表 | P1 | 4 | 待开始 |
+| 水电抄表 | P1 | 4 | 🚧 进行中 |
 | 统计报表 | P1 | 5 | 待开始 |
 | 集成测试 | - | 1 | 待开始 |
 
@@ -63,7 +63,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-021 | MeterRecord + UtilityBill 实体 | ⏳ 待开始 | - |
+| FEAT-021 | MeterRecord + UtilityBill 实体 | ✅ 已完成 | ✓ |
 | FEAT-022 | 水电抄表 API | ⏳ 待开始 | - |
 | FEAT-023 | 抄表录入页 | ⏳ 待开始 | - |
 | FEAT-024 | 水电账单页 | ⏳ 待开始 | - |
@@ -461,3 +461,39 @@
     - 21/22 测试通过（1 个跳过 - 无待办数据时跳过催收按钮测试）
     - 测试覆盖：页面可访问性、待办区域可见性、分类显示、数据结构验证、催收按钮、响应式布局
     - 修复测试代码 strict mode 问题（main 选择器使用 .first()）
+
+- ✅ FEAT-021: MeterRecord + UtilityBill 实体（已完成）
+  - **文件创建：**
+    - UtilityBillStatus 枚举（Gentle/Gentle.Core/Enums/UtilityBillStatus.cs）
+    - MeterRecord 实体（Gentle/Gentle.Core/Entities/MeterRecord.cs）
+    - UtilityBill 实体（Gentle/Gentle.Core/Entities/UtilityBill.cs）
+  - **MeterRecord 实体属性：**
+    - RoomId（房间ID，外键）
+    - MeterDate（抄表日期）
+    - WaterReading / ElectricReading（本次水/电表读数）
+    - PrevWaterReading / PrevElectricReading（上次读数）
+    - WaterUsage / ElectricUsage（本次用量，decimal(10,2)）
+    - WaterFee / ElectricFee（费用，decimal(10,2)）
+    - Remark（备注）
+  - **UtilityBill 实体属性：**
+    - RoomId（房间ID，外键）
+    - BillTenantId（租客ID，可选）
+    - MeterRecordId（抄表记录ID，外键）
+    - PeriodStart / PeriodEnd（账单周期）
+    - WaterUsage / ElectricUsage（用量，decimal(10,2)）
+    - WaterFee / ElectricFee（费用，decimal(10,2)）
+    - TotalAmount（总金额，decimal(10,2)）
+    - Status（状态：Pending/Paid/Merged）
+    - PaidAmount / PaidDate（实收信息）
+    - Remark（备注）
+  - **代码审查 (26T21:40):**
+    - 审查结果：通过（0 Critical, 0 Important, 0 Minor）
+    - Important 修复：
+      - 添加 MeterRecordValidationAttribute 验证读数递增和用量计算
+      - 添加 UtilityBillValidationAttribute 验证账单周期、金额和状态一致性
+      - 用量属性添加 decimal(10,2) 精度
+      - Room 实体添加反向导航属性 MeterRecords 和 UtilityBills
+      - E2E 测试更新：修复属性名期望值，验证 Furion 框架规范
+  - **E2E 测试通过 (26T21:45):**
+    - 13/14 测试通过（1 个跳过 - 无独立实体配置文件）
+    - 测试覆盖：文件存在性、属性验证、验证特性、Furion 框架规范、构建验证

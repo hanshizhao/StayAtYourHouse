@@ -164,6 +164,86 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.MeterRecordValidationAttribute">
+            <summary>
+            抄表记录实体验证特性
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.MeterRecord">
+            <summary>
+            抄表记录实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.Room">
+            <summary>
+            房间导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.MeterDate">
+            <summary>
+            抄表日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.WaterReading">
+            <summary>
+            本次水表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.ElectricReading">
+            <summary>
+            本次电表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.PrevWaterReading">
+            <summary>
+            上次水表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.PrevElectricReading">
+            <summary>
+            上次电表读数
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.WaterUsage">
+            <summary>
+            本次用水量（吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.ElectricUsage">
+            <summary>
+            本次用电量（度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.WaterFee">
+            <summary>
+            水费（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.ElectricFee">
+            <summary>
+            电费（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.UtilityBill">
+            <summary>
+            关联的水电账单
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.MeterRecord.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            配置种子数据
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.RentalRecordValidationAttribute">
             <summary>
             租住记录实体验证特性
@@ -249,6 +329,11 @@
             退租备注
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.Bills">
+            <summary>
+            账单集合
+            </summary>
+        </member>
         <member name="M:Gentle.Core.Entities.RentalRecord.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
             <summary>
             配置种子数据
@@ -329,6 +414,16 @@
             备注
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.Room.MeterRecords">
+            <summary>
+            抄表记录集合
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.UtilityBills">
+            <summary>
+            水电账单集合
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.Tenant">
             <summary>
             租客实体
@@ -400,6 +495,106 @@
             </summary>
         </member>
         <member name="M:Gentle.Core.Entities.User.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            配置种子数据
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.UtilityBillValidationAttribute">
+            <summary>
+            水电账单实体验证特性
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.UtilityBill">
+            <summary>
+            水电账单实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.Room">
+            <summary>
+            房间导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.BillTenantId">
+            <summary>
+            租客ID（可选，如果房间当前无租客则可能为空）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.BillTenant">
+            <summary>
+            租客导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.MeterRecordId">
+            <summary>
+            抄表记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.MeterRecord">
+            <summary>
+            抄表记录导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.PeriodStart">
+            <summary>
+            账单周期开始日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.PeriodEnd">
+            <summary>
+            账单周期结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.WaterUsage">
+            <summary>
+            用水量（吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.ElectricUsage">
+            <summary>
+            用电量（度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.WaterFee">
+            <summary>
+            水费（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.ElectricFee">
+            <summary>
+            电费（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.TotalAmount">
+            <summary>
+            总金额（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.Status">
+            <summary>
+            账单状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.PaidAmount">
+            <summary>
+            实收金额（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.PaidDate">
+            <summary>
+            收款日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.UtilityBill.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
             <summary>
             配置种子数据
             </summary>
@@ -537,6 +732,26 @@
         <member name="F:Gentle.Core.Enums.RoomStatus.Renovating">
             <summary>
             装修中
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.UtilityBillStatus">
+            <summary>
+            水电账单状态
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.UtilityBillStatus.Pending">
+            <summary>
+            待收取
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.UtilityBillStatus.Paid">
+            <summary>
+            已收取
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.UtilityBillStatus.Merged">
+            <summary>
+            已合并到房租账单
             </summary>
         </member>
     </members>

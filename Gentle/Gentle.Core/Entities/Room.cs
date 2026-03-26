@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Furion.DatabaseAccessor;
 using Gentle.Core.Enums;
 
@@ -77,4 +78,14 @@ public class Room : Entity<int>
     /// 备注
     /// </summary>
     public string? Remark { get; set; }
+
+    /// <summary>
+    /// 抄表记录集合
+    /// </summary>
+    public ICollection<MeterRecord> MeterRecords { get; set; } = new List<MeterRecord>();
+
+    /// <summary>
+    /// 水电账单集合
+    /// </summary>
+    public ICollection<UtilityBill> UtilityBills { get; set; } = new List<UtilityBill>();
 }
