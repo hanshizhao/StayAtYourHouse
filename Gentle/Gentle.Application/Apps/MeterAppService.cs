@@ -88,6 +88,16 @@ public class MeterAppService : IDynamicApiController
         await _meterService.DeleteRecordAsync(id);
     }
 
+    /// <summary>
+    /// 根据ID获取抄表记录详情
+    /// </summary>
+    /// <param name="id">抄表记录ID</param>
+    [HttpGet("get-by-id/{id}")]
+    public async Task<MeterRecordDto> GetById(int id)
+    {
+        return await _meterService.GetRecordByIdAsync(id);
+    }
+
     #endregion
 
     #region 水电账单

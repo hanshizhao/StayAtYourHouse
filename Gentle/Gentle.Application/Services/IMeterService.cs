@@ -73,6 +73,13 @@ public interface IMeterService : ITransient
     Task DeleteRecordAsync(int id);
 
     /// <summary>
+    /// 根据ID获取抄表记录详情
+    /// </summary>
+    /// <param name="id">抄表记录ID</param>
+    /// <returns>抄表记录详情</returns>
+    Task<MeterRecordDto> GetRecordByIdAsync(int id);
+
+    /// <summary>
     /// 删除水电账单（仅限待收取状态）
     /// </summary>
     /// <param name="id">账单ID</param>

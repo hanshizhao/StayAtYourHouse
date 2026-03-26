@@ -9,8 +9,23 @@ namespace Gentle.Application.Services;
 /// <summary>
 /// 水电抄表服务实现
 /// </summary>
+/// <remarks>
+/// 关键操作日志说明：
+/// - RecordAsync: 抄表录入，自动生成账单
+/// - PayAsync: 水电账单缴费
+/// - DeleteRecordAsync/DeleteBillAsync: 删除操作
+/// </remarks>
 public class MeterService : IMeterService
 {
+    /// <summary>
+    /// 默认分页大小
+    /// </summary>
+    private const int DefaultPageSize = 20;
+
+    /// <summary>
+    /// 最大分页大小
+    /// </summary>
+    private const int MaxPageSize = 100;
     private readonly IRepository<MeterRecord> _meterRecordRepository;
     private readonly IRepository<UtilityBill> _utilityBillRepository;
     private readonly IRepository<Room> _roomRepository;
@@ -75,6 +90,15 @@ public class MeterService : IMeterService
     /// <inheritdoc />
     public async Task<(decimal WaterReading, decimal ElectricReading)> GetLastReadingsAsync(int roomId)
     {
+        var (waterReading, electricReading, _) = await GetLastReadingsWithDateAsync(roomId);
+        return (waterReading, electricReading);
+    }
+
+    /// <summary>
+    /// 获取房间上次抄表读数和日期（内部使用，避免重复查询）
+    /// </summary>
+    private async Task<(decimal WaterReading, decimal ElectricReading, DateTime? MeterDate)> GetLastReadingsWithDateAsync(int roomId)
+    {
         var lastRecord = await _meterRecordRepository
             .AsQueryable(false)
             .Where(m => m.RoomId == roomId)
@@ -83,10 +107,10 @@ public class MeterService : IMeterService
 
         if (lastRecord == null)
         {
-            return (0, 0);
+            return (0, 0, null);
         }
 
-        return (lastRecord.WaterReading, lastRecord.ElectricReading);
+        return (lastRecord.WaterReading, lastRecord.ElectricReading, lastRecord.MeterDate);
     }
 
     /// <inheritdoc />
@@ -104,8 +128,8 @@ public class MeterService : IMeterService
             throw Oops.Oh($"房间 {input.RoomId} 不存在");
         }
 
-        // 获取上次读数
-        var (prevWaterReading, prevElectricReading) = await GetLastReadingsAsync(input.RoomId);
+        // 获取上次读数和日期
+        var (prevWaterReading, prevElectricReading, prevMeterDate) = await GetLastReadingsWithDateAsync(input.RoomId);
 
         // 验证读数递增
         if (input.WaterReading < prevWaterReading)
@@ -146,8 +170,11 @@ public class MeterService : IMeterService
 
         await _meterRecordRepository.InsertAsync(meterRecord);
 
-        // 自动生成水电账单
-        await CreateUtilityBillAsync(meterRecord, room);
+        // 立即保存以获取生成的 ID
+        await _meterRecordRepository.SaveNowAsync();
+
+        // 自动生成水电账单（传递上次抄表日期避免重复查询）
+        await CreateUtilityBillAsync(meterRecord, room, prevMeterDate);
 
         // 返回完整的 DTO
         return await GetMeterRecordByIdAsync(meterRecord.Id);
@@ -163,7 +190,7 @@ public class MeterService : IMeterService
     {
         // 分页参数边界验证
         if (page < 1) page = 1;
-        if (pageSize < 1 || pageSize > 100) pageSize = 20;
+        if (pageSize < 1 || pageSize > MaxPageSize) pageSize = DefaultPageSize;
 
         var query = _utilityBillRepository
             .AsQueryable(false)
@@ -252,9 +279,20 @@ public class MeterService : IMeterService
             throw Oops.Oh("该账单已合并到房租账单，无法单独收款");
         }
 
+        // 服务层再次验证实收金额边界（DTO 已有 Range 验证，此处为双重保障）
+        var paidAmount = input.PaidAmount ?? bill.TotalAmount;
+        if (paidAmount <= 0)
+        {
+            throw Oops.Oh("实收金额必须大于0");
+        }
+        if (paidAmount > bill.TotalAmount * 2)
+        {
+            throw Oops.Oh($"实收金额 {paidAmount} 超出合理范围（账单总金额的2倍：{bill.TotalAmount * 2}）");
+        }
+
         // 更新账单状态
         bill.Status = UtilityBillStatus.Paid;
-        bill.PaidAmount = input.PaidAmount ?? bill.TotalAmount;
+        bill.PaidAmount = paidAmount;
         bill.PaidDate = DateTime.Today;
 
         if (!string.IsNullOrEmpty(input.Remark))
@@ -337,7 +375,10 @@ public class MeterService : IMeterService
     /// <summary>
     /// 创建水电账单
     /// </summary>
-    private async Task CreateUtilityBillAsync(MeterRecord meterRecord, Room room)
+    /// <param name="meterRecord">抄表记录</param>
+    /// <param name="room">房间信息</param>
+    /// <param name="prevMeterDate">上次抄表日期（避免重复查询）</param>
+    private async Task CreateUtilityBillAsync(MeterRecord meterRecord, Room room, DateTime? prevMeterDate)
     {
         // 获取当前租客
         var activeRental = await _rentalRecordRepository
@@ -345,23 +386,16 @@ public class MeterService : IMeterService
             .Where(r => r.RoomId == meterRecord.RoomId && r.Status == RentalStatus.Active)
             .FirstOrDefaultAsync();
 
-        // 计算账单周期（从上次抄表日期到本次抄表日期）
+        // 计算账单周期（使用传入的上次抄表日期，避免重复查询）
         DateTime periodStart;
-        if (meterRecord.PrevWaterReading == 0 && meterRecord.PrevElectricReading == 0)
+        if (prevMeterDate.HasValue)
         {
-            // 首次抄表，默认上一个月
-            periodStart = meterRecord.MeterDate.AddMonths(-1);
+            periodStart = prevMeterDate.Value;
         }
         else
         {
-            var lastMeterDate = await _meterRecordRepository
-                .AsQueryable(false)
-                .Where(m => m.RoomId == meterRecord.RoomId && m.MeterDate < meterRecord.MeterDate)
-                .OrderByDescending(m => m.MeterDate)
-                .Select(m => m.MeterDate)
-                .FirstOrDefaultAsync();
-
-            periodStart = lastMeterDate == default ? meterRecord.MeterDate.AddMonths(-1) : lastMeterDate;
+            // 首次抄表，默认上一个月
+            periodStart = meterRecord.MeterDate.AddMonths(-1);
         }
 
         var utilityBill = new UtilityBill
@@ -380,6 +414,12 @@ public class MeterService : IMeterService
         };
 
         await _utilityBillRepository.InsertAsync(utilityBill);
+    }
+
+    /// <inheritdoc />
+    public async Task<MeterRecordDto> GetRecordByIdAsync(int id)
+    {
+        return await GetMeterRecordByIdAsync(id);
     }
 
     /// <summary>

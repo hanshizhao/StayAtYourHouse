@@ -71,10 +71,11 @@ test.describe('FEAT-022: Meter API', () => {
       headers: authHeaders(token),
       data: {
         communityId,
-        roomNumber: `${TEST_DATA_PREFIX}房间_${Date.now()}`,
-        floor: 1,
+        building: '1',
+        roomNumber: `R${Date.now().toString().slice(-6)}`,
         area: 50,
-        monthlyRent: 2000
+        costPrice: 1000,
+        rentPrice: 2000
       }
     });
     const roomResult = await roomResponse.json();
@@ -85,6 +86,7 @@ test.describe('FEAT-022: Meter API', () => {
 
   /**
    * 清理测试数据
+   * 注意：清理操作会忽略错误并记录日志，确保测试流程不会因清理失败而中断
    */
   async function cleanupTestData(request: APIRequestContext, token: string): Promise<void> {
     // 清理抄表记录
@@ -93,8 +95,9 @@ test.describe('FEAT-022: Meter API', () => {
         await request.delete(`${API_BASE}/api/meter-app/remove/${id}`, {
           headers: authHeaders(token)
         });
-      } catch (e) {
-        // 忽略清理错误
+      }
+      catch (e) {
+        console.warn(`[Cleanup] Failed to delete meter record ${id}:`, e instanceof Error ? e.message : String(e));
       }
     }
     // 清理水电账单
@@ -103,8 +106,9 @@ test.describe('FEAT-022: Meter API', () => {
         await request.delete(`${API_BASE}/api/meter-app/remove-utility-bill/${id}`, {
           headers: authHeaders(token)
         });
-      } catch (e) {
-        // 忽略清理错误
+      }
+      catch (e) {
+        console.warn(`[Cleanup] Failed to delete utility bill ${id}:`, e instanceof Error ? e.message : String(e));
       }
     }
     // 清理房间
@@ -113,8 +117,9 @@ test.describe('FEAT-022: Meter API', () => {
         await request.delete(`${API_BASE}/api/room/remove/${testRoomId}`, {
           headers: authHeaders(token)
         });
-      } catch (e) {
-        // 忽略清理错误
+      }
+      catch (e) {
+        console.warn(`[Cleanup] Failed to delete room ${testRoomId}:`, e instanceof Error ? e.message : String(e));
       }
     }
     // 清理小区
@@ -123,8 +128,9 @@ test.describe('FEAT-022: Meter API', () => {
         await request.delete(`${API_BASE}/api/community/remove/${testCommunityId}`, {
           headers: authHeaders(token)
         });
-      } catch (e) {
-        // 忽略清理错误
+      }
+      catch (e) {
+        console.warn(`[Cleanup] Failed to delete community ${testCommunityId}:`, e instanceof Error ? e.message : String(e));
       }
     }
   }
@@ -232,7 +238,7 @@ test.describe('FEAT-022: Meter API', () => {
       headers: authHeaders(authToken),
       data: {
         roomId: testRoomId,
-        recordDate: '2026-03-23',
+        meterDate: '2026-03-23',
         waterReading: 100.5,
         electricReading: 200.8,
         remark: `${TEST_DATA_PREFIX}抄表记录`
@@ -257,7 +263,7 @@ test.describe('FEAT-022: Meter API', () => {
     const response = await request.post(`${API_BASE}/api/meter-app/record`, {
       headers: authHeaders(authToken),
       data: {
-        // 缺少 roomId, recordDate 等必填字段
+        // 缺少 roomId, meterDate 等必填字段
         waterReading: 100
       }
     });
@@ -274,7 +280,7 @@ test.describe('FEAT-022: Meter API', () => {
       headers: authHeaders(authToken),
       data: {
         roomId: 99999999, // 不存在的房间
-        recordDate: '2026-03-23',
+        meterDate: '2026-03-23',
         waterReading: 100,
         electricReading: 200
       }
@@ -296,7 +302,7 @@ test.describe('FEAT-022: Meter API', () => {
       headers: authHeaders(authToken),
       data: {
         roomId: testRoomId,
-        recordDate: '2026-03-23',
+        meterDate: '2026-03-23',
         waterReading: -10, // 负数读数
         electricReading: 200
       }
@@ -322,7 +328,7 @@ test.describe('FEAT-022: Meter API', () => {
       headers: authHeaders(authToken),
       data: {
         roomId: testRoomId,
-        recordDate: '2026-03-15',
+        meterDate: '2026-03-15',
         waterReading: 100,
         electricReading: 200,
         remark: `${TEST_DATA_PREFIX}第一次录入`
@@ -338,7 +344,7 @@ test.describe('FEAT-022: Meter API', () => {
         headers: authHeaders(authToken),
         data: {
           roomId: testRoomId,
-          recordDate: '2026-03-20', // 同月不同日
+          meterDate: '2026-03-20', // 同月不同日
           waterReading: 150,
           electricReading: 250,
           remark: `${TEST_DATA_PREFIX}第二次录入`
@@ -516,7 +522,7 @@ test.describe('FEAT-022: Meter API', () => {
         records: [
           {
             roomId: testRoomId,
-            recordDate: '2026-03-23',
+            meterDate: '2026-03-23',
             waterReading: 100,
             electricReading: 200
           }

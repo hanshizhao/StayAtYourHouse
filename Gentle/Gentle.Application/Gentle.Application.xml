@@ -146,6 +146,12 @@
             </summary>
             <param name="id">抄表记录ID</param>
         </member>
+        <member name="M:Gentle.Application.Apps.MeterAppService.GetById(System.Int32)">
+            <summary>
+            根据ID获取抄表记录详情
+            </summary>
+            <param name="id">抄表记录ID</param>
+        </member>
         <member name="M:Gentle.Application.Apps.MeterAppService.GetUtilityBills(System.String,System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
             <summary>
             获取水电账单列表
@@ -1936,6 +1942,13 @@
             </summary>
             <param name="id">抄表记录ID</param>
         </member>
+        <member name="M:Gentle.Application.Services.IMeterService.GetRecordByIdAsync(System.Int32)">
+            <summary>
+            根据ID获取抄表记录详情
+            </summary>
+            <param name="id">抄表记录ID</param>
+            <returns>抄表记录详情</returns>
+        </member>
         <member name="M:Gentle.Application.Services.IMeterService.DeleteBillAsync(System.Int32)">
             <summary>
             删除水电账单（仅限待收取状态）
@@ -2039,12 +2052,33 @@
             <summary>
             水电抄表服务实现
             </summary>
+            <remarks>
+            关键操作日志说明：
+            - RecordAsync: 抄表录入，自动生成账单
+            - PayAsync: 水电账单缴费
+            - DeleteRecordAsync/DeleteBillAsync: 删除操作
+            </remarks>
+        </member>
+        <member name="F:Gentle.Application.Services.MeterService.DefaultPageSize">
+            <summary>
+            默认分页大小
+            </summary>
+        </member>
+        <member name="F:Gentle.Application.Services.MeterService.MaxPageSize">
+            <summary>
+            最大分页大小
+            </summary>
         </member>
         <member name="M:Gentle.Application.Services.MeterService.GetListAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.MeterService.GetLastReadingsAsync(System.Int32)">
             <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.GetLastReadingsWithDateAsync(System.Int32)">
+            <summary>
+            获取房间上次抄表读数和日期（内部使用，避免重复查询）
+            </summary>
         </member>
         <member name="M:Gentle.Application.Services.MeterService.RecordAsync(Gentle.Application.Dtos.Meter.RecordMeterInput)">
             <inheritdoc />
@@ -2064,10 +2098,16 @@
         <member name="M:Gentle.Application.Services.MeterService.DeleteBillAsync(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Gentle.Application.Services.MeterService.CreateUtilityBillAsync(Gentle.Core.Entities.MeterRecord,Gentle.Core.Entities.Room)">
+        <member name="M:Gentle.Application.Services.MeterService.CreateUtilityBillAsync(Gentle.Core.Entities.MeterRecord,Gentle.Core.Entities.Room,System.Nullable{System.DateTime})">
             <summary>
             创建水电账单
             </summary>
+            <param name="meterRecord">抄表记录</param>
+            <param name="room">房间信息</param>
+            <param name="prevMeterDate">上次抄表日期（避免重复查询）</param>
+        </member>
+        <member name="M:Gentle.Application.Services.MeterService.GetRecordByIdAsync(System.Int32)">
+            <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.MeterService.GetMeterRecordByIdAsync(System.Int32)">
             <summary>
