@@ -5,10 +5,10 @@ import type { CollectionReport, HousingOverview, IncomeReport, RoomProfitRanking
 import { request } from '@/utils/request';
 
 const Api = {
-  IncomeReport: '/report-app/get-income-report',
+  IncomeReport: '/report-app/income-report',
   HousingOverview: '/report-app/housing-overview',
-  ProfitRanking: '/report-app/get-profit-ranking',
-  CollectionReport: '/report-app/get-collection-report',
+  ProfitRanking: '/report-app/profit-ranking',
+  CollectionReport: '/report-app/collection-report',
 };
 
 /**
