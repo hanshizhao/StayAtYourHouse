@@ -1,5 +1,5 @@
 /**
- * FEAT-025: 统计报表 API - API 运行时验证（严谨版）
+ * FEAT-025: 统计报表 API - API 运行时验证
  * 类型: api_runtime
  * 适用于: 后端 API
  *
@@ -11,7 +11,6 @@
  * 5. 催收统计接口
  * 6. 参数验证
  * 7. 数据结构验证
- * 8. 错误处理
  */
 import { test, expect, APIRequestContext } from '@playwright/test';
 
@@ -25,16 +24,16 @@ test.describe('FEAT-025: Report API', () => {
    */
   async function getAdminToken(request: APIRequestContext): Promise<string> {
     const loginResponse = await request.post(`${API_BASE}/api/auth/login`, {
-      data: { username: 'admin', password: 'admin123' }
+      data: { account: 'zhs', password: 'gentle8023' }
     });
 
     expect(loginResponse.status()).toBe(200);
 
     const result = await loginResponse.json();
     expect(result.succeeded).toBe(true);
-    expect(result.data).toHaveProperty('accessToken');
+    expect(result.data).toHaveProperty('token');
 
-    return result.data.accessToken;
+    return result.data.token;
   }
 
   /**
@@ -56,13 +55,13 @@ test.describe('FEAT-025: Report API', () => {
   // ==================== 认证测试 ====================
 
   test('1. 未认证请求 - 房源概览接口应返回 401', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/housing-overview`);
+    const response = await request.get(`${API_BASE}/api/report-app/housing-overview`);
 
     expect(response.status()).toBe(401);
   });
 
   test('2. 无效 Token - 利润排行接口应返回 401', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/profit-ranking`, {
+    const response = await request.get(`${API_BASE}/api/report-app/profit-ranking/monthly/10`, {
       headers: { Authorization: 'Bearer invalid_token' }
     });
 
@@ -72,7 +71,7 @@ test.describe('FEAT-025: Report API', () => {
   // ==================== 房源概览接口测试 ====================
 
   test('3. 房源概览接口 - 返回正确数据结构', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/housing-overview`, {
+    const response = await request.get(`${API_BASE}/api/report-app/housing-overview`, {
       headers: authHeaders(authToken)
     });
 
@@ -84,20 +83,22 @@ test.describe('FEAT-025: Report API', () => {
 
     // 验证数据结构
     const data = result.data;
-    expect(data).toHaveProperty('totalCommunities');
     expect(data).toHaveProperty('totalRooms');
-    expect(data).toHaveProperty('occupiedRooms');
-    expect(data).toHaveProperty('vacantRooms');
+    expect(data).toHaveProperty('rentedCount');
+    expect(data).toHaveProperty('vacantCount');
+    expect(data).toHaveProperty('renovatingCount');
+    expect(data).toHaveProperty('occupancyRate');
 
     // 验证数据类型
-    expect(typeof data.totalCommunities).toBe('number');
     expect(typeof data.totalRooms).toBe('number');
-    expect(typeof data.occupiedRooms).toBe('number');
-    expect(typeof data.vacantRooms).toBe('number');
+    expect(typeof data.rentedCount).toBe('number');
+    expect(typeof data.vacantCount).toBe('number');
+    expect(typeof data.renovatingCount).toBe('number');
+    expect(typeof data.occupancyRate).toBe('number');
   });
 
   test('4. 房源概览接口 - 数据逻辑验证', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/housing-overview`, {
+    const response = await request.get(`${API_BASE}/api/report-app/housing-overview`, {
       headers: authHeaders(authToken)
     });
 
@@ -106,19 +107,18 @@ test.describe('FEAT-025: Report API', () => {
     const result = await response.json();
     const data = result.data;
 
-    // 验证数据逻辑：已入住 + 空置 = 总房间数
-    expect(data.occupiedRooms + data.vacantRooms).toBe(data.totalRooms);
+    // 验证数据逻辑：已出租 + 空置 + 装修中 = 总房间数
+    expect(data.rentedCount + data.vacantCount + data.renovatingCount).toBe(data.totalRooms);
 
     // 验证入住率
     if (data.totalRooms > 0) {
-      const occupancyRate = data.occupiedRooms / data.totalRooms;
-      expect(occupancyRate).toBeGreaterThanOrEqual(0);
-      expect(occupancyRate).toBeLessThanOrEqual(1);
+      expect(data.occupancyRate).toBeGreaterThanOrEqual(0);
+      expect(data.occupancyRate).toBeLessThanOrEqual(100);
     }
   });
 
-  test('5. 房源概览接口 - 包含出租率', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/housing-overview`, {
+  test('5. 房源概览接口 - 包含小区统计', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/housing-overview`, {
       headers: authHeaders(authToken)
     });
 
@@ -127,18 +127,24 @@ test.describe('FEAT-025: Report API', () => {
     const result = await response.json();
     const data = result.data;
 
-    // 验证包含出租率（可选字段）
-    if (data.occupancyRate !== undefined) {
-      expect(typeof data.occupancyRate).toBe('number');
-      expect(data.occupancyRate).toBeGreaterThanOrEqual(0);
-      expect(data.occupancyRate).toBeLessThanOrEqual(100);
+    // 验证包含小区统计
+    expect(data).toHaveProperty('communityStats');
+    expect(Array.isArray(data.communityStats)).toBe(true);
+
+    // 如果有数据，验证数据结构
+    if (data.communityStats.length > 0) {
+      const firstCommunity = data.communityStats[0];
+      expect(firstCommunity).toHaveProperty('communityId');
+      expect(firstCommunity).toHaveProperty('communityName');
+      expect(firstCommunity).toHaveProperty('totalRooms');
+      expect(firstCommunity).toHaveProperty('rentedCount');
     }
   });
 
   // ==================== 利润排行接口测试 ====================
 
   test('6. 利润排行接口 - 返回正确数据结构', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/profit-ranking`, {
+    const response = await request.get(`${API_BASE}/api/report-app/profit-ranking/monthly/50`, {
       headers: authHeaders(authToken)
     });
 
@@ -152,15 +158,18 @@ test.describe('FEAT-025: Report API', () => {
     // 如果有数据，验证数据结构
     if (result.data.length > 0) {
       const firstItem = result.data[0];
-      expect(firstItem).toHaveProperty('id');
-      expect(firstItem).toHaveProperty('roomInfo');
-      expect(firstItem).toHaveProperty('profit');
-      expect(typeof firstItem.profit).toBe('number');
+      expect(firstItem).toHaveProperty('roomId');
+      expect(firstItem).toHaveProperty('communityName');
+      expect(firstItem).toHaveProperty('building');
+      expect(firstItem).toHaveProperty('roomNumber');
+      expect(firstItem).toHaveProperty('monthlyProfit');
+      expect(firstItem).toHaveProperty('profitRate');
+      expect(typeof firstItem.monthlyProfit).toBe('number');
     }
   });
 
   test('7. 利润排行接口 - 按利润降序排列', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/profit-ranking`, {
+    const response = await request.get(`${API_BASE}/api/report-app/profit-ranking/monthly/50`, {
       headers: authHeaders(authToken)
     });
 
@@ -171,13 +180,13 @@ test.describe('FEAT-025: Report API', () => {
     if (result.data.length > 1) {
       // 验证数据按利润降序排列
       for (let i = 0; i < result.data.length - 1; i++) {
-        expect(result.data[i].profit).toBeGreaterThanOrEqual(result.data[i + 1].profit);
+        expect(result.data[i].monthlyProfit).toBeGreaterThanOrEqual(result.data[i + 1].monthlyProfit);
       }
     }
   });
 
-  test('8. 利润排行接口 - 分页参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/profit-ranking?page=1&pageSize=10`, {
+  test('8. 利润排行接口 - limit 参数', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/profit-ranking/monthly/5`, {
       headers: authHeaders(authToken)
     });
 
@@ -186,15 +195,13 @@ test.describe('FEAT-025: Report API', () => {
     const result = await response.json();
     expect(result.succeeded).toBe(true);
 
-    // 验证返回数据量不超过 pageSize
-    if (result.data.length > 0) {
-      expect(result.data.length).toBeLessThanOrEqual(10);
-    }
+    // 验证返回数据量不超过 limit
+    expect(result.data.length).toBeLessThanOrEqual(5);
   });
 
-  test('9. 利润排行接口 - 时间范围参数', async ({ request }) => {
+  test('9. 利润排行接口 - sortBy 参数', async ({ request }) => {
     const response = await request.get(
-      `${API_BASE}/api/report/profit-ranking?startDate=2026-01-01&endDate=2026-03-31`,
+      `${API_BASE}/api/report-app/profit-ranking/yearly/50`,
       { headers: authHeaders(authToken) }
     );
 
@@ -207,159 +214,7 @@ test.describe('FEAT-025: Report API', () => {
   // ==================== 收支统计接口测试 ====================
 
   test('10. 收支统计接口 - 返回正确数据结构', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/income-expense`, {
-      headers: authHeaders(authToken)
-    });
-
-    // 接口可能不存在，允许 404
-    expect([200, 404]).toContain(response.status());
-
-    if (response.status() === 200) {
-      const result = await response.json();
-      expect(result.succeeded).toBe(true);
-      expect(result).toHaveProperty('data');
-
-      const data = result.data;
-      expect(data).toHaveProperty('totalIncome');
-      expect(data).toHaveProperty('totalExpense');
-      expect(data).toHaveProperty('netProfit');
-    }
-  });
-
-  test('11. 收支统计接口 - 月份筛选参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/income-expense?month=2026-03`, {
-      headers: authHeaders(authToken)
-    });
-
-    // 接口可能不存在，允许 404
-    expect([200, 404]).toContain(response.status());
-
-    if (response.status() === 200) {
-      const result = await response.json();
-      expect(result.succeeded).toBe(true);
-    }
-  });
-
-  test('12. 收支统计接口 - 数据逻辑验证', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/income-expense`, {
-      headers: authHeaders(authToken)
-    });
-
-    if (response.status() === 200) {
-      const result = await response.json();
-      const data = result.data;
-
-      // 验证净利润 = 总收入 - 总支出
-      const expectedNetProfit = data.totalIncome - data.totalExpense;
-      expect(data.netProfit).toBeCloseTo(expectedNetProfit, 2);
-    } else {
-      test.skip('接口不存在，跳过数据逻辑验证');
-    }
-  });
-
-  // ==================== 催收统计接口测试 ====================
-
-  test('13. 催收统计接口 - 返回正确数据结构', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/collection-statistics`, {
-      headers: authHeaders(authToken)
-    });
-
-    // 接口可能不存在，允许 404
-    expect([200, 404]).toContain(response.status());
-
-    if (response.status() === 200) {
-      const result = await response.json();
-      expect(result.succeeded).toBe(true);
-      expect(result).toHaveProperty('data');
-
-      const data = result.data;
-      expect(data).toHaveProperty('totalBills');
-      expect(data).toHaveProperty('paidBills');
-      expect(data).toHaveProperty('pendingBills');
-      expect(data).toHaveProperty('overdueBills');
-    }
-  });
-
-  test('14. 催收统计接口 - 数据逻辑验证', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/collection-statistics`, {
-      headers: authHeaders(authToken)
-    });
-
-    if (response.status() === 200) {
-      const result = await response.json();
-      const data = result.data;
-
-      // 验证数据逻辑：已收 + 待收 + 逾期 = 总账单数
-      const sum = data.paidBills + data.pendingBills + data.overdueBills;
-      expect(sum).toBe(data.totalBills);
-    } else {
-      test.skip('接口不存在，跳过数据逻辑验证');
-    }
-  });
-
-  test('15. 催收统计接口 - 收款率计算', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/collection-statistics`, {
-      headers: authHeaders(authToken)
-    });
-
-    if (response.status() === 200) {
-      const result = await response.json();
-      const data = result.data;
-
-      // 验证包含收款率（可选字段）
-      if (data.collectionRate !== undefined) {
-        expect(typeof data.collectionRate).toBe('number');
-        expect(data.collectionRate).toBeGreaterThanOrEqual(0);
-        expect(data.collectionRate).toBeLessThanOrEqual(100);
-      }
-    } else {
-      test.skip('接口不存在，跳过收款率验证');
-    }
-  });
-
-  // ==================== 月度趋势接口测试 ====================
-
-  test('16. 月度趋势接口 - 返回正确数据结构', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/monthly-trend`, {
-      headers: authHeaders(authToken)
-    });
-
-    // 接口可能不存在，允许 404
-    expect([200, 404]).toContain(response.status());
-
-    if (response.status() === 200) {
-      const result = await response.json();
-      expect(result.succeeded).toBe(true);
-      expect(result).toHaveProperty('data');
-      expect(Array.isArray(result.data)).toBe(true);
-
-      // 如果有数据，验证数据结构
-      if (result.data.length > 0) {
-        const firstItem = result.data[0];
-        expect(firstItem).toHaveProperty('month');
-        expect(firstItem).toHaveProperty('income');
-      }
-    }
-  });
-
-  test('17. 月度趋势接口 - 年份参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/monthly-trend?year=2026`, {
-      headers: authHeaders(authToken)
-    });
-
-    // 接口可能不存在，允许 404
-    expect([200, 404]).toContain(response.status());
-
-    if (response.status() === 200) {
-      const result = await response.json();
-      expect(result.succeeded).toBe(true);
-    }
-  });
-
-  // ==================== 参数验证测试 ====================
-
-  test('18. 房源概览接口 - 小区筛选参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/housing-overview?communityId=1`, {
+    const response = await request.get(`${API_BASE}/api/report-app/income-report/2026`, {
       headers: authHeaders(authToken)
     });
 
@@ -367,102 +222,191 @@ test.describe('FEAT-025: Report API', () => {
 
     const result = await response.json();
     expect(result.succeeded).toBe(true);
+    expect(result).toHaveProperty('data');
+
+    const data = result.data;
+    expect(data).toHaveProperty('year');
+    expect(data).toHaveProperty('totalRentIncome');
+    expect(data).toHaveProperty('totalUtilityIncome');
+    expect(data).toHaveProperty('totalIncome');
+    expect(data).toHaveProperty('totalExpense');
+    expect(data).toHaveProperty('netProfit');
   });
 
-  test('19. 利润排行接口 - 无效分页参数', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/profit-ranking?page=-1&pageSize=0`, {
+  test('11. 收支统计接口 - 年份参数', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/income-report/2026`, {
       headers: authHeaders(authToken)
     });
 
-    // 应该返回 200（使用默认值）或 400
-    expect([200, 400]).toContain(response.status());
+    expect(response.status()).toBe(200);
+
+    const result = await response.json();
+    expect(result.succeeded).toBe(true);
+    expect(result.data.year).toBe(2026);
   });
 
-  test('20. 收支统计接口 - 无效日期参数', async ({ request }) => {
+  test('12. 收支统计接口 - 数据逻辑验证', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/income-report/2026`, {
+      headers: authHeaders(authToken)
+    });
+
+    expect(response.status()).toBe(200);
+
+    const result = await response.json();
+    const data = result.data;
+
+    // 验证总收入 = 租金收入 + 水电费收入
+    expect(data.totalIncome).toBe(data.totalRentIncome + data.totalUtilityIncome);
+
+    // 验证净利润 = 总收入 - 总支出
+    expect(data.netProfit).toBe(data.totalIncome - data.totalExpense);
+  });
+
+  test('13. 收支统计接口 - 包含月度明细', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/income-report/2026`, {
+      headers: authHeaders(authToken)
+    });
+
+    expect(response.status()).toBe(200);
+
+    const result = await response.json();
+    const data = result.data;
+
+    // 验证包含月度明细
+    expect(data).toHaveProperty('monthlyDetails');
+    expect(Array.isArray(data.monthlyDetails)).toBe(true);
+
+    // 如果有数据，验证月度明细结构
+    if (data.monthlyDetails.length > 0) {
+      const firstMonth = data.monthlyDetails[0];
+      expect(firstMonth).toHaveProperty('month');
+      expect(firstMonth).toHaveProperty('monthText');
+      expect(firstMonth).toHaveProperty('rentIncome');
+      expect(firstMonth).toHaveProperty('utilityIncome');
+      expect(firstMonth).toHaveProperty('totalIncome');
+      expect(firstMonth).toHaveProperty('expense');
+      expect(firstMonth).toHaveProperty('netProfit');
+    }
+  });
+
+  // ==================== 催收统计接口测试 ====================
+
+  test('14. 催收统计接口 - 返回正确数据结构', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/collection-report/2026/0`, {
+      headers: authHeaders(authToken)
+    });
+
+    expect(response.status()).toBe(200);
+
+    const result = await response.json();
+    expect(result.succeeded).toBe(true);
+    expect(result).toHaveProperty('data');
+
+    const data = result.data;
+    expect(data).toHaveProperty('year');
+    expect(data).toHaveProperty('month');
+    expect(data).toHaveProperty('totalBills');
+    expect(data).toHaveProperty('totalAmount');
+    expect(data).toHaveProperty('paidBills');
+    expect(data).toHaveProperty('paidAmount');
+    expect(data).toHaveProperty('pendingBills');
+    expect(data).toHaveProperty('pendingAmount');
+    expect(data).toHaveProperty('overdueBills');
+    expect(data).toHaveProperty('overdueAmount');
+    expect(data).toHaveProperty('graceBills');
+    expect(data).toHaveProperty('graceAmount');
+    expect(data).toHaveProperty('collectionRate');
+  });
+
+  test('15. 催收统计接口 - 年月参数', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/collection-report/2026/3`, {
+      headers: authHeaders(authToken)
+    });
+
+    expect(response.status()).toBe(200);
+
+    const result = await response.json();
+    expect(result.succeeded).toBe(true);
+    expect(result.data.year).toBe(2026);
+    expect(result.data.month).toBe(3);
+  });
+
+  test('16. 催收统计接口 - 收款率计算', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/collection-report/2026/0`, {
+      headers: authHeaders(authToken)
+    });
+
+    expect(response.status()).toBe(200);
+
+    const result = await response.json();
+    const data = result.data;
+
+    // 验证收款率范围
+    expect(data.collectionRate).toBeGreaterThanOrEqual(0);
+    expect(data.collectionRate).toBeLessThanOrEqual(100);
+  });
+
+  test('17. 催收统计接口 - 包含逾期和宽限名单', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/collection-report/2026/0`, {
+      headers: authHeaders(authToken)
+    });
+
+    expect(response.status()).toBe(200);
+
+    const result = await response.json();
+    const data = result.data;
+
+    // 验证包含逾期名单
+    expect(data).toHaveProperty('overdueList');
+    expect(Array.isArray(data.overdueList)).toBe(true);
+
+    // 验证包含宽限名单
+    expect(data).toHaveProperty('graceList');
+    expect(Array.isArray(data.graceList)).toBe(true);
+
+    // 如果有逾期数据，验证结构
+    if (data.overdueList.length > 0) {
+      const firstOverdue = data.overdueList[0];
+      expect(firstOverdue).toHaveProperty('billId');
+      expect(firstOverdue).toHaveProperty('tenantName');
+      expect(firstOverdue).toHaveProperty('roomInfo');
+      expect(firstOverdue).toHaveProperty('overdueDays');
+    }
+  });
+
+  // ==================== 参数验证测试 ====================
+
+  test('18. 利润排行接口 - 无效 limit 参数', async ({ request }) => {
+    // 使用无效的 limit（负数），框架会处理
+    const response = await request.get(`${API_BASE}/api/report-app/profit-ranking/monthly/0`, {
+      headers: authHeaders(authToken)
+    });
+
+    // 应该返回 200（使用默认值或空列表）
+    expect(response.status()).toBe(200);
+  });
+
+  test('19. 收支统计接口 - 无效年份参数', async ({ request }) => {
     const response = await request.get(
-      `${API_BASE}/api/report/income-expense?startDate=invalid&endDate=invalid`,
+      `${API_BASE}/api/report-app/income-report/invalid`,
       { headers: authHeaders(authToken) }
     );
 
-    // 应该返回 200（忽略无效参数）或 400
+    // Furion 框架会将无法转换的参数使用默认值，返回 200
+    // 或者返回 400/404 取决于框架配置
     expect([200, 400, 404]).toContain(response.status());
   });
 
-  // ==================== 综合报表接口测试 ====================
-
-  test('21. 综合报表接口 - 返回完整数据', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/dashboard`, {
+  test('20. 催收统计接口 - 仅年份参数（月份为0表示全年）', async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/report-app/collection-report/2026/0`, {
       headers: authHeaders(authToken)
     });
 
-    // 接口可能不存在，允许 404
-    expect([200, 404]).toContain(response.status());
+    expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const result = await response.json();
-      expect(result.succeeded).toBe(true);
-      expect(result).toHaveProperty('data');
-
-      // 验证包含多个统计模块
-      const data = result.data;
-      // 可能包含：房源概览、待办事项、最近账单等
-      expect(Object.keys(data).length).toBeGreaterThan(0);
-    }
-  });
-
-  // ==================== 数据导出接口测试 ====================
-
-  test('22. 导出报表接口 - 支持 CSV 格式', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/export?format=csv`, {
-      headers: authHeaders(authToken)
-    });
-
-    // 接口可能不存在，允许 404
-    expect([200, 404]).toContain(response.status());
-
-    if (response.status() === 200) {
-      // 验证响应头包含 CSV 内容类型
-      const contentType = response.headers()['content-type'];
-      expect(contentType).toMatch(/csv|excel|spreadsheet/);
-    }
-  });
-
-  test('23. 导出报表接口 - 支持 Excel 格式', async ({ request }) => {
-    const response = await request.get(`${API_BASE}/api/report/export?format=xlsx`, {
-      headers: authHeaders(authToken)
-    });
-
-    // 接口可能不存在，允许 404
-    expect([200, 404]).toContain(response.status());
-
-    if (response.status() === 200) {
-      // 验证响应头包含 Excel 内容类型
-      const contentType = response.headers()['content-type'];
-      expect(contentType).toMatch(/excel|spreadsheet|xlsx/);
-    }
-  });
-
-  // ==================== 权限测试 ====================
-
-  test('24. 普通用户访问报表接口 - 权限验证', async ({ request }) => {
-    // 这里假设有一个普通用户的登录接口
-    // 如果没有，则跳过此测试
-    const loginResponse = await request.post(`${API_BASE}/api/auth/login`, {
-      data: { username: 'user', password: 'user123' }
-    });
-
-    if (loginResponse.status() === 200) {
-      const result = await loginResponse.json();
-      const userToken = result.data.accessToken;
-
-      const response = await request.get(`${API_BASE}/api/report/housing-overview`, {
-        headers: authHeaders(userToken)
-      });
-
-      // 普通用户可能有访问权限，也可能没有
-      expect([200, 403]).toContain(response.status());
-    } else {
-      test.skip('没有普通用户账号，跳过权限测试');
-    }
+    const result = await response.json();
+    expect(result.succeeded).toBe(true);
+    expect(result.data.year).toBe(2026);
+    expect(result.data.month).toBe(0); // 未指定月份时为 0
   });
 });

@@ -228,6 +228,40 @@
             删除租住记录
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.ReportAppService">
+            <summary>
+            统计报表 API 服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.ReportAppService.GetIncomeReport(System.Nullable{System.Int32})">
+            <summary>
+            获取收支统计报表
+            </summary>
+            <param name="year">年份，默认当前年份</param>
+            <returns>收支统计报表</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.ReportAppService.GetHousingOverview">
+            <summary>
+            获取房源概览统计
+            </summary>
+            <returns>房源概览统计</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.ReportAppService.GetProfitRanking(System.String,System.Int32)">
+            <summary>
+            获取房间利润排行
+            </summary>
+            <param name="sortBy">排序字段：monthly（月利润，默认）、yearly（年利润）</param>
+            <param name="limit">返回数量限制，默认50，最大200</param>
+            <returns>房间利润排行列表</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.ReportAppService.GetCollectionReport(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            获取催收统计报表
+            </summary>
+            <param name="year">年份，默认当前年份</param>
+            <param name="month">月份（可选，不传则统计全年）</param>
+            <returns>催收统计报表</returns>
+        </member>
         <member name="T:Gentle.Application.Apps.RoomAppService">
             <summary>
             房间管理应用服务
@@ -1230,6 +1264,466 @@
             创建时间
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Report.CollectionReportDto">
+            <summary>
+            催收统计报表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.Year">
+            <summary>
+            年份
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.Month">
+            <summary>
+            月份
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.MonthText">
+            <summary>
+            月份文本（如：2026年1月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.TotalBills">
+            <summary>
+            本月应收账单数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.TotalAmount">
+            <summary>
+            本月应收总金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.PaidBills">
+            <summary>
+            已收款账单数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.PaidAmount">
+            <summary>
+            已收款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.PendingBills">
+            <summary>
+            待收款账单数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.PendingAmount">
+            <summary>
+            待收款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.OverdueBills">
+            <summary>
+            逾期账单数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.OverdueAmount">
+            <summary>
+            逾期金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.GraceBills">
+            <summary>
+            宽限中账单数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.GraceAmount">
+            <summary>
+            宽限中金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.CollectionRate">
+            <summary>
+            收款率（百分比）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.OverdueList">
+            <summary>
+            逾期名单
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.GraceList">
+            <summary>
+            宽限名单
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Report.OverdueBillDto">
+            <summary>
+            逾期账单
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.BillId">
+            <summary>
+            账单ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.TenantName">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.RoomInfo">
+            <summary>
+            房间信息
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.DueDate">
+            <summary>
+            应收日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.TotalAmount">
+            <summary>
+            应收金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.OverdueDays">
+            <summary>
+            逾期天数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.PeriodText">
+            <summary>
+            账单周期
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Report.GraceBillDto">
+            <summary>
+            宽限中账单
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.BillId">
+            <summary>
+            账单ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.TenantName">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.RoomInfo">
+            <summary>
+            房间信息
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.DueDate">
+            <summary>
+            应收日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.GraceUntil">
+            <summary>
+            宽限截止日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.RemainingDays">
+            <summary>
+            剩余宽限天数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.TotalAmount">
+            <summary>
+            应收金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.PeriodText">
+            <summary>
+            账单周期
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Report.HousingOverviewDto">
+            <summary>
+            房源概览统计
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.HousingOverviewDto.TotalRooms">
+            <summary>
+            总房源数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.HousingOverviewDto.RentedCount">
+            <summary>
+            已出租数量
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.HousingOverviewDto.VacantCount">
+            <summary>
+            空置数量
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.HousingOverviewDto.RenovatingCount">
+            <summary>
+            装修中数量
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.HousingOverviewDto.OccupancyRate">
+            <summary>
+            出租率（百分比）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.HousingOverviewDto.CommunityStats">
+            <summary>
+            小区统计
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.HousingOverviewDto.VacantRooms">
+            <summary>
+            空置房源列表
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Report.CommunityStatsDto">
+            <summary>
+            小区统计
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CommunityStatsDto.CommunityId">
+            <summary>
+            小区ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CommunityStatsDto.CommunityName">
+            <summary>
+            小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CommunityStatsDto.TotalRooms">
+            <summary>
+            总房源数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CommunityStatsDto.RentedCount">
+            <summary>
+            已出租数量
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CommunityStatsDto.VacantCount">
+            <summary>
+            空置数量
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CommunityStatsDto.RenovatingCount">
+            <summary>
+            装修中数量
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.CommunityStatsDto.OccupancyRate">
+            <summary>
+            出租率
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Report.VacantRoomDto">
+            <summary>
+            空置房源
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.CommunityName">
+            <summary>
+            小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.Building">
+            <summary>
+            楼栋
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.RoomNumber">
+            <summary>
+            房间号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.RoomInfo">
+            <summary>
+            完整房间信息
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.RentPrice">
+            <summary>
+            出租价
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.CostPrice">
+            <summary>
+            成本价
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.Area">
+            <summary>
+            面积（平方米）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.RoomType">
+            <summary>
+            房间类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.VacantDays">
+            <summary>
+            空置天数
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Report.IncomeReportDto">
+            <summary>
+            收支统计报表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.Year">
+            <summary>
+            年份
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.TotalRentIncome">
+            <summary>
+            年度租金总收入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.TotalUtilityIncome">
+            <summary>
+            年度水电费总收入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.TotalIncome">
+            <summary>
+            年度总收入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.TotalExpense">
+            <summary>
+            年度总支出（成本）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.NetProfit">
+            <summary>
+            年度净利润
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.MonthlyDetails">
+            <summary>
+            月度明细
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Report.MonthlyIncomeDto">
+            <summary>
+            月度收入明细
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.Month">
+            <summary>
+            月份（1-12）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.MonthText">
+            <summary>
+            月份文本（如：2026年1月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.RentIncome">
+            <summary>
+            租金收入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.UtilityIncome">
+            <summary>
+            水电费收入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.TotalIncome">
+            <summary>
+            总收入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.Expense">
+            <summary>
+            支出（成本）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.NetProfit">
+            <summary>
+            净利润
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Report.RoomProfitRankingDto">
+            <summary>
+            房间利润排行
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.CommunityName">
+            <summary>
+            小区名称
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.Building">
+            <summary>
+            楼栋
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.RoomNumber">
+            <summary>
+            房间号
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.RoomInfo">
+            <summary>
+            完整房间信息
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.Status">
+            <summary>
+            房间状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.CostPrice">
+            <summary>
+            成本价（月租金成本）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.RentPrice">
+            <summary>
+            出租价（月租金）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.MonthlyProfit">
+            <summary>
+            月利润（出租价 - 成本价）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.ProfitRate">
+            <summary>
+            利润率（百分比）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.CurrentTenantName">
+            <summary>
+            当前租客姓名（如有）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.Area">
+            <summary>
+            面积（平方米）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.RoomType">
+            <summary>
+            房间类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.IsLoss">
+            <summary>
+            是否亏损
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Room.CreateRoomInput">
             <summary>
             创建房间请求
@@ -1988,6 +2482,40 @@
             删除租住记录
             </summary>
         </member>
+        <member name="T:Gentle.Application.Services.IReportService">
+            <summary>
+            统计报表服务接口
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IReportService.GetIncomeReportAsync(System.Int32)">
+            <summary>
+            获取收支统计报表
+            </summary>
+            <param name="year">年份</param>
+            <returns>收支统计报表</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IReportService.GetHousingOverviewAsync">
+            <summary>
+            获取房源概览统计
+            </summary>
+            <returns>房源概览统计</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IReportService.GetRoomProfitRankingAsync(System.String,System.Int32)">
+            <summary>
+            获取房间利润排行
+            </summary>
+            <param name="sortBy">排序字段：monthly（月利润）、yearly（年利润）</param>
+            <param name="limit">返回数量限制，默认50</param>
+            <returns>房间利润排行列表</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IReportService.GetCollectionReportAsync(System.Int32,System.Nullable{System.Int32})">
+            <summary>
+            获取催收统计报表
+            </summary>
+            <param name="year">年份</param>
+            <param name="month">月份（可选，不传则统计全年）</param>
+            <returns>催收统计报表</returns>
+        </member>
         <member name="T:Gentle.Application.Services.IRoomService">
             <summary>
             房间服务接口
@@ -2153,6 +2681,23 @@
             <summary>
             获取房间状态文本
             </summary>
+        </member>
+        <member name="T:Gentle.Application.Services.ReportService">
+            <summary>
+            统计报表服务实现
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ReportService.GetIncomeReportAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.ReportService.GetHousingOverviewAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.ReportService.GetRoomProfitRankingAsync(System.String,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.ReportService.GetCollectionReportAsync(System.Int32,System.Nullable{System.Int32})">
+            <inheritdoc />
         </member>
         <member name="T:Gentle.Application.Services.RoomService">
             <summary>
