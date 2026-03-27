@@ -1779,16 +1779,20 @@
         "tests_count": 36,
         "tests_passed": 36,
         "tests_skipped": 0,
-        "verified_at": "2026-03-27T22:15:00+08:00",
-        "verification_type": "full_e2e_retest_with_api_fix",
+        "verified_at": "2026-03-27T22:30:00+08:00",
+        "verification_type": "full_e2e_retest_with_api_route_fix",
         "backend_running": true,
         "frontend_running": true,
         "api_routes_checked": true,
         "api_routes_fixed": [
-          "修复前端 API 路径：/report-app/income-report → /report-app/get-income-report",
-          "修复前端 API 路径：/report-app/housing-overview → /report-app/get-housing-overview",
-          "修复前端 API 路径：/report-app/profit-ranking → /report-app/get-profit-ranking",
-          "修复前端 API 路径：/report-app/collection-report → /report-app/get-collection-report"
+          "修复前端 API 路由格式：从查询参数改为路径参数",
+          "getIncomeReport: /report-app/income-report/{year}",
+          "getHousingOverview: /report-app/housing-overview",
+          "getProfitRanking: /report-app/profit-ranking/{sortBy}/{limit}",
+          "getCollectionReport: /report-app/collection-report/{year}/{month}",
+          "原因：Furion IDynamicApiController 自动根据方法参数生成路径参数路由",
+          "对比：BillAppService 使用 [HttpGet(\"get-list\")] 显式路由特性",
+          "而 ReportAppService 没有显式特性，使用 Furion 默认路由生成规则"
         ],
         "required_tests": [
           "auth",
