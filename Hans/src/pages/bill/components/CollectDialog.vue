@@ -93,7 +93,8 @@ import { computed, ref, watch } from 'vue';
 import { collectBill } from '@/api/bill';
 import type { BillItem, CollectInput } from '@/api/model/billModel';
 import { CollectResult } from '@/api/model/billModel';
-import { formatDate, formatMoney } from '@/utils/date';
+import { formatDate } from '@/utils/date';
+import { formatMoney } from '@/utils/format';
 
 interface Props {
   visible: boolean;

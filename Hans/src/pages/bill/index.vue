@@ -127,7 +127,8 @@ import { BillStatus } from '@/api/model/billModel';
 import type { CommunityItem } from '@/api/model/communityModel';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
-import { formatDate, formatMoney } from '@/utils/date';
+import { formatDate } from '@/utils/date';
+import { formatMoney } from '@/utils/format';
 
 import CollectDialog from './components/CollectDialog.vue';
 

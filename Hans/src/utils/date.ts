@@ -88,15 +88,4 @@ export function getLocalDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
-/**
- * 格式化金额
- * @param amount 金额
- * @returns 格式化后的金额字符串，如 "1,234.56"
- */
-export function formatMoney(amount?: number | null): string {
-  if (amount === null || amount === undefined) return '0.00';
-  return amount.toLocaleString('zh-CN', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
+// 注意：formatMoney 函数已移至 @/utils/format.ts

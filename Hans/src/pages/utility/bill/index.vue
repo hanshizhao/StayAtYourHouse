@@ -223,7 +223,8 @@ import type { PayUtilityBillInput, UtilityBillItem, UtilityBillListParams } from
 import { UtilityBillStatus } from '@/api/model/meterModel';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
-import { formatDate, formatDateTime, formatMoney } from '@/utils/date';
+import { formatDate, formatDateTime } from '@/utils/date';
+import { formatMoney } from '@/utils/format';
 
 defineOptions({
   name: 'UtilityBill',

@@ -177,7 +177,7 @@ import { useRouter } from 'vue-router';
 
 import { getTodayTodos } from '@/api/bill';
 import type { BillItem, TodoBillsDto } from '@/api/model/billModel';
-import { formatMoney } from '@/utils/date';
+import { formatMoney } from '@/utils/format';
 
 defineOptions({
   name: 'TodoPanel',

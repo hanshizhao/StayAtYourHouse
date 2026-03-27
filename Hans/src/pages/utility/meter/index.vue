@@ -244,7 +244,8 @@ import { RoomStatus } from '@/api/model/roomModel';
 import { getRoomList } from '@/api/room';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
-import { formatDateTime, formatMoney } from '@/utils/date';
+import { formatDateTime } from '@/utils/date';
+import { formatMoney } from '@/utils/format';
 
 defineOptions({
   name: 'UtilityMeter',
