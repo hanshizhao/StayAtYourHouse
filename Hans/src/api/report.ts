@@ -11,7 +11,7 @@ import { request } from '@/utils/request';
 
 const Api = {
   IncomeReport: '/report-app/get-income-report',
-  HousingOverview: '/report-app/get-housing-overview',
+  HousingOverview: '/report-app/housing-overview',
   ProfitRanking: '/report-app/get-profit-ranking',
   CollectionReport: '/report-app/get-collection-report',
 };
