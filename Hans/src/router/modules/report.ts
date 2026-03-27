@@ -20,13 +20,12 @@ export default [
         component: () => import('@/pages/report/housing/index.vue'),
         meta: { title: { zh_CN: '房源概览', en_US: 'Housing Report' } },
       },
-      // FEAT-028: 利润排行页（待实现）
-      // {
-      //   path: 'profit',
-      //   name: 'ProfitReport',
-      //   component: () => import('@/pages/report/profit/index.vue'),
-      //   meta: { title: { zh_CN: '利润排行', en_US: 'Profit Report' } },
-      // },
+      {
+        path: 'profit',
+        name: 'ProfitReport',
+        component: () => import('@/pages/report/profit/index.vue'),
+        meta: { title: { zh_CN: '利润排行', en_US: 'Profit Report' } },
+      },
       // FEAT-029: 催收统计页（待实现）
       // {
       //   path: 'collection',
