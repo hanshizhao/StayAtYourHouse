@@ -4,21 +4,14 @@
 import type { CollectionReport, HousingOverview, IncomeReport, RoomProfitRanking } from '@/api/model/reportModel';
 import { request } from '@/utils/request';
 
-const Api = {
-  IncomeReport: '/report-app/get-income-report',
-  HousingOverview: '/report-app/get-housing-overview',
-  ProfitRanking: '/report-app/get-profit-ranking',
-  CollectionReport: '/report-app/get-collection-report',
-};
-
 /**
  * 获取收支统计报表
  * @param year 年份，默认当前年份
  */
 export function getIncomeReport(year?: number) {
+  const yearValue = year ?? new Date().getFullYear();
   return request.get<IncomeReport>({
-    url: Api.IncomeReport,
-    params: year ? { year } : undefined,
+    url: `/report-app/income-report/${yearValue}`,
   });
 }
 
@@ -27,7 +20,7 @@ export function getIncomeReport(year?: number) {
  */
 export function getHousingOverview() {
   return request.get<HousingOverview>({
-    url: Api.HousingOverview,
+    url: '/report-app/housing-overview',
   });
 }
 
@@ -37,12 +30,10 @@ export function getHousingOverview() {
  * @param limit 返回数量限制，默认50
  */
 export function getProfitRanking(sortBy?: string, limit?: number) {
+  const sortByValue = sortBy ?? 'monthly';
+  const limitValue = limit ?? 50;
   return request.get<RoomProfitRanking[]>({
-    url: Api.ProfitRanking,
-    params: {
-      ...(sortBy && { sortBy }),
-      ...(limit && { limit }),
-    },
+    url: `/report-app/profit-ranking/${sortByValue}/${limitValue}`,
   });
 }
 
@@ -52,11 +43,14 @@ export function getProfitRanking(sortBy?: string, limit?: number) {
  * @param month 月份（可选，不传则统计全年）
  */
 export function getCollectionReport(year?: number, month?: number) {
+  const yearValue = year ?? new Date().getFullYear();
+  // 如果有月份，使用 /collection-report/{year}/{month} 格式
+  // 否则使用 /collection-report/{year} 格式
+  const url = month
+    ? `/report-app/collection-report/${yearValue}/${month}`
+    : `/report-app/collection-report/${yearValue}`;
+
   return request.get<CollectionReport>({
-    url: Api.CollectionReport,
-    params: {
-      ...(year && { year }),
-      ...(month && { month }),
-    },
+    url,
   });
 }
