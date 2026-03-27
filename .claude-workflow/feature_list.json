@@ -1779,10 +1779,17 @@
         "tests_count": 36,
         "tests_passed": 36,
         "tests_skipped": 0,
-        "verified_at": "2026-03-27T21:30:00+08:00",
-        "verification_type": "full_e2e_retest",
+        "verified_at": "2026-03-27T22:15:00+08:00",
+        "verification_type": "full_e2e_retest_with_api_fix",
         "backend_running": true,
         "frontend_running": true,
+        "api_routes_checked": true,
+        "api_routes_fixed": [
+          "修复前端 API 路径：/report-app/income-report → /report-app/get-income-report",
+          "修复前端 API 路径：/report-app/housing-overview → /report-app/get-housing-overview",
+          "修复前端 API 路径：/report-app/profit-ranking → /report-app/get-profit-ranking",
+          "修复前端 API 路径：/report-app/collection-report → /report-app/get-collection-report"
+        ],
         "required_tests": [
           "auth",
           "community",
@@ -1796,7 +1803,15 @@
           "navigation",
           "responsive",
           "accessibility"
-        ]
+        ],
+        "related_tests": {
+          "feat-025_report_api": "20/20 passed",
+          "feat-026_income_report_page": "9/12 passed (3 skipped - empty data)",
+          "feat-027_housing_report_page": "15/16 passed (1 skipped)",
+          "feat-028_profit_report_page": "21/22 passed (1 performance test timeout)",
+          "feat-029_collection_report_page": "23/23 passed",
+          "feat-030_full_flow": "36/36 passed"
+        }
       },
       "review": {
         "last_review_at": "2026-03-27T20:30:00+08:00",
