@@ -35,9 +35,7 @@
             </div>
             <div class="card-content">
               <span class="card-label">年度总收入</span>
-              <span class="card-value" data-testid="total-income">
-                ¥{{ formatMoney(reportData.totalIncome) }}
-              </span>
+              <span class="card-value" data-testid="total-income"> ¥{{ formatMoney(reportData.totalIncome) }} </span>
             </div>
           </div>
           <div class="summary-card expense" data-testid="expense-card">
@@ -46,9 +44,7 @@
             </div>
             <div class="card-content">
               <span class="card-label">年度总支出</span>
-              <span class="card-value" data-testid="total-expense">
-                ¥{{ formatMoney(reportData.totalExpense) }}
-              </span>
+              <span class="card-value" data-testid="total-expense"> ¥{{ formatMoney(reportData.totalExpense) }} </span>
             </div>
           </div>
           <div class="summary-card profit" :class="{ negative: reportData.netProfit < 0 }" data-testid="profit-card">
@@ -114,14 +110,13 @@
     </t-card>
   </div>
 </template>
-
 <script setup lang="ts">
 import type { PrimaryTableCol } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
-import { getIncomeReport } from '@/api/report';
 import type { IncomeReport } from '@/api/model/reportModel';
+import { getIncomeReport } from '@/api/report';
 import { formatMoney } from '@/utils/format';
 
 defineOptions({
@@ -183,7 +178,6 @@ onMounted(() => {
   fetchData();
 });
 </script>
-
 <style lang="less" scoped>
 .income-report {
   .report-card {

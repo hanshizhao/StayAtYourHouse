@@ -106,8 +106,8 @@ export interface RoomProfitRanking {
 export interface CollectionReport {
   /** 年份 */
   year: number;
-  /** 月份（null 表示全年） */
-  month: number | null;
+  /** 月份（0 表示全年） */
+  month: number;
   /** 月份文本（如：2026年1月 或 2026年全年） */
   monthText: string;
   /** 应收账单数 */
@@ -126,10 +126,16 @@ export interface CollectionReport {
   overdueBills: number;
   /** 逾期金额 */
   overdueAmount: number;
-  /** 收款率 */
+  /** 宽限中账单数 */
+  graceBills: number;
+  /** 宽限中金额 */
+  graceAmount: number;
+  /** 收款率（百分比 0-100） */
   collectionRate: number;
   /** 逾期名单 */
   overdueList: OverdueBillInfo[];
+  /** 宽限名单 */
+  graceList: GraceBillInfo[];
 }
 
 /** 逾期账单信息 */
@@ -140,8 +146,32 @@ export interface OverdueBillInfo {
   tenantName: string;
   /** 房间信息 */
   roomInfo: string;
+  /** 应收日期 */
+  dueDate: string;
   /** 账单金额 */
   totalAmount: number;
   /** 逾期天数 */
   overdueDays: number;
+  /** 账单周期 */
+  periodText: string;
+}
+
+/** 宽限中账单信息 */
+export interface GraceBillInfo {
+  /** 账单ID */
+  billId: number;
+  /** 租客姓名 */
+  tenantName: string;
+  /** 房间信息 */
+  roomInfo: string;
+  /** 应收日期 */
+  dueDate: string;
+  /** 宽限截止日期 */
+  graceUntil: string;
+  /** 剩余宽限天数 */
+  remainingDays: number;
+  /** 应收金额 */
+  totalAmount: number;
+  /** 账单周期 */
+  periodText: string;
 }

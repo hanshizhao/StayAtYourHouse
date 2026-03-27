@@ -1,12 +1,7 @@
 // 类型导入说明：
 // - IncomeReport: 当前使用（FEAT-026 收支统计页）
 // - HousingOverview, RoomProfitRanking, CollectionReport: 预留类型（FEAT-027~029 使用）
-import type {
-  CollectionReport,
-  HousingOverview,
-  IncomeReport,
-  RoomProfitRanking,
-} from '@/api/model/reportModel';
+import type { CollectionReport, HousingOverview, IncomeReport, RoomProfitRanking } from '@/api/model/reportModel';
 import { request } from '@/utils/request';
 
 const Api = {

@@ -26,13 +26,12 @@ export default [
         component: () => import('@/pages/report/profit/index.vue'),
         meta: { title: { zh_CN: '利润排行', en_US: 'Profit Report' } },
       },
-      // FEAT-029: 催收统计页（待实现）
-      // {
-      //   path: 'collection',
-      //   name: 'CollectionReport',
-      //   component: () => import('@/pages/report/collection/index.vue'),
-      //   meta: { title: { zh_CN: '催收统计', en_US: 'Collection Report' } },
-      // },
+      {
+        path: 'collection',
+        name: 'CollectionReport',
+        component: () => import('@/pages/report/collection/index.vue'),
+        meta: { title: { zh_CN: '催收统计', en_US: 'Collection Report' } },
+      },
     ],
   },
 ];

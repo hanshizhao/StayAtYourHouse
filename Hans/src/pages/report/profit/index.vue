@@ -50,11 +50,7 @@
           </div>
           <div class="summary-item">
             <span class="summary-label">总{{ sortBy === 'monthly' ? '月' : '年' }}利润</span>
-            <span
-              class="summary-value"
-              :class="{ loss: totalProfit < 0 }"
-              data-testid="total-profit"
-            >
+            <span class="summary-value" :class="{ loss: totalProfit < 0 }" data-testid="total-profit">
               {{ totalProfit < 0 ? '-' : '' }}¥{{ formatMoney(Math.abs(totalProfit)) }}
             </span>
           </div>
@@ -89,32 +85,19 @@
                 <span class="amount">¥{{ formatMoney(row.monthlyCost) }}</span>
               </template>
               <template #monthlyProfit="{ row }">
-                <span
-                  class="amount"
-                  :class="{ profit: row.monthlyProfit >= 0, loss: row.monthlyProfit < 0 }"
-                >
+                <span class="amount" :class="{ profit: row.monthlyProfit >= 0, loss: row.monthlyProfit < 0 }">
                   {{ row.monthlyProfit < 0 ? '-' : '' }}¥{{ formatMoney(Math.abs(row.monthlyProfit)) }}
                 </span>
               </template>
               <template #yearlyProfit="{ row }">
-                <span
-                  class="amount"
-                  :class="{ profit: row.yearlyProfit >= 0, loss: row.yearlyProfit < 0 }"
-                >
+                <span class="amount" :class="{ profit: row.yearlyProfit >= 0, loss: row.yearlyProfit < 0 }">
                   {{ row.yearlyProfit < 0 ? '-' : '' }}¥{{ formatMoney(Math.abs(row.yearlyProfit)) }}
                 </span>
               </template>
               <template #profitRate="{ row }">
                 <div class="rate-cell">
-                  <t-progress
-                    :percentage="getProfitRate(row)"
-                    :status="getProfitRateStatus(row)"
-                    size="small"
-                  />
-                  <span
-                    class="rate-text"
-                    :class="{ profit: row.monthlyProfit >= 0, loss: row.monthlyProfit < 0 }"
-                  >
+                  <t-progress :percentage="getProfitRate(row)" :status="getProfitRateStatus(row)" size="small" />
+                  <span class="rate-text" :class="{ profit: row.monthlyProfit >= 0, loss: row.monthlyProfit < 0 }">
                     {{ formatPercent(getProfitRate(row) / 100, 1) }}
                   </span>
                 </div>
@@ -126,14 +109,13 @@
     </t-card>
   </div>
 </template>
-
 <script setup lang="ts">
 import type { PrimaryTableCol } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
-import { getProfitRanking } from '@/api/report';
 import type { RoomProfitRanking } from '@/api/model/reportModel';
+import { getProfitRanking } from '@/api/report';
 import { formatMoney, formatPercent } from '@/utils/format';
 
 defineOptions({
@@ -162,14 +144,14 @@ const columns: PrimaryTableCol[] = [
 
 // 盈利房源数
 const profitCount = computed(() => {
-  return rankingData.value.filter(item =>
+  return rankingData.value.filter((item) =>
     sortBy.value === 'monthly' ? item.monthlyProfit >= 0 : item.yearlyProfit >= 0,
   ).length;
 });
 
 // 亏损房源数
 const lossCount = computed(() => {
-  return rankingData.value.filter(item =>
+  return rankingData.value.filter((item) =>
     sortBy.value === 'monthly' ? item.monthlyProfit < 0 : item.yearlyProfit < 0,
   ).length;
 });
@@ -185,12 +167,9 @@ const totalProfit = computed(() => {
 
 // 获取排名样式类
 function getRankClass(index: number): string {
-  if (index === 0)
-    return 'gold';
-  if (index === 1)
-    return 'silver';
-  if (index === 2)
-    return 'bronze';
+  if (index === 0) return 'gold';
+  if (index === 1) return 'silver';
+  if (index === 2) return 'bronze';
   return '';
 }
 
@@ -206,11 +185,9 @@ function getProfitRate(row: RoomProfitRanking): number {
 
 // 获取利润率进度条状态
 function getProfitRateStatus(row: RoomProfitRanking): 'success' | 'error' | 'warning' {
-  if (row.monthlyProfit < 0)
-    return 'error';
+  if (row.monthlyProfit < 0) return 'error';
   const rate = row.monthlyCost > 0 ? row.monthlyProfit / row.monthlyCost : 1;
-  if (rate >= 0.5)
-    return 'success';
+  if (rate >= 0.5) return 'success';
   return 'warning';
 }
 
@@ -222,13 +199,11 @@ async function fetchData() {
   try {
     const result = await getProfitRanking(sortBy.value);
     rankingData.value = result || [];
-  }
-  catch (e: unknown) {
+  } catch (e: unknown) {
     const error = e as { message?: string };
     hasError.value = true;
     MessagePlugin.error(error.message || '获取利润排行数据失败');
-  }
-  finally {
+  } finally {
     loading.value = false;
   }
 }
@@ -244,7 +219,6 @@ onMounted(() => {
   fetchData();
 });
 </script>
-
 <style lang="less" scoped>
 .profit-report {
   .report-card {

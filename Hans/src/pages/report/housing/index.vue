@@ -69,7 +69,9 @@
         <div class="occupancy-section" data-testid="occupancy-section">
           <div class="occupancy-header">
             <span class="occupancy-label">整体出租率</span>
-            <span class="occupancy-value" data-testid="occupancy-rate">{{ formatPercent(reportData.occupancyRate, 1) }}</span>
+            <span class="occupancy-value" data-testid="occupancy-rate">{{
+              formatPercent(reportData.occupancyRate, 1)
+            }}</span>
           </div>
           <t-progress
             :percentage="reportData.occupancyRate * 100"
@@ -138,9 +140,7 @@
                 <span class="room-info">{{ row.roomInfo }}</span>
               </template>
               <template #vacantDays="{ row }">
-                <t-tag :theme="getVacantDaysTheme(row.vacantDays)" variant="light">
-                  {{ row.vacantDays }} 天
-                </t-tag>
+                <t-tag :theme="getVacantDaysTheme(row.vacantDays)" variant="light"> {{ row.vacantDays }} 天 </t-tag>
               </template>
               <template #monthlyRent="{ row }">
                 <span class="rent-amount">¥{{ formatMoney(row.monthlyRent) }}</span>
@@ -158,14 +158,13 @@
     </t-card>
   </div>
 </template>
-
 <script setup lang="ts">
 import type { PrimaryTableCol } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { onMounted, ref } from 'vue';
 
-import { getHousingOverview } from '@/api/report';
 import type { HousingOverview } from '@/api/model/reportModel';
+import { getHousingOverview } from '@/api/report';
 import { formatMoney, formatPercent } from '@/utils/format';
 
 defineOptions({
@@ -198,19 +197,15 @@ const vacantColumns: PrimaryTableCol[] = [
 
 // 根据出租率获取进度条状态
 function getProgressStatus(rate: number): 'success' | 'warning' | 'error' {
-  if (rate >= 0.8)
-    return 'success';
-  if (rate >= 0.5)
-    return 'warning';
+  if (rate >= 0.8) return 'success';
+  if (rate >= 0.5) return 'warning';
   return 'error';
 }
 
 // 根据空置天数获取标签主题
 function getVacantDaysTheme(days: number): 'success' | 'warning' | 'danger' | 'default' {
-  if (days <= 7)
-    return 'success';
-  if (days <= 30)
-    return 'warning';
+  if (days <= 7) return 'success';
+  if (days <= 30) return 'warning';
   return 'danger';
 }
 
@@ -222,13 +217,11 @@ async function fetchData() {
   try {
     const result = await getHousingOverview();
     reportData.value = result;
-  }
-  catch (e: unknown) {
+  } catch (e: unknown) {
     const error = e as { message?: string };
     hasError.value = true;
     MessagePlugin.error(error.message || '获取房源概览数据失败');
-  }
-  finally {
+  } finally {
     loading.value = false;
   }
 }
@@ -239,7 +232,6 @@ onMounted(() => {
   fetchData();
 });
 </script>
-
 <style lang="less" scoped>
 .housing-report {
   .report-card {
