@@ -83,7 +83,15 @@ test.describe('FEAT-030: 完整业务流程', () => {
 
   // ==================== 步骤1: 认证测试 ====================
 
-  test('步骤1.1: 未登录访问 - 应重定向到登录页', async ({ page }) => {
+  test('步骤1.1: 未登录访问 - 应重定向到登录页', async ({ page, context }) => {
+    // 清除所有存储，确保处于未登录状态
+    await context.clearCookies();
+    await page.goto(BASE_URL);
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+    // 现在访问需要认证的页面
     await page.goto(`${BASE_URL}/dashboard`);
     await page.waitForTimeout(1000);
     const url = page.url();
