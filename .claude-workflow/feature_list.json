@@ -1441,15 +1441,51 @@
         }
       ],
       "test_file": "tests/e2e/feat-025-report-api.spec.ts",
-      "status": "pending",
-      "verification": {
-        "api_routes_checked": false,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+      "status": "completed",
+      "completed_at": "2026-03-27T10:30:00+08:00",
+      "implementation": {
+        "files_created": [
+          "Gentle/Gentle.Application/Dtos/Report/IncomeReportDto.cs",
+          "Gentle/Gentle.Application/Dtos/Report/HousingOverviewDto.cs",
+          "Gentle/Gentle.Application/Dtos/Report/RoomProfitRankingDto.cs",
+          "Gentle/Gentle.Application/Dtos/Report/CollectionReportDto.cs",
+          "Gentle/Gentle.Application/Services/IReportService.cs",
+          "Gentle/Gentle.Application/Services/ReportService.cs",
+          "Gentle/Gentle.Application/Apps/ReportAppService.cs"
+        ],
         "api_routes": {
           "base": "/api/report-app",
           "endpoints": ["get-income-report", "get-housing-overview", "get-profit-ranking", "get-collection-report"]
         }
+      },
+      "review": {
+        "last_review_at": "2026-03-26T15:30:00+08:00",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "fixed_issues": [
+          "Critical: 修复逾期账单重复统计 - pendingBills 排除 DueDate < today 的账单",
+          "Important: 添加年份/月份参数验证 - GetIncomeReportAsync 和 GetCollectionReportAsync",
+          "Important: 修复 MonthText 显示异常 - 全年统计时显示 '2026年全年'"
+        ],
+        "suggestions": [
+          "考虑添加缓存提高统计报表性能",
+          "DTO 中的计算属性可考虑使用 [JsonIgnore] 控制序列化",
+          "建议在关键查询处添加日志"
+        ]
+      },
+      "verification": {
+        "api_routes_checked": true,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "tests_count": 20,
+        "tests_passed": 20,
+        "tests_skipped": 0,
+        "verified_at": "2026-03-27T10:30:00+08:00"
       }
     },
     {

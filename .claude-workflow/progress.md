@@ -72,7 +72,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-025 | 统计报表 API | ⏳ 待开始 | - |
+| FEAT-025 | 统计报表 API | ✅ 已完成 | ✓ |
 | FEAT-026 | 收支统计页 | ⏳ 待开始 | - |
 | FEAT-027 | 房源概览页 | ⏳ 待开始 | - |
 | FEAT-028 | 利润排行页 | ⏳ 待开始 | - |
@@ -516,3 +516,49 @@
       - 修复登录凭证：admin/admin123 → zhs/gentle8023
       - 修复页面路径：/dashboard/utility/bill → /utility/bill
       - 修复 main 选择器 strict mode 违规
+
+- ✅ FEAT-025: 统计报表 API（代码审查通过）
+  - 创建 DTO 文件：
+    - IncomeReportDto（收支统计报表，含月度明细）
+    - HousingOverviewDto（房源概览统计，含小区统计、空置房源）
+    - RoomProfitRankingDto（房间利润排行）
+    - CollectionReportDto（催收统计报表，含逾期/宽限名单）
+  - 创建服务接口和实现：
+    - IReportService（继承 ITransient）
+    - ReportService（注入 IRepository<Bill/Room/Community/RentalRecord/UtilityBill>）
+  - 创建 ReportAppService（IDynamicApiController）：
+    - GET get-income-report - 收支统计报表
+    - GET get-housing-overview - 房源概览统计
+    - GET get-profit-ranking - 房间利润排行
+    - GET get-collection-report - 催收统计报表
+  - 构建验证：dotnet build 成功（0 警告，0 错误）
+  - **代码审查 (26T15:30):**
+    - 审查结果：通过（0 Critical, 0 Important, 3 Minor）
+    - Critical 修复：
+      - 修复逾期账单重复统计 - pendingBills 排除 DueDate < today 的账单
+    - Important 修复：
+      - 添加年份/月份参数验证 - GetIncomeReportAsync 和 GetCollectionReportAsync
+      - 修复 MonthText 显示异常 - 全年统计时显示 "2026年全年"
+    - Suggestions（后续优化）：
+      - 考虑添加缓存提高统计报表性能
+      - DTO 中的计算属性可考虑使用 [JsonIgnore] 控制序列化
+      - 建议在关键查询处添加日志
+
+### 2026-03-27
+
+- ✅ FEAT-025: 统计报表 API（已完成）
+  - E2E 测试通过 (20/20)
+  - 修复月份参数验证 - 接受 month=0 表示全年统计
+  - 修复 E2E 测试路由格式 - 匹配 Swagger 中的实际路由
+  - 移除 roomInfo 属性检查 - RoomProfitRankingDto.RoomInfo 使用 [JsonIgnore]
+
+### 2026-03-27
+
+- ✅ FEAT-025: 统计报表 API（已完成）
+  - **E2E 测试通过 (27T10:30):**
+    - 20/20 测试全部通过
+    - 测试覆盖：认证验证、房源概览、利润排行、收支统计、催收统计、参数验证
+  - **Bug 修复：**
+    - 修复催收统计接口月份参数验证 - 接受 month=0 表示全年统计
+    - 修复 E2E 测试路由格式 - 匹配 Swagger 中的实际路由
+    - 移除 roomInfo 属性检查 - RoomProfitRankingDto.RoomInfo 使用 [JsonIgnore]
