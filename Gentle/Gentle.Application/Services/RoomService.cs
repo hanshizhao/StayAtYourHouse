@@ -13,11 +13,13 @@ public class RoomService : IRoomService
 {
     private readonly IRepository<Room> _repository;
     private readonly IRepository<Community> _communityRepository;
+    private readonly IRepository<RentalRecord> _rentalRecordRepository;
 
-    public RoomService(IRepository<Room> repository, IRepository<Community> communityRepository)
+    public RoomService(IRepository<Room> repository, IRepository<Community> communityRepository, IRepository<RentalRecord> rentalRecordRepository)
     {
         _repository = repository;
         _communityRepository = communityRepository;
+        _rentalRecordRepository = rentalRecordRepository;
     }
 
     /// <inheritdoc />
@@ -88,6 +90,7 @@ public class RoomService : IRoomService
         }
 
         var room = input.Adapt<Room>();
+        room.CreatedTime = DateTimeOffset.Now;
         // 设置 Community 导航属性，以便 Mapster 映射 CommunityName
         room.Community = community;
 
@@ -144,6 +147,7 @@ public class RoomService : IRoomService
         existing.Status = input.Status;
         existing.ContractImage = input.ContractImage;
         existing.Remark = input.Remark;
+        existing.UpdatedTime = DateTimeOffset.Now;
         // 更新 Community 导航属性，以便 Mapster 映射 CommunityName
         existing.Community = community;
 
@@ -166,6 +170,14 @@ public class RoomService : IRoomService
         if (room.Status == RoomStatus.Rented)
         {
             throw Oops.Oh("已出租的房间无法删除，请先办理退租");
+        }
+
+        // 检查是否有关联的租赁记录（包括历史记录）
+        var hasRentalRecords = await _rentalRecordRepository.AsQueryable(false)
+            .AnyAsync(r => r.RoomId == id);
+        if (hasRentalRecords)
+        {
+            throw Oops.Oh("该房间存在租赁记录，无法删除");
         }
 
         await _repository.DeleteAsync(room);

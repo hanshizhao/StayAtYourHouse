@@ -45,7 +45,9 @@
         @page-change="handlePageChange"
       >
         <template #communityName="{ row }">
-          <span class="community-name">{{ row.communityName }}</span>
+          <t-tooltip :content="row.communityName" placement="top">
+            <span class="community-name">{{ row.communityName }}</span>
+          </t-tooltip>
         </template>
         <template #roomInfo="{ row }">
           <span>{{ row.building }}栋 {{ row.roomNumber }}</span>
@@ -310,8 +312,7 @@ const settingStore = useSettingStore();
 
 // 表格列配置
 const columns: PrimaryTableCol[] = [
-  { colKey: 'id', title: 'ID', width: 70 },
-  { colKey: 'communityName', title: '小区', width: 140, ellipsis: true },
+  { colKey: 'communityName', title: '小区', width: 140 },
   { colKey: 'roomInfo', title: '房间', width: 140 },
   { colKey: 'area', title: '面积', width: 90 },
   { colKey: 'roomType', title: '类型', width: 100 },
@@ -588,6 +589,7 @@ async function onConfirmDelete() {
     await fetchData();
   } catch (e: any) {
     MessagePlugin.error(e.message || '删除失败');
+    deleteConfirmVisible.value = false;
   } finally {
     deleteLoading.value = false;
     deletingRoom.value = null;
@@ -626,6 +628,11 @@ onMounted(() => {
   }
 
   .community-name {
+    display: inline-block;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-weight: 500;
     color: var(--td-text-color-primary);
   }
