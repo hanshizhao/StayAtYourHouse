@@ -2054,10 +2054,33 @@
         }
       ],
       "test_file": "tests/e2e/feat-034-rental-page.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-28T15:00:00+08:00",
+      "review": {
+        "last_review_at": "2026-03-28T14:30:00+08:00",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "fixed_issues": [
+          "Critical: statusOptions 值体系与枚举不一致 - 添加映射注释文档化 string/number 差异",
+          "Important: 移除 as never 类型断言 - 改用 #expandedRow 模板插槽替代 h() 渲染函数",
+          "Important: 展开行改用 TDesign t-table 组件 - 替代手动构建 HTML",
+          "Important: 补充 E2E 测试 - 12 个测试用例覆盖筛选/分页/展开行/级联加载",
+          "Minor: 房间改为按需加载 - getRoomList({ communityId }) 替代全量加载",
+          "Minor: 添加请求竞态保护 - isUnmounted 标志位 + onUnmounted 清理"
+        ]
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "tests_count": 12,
+        "tests_passed": 12,
+        "tests_skipped": 0,
+        "verified_at": "2026-03-28T15:00:00+08:00",
         "required_tests": ["page_load", "table_visible", "filter_community_room", "filter_status", "pagination", "expanded_row_bills"]
       }
     },
