@@ -6,7 +6,7 @@ export default [
     name: 'tenant',
     component: Layout,
     redirect: '/tenant/list',
-    meta: { title: { zh_CN: '租客管理', en_US: 'Tenant' }, icon: 'user' },
+    meta: { title: { zh_CN: '租客管理', en_US: 'Tenant' }, icon: 'user', orderNo: 2 },
     children: [
       {
         path: 'list',

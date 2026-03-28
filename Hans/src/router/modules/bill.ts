@@ -6,7 +6,7 @@ export default [
     name: 'bill',
     component: Layout,
     redirect: '/bill/list',
-    meta: { title: { zh_CN: '账单管理', en_US: 'Bill' }, icon: 'wallet' },
+    meta: { title: { zh_CN: '账单管理', en_US: 'Bill' }, icon: 'wallet', orderNo: 3 },
     children: [
       {
         path: 'list',

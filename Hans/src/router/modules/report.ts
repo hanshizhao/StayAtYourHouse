@@ -6,7 +6,7 @@ export default [
     name: 'report',
     component: Layout,
     redirect: '/report/income',
-    meta: { title: { zh_CN: '统计报表', en_US: 'Report' }, icon: 'chart-line' },
+    meta: { title: { zh_CN: '统计报表', en_US: 'Report' }, icon: 'chart-line', orderNo: 6 },
     children: [
       {
         path: 'income',

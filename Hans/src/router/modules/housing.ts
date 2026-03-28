@@ -6,7 +6,7 @@ export default [
     name: 'housing',
     component: Layout,
     redirect: '/housing/community',
-    meta: { title: { zh_CN: '房源管理', en_US: 'Housing' }, icon: 'home' },
+    meta: { title: { zh_CN: '房源管理', en_US: 'Housing' }, icon: 'home', orderNo: 1 },
     children: [
       {
         path: 'community',

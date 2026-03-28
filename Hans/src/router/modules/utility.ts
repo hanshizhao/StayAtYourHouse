@@ -6,7 +6,7 @@ export default [
     name: 'utility',
     component: Layout,
     redirect: '/utility/meter',
-    meta: { title: { zh_CN: '水电管理', en_US: 'Utility' }, icon: 'lightbulb' },
+    meta: { title: { zh_CN: '水电管理', en_US: 'Utility' }, icon: 'lightbulb', orderNo: 4 },
     children: [
       {
         path: 'meter',

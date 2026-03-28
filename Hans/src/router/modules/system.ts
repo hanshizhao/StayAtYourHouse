@@ -5,8 +5,9 @@ export default [
     path: '/system',
     name: 'system',
     component: Layout,
+
     redirect: '/system/user',
-    meta: { title: { zh_CN: '系统管理', en_US: 'System' }, icon: 'setting' },
+    meta: { title: { zh_CN: '系统管理', en_US: 'System' }, icon: 'setting', orderNo: 7 },
     children: [
       {
         path: 'user',
