@@ -1,13 +1,24 @@
-import type { CheckInInput, CheckOutInput, RentalRecordDto } from '@/api/model/rentalModel';
+import type { CheckInInput, CheckOutInput, RentalPageParams, RentalPageResult, RentalRecordDto } from '@/api/model/rentalModel';
 import { request } from '@/utils/request';
 
 const Api = {
+  Page: '/rental/page',
   List: '/rental/list',
   Detail: '/rental',
   CheckIn: '/rental/check-in',
   CheckOut: '/rental/check-out',
   Delete: '/rental/remove',
 };
+
+/**
+ * 分页获取租住记录（含关联账单）
+ */
+export function getRentalPage(params?: RentalPageParams) {
+  return request.get<RentalPageResult>({
+    url: Api.Page,
+    params,
+  });
+}
 
 /**
  * 获取租住记录列表

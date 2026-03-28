@@ -1,3 +1,5 @@
+import type { BillItem } from '@/api/model/billModel';
+
 /**
  * 租期类型枚举
  */
@@ -103,4 +105,32 @@ export interface RentalRecordDto {
   remark?: string;
   checkOutRemark?: string;
   createdTime: string;
+  /** 关联账单列表 */
+  bills?: BillItem[];
+}
+
+/**
+ * 租住记录分页查询参数
+ */
+export interface RentalPageParams {
+  /** 状态筛选（active/terminated） */
+  status?: string;
+  /** 房间ID筛选 */
+  roomId?: number;
+  /** 租客ID筛选 */
+  tenantId?: number;
+  /** 页码（从1开始） */
+  page?: number;
+  /** 每页数量 */
+  pageSize?: number;
+}
+
+/**
+ * 租住记录分页结果
+ */
+export interface RentalPageResult {
+  items: RentalRecordDto[];
+  total: number;
+  page: number;
+  pageSize: number;
 }

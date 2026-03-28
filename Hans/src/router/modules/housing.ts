@@ -26,6 +26,12 @@ export default [
         component: () => import('@/pages/housing/room/detail.vue'),
         meta: { title: { zh_CN: '房间详情', en_US: 'Room Detail' }, hidden: true },
       },
+      {
+        path: 'rental',
+        name: 'HousingRental',
+        component: () => import('@/pages/housing/rental/index.vue'),
+        meta: { title: { zh_CN: '租赁记录', en_US: 'Rental Records' } },
+      },
     ],
   },
 ];
