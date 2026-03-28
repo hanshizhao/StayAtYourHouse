@@ -27,12 +27,4 @@ public interface IReportService : ITransient
     /// <param name="limit">返回数量限制，默认50</param>
     /// <returns>房间利润排行列表</returns>
     Task<List<RoomProfitRankingDto>> GetRoomProfitRankingAsync(string sortBy = "monthly", int limit = 50);
-
-    /// <summary>
-    /// 获取催收统计报表
-    /// </summary>
-    /// <param name="year">年份</param>
-    /// <param name="month">月份（可选，不传则统计全年）</param>
-    /// <returns>催收统计报表</returns>
-    Task<CollectionReportDto> GetCollectionReportAsync(int year, int? month = null);
 }

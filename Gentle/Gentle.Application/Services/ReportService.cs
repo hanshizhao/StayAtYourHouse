@@ -10,20 +10,17 @@ namespace Gentle.Application.Services;
 /// </summary>
 public class ReportService : IReportService
 {
-    private readonly IRepository<Bill> _billRepository;
     private readonly IRepository<Room> _roomRepository;
     private readonly IRepository<Community> _communityRepository;
     private readonly IRepository<RentalRecord> _rentalRecordRepository;
     private readonly IRepository<UtilityBill> _utilityBillRepository;
 
     public ReportService(
-        IRepository<Bill> billRepository,
         IRepository<Room> roomRepository,
         IRepository<Community> communityRepository,
         IRepository<RentalRecord> rentalRecordRepository,
         IRepository<UtilityBill> utilityBillRepository)
     {
-        _billRepository = billRepository;
         _roomRepository = roomRepository;
         _communityRepository = communityRepository;
         _rentalRecordRepository = rentalRecordRepository;
@@ -39,12 +36,6 @@ public class ReportService : IReportService
 
         var yearStart = new DateTime(year, 1, 1);
         var yearEnd = new DateTime(year, 12, 31);
-
-        // 获取已收款账单（租金）
-        var paidBills = await _billRepository
-            .AsQueryable(false)
-            .Where(b => b.Status == BillStatus.Paid && b.PaidDate >= yearStart && b.PaidDate <= yearEnd)
-            .ToListAsync();
 
         // 获取已收款水电账单
         var paidUtilityBills = await _utilityBillRepository
@@ -76,16 +67,15 @@ public class ReportService : IReportService
             }
         }
 
-        // 按月汇总收入
+        // 按月汇总收入（租金收入归零，因为 Bill 实体已删除）
         var monthlyDetails = new List<MonthlyIncomeDto>();
         for (var month = 1; month <= 12; month++)
         {
             var monthStart = new DateTime(year, month, 1);
             var monthEnd = monthStart.AddMonths(1).AddDays(-1);
 
-            var rentIncome = paidBills
-                .Where(b => b.PaidDate >= monthStart && b.PaidDate <= monthEnd)
-                .Sum(b => b.PaidAmount ?? b.TotalAmount);
+            // 租金收入归零（Bill 实体已删除，后续将通过新的统一账单体系实现）
+            var rentIncome = 0m;
 
             var utilityIncome = paidUtilityBills
                 .Where(b => b.PaidDate >= monthStart && b.PaidDate <= monthEnd)
@@ -103,7 +93,7 @@ public class ReportService : IReportService
         return new IncomeReportDto
         {
             Year = year,
-            TotalRentIncome = paidBills.Sum(b => b.PaidAmount ?? b.TotalAmount),
+            TotalRentIncome = 0m, // 租金收入归零（Bill 实体已删除）
             TotalUtilityIncome = paidUtilityBills.Sum(b => b.PaidAmount ?? b.TotalAmount),
             TotalExpense = monthlyExpenses.Sum(),
             MonthlyDetails = monthlyDetails
@@ -237,100 +227,5 @@ public class ReportService : IReportService
         };
 
         return result.Take(limit).ToList();
-    }
-
-    /// <inheritdoc />
-    public async Task<CollectionReportDto> GetCollectionReportAsync(int year, int? month = null)
-    {
-        // 参数验证
-        if (year < 2000 || year > DateTime.Today.Year + 1)
-            throw Oops.Oh($"年份参数无效：{year}，请输入2000-{DateTime.Today.Year + 1}之间的年份");
-        // month=0 表示全年统计，1-12 表示具体月份
-        if (month.HasValue && month.Value != 0 && (month.Value < 1 || month.Value > 12))
-            throw Oops.Oh($"月份参数无效：{month}，请输入0(全年)或1-12之间的月份");
-
-        DateTime periodStart;
-        DateTime periodEnd;
-
-        // month=0 或 null 表示全年统计
-        if (month.HasValue && month.Value > 0)
-        {
-            periodStart = new DateTime(year, month.Value, 1);
-            periodEnd = periodStart.AddMonths(1).AddDays(-1);
-        }
-        else
-        {
-            periodStart = new DateTime(year, 1, 1);
-            periodEnd = new DateTime(year, 12, 31);
-        }
-
-        var today = DateTime.Today;
-
-        // 获取指定期间内到期的账单
-        var bills = await _billRepository
-            .AsQueryable(false)
-            .Include(b => b.RentalRecord)
-                .ThenInclude(r => r.Renter)
-            .Include(b => b.RentalRecord)
-                .ThenInclude(r => r.Room)
-                    .ThenInclude(room => room.Community)
-            .Where(b => b.DueDate >= periodStart && b.DueDate <= periodEnd)
-            .ToListAsync();
-
-        // 统计各项数据
-        // 注意：pendingBills 排除已逾期的账单（DueDate < today），避免与 overdueBills 重复统计
-        var totalBills = bills.Count;
-        var totalAmount = bills.Sum(b => b.TotalAmount);
-        var paidBills = bills.Where(b => b.Status == BillStatus.Paid).ToList();
-        var pendingBills = bills.Where(b => b.Status == BillStatus.Pending && b.DueDate >= today).ToList();
-        var overdueBills = bills.Where(b => b.Status == BillStatus.Overdue || (b.Status == BillStatus.Pending && b.DueDate < today)).ToList();
-        var graceBills = bills.Where(b => b.Status == BillStatus.Grace).ToList();
-
-        // 构建逾期名单
-        var overdueList = overdueBills.Select(b => new OverdueBillDto
-        {
-            BillId = b.Id,
-            TenantName = b.RentalRecord?.Renter?.Name ?? "未知租客",
-            RoomInfo = b.RentalRecord?.Room != null
-                ? $"{b.RentalRecord.Room.Community?.Name ?? "未知小区"} {b.RentalRecord.Room.Building}栋 {b.RentalRecord.Room.RoomNumber}"
-                : "未知房间",
-            DueDate = b.DueDate,
-            TotalAmount = b.TotalAmount,
-            OverdueDays = (int)(today - b.DueDate).TotalDays,
-            PeriodText = $"{b.PeriodStart:yyyy-MM-dd} 至 {b.PeriodEnd:yyyy-MM-dd}"
-        }).OrderBy(b => b.OverdueDays).ToList();
-
-        // 构建宽限名单
-        var graceList = graceBills.Where(b => b.GraceUntil.HasValue).Select(b => new GraceBillDto
-        {
-            BillId = b.Id,
-            TenantName = b.RentalRecord?.Renter?.Name ?? "未知租客",
-            RoomInfo = b.RentalRecord?.Room != null
-                ? $"{b.RentalRecord.Room.Community?.Name ?? "未知小区"} {b.RentalRecord.Room.Building}栋 {b.RentalRecord.Room.RoomNumber}"
-                : "未知房间",
-            DueDate = b.DueDate,
-            GraceUntil = b.GraceUntil!.Value,
-            RemainingDays = Math.Max(0, (int)(b.GraceUntil!.Value - today).TotalDays),
-            TotalAmount = b.TotalAmount,
-            PeriodText = $"{b.PeriodStart:yyyy-MM-dd} 至 {b.PeriodEnd:yyyy-MM-dd}"
-        }).OrderBy(b => b.RemainingDays).ToList();
-
-        return new CollectionReportDto
-        {
-            Year = year,
-            Month = month ?? 0,
-            TotalBills = totalBills,
-            TotalAmount = totalAmount,
-            PaidBills = paidBills.Count,
-            PaidAmount = paidBills.Sum(b => b.PaidAmount ?? b.TotalAmount),
-            PendingBills = pendingBills.Count,
-            PendingAmount = pendingBills.Sum(b => b.TotalAmount),
-            OverdueBills = overdueBills.Count,
-            OverdueAmount = overdueBills.Sum(b => b.TotalAmount),
-            GraceBills = graceBills.Count,
-            GraceAmount = graceBills.Sum(b => b.TotalAmount),
-            OverdueList = overdueList,
-            GraceList = graceList
-        };
     }
 }

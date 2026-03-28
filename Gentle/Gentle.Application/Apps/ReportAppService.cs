@@ -49,17 +49,4 @@ public class ReportAppService : IDynamicApiController
     {
         return await _reportService.GetRoomProfitRankingAsync(sortBy ?? "monthly", limit);
     }
-
-    /// <summary>
-    /// 获取催收统计报表
-    /// </summary>
-    /// <param name="year">年份，默认当前年份</param>
-    /// <param name="month">月份（可选，不传则统计全年）</param>
-    /// <returns>催收统计报表</returns>
-    public async Task<CollectionReportDto> GetCollectionReport(int? year = null, int? month = null)
-    {
-        return await _reportService.GetCollectionReportAsync(
-            year ?? DateTime.Today.Year,
-            month);
-    }
 }
