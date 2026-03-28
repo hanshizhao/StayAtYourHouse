@@ -51,22 +51,93 @@ config.NewConfig<RentalRecord, RentalRecordDto>()
 
 Mapster 的 `Bill -> BillDto` 已有配置（`Mapper.cs` 第 55 行），基于命名约定自动映射基础字段。嵌套集合会自动递归映射。
 
-### 3. 修改 `RentalRecordService.GetListAsync`
+### 3. 新增分页查询方法
+
+文件：`Gentle/Gentle.Application/Services/IRentalRecordService.cs`
+
+新增分页查询接口（沿用 BillService 模式——Service 返回元组，AppService 组装 Result）：
+
+```csharp
+/// <summary>
+/// 分页获取租住记录列表
+/// </summary>
+Task<(List<RentalRecordDto> Items, int Total)> GetPagedListAsync(
+    RentalStatus? status = null,
+    int? roomId = null,
+    int? tenantId = null,
+    int page = 1,
+    int pageSize = 20);
+```
+
+保留现有 `GetListAsync` 不变，新增 `GetPagedListAsync` 方法，不影响现有调用方。
+
+### 4. 实现分页查询
 
 文件：`Gentle/Gentle.Application/Services/RentalRecordService.cs`
 
-- 查询租赁记录时新增 `.Include(r => r.Bills)` 加载关联账单
-- EF Core 的 fix-up 机制会自动填充导航属性，无需额外 Include Bills 的子导航
+实现要点（参考 `BillService.GetListAsync`）：
+- 参数边界保护：`page < 1` 修正为 1，`pageSize` 限制在 1-100
+- 查询时 `.Include(r => r.Bills)` 加载关联账单
+- 先 `CountAsync()` 获取总数，再 `Skip((page - 1) * pageSize).Take(pageSize)` 分页
+- 通过 Mapster `.Adapt<List<RentalRecordDto>>()` 映射（含嵌套 Bills）
+- 返回元组 `(dtos, total)`
 
-### 4. 修改 `RentalRecordService.GetByIdAsync`
+### 5. 新增分页 API 端点
 
-同上，新增 `Include` 账单数据。
+文件：`Gentle/Gentle.Application/Apps/RentalAppService.cs`
 
-### 5. 无需新增 API 端点
+新增分页端点，保留现有 `list` 端点不变：
 
-现有端点保持不变：
-- `GET /api/rental/list` — 返回数据多了 `bills` 字段
-- `GET /api/rental/{id}` — 同上
+```csharp
+/// <summary>
+/// 分页获取租住记录列表
+/// </summary>
+[HttpGet("page")]
+public async Task<RentalRecordListResult> GetPage(
+    string? status = null,
+    int? roomId = null,
+    int? tenantId = null,
+    int page = 1,
+    int pageSize = 20)
+{
+    RentalStatus? statusEnum = null;
+    // ... status 字符串转枚举（同现有 list 端点逻辑） ...
+
+    var (items, total) = await _rentalRecordService.GetPagedListAsync(
+        statusEnum, roomId, tenantId, page, pageSize);
+
+    return new RentalRecordListResult
+    {
+        Items = items,
+        Total = total,
+        Page = page,
+        PageSize = pageSize
+    };
+}
+```
+
+### 6. 新增 `RentalRecordListResult` DTO
+
+文件：`Gentle/Gentle.Application/Apps/RentalAppService.cs`（底部定义，与 `BillListResult` 同模式）
+
+```csharp
+/// <summary>
+/// 租住记录分页结果
+/// </summary>
+public class RentalRecordListResult
+{
+    public List<RentalRecordDto> Items { get; set; } = [];
+    public int Total { get; set; }
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+}
+```
+
+### 7. 修改 `GetByIdAsync`
+
+文件：`Gentle/Gentle.Application/Services/RentalRecordService.cs`
+
+新增 `Include(r => r.Bills)` 加载关联账单。
 
 ## 前端改动
 
@@ -97,9 +168,10 @@ export interface RentalRecordDto {
   - 房间下拉选择器（根据选定小区筛选，复用 `getRoomList` API）
   - 状态选择（全部/在租中/已终止）
   - 查询按钮
-- 主体表格：使用 TDesign `t-table` 可展开行功能
+- 主体表格：使用 TDesign `t-table` 可展开行功能 + 分页（参考 tenant 页面的分页模式）
 - 空状态：无数据时显示 `t-empty` 组件
 - 加载状态：使用 `t-table` 的 `:loading` 属性
+- 分页：使用 `t-table` 内置 `:pagination` 属性，后端分页
 
 **筛选策略：** 小区和房间选择器用于确定 `roomId`，最终传给 `getRentalList({ roomId, status })`。筛选在前端级联完成，不需要修改后端 API。
 
@@ -152,15 +224,53 @@ export interface RentalRecordDto {
 },
 ```
 
-### 4. API 调用
+### 4. 新增分页查询 API 和类型
 
-复用现有 API：
+文件：`Hans/src/api/rental.ts`
+
+新增分页查询函数：
 
 ```typescript
-// 获取租赁记录
-getRentalList({
+const Api = {
+  // ... 现有 ...
+  Page: '/rental/page',
+};
+
+/** 分页查询参数 */
+export interface RentalPageParams {
+  status?: string;
+  roomId?: number;
+  tenantId?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+/** 分页结果 */
+export interface RentalPageResult {
+  items: RentalRecordDto[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+/** 分页获取租赁记录 */
+export function getRentalPage(params: RentalPageParams) {
+  return request.get<RentalPageResult>({
+    url: Api.Page,
+    params,
+  });
+}
+```
+
+### 5. API 调用
+
+```typescript
+// 分页获取租赁记录
+getRentalPage({
   status: selectedStatus,
   roomId: selectedRoomId,
+  page: pagination.current,
+  pageSize: pagination.pageSize,
 })
 
 // 获取小区列表（用于筛选器）
@@ -170,27 +280,24 @@ getCommunityList()
 getRoomList({ communityId })
 ```
 
-### 5. 分页说明
-
-当前 `getRentalList` API 不支持分页（返回 `RentalRecordDto[]`）。鉴于租赁记录数据量通常可控（每个房间历史记录有限），暂不添加分页。如后续数据量增大，可扩展 API 支持分页参数。
-
 ## 涉及文件清单
 
 ### 后端
 - `Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs` — 新增 Bills 属性
 - `Gentle/Gentle.Application/Mapper.cs` — 新增 Bills 集合映射
-- `Gentle/Gentle.Application/Services/RentalRecordService.cs` — 查询时 Include 账单
+- `Gentle/Gentle.Application/Services/IRentalRecordService.cs` — 新增分页查询接口
+- `Gentle/Gentle.Application/Services/RentalRecordService.cs` — 实现分页查询 + Include 账单
+- `Gentle/Gentle.Application/Apps/RentalAppService.cs` — 新增分页端点 + RentalRecordListResult
 
 ### 前端
-- `Hans/src/api/model/rentalModel.ts` — 扩展 RentalRecordDto 类型
+- `Hans/src/api/model/rentalModel.ts` — 扩展 RentalRecordDto 类型 + 新增分页类型
+- `Hans/src/api/rental.ts` — 新增 getRentalPage 函数
 - `Hans/src/pages/housing/rental/index.vue` — 新建页面
 - `Hans/src/router/modules/housing.ts` — 新增路由
 
 ## 不做的事
 
 - 不修改账单 API
-- 不新增后端 API 端点
-- 不修改现有租赁记录 API 签名
+- 不修改现有 `GET /api/rental/list` 端点（保持向后兼容）
 - 不在房间详情页实现（已有占位，但本次需求是独立页面）
 - 不为嵌套 BillDto 填充 TenantName/RoomInfo（父级已展示）
-- 不添加分页（数据量可控，后续可扩展）
