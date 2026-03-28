@@ -299,7 +299,7 @@
           "minor": 0
         },
         "important_issues_fixed": [
-          "修复筛选逻辑：移除"全部"选项，改用 clearable 特性"
+          "修复筛选逻辑：移除全部选项，改用 clearable 特性"
         ],
         "suggestions_fixed": [
           "提取共用 formatDateTime 工具函数到 @/utils/date.ts",
