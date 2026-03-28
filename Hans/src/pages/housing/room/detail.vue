@@ -140,12 +140,12 @@ function getStatusTheme(status: RoomStatus): 'success' | 'warning' | 'primary' |
     [RoomStatus.Renovating]: 'primary',
     [RoomStatus.Reclaimed]: 'default',
   };
-  return themes[status];
+  return themes[status] ?? 'default';
 }
 
 /** 获取状态文本 */
 function getStatusText(status: RoomStatus): string {
-  return RoomStatusText[status];
+  return RoomStatusText[status] ?? '未知状态';
 }
 
 /** 获取房间详情 */
