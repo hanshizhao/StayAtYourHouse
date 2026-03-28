@@ -48,7 +48,10 @@ test.describe('FEAT-049: 清理 MeterService 和 UtilityBillDto 中的 Merged �
 
   test('5. 验证编译通过', async () => {
     const result = execSync('dotnet build', { cwd: gentlePath, stdio: 'pipe', timeout: 60000 });
-    expect(result.toString()).toContain('Build succeeded');
+    const output = result.toString();
+    // 支持中文和英文输出
+    expect(output.includes('Build succeeded') || output.includes('已成功生成')).toBeTruthy();
+    expect(output.includes('0 个错误') || output.includes('0 Error(s)')).toBeTruthy();
   });
 
   // API 运行时测试

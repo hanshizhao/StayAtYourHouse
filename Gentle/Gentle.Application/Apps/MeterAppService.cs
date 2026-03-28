@@ -125,7 +125,6 @@ public class MeterAppService : IDynamicApiController
             {
                 "pending" => UtilityBillStatus.Pending,
                 "paid" => UtilityBillStatus.Paid,
-                "merged" => UtilityBillStatus.Merged,
                 _ => null
             };
         }

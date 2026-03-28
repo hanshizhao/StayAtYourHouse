@@ -274,11 +274,6 @@ public class MeterService : IMeterService
             throw Oops.Oh("该账单已收款，无法重复操作");
         }
 
-        if (bill.Status == UtilityBillStatus.Merged)
-        {
-            throw Oops.Oh("该账单已合并到房租账单，无法单独收款");
-        }
-
         // 服务层再次验证实收金额边界（DTO 已有 Range 验证，此处为双重保障）
         var paidAmount = input.PaidAmount ?? bill.TotalAmount;
         if (paidAmount <= 0)
@@ -352,11 +347,6 @@ public class MeterService : IMeterService
         if (bill.Status == UtilityBillStatus.Paid)
         {
             throw Oops.Oh("已收款的账单不能删除");
-        }
-
-        if (bill.Status == UtilityBillStatus.Merged)
-        {
-            throw Oops.Oh("已合并的账单不能删除");
         }
 
         var meterRecordId = bill.MeterRecordId;

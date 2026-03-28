@@ -24,66 +24,6 @@
             登出
             </summary>
         </member>
-        <member name="T:Gentle.Application.Apps.BillAppService">
-            <summary>
-            账单管理应用服务
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Apps.BillAppService.GetList(System.String,System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
-            <summary>
-            获取账单列表
-            </summary>
-            <param name="status">状态筛选（pending/grace/paid/overdue）</param>
-            <param name="communityId">小区ID筛选</param>
-            <param name="month">月份筛选（格式：yyyy-MM）</param>
-            <param name="page">页码</param>
-            <param name="pageSize">每页数量</param>
-        </member>
-        <member name="M:Gentle.Application.Apps.BillAppService.GetById(System.Int32)">
-            <summary>
-            根据ID获取账单详情
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Apps.BillAppService.Collect(Gentle.Application.Dtos.Bill.CollectInput)">
-            <summary>
-            催收处理
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Apps.BillAppService.GetTodayTodos">
-            <summary>
-            获取今日待办账单
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Apps.BillAppService.Remove(System.Int32)">
-            <summary>
-            删除账单
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Apps.BillListResult">
-            <summary>
-            账单列表结果
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Apps.BillListResult.Items">
-            <summary>
-            账单列表
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Apps.BillListResult.Total">
-            <summary>
-            总数
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Apps.BillListResult.Page">
-            <summary>
-            当前页码
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Apps.BillListResult.PageSize">
-            <summary>
-            每页数量
-            </summary>
-        </member>
         <member name="T:Gentle.Application.Apps.CommunityAppService">
             <summary>
             小区管理应用服务
@@ -264,14 +204,6 @@
             <param name="limit">返回数量限制，默认50，最大200</param>
             <returns>房间利润排行列表</returns>
         </member>
-        <member name="M:Gentle.Application.Apps.ReportAppService.GetCollectionReport(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            获取催收统计报表
-            </summary>
-            <param name="year">年份，默认当前年份</param>
-            <param name="month">月份（可选，不传则统计全年）</param>
-            <returns>催收统计报表</returns>
-        </member>
         <member name="T:Gentle.Application.Apps.RoomAppService">
             <summary>
             房间管理应用服务
@@ -447,251 +379,6 @@
         <member name="P:Gentle.Application.Dtos.Auth.ProfileOutput.DisplayName">
             <summary>
             显示名称
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Dtos.Bill.BillDto">
-            <summary>
-            账单 DTO
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.Id">
-            <summary>
-            账单ID
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.RentalRecordId">
-            <summary>
-            租住记录ID
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.TenantName">
-            <summary>
-            租客姓名
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.RoomInfo">
-            <summary>
-            房间信息（小区+楼栋+房间号）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.PeriodStart">
-            <summary>
-            账单周期开始日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.PeriodEnd">
-            <summary>
-            账单周期结束日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.PeriodText">
-            <summary>
-            账单周期文本
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.DueDate">
-            <summary>
-            应收日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.RentAmount">
-            <summary>
-            租金金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.WaterFee">
-            <summary>
-            水费
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.ElectricFee">
-            <summary>
-            电费
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.TotalAmount">
-            <summary>
-            总金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.Status">
-            <summary>
-            账单状态
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.StatusText">
-            <summary>
-            账单状态文本
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.PaidAmount">
-            <summary>
-            实收金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.PaidDate">
-            <summary>
-            收款日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.GraceUntil">
-            <summary>
-            宽限截止日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.DaysRemaining">
-            <summary>
-            剩余天数（距离应收日期）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.CollectionRecords">
-            <summary>
-            催收记录列表
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.Remark">
-            <summary>
-            备注
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.BillDto.CreatedTime">
-            <summary>
-            创建时间
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Dtos.Bill.CollectInput">
-            <summary>
-            催收请求 DTO
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectInput.BillId">
-            <summary>
-            账单ID
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectInput.Result">
-            <summary>
-            催收结果
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectInput.PaidAmount">
-            <summary>
-            实收金额（仅当催收成功时有效）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectInput.GraceUntil">
-            <summary>
-            宽限截止日期（仅当催收结果为宽限时有效）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectInput.Remark">
-            <summary>
-            备注
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Dtos.Bill.CollectionRecordDto">
-            <summary>
-            催收记录 DTO
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectionRecordDto.Id">
-            <summary>
-            记录ID
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectionRecordDto.BillId">
-            <summary>
-            账单ID
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectionRecordDto.CollectDate">
-            <summary>
-            催收日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectionRecordDto.Result">
-            <summary>
-            催收结果
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectionRecordDto.ResultText">
-            <summary>
-            催收结果文本
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectionRecordDto.GraceUntil">
-            <summary>
-            宽限截止日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectionRecordDto.Remark">
-            <summary>
-            备注
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.CollectionRecordDto.CreatedTime">
-            <summary>
-            创建时间
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Dtos.Bill.TodoBillsDto">
-            <summary>
-            待办账单 DTO
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoBillsDto.Overdue">
-            <summary>
-            逾期账单（已超过应收日期且未收款）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoBillsDto.GraceExpiring">
-            <summary>
-            宽限到期账单（今日宽限截止）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoBillsDto.DueToday">
-            <summary>
-            今日到期账单（应收日期为今日）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoBillsDto.Upcoming">
-            <summary>
-            即将到期账单（3天内到期）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoBillsDto.Summary">
-            <summary>
-            各类待办数量汇总
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Dtos.Bill.TodoSummary">
-            <summary>
-            待办汇总 DTO
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoSummary.OverdueCount">
-            <summary>
-            逾期数量
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoSummary.GraceExpiringCount">
-            <summary>
-            宽限到期数量
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoSummary.DueTodayCount">
-            <summary>
-            今日到期数量
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoSummary.UpcomingCount">
-            <summary>
-            即将到期数量
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Bill.TodoSummary.TotalCount">
-            <summary>
-            总待办数量
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.Community.CommunityDto">
@@ -1074,6 +761,11 @@
             账单状态文本
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.RentalRecordId">
+            <summary>
+            关联的租赁记录ID
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.PaidAmount">
             <summary>
             实收金额（元）
@@ -1274,11 +966,6 @@
             退租备注
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.Bills">
-            <summary>
-            关联账单列表
-            </summary>
-        </member>
         <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.CreatedTime">
             <summary>
             创建时间
@@ -1307,176 +994,6 @@
         <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordListResult.PageSize">
             <summary>
             每页数量
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Dtos.Report.CollectionReportDto">
-            <summary>
-            催收统计报表
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.Year">
-            <summary>
-            年份
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.Month">
-            <summary>
-            月份
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.MonthText">
-            <summary>
-            月份文本（如：2026年1月）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.TotalBills">
-            <summary>
-            本月应收账单数
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.TotalAmount">
-            <summary>
-            本月应收总金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.PaidBills">
-            <summary>
-            已收款账单数
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.PaidAmount">
-            <summary>
-            已收款金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.PendingBills">
-            <summary>
-            待收款账单数
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.PendingAmount">
-            <summary>
-            待收款金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.OverdueBills">
-            <summary>
-            逾期账单数
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.OverdueAmount">
-            <summary>
-            逾期金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.GraceBills">
-            <summary>
-            宽限中账单数
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.GraceAmount">
-            <summary>
-            宽限中金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.CollectionRate">
-            <summary>
-            收款率（百分比）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.OverdueList">
-            <summary>
-            逾期名单
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.CollectionReportDto.GraceList">
-            <summary>
-            宽限名单
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Dtos.Report.OverdueBillDto">
-            <summary>
-            逾期账单
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.BillId">
-            <summary>
-            账单ID
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.TenantName">
-            <summary>
-            租客姓名
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.RoomInfo">
-            <summary>
-            房间信息
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.DueDate">
-            <summary>
-            应收日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.TotalAmount">
-            <summary>
-            应收金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.OverdueDays">
-            <summary>
-            逾期天数
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.OverdueBillDto.PeriodText">
-            <summary>
-            账单周期
-            </summary>
-        </member>
-        <member name="T:Gentle.Application.Dtos.Report.GraceBillDto">
-            <summary>
-            宽限中账单
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.BillId">
-            <summary>
-            账单ID
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.TenantName">
-            <summary>
-            租客姓名
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.RoomInfo">
-            <summary>
-            房间信息
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.DueDate">
-            <summary>
-            应收日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.GraceUntil">
-            <summary>
-            宽限截止日期
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.RemainingDays">
-            <summary>
-            剩余宽限天数
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.TotalAmount">
-            <summary>
-            应收金额
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.GraceBillDto.PeriodText">
-            <summary>
-            账单周期
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.Report.HousingOverviewDto">
@@ -2294,41 +1811,6 @@
             Mapster 映射配置
             </summary>
         </member>
-        <member name="T:Gentle.Application.Services.BillService">
-            <summary>
-            账单服务实现
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Services.BillService.GetListAsync(System.Nullable{Gentle.Core.Enums.BillStatus},System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:Gentle.Application.Services.BillService.GetByIdAsync(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:Gentle.Application.Services.BillService.CollectAsync(Gentle.Application.Dtos.Bill.CollectInput)">
-            <inheritdoc />
-        </member>
-        <member name="M:Gentle.Application.Services.BillService.GetTodayTodosAsync">
-            <inheritdoc />
-        </member>
-        <member name="M:Gentle.Application.Services.BillService.DeleteAsync(System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:Gentle.Application.Services.BillService.GenerateNextBillAsync(Gentle.Core.Entities.Bill)">
-            <summary>
-            生成下一期账单
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Services.BillService.ValidateCollectInput(Gentle.Application.Dtos.Bill.CollectInput)">
-            <summary>
-            验证催收输入
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Services.BillService.MapToDto(Gentle.Core.Entities.Bill)">
-            <summary>
-            映射到 DTO
-            </summary>
-        </member>
         <member name="T:Gentle.Application.Services.CommunityService">
             <summary>
             小区服务实现
@@ -2348,48 +1830,6 @@
         </member>
         <member name="M:Gentle.Application.Services.CommunityService.DeleteAsync(System.Int32)">
             <inheritdoc />
-        </member>
-        <member name="T:Gentle.Application.Services.IBillService">
-            <summary>
-            账单服务接口
-            </summary>
-        </member>
-        <member name="M:Gentle.Application.Services.IBillService.GetListAsync(System.Nullable{Gentle.Core.Enums.BillStatus},System.Nullable{System.Int32},System.String,System.Int32,System.Int32)">
-            <summary>
-            获取账单列表
-            </summary>
-            <param name="status">状态筛选</param>
-            <param name="communityId">小区ID筛选</param>
-            <param name="month">月份筛选（格式：yyyy-MM）</param>
-            <param name="page">页码</param>
-            <param name="pageSize">每页数量</param>
-            <returns>账单列表</returns>
-        </member>
-        <member name="M:Gentle.Application.Services.IBillService.GetByIdAsync(System.Int32)">
-            <summary>
-            根据ID获取账单详情
-            </summary>
-            <param name="id">账单ID</param>
-            <returns>账单详情</returns>
-        </member>
-        <member name="M:Gentle.Application.Services.IBillService.CollectAsync(Gentle.Application.Dtos.Bill.CollectInput)">
-            <summary>
-            催收处理
-            </summary>
-            <param name="input">催收请求</param>
-            <returns>更新后的账单</returns>
-        </member>
-        <member name="M:Gentle.Application.Services.IBillService.GetTodayTodosAsync">
-            <summary>
-            获取今日待办账单（即将到期/今日到期/宽限到期/逾期）
-            </summary>
-            <returns>待办账单分组</returns>
-        </member>
-        <member name="M:Gentle.Application.Services.IBillService.DeleteAsync(System.Int32)">
-            <summary>
-            删除账单
-            </summary>
-            <param name="id">账单ID</param>
         </member>
         <member name="T:Gentle.Application.Services.ICommunityService">
             <summary>
@@ -2562,14 +2002,6 @@
             <param name="sortBy">排序字段：monthly（月利润）、yearly（年利润）</param>
             <param name="limit">返回数量限制，默认50</param>
             <returns>房间利润排行列表</returns>
-        </member>
-        <member name="M:Gentle.Application.Services.IReportService.GetCollectionReportAsync(System.Int32,System.Nullable{System.Int32})">
-            <summary>
-            获取催收统计报表
-            </summary>
-            <param name="year">年份</param>
-            <param name="month">月份（可选，不传则统计全年）</param>
-            <returns>催收统计报表</returns>
         </member>
         <member name="T:Gentle.Application.Services.IRoomService">
             <summary>
@@ -2752,9 +2184,6 @@
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.ReportService.GetRoomProfitRankingAsync(System.String,System.Int32)">
-            <inheritdoc />
-        </member>
-        <member name="M:Gentle.Application.Services.ReportService.GetCollectionReportAsync(System.Int32,System.Nullable{System.Int32})">
             <inheritdoc />
         </member>
         <member name="T:Gentle.Application.Services.RoomService">

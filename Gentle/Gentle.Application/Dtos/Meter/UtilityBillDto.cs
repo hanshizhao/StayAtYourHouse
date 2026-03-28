@@ -89,9 +89,13 @@ public class UtilityBillDto
     {
         UtilityBillStatus.Pending => "待收取",
         UtilityBillStatus.Paid => "已收取",
-        UtilityBillStatus.Merged => "已合并",
         _ => "未知"
     };
+
+    /// <summary>
+    /// 关联的租赁记录ID
+    /// </summary>
+    public int? RentalRecordId { get; set; }
 
     /// <summary>
     /// 实收金额（元）
