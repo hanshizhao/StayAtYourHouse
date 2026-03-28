@@ -36,7 +36,11 @@ test.describe('FEAT-047: 清理 RentalRecordService 中的 Bill 引用', () => {
 
   test('3. 验证编译通过', async () => {
     const result = execSync('dotnet build', { cwd: gentlePath, stdio: 'pipe', timeout: 60000 });
-    expect(result.toString()).toContain('Build succeeded');
+    const output = result.toString();
+    // 支持中英文输出 - 验证构建成功
+    expect(output.includes('Build succeeded') || output.includes('已成功生成')).toBe(true);
+    // 验证没有编译错误（"0 个错误" 或 "0 Error(s)"）
+    expect(output.includes('0 个错误') || output.includes('0 Error(s)')).toBe(true);
   });
 
   // API 运行时测试需要后端启动

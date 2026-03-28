@@ -72,7 +72,6 @@ public class RentalRecordService : IRentalRecordService
             .Include(r => r.Renter)
             .Include(r => r.Room)
                 .ThenInclude(room => room.Community)
-            .Include(r => r.Bills)
             .FirstOrDefaultAsync(r => r.Id == id);
 
         if (record == null)
@@ -98,7 +97,6 @@ public class RentalRecordService : IRentalRecordService
             .Include(r => r.Renter)
             .Include(r => r.Room)
                 .ThenInclude(room => room.Community)
-            .Include(r => r.Bills)
             .AsQueryable();
 
         if (status.HasValue)
