@@ -1833,6 +1833,210 @@
           "调整无障碍测试断言：放宽标题元素验证条件"
         ]
       }
+    },
+    {
+      "id": "FEAT-031",
+      "category": "后端",
+      "module": "租赁记录",
+      "priority": "high",
+      "test_type": "static",
+      "description": "后端：扩展 RentalRecordDto 新增 Bills 属性 + Mapster 映射",
+      "acceptance_criteria": [
+        "RentalRecordDto 新增 List<BillDto>? Bills 属性",
+        "Mapper.cs 中 RentalRecord → RentalRecordDto 映射新增 Bills 映射",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 RentalRecordDto 中新增 Bills 属性",
+          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs",
+          "code_hint": "public List<BillDto>? Bills { get; set; }"
+        },
+        {
+          "step": 2,
+          "action": "在 Mapper.cs 中新增 Bills 映射",
+          "file": "Gentle/Gentle.Application/Mapper.cs",
+          "code_hint": ".Map(dest => dest.Bills, src => src.Bills)"
+        },
+        {
+          "step": 3,
+          "action": "构建验证",
+          "file": "Gentle/",
+          "code_hint": "dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-031-rental-dto-mapper.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-032",
+      "category": "后端",
+      "module": "租赁记录",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "后端：新增分页查询 Service + API 端点 GET /api/rental/page",
+      "acceptance_criteria": [
+        "IRentalRecordService 新增 GetPagedListAsync 接口",
+        "RentalRecordService 实现分页查询（含 Include Bills）",
+        "RentalRecordService.GetByIdAsync 加载 Bills",
+        "RentalAppService 新增 GET /api/rental/page 端点",
+        "新增 RentalRecordListResult 类",
+        "API 启动成功，分页端点返回正确数据结构"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 IRentalRecordService 中新增分页接口",
+          "file": "Gentle/Gentle.Application/Services/IRentalRecordService.cs",
+          "code_hint": "Task<(List<RentalRecordDto> Items, int Total)> GetPagedListAsync(RentalStatus? status, int? roomId, int? tenantId, int page, int pageSize)"
+        },
+        {
+          "step": 2,
+          "action": "在 RentalRecordService 中实现分页查询",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": "Include Bills + 筛选 + CountAsync + Skip/Take + Adapt"
+        },
+        {
+          "step": 3,
+          "action": "修改 GetByIdAsync 加载 Bills",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": ".Include(r => r.Bills)"
+        },
+        {
+          "step": 4,
+          "action": "在 RentalAppService 新增分页端点和结果类",
+          "file": "Gentle/Gentle.Application/Apps/RentalAppService.cs",
+          "code_hint": "[HttpGet(\"page\")] + RentalRecordListResult { Items, Total, Page, PageSize }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-032-rental-page-api.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": true,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/rental",
+          "endpoints": ["page", "list", "{id}", "check-in", "check-out", "remove/{id}"]
+        }
+      }
+    },
+    {
+      "id": "FEAT-033",
+      "category": "前端",
+      "module": "租赁记录",
+      "priority": "high",
+      "test_type": "static",
+      "description": "前端：扩展租赁记录类型定义 + API 函数 + 路由配置",
+      "acceptance_criteria": [
+        "rentalModel.ts 扩展 RentalRecordDto 含 bills 字段",
+        "rentalModel.ts 新增 RentalPageParams 和 RentalPageResult 类型",
+        "rental.ts 新增 getRentalPage 函数",
+        "housing.ts 新增租赁记录路由",
+        "npx tsc --noEmit 无类型错误"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 rentalModel.ts 中扩展类型",
+          "file": "Hans/src/api/model/rentalModel.ts",
+          "code_hint": "bills?: BillItem[] + RentalPageParams + RentalPageResult"
+        },
+        {
+          "step": 2,
+          "action": "在 rental.ts 中新增分页查询函数",
+          "file": "Hans/src/api/rental.ts",
+          "code_hint": "getRentalPage(params: RentalPageParams)"
+        },
+        {
+          "step": 3,
+          "action": "在 housing.ts 中新增路由",
+          "file": "Hans/src/router/modules/housing.ts",
+          "code_hint": "{ path: 'rental', name: 'HousingRental', component: () => import('@/pages/housing/rental/index.vue') }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-033-rental-frontend-types.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-034",
+      "category": "前端",
+      "module": "租赁记录",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "前端：新建租赁记录列表页面（可展开行账单、分页、筛选）",
+      "acceptance_criteria": [
+        "创建租赁记录列表页面组件",
+        "使用 TDesign 可展开行表格显示关联账单",
+        "小区→房间级联筛选",
+        "后端分页",
+        "E2E 测试通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建页面目录",
+          "file": "Hans/src/pages/housing/rental/",
+          "code_hint": "mkdir -p Hans/src/pages/housing/rental"
+        },
+        {
+          "step": 2,
+          "action": "创建租赁记录页面组件",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "t-table 可展开行 + 筛选栏（小区/房间/状态） + 后端分页"
+        },
+        {
+          "step": 3,
+          "action": "类型检查验证",
+          "file": "Hans/",
+          "code_hint": "npx tsc --noEmit"
+        }
+      ],
+      "test_file": "tests/e2e/feat-034-rental-page.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "required_tests": ["page_load", "table_visible", "filter_community_room", "filter_status", "pagination", "expanded_row_bills"]
+      }
+    },
+    {
+      "id": "FEAT-035",
+      "category": "集成",
+      "module": "租赁记录",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "E2E 测试：租赁记录页面完整验证（页面+API 联动）",
+      "acceptance_criteria": [
+        "后端构建成功",
+        "前端构建成功",
+        "API 分页端点返回正确数据结构",
+        "前端页面加载、筛选、分页、展开行功能正常"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 E2E 完整验证测试",
+          "file": "tests/e2e/feat-035-rental-e2e.spec.ts",
+          "code_hint": "test.describe.serial('FEAT-035: 租赁记录完整验证', () => { API 冒烟 + 页面验证 })"
+        }
+      ],
+      "test_file": "tests/e2e/feat-035-rental-e2e.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "required_tests": ["api_smoke", "page_load", "table_render", "filter", "pagination", "expand_row", "bill_display"]
+      }
     }
   ]
 }
