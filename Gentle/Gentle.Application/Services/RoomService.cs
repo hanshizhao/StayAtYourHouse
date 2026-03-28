@@ -189,15 +189,10 @@ public class RoomService : IRoomService
             throw Oops.Oh($"房间 {id} 不存在");
         }
 
-        // 检查房间状态，已出租或已收回的房间不能删除
+        // 检查房间状态，已出租的房间不能删除
         if (room.Status == RoomStatus.Rented)
         {
             throw Oops.Oh("已出租的房间无法删除，请先办理退租");
-        }
-
-        if (room.Status == RoomStatus.Reclaimed)
-        {
-            throw Oops.Oh("已收回的房间无法删除，请先恢复为空置状态");
         }
 
         // 检查是否有关联的租赁记录（包括历史记录）
