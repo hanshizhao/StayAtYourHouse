@@ -579,10 +579,5 @@
             已收取
             </summary>
         </member>
-        <member name="F:Gentle.Core.Enums.UtilityBillStatus.Merged">
-            <summary>
-            已合并到房租账单
-            </summary>
-        </member>
     </members>
 </doc>

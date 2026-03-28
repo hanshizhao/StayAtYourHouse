@@ -13,10 +13,5 @@ public enum UtilityBillStatus
     /// <summary>
     /// 已收取
     /// </summary>
-    Paid = 1,
-
-    /// <summary>
-    /// 已合并到房租账单
-    /// </summary>
-    Merged = 2
+    Paid = 1
 }
