@@ -734,6 +734,11 @@
             装修中
             </summary>
         </member>
+        <member name="F:Gentle.Core.Enums.RoomStatus.Reclaimed">
+            <summary>
+            已收回
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.UtilityBillStatus">
             <summary>
             水电账单状态

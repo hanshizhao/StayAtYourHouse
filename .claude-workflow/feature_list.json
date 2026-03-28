@@ -26,10 +26,13 @@
         }
       ],
       "test_file": "tests/e2e/feat-036-room-status-enum.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-28T17:30:00Z",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_created": false,
+        "e2e_tests_passed": true,
+        "build_passed": true,
+        "verified_at": "2026-03-28T17:30:00Z"
       }
     },
     {
