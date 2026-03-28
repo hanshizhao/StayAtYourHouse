@@ -2106,10 +2106,15 @@
         }
       ],
       "test_file": "tests/e2e/feat-035-rental-e2e.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-28T16:00:00+08:00",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "tests_count": 12,
+        "tests_passed": 12,
+        "tests_skipped": 0,
+        "verified_at": "2026-03-28T16:00:00+08:00",
         "required_tests": ["api_smoke", "page_load", "table_render", "filter", "pagination", "expand_row", "bill_display"]
       }
     }
