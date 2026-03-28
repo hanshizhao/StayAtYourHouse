@@ -1867,10 +1867,34 @@
         }
       ],
       "test_file": "tests/e2e/feat-031-rental-dto-mapper.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-28T10:30:00+08:00",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_count": 5,
+        "tests_passed": 5,
+        "tests_skipped": 0,
+        "verified_at": "2026-03-28T10:30:00+08:00",
+        "test_fixes_applied": [
+          "测试 1: 正则表达式增加属性名匹配 \\w+",
+          "测试 5: 改为构建 Gentle.Application 项目避免后端进程锁定 DLL"
+        ]
+      },
+      "review": {
+        "last_review_at": "2026-03-28T10:00:00+08:00",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "suggestions": [
+          "FEAT-032 需确保添加 .Include(r => r.Bills) 到查询中",
+          "BillDto 中 TenantName/RoomInfo 在展开行场景为空字符串，可接受",
+          "Bills 显式映射可添加注释说明意图"
+        ]
       }
     },
     {
@@ -2040,3 +2064,4 @@
     }
   ]
 }
+/

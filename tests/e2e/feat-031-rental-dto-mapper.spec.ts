@@ -17,7 +17,7 @@ test.describe('FEAT-031: 扩展 RentalRecordDto + Mapster 映射', () => {
 
     const content = fs.readFileSync(dtoPath, 'utf-8');
     expect(content).toContain('Bills');
-    expect(content).toMatch(/List<BillDto>\??\s*\{[^}]*\}/);
+    expect(content).toMatch(/List<BillDto>\??\s+\w+\s*\{[^}]*\}/);
   });
 
   test('2. RentalRecordDto 引用 BillDto 命名空间', async () => {
@@ -46,6 +46,6 @@ test.describe('FEAT-031: 扩展 RentalRecordDto + Mapster 映射', () => {
   });
 
   test('5. dotnet build 构建成功', async () => {
-    execSync('dotnet build', { cwd: serverPath, stdio: 'pipe' });
+    execSync('dotnet build Gentle.Application/Gentle.Application.csproj', { cwd: serverPath, stdio: 'pipe' });
   });
 });

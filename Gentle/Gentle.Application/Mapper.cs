@@ -45,7 +45,8 @@ public class Mapper : IRegister
             .Map(dest => dest.TenantName, src => src.Renter != null ? src.Renter.Name : string.Empty)
             .Map(dest => dest.RoomInfo, src => src.Room != null && src.Room.Community != null
                 ? $"{src.Room.Community.Name} {src.Room.Building}栋 {src.Room.RoomNumber}号"
-                : string.Empty);
+                : string.Empty)
+            .Map(dest => dest.Bills, src => src.Bills);
 
         // CheckInInput -> RentalRecord 映射配置
         config.NewConfig<CheckInInput, RentalRecord>()
