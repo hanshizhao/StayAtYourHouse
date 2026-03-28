@@ -49,6 +49,9 @@ test.describe('FEAT-050: UtilityBill 增加 RentalRecordId 字段', () => {
 
   test('5. 验证编译通过', async () => {
     const result = execSync('dotnet build', { cwd: gentlePath, stdio: 'pipe', timeout: 60000 });
-    expect(result.toString()).toContain('Build succeeded');
+    // 支持中英文输出：Build succeeded / 已成功生成
+    const output = result.toString();
+    expect(output.includes('Build succeeded') || output.includes('已成功生成')).toBeTruthy();
+    expect(output).toContain('0 个错误');
   });
 });

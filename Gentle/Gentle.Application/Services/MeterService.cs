@@ -370,11 +370,17 @@ public class MeterService : IMeterService
     /// <param name="prevMeterDate">上次抄表日期（避免重复查询）</param>
     private async Task CreateUtilityBillAsync(MeterRecord meterRecord, Room room, DateTime? prevMeterDate)
     {
-        // 获取当前租客
+        // 获取当前活跃租约
         var activeRental = await _rentalRecordRepository
             .AsQueryable(false)
             .Where(r => r.RoomId == meterRecord.RoomId && r.Status == RentalStatus.Active)
             .FirstOrDefaultAsync();
+
+        // 无活跃租约时不创建账单
+        if (activeRental == null)
+        {
+            return;
+        }
 
         // 计算账单周期（使用传入的上次抄表日期，避免重复查询）
         DateTime periodStart;
@@ -391,7 +397,8 @@ public class MeterService : IMeterService
         var utilityBill = new UtilityBill
         {
             RoomId = meterRecord.RoomId,
-            BillTenantId = activeRental?.RenterId,
+            BillTenantId = activeRental.RenterId,
+            RentalRecordId = activeRental.Id,
             MeterRecordId = meterRecord.Id,
             PeriodStart = periodStart,
             PeriodEnd = meterRecord.MeterDate,

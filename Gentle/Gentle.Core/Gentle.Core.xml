@@ -389,6 +389,16 @@
             租客导航属性
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.RentalRecordId">
+            <summary>
+            租住记录ID（关联活跃租约）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.RentalRecord">
+            <summary>
+            租住记录导航属性
+            </summary>
+        </member>
         <member name="P:Gentle.Core.Entities.UtilityBill.MeterRecordId">
             <summary>
             抄表记录ID

@@ -54,6 +54,7 @@ public class UtilityBillValidationAttribute : ValidationAttribute
 [Table("utility_bill")]
 [Index(nameof(RoomId))]
 [Index(nameof(MeterRecordId))]
+[Index(nameof(RentalRecordId))]
 public class UtilityBill : Entity<int>, IEntitySeedData<UtilityBill>
 {
     /// <summary>
@@ -76,6 +77,16 @@ public class UtilityBill : Entity<int>, IEntitySeedData<UtilityBill>
     /// 租客导航属性
     /// </summary>
     public Tenant? BillTenant { get; set; }
+
+    /// <summary>
+    /// 租住记录ID（关联活跃租约）
+    /// </summary>
+    public int? RentalRecordId { get; set; }
+
+    /// <summary>
+    /// 租住记录导航属性
+    /// </summary>
+    public RentalRecord? RentalRecord { get; set; }
 
     /// <summary>
     /// 抄表记录ID
