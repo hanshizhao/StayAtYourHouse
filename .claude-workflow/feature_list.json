@@ -42,7 +42,6 @@
       "priority": "high",
       "test_type": "api_runtime",
       "description": "后端状态转换校验 + 状态文本映射",
-      "status": "in_progress",
       "acceptance_criteria": [
         "RoomService.UpdateAsync 添加状态转换校验",
         "RoomService.AddAsync 不允许创建为已收回状态",
@@ -282,11 +281,31 @@
         }
       ],
       "test_file": "tests/e2e/feat-042-reclaimed-e2e.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-28T23:30:00Z",
+      "review": {
+        "last_review_at": "2026-03-28T23:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": { "critical": 0, "important": 0, "minor": 2 },
+        "fixed_issues": [
+          "C1: 补充缺失的装修中→已收回、已收回→已出租状态转换测试",
+          "I1: ranking 响应添加 succeeded 检查",
+          "I2: 所有 early return 添加 console.warn 日志",
+          "I3: 修复 FEAT-037 feature_list.json 双重 status 字段"
+        ],
+        "minor_issues": [
+          "S1: Test 6 前端验证可通过 API 播种已收回房间增强断言",
+          "S2: 测试间无 cleanup 钩子，依赖后端校验防止数据泄漏"
+        ]
+      },
       "verification": {
+        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
-        "required_tests": ["enum_consistency", "status_transition", "create_validation", "report_exclusion", "frontend_display"]
+        "e2e_tests_passed": true,
+        "build_passed": true,
+        "required_tests": ["enum_consistency", "status_transition", "create_validation", "report_exclusion", "frontend_display"],
+        "verified_at": "2026-03-28T23:30:00Z"
       }
     }
   ]
