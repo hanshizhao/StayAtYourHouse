@@ -23,7 +23,7 @@
 
 | ID       | 描述                                      | 状态      | 测试 |
 | -------- | ----------------------------------------- | --------- | ---- |
-| FEAT-043 | 删除后端 Bill/CollectionRecord 实体和枚举文件 | ⏳ 待开始 | -    |
+| FEAT-043 | 删除后端 Bill/CollectionRecord 实体和枚举文件 | ✅ 已完成 | 通过 |
 | FEAT-044 | 删除后端 Bill 服务层和 DTO                 | ⏳ 待开始 | -    |
 | FEAT-045 | 清理后端共享文件中的 Bill 引用             | ⏳ 待开始 | -    |
 | FEAT-046 | 清理 ReportService 中的 Bill 引用         | ⏳ 待开始 | -    |
@@ -48,6 +48,13 @@
 - ⏭️ 已跳过 - 暂时跳过
 
 ## 更新日志
+
+### 2026-03-28 (续)
+
+- FEAT-043 验证通过：删除后端 Bill/CollectionRecord 实体和枚举文件
+  - 已删除：Bill.cs, CollectionRecord.cs, BillStatus.cs, CollectResult.cs
+  - 编译失败符合预期（后续 FEAT 将清理引用）
+  - 静态测试通过：2/2
 
 ### 2026-03-28
 
