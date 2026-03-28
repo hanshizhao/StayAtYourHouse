@@ -133,11 +133,6 @@ public class RentalRecord : Entity<int>, IEntitySeedData<RentalRecord>
     public string? CheckOutRemark { get; set; }
 
     /// <summary>
-    /// 账单集合
-    /// </summary>
-    public ICollection<Bill> Bills { get; set; } = new List<Bill>();
-
-    /// <summary>
     /// 配置种子数据
     /// </summary>
     public IEnumerable<RentalRecord> HasData(DbContext dbContext, Type dbContextLocator)

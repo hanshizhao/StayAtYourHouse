@@ -1,4 +1,3 @@
-using Gentle.Application.Dtos.Bill;
 using Gentle.Application.Dtos.Community;
 using Gentle.Application.Dtos.Meter;
 using Gentle.Application.Dtos.RentalRecord;
@@ -45,20 +44,14 @@ public class Mapper : IRegister
             .Map(dest => dest.TenantName, src => src.Renter != null ? src.Renter.Name : string.Empty)
             .Map(dest => dest.RoomInfo, src => src.Room != null && src.Room.Community != null
                 ? $"{src.Room.Community.Name} {src.Room.Building}栋 {src.Room.RoomNumber}号"
-                : string.Empty)
-            .Map(dest => dest.Bills, src => src.Bills);
+                : string.Empty);
 
         // CheckInInput -> RentalRecord 映射配置
         config.NewConfig<CheckInInput, RentalRecord>()
             .Map(dest => dest.RenterId, src => src.TenantId);
 
-        // Bill -> BillDto 映射配置
-        config.NewConfig<Bill, BillDto>();
-
-        // CollectionRecord -> CollectionRecordDto 映射配置
-        config.NewConfig<CollectionRecord, CollectionRecordDto>();
-
         // MeterRecord -> MeterRecordDto 映射配置
+        config.NewConfig<MeterRecord, MeterRecordDto>();
         config.NewConfig<MeterRecord, MeterRecordDto>();
 
         // UtilityBill -> UtilityBillDto 映射配置

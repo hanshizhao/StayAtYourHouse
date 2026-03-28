@@ -1,4 +1,3 @@
-using Gentle.Application.Dtos.Bill;
 using Gentle.Core.Enums;
 
 namespace Gentle.Application.Dtos.RentalRecord;
@@ -119,11 +118,6 @@ public class RentalRecordDto
     /// 退租备注
     /// </summary>
     public string? CheckOutRemark { get; set; }
-
-    /// <summary>
-    /// 关联账单列表
-    /// </summary>
-    public List<BillDto>? Bills { get; set; }
 
     /// <summary>
     /// 创建时间
