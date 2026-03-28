@@ -218,13 +218,7 @@ public class ReportService : IReportService
                 CommunityName = room.Community.Name,
                 Building = room.Building,
                 RoomNumber = room.RoomNumber,
-                Status = room.Status switch
-                {
-                    RoomStatus.Vacant => "空置",
-                    RoomStatus.Rented => "已出租",
-                    RoomStatus.Renovating => "装修中",
-                    _ => "未知"
-                },
+                Status = room.Status.ToText(),
                 CostPrice = room.CostPrice,
                 RentPrice = room.RentPrice,
                 CurrentTenantName = activeRental?.Renter.Name,

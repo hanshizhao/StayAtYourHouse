@@ -739,6 +739,16 @@
             已收回
             </summary>
         </member>
+        <member name="T:Gentle.Core.Enums.RoomStatusExtensions">
+            <summary>
+            RoomStatus 枚举扩展方法
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Enums.RoomStatusExtensions.ToText(Gentle.Core.Enums.RoomStatus)">
+            <summary>
+            获取房间状态的中文文本
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.UtilityBillStatus">
             <summary>
             水电账单状态

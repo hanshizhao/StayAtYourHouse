@@ -19,7 +19,7 @@ test.describe('FEAT-037: 后端状态转换校验 + 状态文本映射', () => {
   test('1. 状态转换校验 - 空置 → 已收回应成功', async ({ request }) => {
     const token = await getAdminToken(request);
     // 获取一个空置房间
-    const listResponse = await request.get(`${API_BASE}/api/room-app/get-list`, {
+    const listResponse = await request.get(`${API_BASE}/api/room/list?status=0`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     expect(listResponse.status()).toBe(200);
@@ -28,17 +28,18 @@ test.describe('FEAT-037: 后端状态转换校验 + 状态文本映射', () => {
     if (!vacantRoom) return; // 无空置房间时跳过
 
     // 尝试更新为已收回
-    const updateResponse = await request.post(`${API_BASE}/api/room-app/edit`, {
+    const updateResponse = await request.put(`${API_BASE}/api/room/edit`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       data: { ...vacantRoom, status: 3 },
     });
-    expect(updateResponse.status()).toBe(200);
+    const updateResult = await updateResponse.json();
+    expect(updateResult.succeeded).toBe(true);
 
     // 恢复为空置
-    await request.post(`${API_BASE}/api/room-app/edit`, {
+    await request.put(`${API_BASE}/api/room/edit`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -49,53 +50,53 @@ test.describe('FEAT-037: 后端状态转换校验 + 状态文本映射', () => {
 
   test('2. 状态转换校验 - 已出租 → 已收回应失败', async ({ request }) => {
     const token = await getAdminToken(request);
-    const listResponse = await request.get(`${API_BASE}/api/room-app/get-list`, {
+    const listResponse = await request.get(`${API_BASE}/api/room/list?status=1`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    expect(listResponse.status()).toBe(200);
     const rooms = await listResponse.json();
     const rentedRoom = rooms.data?.find((r: any) => r.status === 1);
     if (!rentedRoom) return;
 
-    const updateResponse = await request.post(`${API_BASE}/api/room-app/edit`, {
+    const updateResponse = await request.put(`${API_BASE}/api/room/edit`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       data: { ...rentedRoom, status: 3 },
     });
-    // 应该返回错误
-    expect(updateResponse.status()).not.toBe(200);
+    // Furion 统一结果格式：HTTP 200 但 succeeded=false
+    const result = await updateResponse.json();
+    expect(result.succeeded).toBe(false);
   });
 
   test('3. 创建房间 - 不允许直接设为已收回', async ({ request }) => {
     const token = await getAdminToken(request);
-    const listResponse = await request.get(`${API_BASE}/api/room-app/get-list`, {
+    const listResponse = await request.get(`${API_BASE}/api/room/list`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    expect(listResponse.status()).toBe(200);
     const rooms = await listResponse.json();
     const existingRoom = rooms.data?.[0];
     if (!existingRoom) return;
 
-    const createResponse = await request.post(`${API_BASE}/api/room-app/add`, {
+    const createResponse = await request.post(`${API_BASE}/api/room/add`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       data: {
         communityId: existingRoom.communityId,
-        building: 'T-036',
-        roomNumber: 'TEST-036',
+        building: 'T-037',
+        roomNumber: 'TEST-037',
         costPrice: 1000,
         rentPrice: 1500,
         status: 3, // 尝试创建为已收回
       },
     });
-
-    if (createResponse.status() === 200) {
-      const result = await createResponse.json();
-      // 即使创建成功，状态应被覆盖为空置(0)
-      expect(result.data.status).toBe(0);
-    }
+    // Furion 统一结果格式：HTTP 200 但 succeeded=false
+    const result = await createResponse.json();
+    expect(result.succeeded).toBe(false);
   });
 
   test('4. 状态文本映射 - 包含已收回', async ({ request }) => {

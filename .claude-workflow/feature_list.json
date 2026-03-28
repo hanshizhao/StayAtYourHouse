@@ -42,6 +42,7 @@
       "priority": "high",
       "test_type": "api_runtime",
       "description": "后端状态转换校验 + 状态文本映射",
+      "status": "in_progress",
       "acceptance_criteria": [
         "RoomService.UpdateAsync 添加状态转换校验",
         "RoomService.AddAsync 不允许创建为已收回状态",
@@ -69,15 +70,27 @@
         }
       ],
       "test_file": "tests/e2e/feat-037-status-transition.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-28T18:30:00Z",
+      "review": {
+        "last_review_at": "2026-03-28T18:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": { "critical": 0, "important": 1, "minor": 2 },
+        "fixed_issues": ["I1: AddAsync 静默覆盖改为抛异常", "S1: GetRoomStatusText 提取为扩展方法", "S2: DeleteAsync 新增 Reclaimed 删除限制"],
+        "tech_debt": ["C1: RentalRecordService 直接修改 room.Status 绕过校验"],
+        "minor_issues": []
+      },
       "verification": {
         "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "build_passed": true,
         "api_routes": {
-          "base": "/api/room-app",
-          "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]
-        }
+          "base": "/api/room",
+          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
+        },
+        "verified_at": "2026-03-28T18:30:00Z"
       }
     },
     {

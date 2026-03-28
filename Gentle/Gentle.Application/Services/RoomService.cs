@@ -90,6 +90,11 @@ public class RoomService : IRoomService
         }
 
         var room = input.Adapt<Room>();
+        // 新建房间不允许直接设为已收回状态
+        if (room.Status == RoomStatus.Reclaimed)
+        {
+            throw Oops.Oh("新建房间不允许直接设为已收回状态");
+        }
         room.CreatedTime = DateTimeOffset.Now;
         // 设置 Community 导航属性，以便 Mapster 映射 CommunityName
         room.Community = community;
@@ -133,6 +138,24 @@ public class RoomService : IRoomService
             throw Oops.Oh($"小区 {community.Name} 的 {input.Building}栋 {input.RoomNumber} 号房间已存在");
         }
 
+        // 状态转换校验
+        if (input.Status != existing.Status)
+        {
+            var transitionValid = (existing.Status, input.Status) switch
+            {
+                (RoomStatus.Vacant, RoomStatus.Reclaimed) => true,    // 空置 → 已收回
+                (RoomStatus.Reclaimed, RoomStatus.Vacant) => true,    // 已收回 → 空置
+                (RoomStatus.Reclaimed, _) => false,                    // 已收回不能转为其他状态
+                (_, RoomStatus.Reclaimed) => false,                    // 只有空置可以转为已收回
+                _ => true                                              // 其他状态转换允许
+            };
+
+            if (!transitionValid)
+            {
+                throw Oops.Oh("状态转换不合法：仅空置状态可收回，已收回状态只能恢复为空置");
+            }
+        }
+
         // 更新字段
         existing.CommunityId = input.CommunityId;
         existing.Building = input.Building;
@@ -166,10 +189,15 @@ public class RoomService : IRoomService
             throw Oops.Oh($"房间 {id} 不存在");
         }
 
-        // 检查房间状态，已出租的房间不能删除
+        // 检查房间状态，已出租或已收回的房间不能删除
         if (room.Status == RoomStatus.Rented)
         {
             throw Oops.Oh("已出租的房间无法删除，请先办理退租");
+        }
+
+        if (room.Status == RoomStatus.Reclaimed)
+        {
+            throw Oops.Oh("已收回的房间无法删除，请先恢复为空置状态");
         }
 
         // 检查是否有关联的租赁记录（包括历史记录）

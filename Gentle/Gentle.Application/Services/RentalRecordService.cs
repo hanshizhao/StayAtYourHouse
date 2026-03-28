@@ -309,14 +309,5 @@ public class RentalRecordService : IRentalRecordService
     /// <summary>
     /// 获取房间状态文本
     /// </summary>
-    private static string GetRoomStatusText(RoomStatus status)
-    {
-        return status switch
-        {
-            RoomStatus.Vacant => "空置",
-            RoomStatus.Rented => "已出租",
-            RoomStatus.Renovating => "装修中",
-            _ => "未知"
-        };
-    }
+    private static string GetRoomStatusText(RoomStatus status) => status.ToText();
 }
