@@ -120,15 +120,28 @@
         }
       ],
       "test_file": "tests/e2e/feat-038-report-exclude-reclaimed.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-28T19:10:00Z",
+      "review": {
+        "last_review_at": "2026-03-28T19:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": { "critical": 0, "important": 0, "minor": 2 },
+        "minor_issues": [
+          "S1: GetCollectionReportAsync 中已收回房间的账单是否也应排除（业务决策）",
+          "S2: 可在 E2E 测试中补充覆盖"
+        ]
+      },
       "verification": {
         "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "build_passed": true,
         "api_routes": {
           "base": "/api/report-app",
-          "endpoints": ["get-housing-overview", "get-profit-ranking"]
-        }
+          "endpoints": ["housing-overview", "profit-ranking"]
+        },
+        "verified_at": "2026-03-28T19:10:00Z"
       }
     },
     {

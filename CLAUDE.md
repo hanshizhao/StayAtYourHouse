@@ -55,6 +55,26 @@ dotnet ef database update --project Gentle.Database.Migrations --startup-project
 dotnet ef migrations list --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry
 ```
 
+### E2E 测试（Playwright）
+
+```bash
+cd tests
+
+# 运行所有测试
+npm run test
+
+# 运行单个测试文件
+npx playwright test e2e/<test-file>.spec.ts
+
+# 带界面运行
+npm run test:ui
+
+# 有头模式运行
+npm run test:headed
+```
+
+**⚠️ 重要：Playwright 测试必须从 `tests/` 目录运行**，配置文件位于 `tests/playwright.config.ts`。从项目根目录运行会报版本冲突错误。
+
 ## 架构
 
 ### 前端（Hans）

@@ -18,7 +18,7 @@ test.describe('FEAT-038: 后端报表排除已收回房间', () => {
 
   test('1. 房源概览 - 不包含已收回房间', async ({ request }) => {
     const token = await getAdminToken(request);
-    const response = await request.get(`${API_BASE}/api/report-app/get-housing-overview`, {
+    const response = await request.get(`${API_BASE}/api/report-app/housing-overview`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     expect(response.status()).toBe(200);
@@ -34,7 +34,7 @@ test.describe('FEAT-038: 后端报表排除已收回房间', () => {
 
   test('2. 利润排行 - 不包含已收回房间', async ({ request }) => {
     const token = await getAdminToken(request);
-    const response = await request.get(`${API_BASE}/api/report-app/get-profit-ranking/monthly/10`, {
+    const response = await request.get(`${API_BASE}/api/report-app/profit-ranking/monthly/10`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     expect(response.status()).toBe(200);
@@ -49,7 +49,7 @@ test.describe('FEAT-038: 后端报表排除已收回房间', () => {
 
   test('3. 验证统计总数一致性', async ({ request }) => {
     const token = await getAdminToken(request);
-    const response = await request.get(`${API_BASE}/api/report-app/get-housing-overview`, {
+    const response = await request.get(`${API_BASE}/api/report-app/housing-overview`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     expect(response.status()).toBe(200);
