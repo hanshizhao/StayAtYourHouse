@@ -11,10 +11,12 @@ namespace Gentle.Application.Services;
 public class CommunityService : ICommunityService
 {
     private readonly IRepository<Community> _repository;
+    private readonly IRepository<Room> _roomRepository;
 
-    public CommunityService(IRepository<Community> repository)
+    public CommunityService(IRepository<Community> repository, IRepository<Room> roomRepository)
     {
         _repository = repository;
+        _roomRepository = roomRepository;
     }
 
     /// <inheritdoc />
@@ -22,9 +24,20 @@ public class CommunityService : ICommunityService
     {
         // SQLite 不支持 DateTimeOffset 排序，改为内存排序
         var list = await _repository.AsQueryable(false).ToListAsync();
+        var roomCounts = await _roomRepository.AsQueryable(false)
+            .GroupBy(r => r.CommunityId)
+            .Select(g => new { CommunityId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.CommunityId, x => x.Count);
+
         return list
             .OrderByDescending(c => c.CreatedTime)
-            .Adapt<List<CommunityDto>>();
+            .Select(c =>
+            {
+                var dto = c.Adapt<CommunityDto>();
+                dto.RoomCount = roomCounts.GetValueOrDefault(c.Id, 0);
+                return dto;
+            })
+            .ToList();
     }
 
     /// <inheritdoc />
@@ -51,6 +64,7 @@ public class CommunityService : ICommunityService
         }
 
         var community = input.Adapt<Community>();
+        community.CreatedTime = DateTimeOffset.Now;
         var entry = await _repository.InsertAsync(community);
         await _repository.SaveNowAsync();  // 立即保存以获取生成的 ID
         return entry.Entity.Adapt<CommunityDto>();
@@ -95,12 +109,12 @@ public class CommunityService : ICommunityService
             throw Oops.Oh($"小区 {id} 不存在");
         }
 
-        // TODO: 检查是否有关联的房间，如果有则不允许删除
-        // var hasRooms = await _roomRepository.AsQueryable(false).AnyAsync(r => r.CommunityId == id);
-        // if (hasRooms)
-        // {
-        //     throw Oops.Oh("该小区下存在房间，无法删除");
-        // }
+        // 检查是否有关联的房间，如果有则不允许删除
+        var hasRooms = await _roomRepository.AsQueryable(false).AnyAsync(r => r.CommunityId == id);
+        if (hasRooms)
+        {
+            throw Oops.Oh("该小区下存在房间，无法删除");
+        }
 
         await _repository.DeleteAsync(community);
         await _repository.SaveNowAsync();  // 立即保存

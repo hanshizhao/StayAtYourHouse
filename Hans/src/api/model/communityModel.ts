@@ -7,6 +7,7 @@ export interface CommunityItem {
   address?: string;
   propertyPhone?: string;
   remark?: string;
+  roomCount: number;
   createdTime: string;
 }
 

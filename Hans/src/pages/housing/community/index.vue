@@ -39,7 +39,9 @@
         @page-change="handlePageChange"
       >
         <template #name="{ row }">
-          <span class="community-name">{{ row.name }}</span>
+          <t-tooltip :content="row.name" placement="top">
+            <span class="community-name">{{ row.name }}</span>
+          </t-tooltip>
         </template>
         <template #address="{ row }">
           <span class="text-secondary">{{ row.address || '-' }}</span>
@@ -52,6 +54,12 @@
             <span class="remark-text">{{ row.remark }}</span>
           </t-tooltip>
           <span v-else class="text-secondary">-</span>
+        </template>
+        <template #roomCount="{ row }">
+          <t-link v-if="row.roomCount > 0" theme="primary" @click="handleViewRooms(row)">
+            {{ row.roomCount }}
+          </t-link>
+          <span v-else>0</span>
         </template>
         <template #createdTime="{ row }">
           {{ formatDateTime(row.createdTime) }}
@@ -123,6 +131,24 @@
     >
       <p data-testid="confirm-dialog-message">{{ deleteConfirmBody }}</p>
     </t-dialog>
+
+    <!-- 房间列表对话框 -->
+    <t-dialog
+      v-model:visible="roomDialogVisible"
+      :header="roomDialogTitle"
+      width="700px"
+      :footer="false"
+    >
+      <t-table
+        :data="roomList"
+        :columns="roomColumns"
+        row-key="id"
+        :loading="roomLoading"
+        :pagination="{ defaultPageSize: 10, total: roomList.length }"
+        size="small"
+        :max-height="400"
+      />
+    </t-dialog>
   </div>
 </template>
 <script setup lang="ts">
@@ -132,7 +158,10 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 import { createCommunity, deleteCommunity, getCommunityList, updateCommunity } from '@/api/community';
+import { getRoomList } from '@/api/room';
 import type { CommunityItem } from '@/api/model/communityModel';
+import { RoomStatusText } from '@/api/model/roomModel';
+import type { RoomItem } from '@/api/model/roomModel';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
 import { formatDateTime } from '@/utils/date';
@@ -164,10 +193,10 @@ const settingStore = useSettingStore();
 
 // 表格列配置
 const columns: PrimaryTableCol[] = [
-  { colKey: 'id', title: 'ID', width: 80 },
   { colKey: 'name', title: '小区名称', width: 200, ellipsis: true },
   { colKey: 'address', title: '地址', width: 250, ellipsis: true },
   { colKey: 'propertyPhone', title: '物业电话', width: 140 },
+  { colKey: 'roomCount', title: '房间数', width: 100 },
   { colKey: 'remark', title: '备注', width: 200, ellipsis: true },
   { colKey: 'createdTime', title: '创建时间', width: 180 },
   { colKey: 'op', title: '操作', width: 120, fixed: 'right' },
@@ -212,6 +241,19 @@ const deleteConfirmBody = computed(() => {
   }
   return '';
 });
+
+// 房间列表弹窗
+const roomDialogVisible = ref(false);
+const roomLoading = ref(false);
+const roomDialogTitle = ref('');
+const roomList = ref<RoomItem[]>([]);
+const roomColumns = [
+  { colKey: 'building', title: '楼栋', width: 100 },
+  { colKey: 'roomNumber', title: '房间号', width: 100 },
+  { colKey: 'roomType', title: '类型', width: 120 },
+  { colKey: 'rentPrice', title: '租金', width: 100 },
+  { colKey: 'status', title: '状态', width: 80, cell: (h: any, { row }: { row: RoomItem }) => RoomStatusText[row.status] || '未知' },
+];
 
 // 过滤数据
 // 注意：当前使用前端分页和搜索过滤，适用于小区数量较少（<1000）的场景
@@ -337,11 +379,11 @@ async function onConfirmDelete() {
   try {
     await deleteCommunity(deletingCommunity.value.id);
     MessagePlugin.success('删除成功');
-    deleteConfirmVisible.value = false;
     await fetchData(); // 等待数据刷新完成
   } catch (e: any) {
     MessagePlugin.error(e.message || '删除失败');
   } finally {
+    deleteConfirmVisible.value = false;
     deleteLoading.value = false;
     deletingCommunity.value = null;
   }
@@ -350,6 +392,21 @@ async function onConfirmDelete() {
 onMounted(() => {
   fetchData();
 });
+
+// 查看小区房间列表
+async function handleViewRooms(row: CommunityItem) {
+  roomDialogTitle.value = `${row.name} - 房间列表`;
+  roomDialogVisible.value = true;
+  roomLoading.value = true;
+  try {
+    const res = await getRoomList({ communityId: row.id });
+    roomList.value = res || [];
+  } catch (e: any) {
+    MessagePlugin.error(e.message || '获取房间列表失败');
+  } finally {
+    roomLoading.value = false;
+  }
+}
 </script>
 <style lang="less" scoped>
 .community-management {

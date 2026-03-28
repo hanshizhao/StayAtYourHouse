@@ -116,7 +116,6 @@ public class VacantRoomDto
     /// <summary>
     /// 完整房间信息
     /// </summary>
-    [JsonIgnore]
     public string RoomInfo => $"{CommunityName} {Building}栋 {RoomNumber}";
 
     /// <summary>

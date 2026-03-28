@@ -43,17 +43,17 @@ export interface HousingOverview {
   /** 总房源数 */
   totalRooms: number;
   /** 已出租数 */
-  rentedRooms: number;
+  rentedCount: number;
   /** 空置数 */
-  vacantRooms: number;
+  vacantCount: number;
   /** 装修中数 */
-  renovatingRooms: number;
-  /** 出租率 */
+  renovatingCount: number;
+  /** 出租率（百分比 0-100） */
   occupancyRate: number;
   /** 小区统计 */
   communityStats: CommunityStat[];
   /** 空置房源列表 */
-  vacantRoomList: VacantRoomInfo[];
+  vacantRooms: VacantRoomInfo[];
 }
 
 /** 小区统计 */
@@ -65,10 +65,10 @@ export interface CommunityStat {
   /** 总房源数 */
   totalRooms: number;
   /** 已出租数 */
-  rentedRooms: number;
+  rentedCount: number;
   /** 空置数 */
-  vacantRooms: number;
-  /** 出租率 */
+  vacantCount: number;
+  /** 出租率（百分比 0-100） */
   occupancyRate: number;
 }
 
@@ -81,7 +81,7 @@ export interface VacantRoomInfo {
   /** 空置天数 */
   vacantDays: number;
   /** 月租金 */
-  monthlyRent: number;
+  rentPrice: number;
 }
 
 /** 房间利润排行 */

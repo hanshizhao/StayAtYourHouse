@@ -39,7 +39,7 @@
             </div>
             <div class="card-content">
               <span class="card-label">已出租</span>
-              <span class="card-value" data-testid="rented-rooms">{{ reportData.rentedRooms }}</span>
+              <span class="card-value" data-testid="rented-rooms">{{ reportData.rentedCount }}</span>
               <span class="card-unit">间</span>
             </div>
           </div>
@@ -49,7 +49,7 @@
             </div>
             <div class="card-content">
               <span class="card-label">空置</span>
-              <span class="card-value" data-testid="vacant-rooms">{{ reportData.vacantRooms }}</span>
+              <span class="card-value" data-testid="vacant-rooms">{{ reportData.vacantCount }}</span>
               <span class="card-unit">间</span>
             </div>
           </div>
@@ -59,7 +59,7 @@
             </div>
             <div class="card-content">
               <span class="card-label">装修中</span>
-              <span class="card-value" data-testid="renovating-rooms">{{ reportData.renovatingRooms }}</span>
+              <span class="card-value" data-testid="renovating-rooms">{{ reportData.renovatingCount }}</span>
               <span class="card-unit">间</span>
             </div>
           </div>
@@ -70,11 +70,11 @@
           <div class="occupancy-header">
             <span class="occupancy-label">整体出租率</span>
             <span class="occupancy-value" data-testid="occupancy-rate">{{
-              formatPercent(reportData.occupancyRate, 1)
-            }}</span>
+              reportData.occupancyRate.toFixed(1)
+            }}%</span>
           </div>
           <t-progress
-            :percentage="reportData.occupancyRate * 100"
+            :percentage="reportData.occupancyRate"
             :status="getProgressStatus(reportData.occupancyRate)"
             size="large"
             data-testid="occupancy-progress"
@@ -99,19 +99,19 @@
                 <span class="room-count">{{ row.totalRooms }}</span>
               </template>
               <template #rentedRooms="{ row }">
-                <span class="room-count rented">{{ row.rentedRooms }}</span>
+                <span class="room-count rented">{{ row.rentedCount }}</span>
               </template>
               <template #vacantRooms="{ row }">
-                <span class="room-count vacant">{{ row.vacantRooms }}</span>
+                <span class="room-count vacant">{{ row.vacantCount }}</span>
               </template>
               <template #occupancyRate="{ row }">
                 <div class="rate-cell">
                   <t-progress
-                    :percentage="row.occupancyRate * 100"
+                    :percentage="row.occupancyRate"
                     :status="getProgressStatus(row.occupancyRate)"
                     size="small"
                   />
-                  <span class="rate-text">{{ formatPercent(row.occupancyRate, 0) }}</span>
+                  <span class="rate-text">{{ row.occupancyRate.toFixed(0) }}%</span>
                 </div>
               </template>
             </t-table>
@@ -123,14 +123,14 @@
         </div>
 
         <!-- 空置房源列表 -->
-        <div class="vacant-rooms" v-if="reportData.vacantRoomList.length > 0">
+        <div class="vacant-rooms" v-if="reportData.vacantRooms.length > 0">
           <h3 class="section-title">
             空置房源
-            <span class="vacant-count">（{{ reportData.vacantRoomList.length }} 间）</span>
+            <span class="vacant-count">（{{ reportData.vacantRooms.length }} 间）</span>
           </h3>
           <div class="table-wrapper" data-testid="vacant-table-wrapper">
             <t-table
-              :data="reportData.vacantRoomList"
+              :data="reportData.vacantRooms"
               :columns="vacantColumns"
               row-key="roomId"
               :hover="true"
@@ -143,7 +143,7 @@
                 <t-tag :theme="getVacantDaysTheme(row.vacantDays)" variant="light"> {{ row.vacantDays }} 天 </t-tag>
               </template>
               <template #monthlyRent="{ row }">
-                <span class="rent-amount">¥{{ formatMoney(row.monthlyRent) }}</span>
+                <span class="rent-amount">¥{{ formatMoney(row.rentPrice) }}</span>
               </template>
             </t-table>
           </div>
@@ -165,7 +165,7 @@ import { onMounted, ref } from 'vue';
 
 import type { HousingOverview } from '@/api/model/reportModel';
 import { getHousingOverview } from '@/api/report';
-import { formatMoney, formatPercent } from '@/utils/format';
+import { formatMoney } from '@/utils/format';
 
 defineOptions({
   name: 'HousingReport',
@@ -197,8 +197,8 @@ const vacantColumns: PrimaryTableCol[] = [
 
 // 根据出租率获取进度条状态
 function getProgressStatus(rate: number): 'success' | 'warning' | 'error' {
-  if (rate >= 0.8) return 'success';
-  if (rate >= 0.5) return 'warning';
+  if (rate >= 80) return 'success';
+  if (rate >= 50) return 'warning';
   return 'error';
 }
 

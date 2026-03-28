@@ -31,6 +31,11 @@ public class CommunityDto
     public string? Remark { get; set; }
 
     /// <summary>
+    /// 房间数量
+    /// </summary>
+    public int RoomCount { get; set; }
+
+    /// <summary>
     /// 创建时间
     /// </summary>
     public DateTimeOffset CreatedTime { get; set; }

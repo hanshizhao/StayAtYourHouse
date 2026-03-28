@@ -714,6 +714,11 @@
             备注
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Community.CommunityDto.RoomCount">
+            <summary>
+            房间数量
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Community.CommunityDto.CreatedTime">
             <summary>
             创建时间
