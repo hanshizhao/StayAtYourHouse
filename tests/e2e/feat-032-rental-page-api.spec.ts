@@ -10,11 +10,11 @@ test.describe('FEAT-032: 租赁记录分页查询 API', () => {
 
   async function getAdminToken(request: any): Promise<string> {
     const loginResponse = await request.post(`${API_BASE}/api/auth/login`, {
-      data: { username: 'zhs', password: 'gentle8023' },
+      data: { Account: 'zhs', Password: 'gentle8023' },
     });
     expect(loginResponse.status()).toBe(200);
     const result = await loginResponse.json();
-    return result.data.accessToken;
+    return result.data.token;
   }
 
   test('1. 分页端点 GET /api/rental/page 返回 200', async ({ request }) => {

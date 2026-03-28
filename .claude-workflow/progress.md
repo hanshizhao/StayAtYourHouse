@@ -89,8 +89,8 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-031 | 扩展 RentalRecordDto + Mapster 映射 | ⏳ 待开始 | - |
-| FEAT-032 | 分页查询 Service + API 端点 | ⏳ 待开始 | - |
+| FEAT-031 | 扩展 RentalRecordDto + Mapster 映射 | ✅ 已完成 | 5/5 |
+| FEAT-032 | 分页查询 Service + API 端点 | ✅ 已完成 | 10/10 |
 | FEAT-033 | 前端类型定义 + API + 路由 | ⏳ 待开始 | - |
 | FEAT-034 | 租赁记录列表页面 | ⏳ 待开始 | - |
 | FEAT-035 | 租赁记录完整 E2E 验证 | ⏳ 待开始 | - |
@@ -682,3 +682,17 @@
   - FEAT-033: 前端类型定义 + API + 路由
   - FEAT-034: 租赁记录列表页面
   - FEAT-035: 租赁记录完整 E2E 验证
+
+- ✅ FEAT-032: 分页查询 Service + API 端点（已完成）
+  - IRentalRecordService 新增 GetPagedListAsync 接口
+  - RentalRecordService 实现分页查询（Include Bills + 筛选 + CountAsync + Skip/Take）
+  - RentalRecordService.GetByIdAsync 加载 Bills 导航属性
+  - RentalAppService 新增 GET /api/rental/page 端点
+  - 创建 RentalRecordListResult DTO 类
+  - RentalAppService.GetPage 添加分页参数边界保护（page < 1 修正为 1）
+  - dotnet build 构建成功（0 错误，0 警告）
+  - **API 运行时测试通过 (10/10)**
+  - 测试修复：
+    - 修复登录字段名：username/password → Account/Password
+    - 修复 token 字段名：accessToken → token
+    - 添加 Controller 层分页参数边界保护

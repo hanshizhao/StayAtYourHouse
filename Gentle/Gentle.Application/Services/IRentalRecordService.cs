@@ -17,6 +17,16 @@ public interface IRentalRecordService : ITransient
     Task<List<RentalRecordDto>> GetListAsync(RentalStatus? status = null, int? roomId = null, int? tenantId = null);
 
     /// <summary>
+    /// 分页获取租住记录列表（含关联账单）
+    /// </summary>
+    /// <param name="status">状态筛选（可选）</param>
+    /// <param name="roomId">房间ID筛选（可选）</param>
+    /// <param name="tenantId">租客ID筛选（可选）</param>
+    /// <param name="page">页码（从1开始）</param>
+    /// <param name="pageSize">每页数量</param>
+    Task<(List<RentalRecordDto> Items, int Total)> GetPagedListAsync(RentalStatus? status = null, int? roomId = null, int? tenantId = null, int page = 1, int pageSize = 20);
+
+    /// <summary>
     /// 根据ID获取租住记录
     /// </summary>
     Task<RentalRecordDto> GetByIdAsync(int id);

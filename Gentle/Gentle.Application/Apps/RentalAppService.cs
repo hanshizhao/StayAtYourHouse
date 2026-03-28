@@ -45,6 +45,44 @@ public class RentalAppService : IDynamicApiController
     }
 
     /// <summary>
+    /// 分页获取租住记录列表（含关联账单）
+    /// </summary>
+    /// <param name="status">状态筛选（active/terminated）</param>
+    /// <param name="roomId">房间ID筛选</param>
+    /// <param name="tenantId">租客ID筛选</param>
+    /// <param name="page">页码（从1开始）</param>
+    /// <param name="pageSize">每页数量（默认20）</param>
+    [HttpGet("page")]
+    public async Task<RentalRecordListResult> GetPage(string? status = null, int? roomId = null, int? tenantId = null, int page = 1, int pageSize = 20)
+    {
+        RentalStatus? statusEnum = null;
+        if (!string.IsNullOrEmpty(status))
+        {
+            statusEnum = status.ToLower() switch
+            {
+                "active" => RentalStatus.Active,
+                "terminated" => RentalStatus.Terminated,
+                _ => null
+            };
+        }
+
+        // 分页参数边界保护
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 20;
+        if (pageSize > 100) pageSize = 100;
+
+        var (items, total) = await _rentalRecordService.GetPagedListAsync(statusEnum, roomId, tenantId, page, pageSize);
+
+        return new RentalRecordListResult
+        {
+            Items = items,
+            Total = total,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
+    /// <summary>
     /// 根据ID获取租住记录
     /// </summary>
     [HttpGet("{id}")]

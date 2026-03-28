@@ -1939,15 +1939,25 @@
         }
       ],
       "test_file": "tests/e2e/feat-032-rental-page-api.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-28T11:00:00+08:00",
       "verification": {
         "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false,
+        "e2e_tests_passed": true,
+        "tests_count": 10,
+        "tests_passed": 10,
+        "tests_skipped": 0,
+        "verified_at": "2026-03-28T11:00:00+08:00",
         "api_routes": {
           "base": "/api/rental",
           "endpoints": ["page", "list", "{id}", "check-in", "check-out", "remove/{id}"]
-        }
+        },
+        "test_fixes_applied": [
+          "修复登录字段名：username/password → Account/Password",
+          "修复 token 字段名：accessToken → token",
+          "修复 page=0 边界验证：在 Controller 层添加分页参数边界保护"
+        ]
       }
     },
     {

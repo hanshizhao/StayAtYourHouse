@@ -208,6 +208,16 @@
             <param name="roomId">房间ID筛选</param>
             <param name="tenantId">租客ID筛选</param>
         </member>
+        <member name="M:Gentle.Application.Apps.RentalAppService.GetPage(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            分页获取租住记录列表（含关联账单）
+            </summary>
+            <param name="status">状态筛选（active/terminated）</param>
+            <param name="roomId">房间ID筛选</param>
+            <param name="tenantId">租客ID筛选</param>
+            <param name="page">页码（从1开始）</param>
+            <param name="pageSize">每页数量（默认20）</param>
+        </member>
         <member name="M:Gentle.Application.Apps.RentalAppService.GetById(System.Int32)">
             <summary>
             根据ID获取租住记录
@@ -1272,6 +1282,31 @@
         <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.CreatedTime">
             <summary>
             创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.RentalRecord.RentalRecordListResult">
+            <summary>
+            租住记录分页结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordListResult.Items">
+            <summary>
+            租住记录列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordListResult.Total">
+            <summary>
+            总数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordListResult.Page">
+            <summary>
+            当前页码
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordListResult.PageSize">
+            <summary>
+            每页数量
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.Report.CollectionReportDto">
@@ -2472,6 +2507,16 @@
             <param name="roomId">房间ID筛选（可选）</param>
             <param name="tenantId">租客ID筛选（可选）</param>
         </member>
+        <member name="M:Gentle.Application.Services.IRentalRecordService.GetPagedListAsync(System.Nullable{Gentle.Core.Enums.RentalStatus},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            分页获取租住记录列表（含关联账单）
+            </summary>
+            <param name="status">状态筛选（可选）</param>
+            <param name="roomId">房间ID筛选（可选）</param>
+            <param name="tenantId">租客ID筛选（可选）</param>
+            <param name="page">页码（从1开始）</param>
+            <param name="pageSize">每页数量</param>
+        </member>
         <member name="M:Gentle.Application.Services.IRentalRecordService.GetByIdAsync(System.Int32)">
             <summary>
             根据ID获取租住记录
@@ -2671,6 +2716,9 @@
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.RentalRecordService.GetByIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.GetPagedListAsync(System.Nullable{Gentle.Core.Enums.RentalStatus},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.RentalRecordService.CheckInAsync(Gentle.Application.Dtos.RentalRecord.CheckInInput)">

@@ -12,6 +12,9 @@ namespace Gentle.Application.Services;
 /// </summary>
 public class RentalRecordService : IRentalRecordService
 {
+    private const int DefaultPageSize = 20;
+    private const int MaxPageSize = 100;
+
     private readonly IRepository<RentalRecord> _repository;
     private readonly IRepository<TenantEntity> _tenantRepository;
     private readonly IRepository<Room> _roomRepository;
@@ -69,6 +72,7 @@ public class RentalRecordService : IRentalRecordService
             .Include(r => r.Renter)
             .Include(r => r.Room)
                 .ThenInclude(room => room.Community)
+            .Include(r => r.Bills)
             .FirstOrDefaultAsync(r => r.Id == id);
 
         if (record == null)
@@ -77,6 +81,50 @@ public class RentalRecordService : IRentalRecordService
         }
 
         return record.Adapt<RentalRecordDto>();
+    }
+
+    /// <inheritdoc />
+    public async Task<(List<RentalRecordDto> Items, int Total)> GetPagedListAsync(
+        RentalStatus? status = null, int? roomId = null, int? tenantId = null,
+        int page = 1, int pageSize = 20)
+    {
+        // 分页参数边界保护
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = DefaultPageSize;
+        if (pageSize > MaxPageSize) pageSize = MaxPageSize;
+
+        var query = _repository
+            .AsQueryable(false)
+            .Include(r => r.Renter)
+            .Include(r => r.Room)
+                .ThenInclude(room => room.Community)
+            .Include(r => r.Bills)
+            .AsQueryable();
+
+        if (status.HasValue)
+        {
+            query = query.Where(r => r.Status == status.Value);
+        }
+
+        if (roomId.HasValue)
+        {
+            query = query.Where(r => r.RoomId == roomId.Value);
+        }
+
+        if (tenantId.HasValue)
+        {
+            query = query.Where(r => r.RenterId == tenantId.Value);
+        }
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .OrderByDescending(r => r.CreatedTime)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items.Adapt<List<RentalRecordDto>>(), total);
     }
 
     /// <inheritdoc />
