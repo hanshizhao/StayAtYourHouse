@@ -1,311 +1,612 @@
 {
-  "module": "房间状态已收回",
+  "module": "统一水电费账单",
   "version": "1.0.0",
   "created_at": "2026-03-28",
   "source_docs": [
-    "docs/superpowers/plans/2026-03-28-room-status-reclaimed.md"
+    "docs/superpowers/plans/2026-03-28-unified-utility-billing.md"
   ],
   "features": [
     {
-      "id": "FEAT-036",
+      "id": "FEAT-043",
       "category": "后端",
-      "module": "房间状态已收回",
+      "module": "统一水电费账单",
       "priority": "high",
       "test_type": "static",
-      "description": "后端枚举扩展：RoomStatus 新增 Reclaimed = 3",
+      "description": "删除后端 Bill/CollectionRecord 实体和枚举文件",
       "acceptance_criteria": [
-        "RoomStatus 枚举新增 Reclaimed = 3",
-        "dotnet build 构建成功"
+        "删除 Bill.cs, CollectionRecord.cs, BillStatus.cs, CollectResult.cs",
+        "编译失败是预期的（其他文件仍引用这些类型）"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "在 RoomStatus 枚举中新增 Reclaimed = 3",
-          "file": "Gentle/Gentle.Core/Enums/RoomStatus.cs",
-          "code_hint": "在 Renovating = 2 后添加: Reclaimed = 3"
+          "action": "删除 4 个文件",
+          "file": "Gentle/Gentle.Core/Entities/Bill.cs",
+          "code_hint": "rm Gentle/Gentle.Core/Entities/Bill.cs Gentle/Gentle.Core/Entities/CollectionRecord.cs Gentle/Gentle.Core/Enums/BillStatus.cs Gentle/Gentle.Core/Enums/CollectResult.cs"
         }
       ],
-      "test_file": "tests/e2e/feat-036-room-status-enum.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T17:30:00Z",
+      "test_file": "tests/e2e/feat-043-delete-bill-entities.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "verified_at": "2026-03-28T17:30:00Z"
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-037",
+      "id": "FEAT-044",
       "category": "后端",
-      "module": "房间状态已收回",
+      "module": "统一水电费账单",
       "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端状态转换校验 + 状态文本映射",
+      "test_type": "static",
+      "description": "删除后端 Bill 服务层和 DTO",
       "acceptance_criteria": [
-        "RoomService.UpdateAsync 添加状态转换校验",
-        "RoomService.AddAsync 不允许创建为已收回状态",
-        "RentalRecordService.GetRoomStatusText 添加 Reclaimed 映射",
-        "dotnet build 构建成功"
+        "删除 BillAppService.cs, IBillService.cs, BillService.cs",
+        "删除 Bill DTO 目录和 CollectionReportDto.cs"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "在 RoomService.UpdateAsync 中添加状态转换校验",
-          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "仅空置状态可收回，已收回只能恢复为空置"
+          "action": "删除服务层文件",
+          "file": "Gentle/Gentle.Application/Apps/BillAppService.cs",
+          "code_hint": "rm Gentle/Gentle.Application/Apps/BillAppService.cs Gentle/Gentle.Application/Services/IBillService.cs Gentle/Gentle.Application/Services/BillService.cs"
         },
         {
           "step": 2,
-          "action": "在 RoomService.AddAsync 中添加创建校验",
-          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "新建时不允许直接设为已收回，覆盖为空置"
+          "action": "删除 DTO 目录和文件",
+          "file": "Gentle/Gentle.Application/Dtos/Bill/",
+          "code_hint": "rm -rf Gentle/Gentle.Application/Dtos/Bill/ Gentle/Gentle.Application/Dtos/Report/CollectionReportDto.cs"
+        }
+      ],
+      "test_file": "tests/e2e/feat-044-delete-bill-services.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-045",
+      "category": "后端",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "static",
+      "description": "清理后端共享文件中的 Bill 引用",
+      "acceptance_criteria": [
+        "RentalRecord.cs 删除 Bills 导航属性",
+        "RentalRecordDto.cs 删除 Bills 属性",
+        "Mapper.cs 删除 Bill 相关映射",
+        "编译仍有错误（ReportService、RentalRecordService 仍引用 Bill）"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "修改 RentalRecord.cs — 删除 Bills 导航属性",
+          "file": "Gentle/Gentle.Core/Entities/RentalRecord.cs",
+          "code_hint": "删除 ICollection<Bill> Bills 属性"
+        },
+        {
+          "step": 2,
+          "action": "修改 RentalRecordDto.cs — 删除 Bills 属性",
+          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs",
+          "code_hint": "删除 List<BillDto>? Bills 属性和 using 语句"
         },
         {
           "step": 3,
-          "action": "更新 RentalRecordService.GetRoomStatusText",
-          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
-          "code_hint": "RoomStatus.Reclaimed => \"已收回\""
+          "action": "修改 Mapper.cs — 删除 Bill 相关映射",
+          "file": "Gentle/Gentle.Application/Mapper.cs",
+          "code_hint": "删除 .Map(dest => dest.Bills, src => src.Bills) 和 Bill/CollectionRecord 映射配置"
         }
       ],
-      "test_file": "tests/e2e/feat-037-status-transition.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T18:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-28T18:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": { "critical": 0, "important": 1, "minor": 2 },
-        "fixed_issues": ["I1: AddAsync 静默覆盖改为抛异常", "S1: GetRoomStatusText 提取为扩展方法", "S2: DeleteAsync 新增 Reclaimed 删除限制"],
-        "tech_debt": ["C1: RentalRecordService 直接修改 room.Status 绕过校验"],
-        "minor_issues": []
-      },
+      "test_file": "tests/e2e/feat-045-cleanup-bill-references.spec.ts",
+      "status": "pending",
       "verification": {
-        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "api_routes": {
-          "base": "/api/room",
-          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
-        },
-        "verified_at": "2026-03-28T18:30:00Z"
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-038",
+      "id": "FEAT-046",
       "category": "后端",
-      "module": "房间状态已收回",
+      "module": "统一水电费账单",
       "priority": "high",
       "test_type": "api_runtime",
-      "description": "后端报表排除已收回房间",
+      "description": "清理 ReportService 中的 Bill 引用",
       "acceptance_criteria": [
-        "GetHousingOverviewAsync 排除 Reclaimed 房间",
-        "GetRoomProfitRankingAsync 排除 Reclaimed 房间",
+        "ReportService.cs 删除 IRepository<Bill> 依赖",
+        "GetIncomeReportAsync 方法简化（租金收入归零）",
+        "删除 GetCollectionReportAsync 方法",
+        "IReportService.cs 删除接口声明",
+        "ReportAppService.cs 删除端点"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "修改 ReportService.cs",
+          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
+          "code_hint": "删除 IRepository<Bill> 依赖，简化 GetIncomeReportAsync，删除 GetCollectionReportAsync"
+        },
+        {
+          "step": 2,
+          "action": "修改 IReportService.cs",
+          "file": "Gentle/Gentle.Application/Services/IReportService.cs",
+          "code_hint": "删除 GetCollectionReportAsync 接口声明"
+        },
+        {
+          "step": 3,
+          "action": "修改 ReportAppService.cs",
+          "file": "Gentle/Gentle.Application/Apps/ReportAppService.cs",
+          "code_hint": "删除 GetCollectionReport 方法"
+        }
+      ],
+      "test_file": "tests/e2e/feat-046-cleanup-report-bill.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": true,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/report-app",
+          "endpoints": ["housing-overview", "profit-ranking", "income"]
+        }
+      }
+    },
+    {
+      "id": "FEAT-047",
+      "category": "后端",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "清理 RentalRecordService 中的 Bill 引用",
+      "acceptance_criteria": [
+        "GetByIdAsync 删除 .Include(r => r.Bills)",
+        "GetPagedListAsync 删除 .Include(r => r.Bills)",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "在 GetHousingOverviewAsync 中排除 Reclaimed",
-          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
-          "code_hint": ".Where(r => r.Status != RoomStatus.Reclaimed)"
+          "action": "修改 GetByIdAsync",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": "删除 .Include(r => r.Bills)"
         },
         {
           "step": 2,
-          "action": "在 GetRoomProfitRankingAsync 中排除 Reclaimed",
-          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
-          "code_hint": ".Where(r => r.Status != RoomStatus.Reclaimed) + 状态 switch 添加 Reclaimed"
+          "action": "修改 GetPagedListAsync",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": "删除 .Include(r => r.Bills)"
         }
       ],
-      "test_file": "tests/e2e/feat-038-report-exclude-reclaimed.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T19:10:00Z",
-      "review": {
-        "last_review_at": "2026-03-28T19:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": { "critical": 0, "important": 0, "minor": 2 },
-        "minor_issues": [
-          "S1: GetCollectionReportAsync 中已收回房间的账单是否也应排除（业务决策）",
-          "S2: 可在 E2E 测试中补充覆盖"
-        ]
-      },
+      "test_file": "tests/e2e/feat-047-cleanup-rental-bill.spec.ts",
+      "status": "pending",
       "verification": {
         "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
+        "e2e_tests_passed": false,
         "api_routes": {
-          "base": "/api/report-app",
-          "endpoints": ["housing-overview", "profit-ranking"]
-        },
-        "verified_at": "2026-03-28T19:10:00Z"
+          "base": "/api/rental",
+          "endpoints": ["page", "list", "{id}"]
+        }
       }
     },
     {
-      "id": "FEAT-039",
-      "category": "前端",
-      "module": "房间状态已收回",
+      "id": "FEAT-048",
+      "category": "后端",
+      "module": "统一水电费账单",
       "priority": "high",
       "test_type": "static",
-      "description": "前端类型定义 + 枚举扩展",
+      "description": "修改 UtilityBillStatus 枚举（移除 Merged）",
       "acceptance_criteria": [
-        "RoomStatus 枚举新增 Reclaimed = 3",
-        "RoomStatusText 新增已收回映射",
-        "npm run build 构建成功"
+        "UtilityBillStatus 只保留 Pending = 0, Paid = 1",
+        "编译失败（MeterService 和 UtilityBillDto 引用 Merged）"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "扩展 RoomStatus 枚举和 RoomStatusText",
-          "file": "Hans/src/api/model/roomModel.ts",
-          "code_hint": "Reclaimed = 3 + [RoomStatus.Reclaimed]: '已收回'"
+          "action": "移除 Merged 枚举值",
+          "file": "Gentle/Gentle.Core/Enums/UtilityBillStatus.cs",
+          "code_hint": "只保留 Pending = 0, Paid = 1"
         }
       ],
-      "test_file": "tests/e2e/feat-039-frontend-enum.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T20:10:00Z",
+      "test_file": "tests/e2e/feat-048-utility-bill-status-enum.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "verified_at": "2026-03-28T20:10:00Z"
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-040",
-      "category": "前端",
-      "module": "房间状态已收回",
+      "id": "FEAT-049",
+      "category": "后端",
+      "module": "统一水电费账单",
       "priority": "high",
-      "test_type": "e2e",
-      "description": "前端房间列表页适配",
-      "status": "passed",
-      "completed_at": "2026-03-28T21:10:00Z",
+      "test_type": "api_runtime",
+      "description": "清理 MeterService 和 UtilityBillDto 中的 Merged 引用",
       "acceptance_criteria": [
-        "statusOptions 新增已收回选项",
-        "getStatusTheme 函数新增 Reclaimed 映射",
-        "E2E 测试通过"
+        "MeterService.cs 删除 Merged 状态检查",
+        "UtilityBillDto.cs 删除 Merged 分支，新增 RentalRecordId 属性",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "更新 statusOptions 筛选选项",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "添加 { label: '已收回', value: RoomStatus.Reclaimed }"
+          "action": "修改 MeterService.cs PayAsync 方法",
+          "file": "Gentle/Gentle.Application/Services/MeterService.cs",
+          "code_hint": "删除 Merged 状态检查代码块"
         },
         {
           "step": 2,
-          "action": "更新 getStatusTheme 函数",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "[RoomStatus.Reclaimed]: 'default'"
-        }
-      ],
-      "test_file": "tests/e2e/feat-040-room-list-adapt.spec.ts",
-      "review": {
-        "last_review_at": "2026-03-28T21:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": { "critical": 0, "important": 0, "minor": 1 },
-        "fixed_issues": ["I1: E2E 测试选择器从 .t-select().first() 改为 [data-testid='status-filter']"],
-        "minor_issues": ["S1: statusOptions 可考虑从 RoomStatusText 派生，保持单一数据源"]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "verified_at": "2026-03-28T21:10:00Z"
-      }
-    },
-    {
-      "id": "FEAT-041",
-      "category": "前端",
-      "module": "房间状态已收回",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "前端房间详情页适配",
-      "acceptance_criteria": [
-        "getStatusTheme 函数新增 Reclaimed 映射",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
+          "action": "修改 MeterService.cs DeleteBillAsync 方法",
+          "file": "Gentle/Gentle.Application/Services/MeterService.cs",
+          "code_hint": "删除 Merged 状态检查代码块"
+        },
         {
-          "step": 1,
-          "action": "更新 detail.vue 的 getStatusTheme 函数",
-          "file": "Hans/src/pages/housing/room/detail.vue",
-          "code_hint": "[RoomStatus.Reclaimed]: 'default'"
+          "step": 3,
+          "action": "修改 UtilityBillDto.cs",
+          "file": "Gentle/Gentle.Application/Dtos/Meter/UtilityBillDto.cs",
+          "code_hint": "删除 Merged 分支，新增 RentalRecordId 属性"
         }
       ],
-      "test_file": "tests/e2e/feat-041-room-detail-adapt.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T22:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-28T22:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": { "critical": 0, "important": 1, "minor": 3 },
-        "fixed_issues": ["I1: getStatusTheme/getStatusText 添加 fallback 防御性处理"],
-        "minor_issues": [
-          "S1: getStatusTheme 和 getStatusText 在 index.vue 和 detail.vue 中重复定义，建议后续提取为共享工具函数",
-          "S2: E2E 测试缺少对 Reclaimed 状态展示的精确断言",
-          "S3: getStatusText 同样缺少防御性处理（已一并修复）"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "verified_at": "2026-03-28T22:30:00Z"
-      }
-    },
-    {
-      "id": "FEAT-042",
-      "category": "集成",
-      "module": "房间状态已收回",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "E2E 完整已收回状态验证",
-      "acceptance_criteria": [
-        "前后端 RoomStatus 枚举值对齐",
-        "状态转换校验正确（空置↔已收回）",
-        "创建房间不允许直接设为已收回",
-        "报表排除已收回房间",
-        "前端展示正确"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "编写 E2E 测试",
-          "file": "tests/e2e/feat-042-reclaimed-e2e.spec.ts",
-          "code_hint": "枚举一致性 + 状态转换 + 创建校验 + 报表排除 + 前端展示"
-        }
-      ],
-      "test_file": "tests/e2e/feat-042-reclaimed-e2e.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T23:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-28T23:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": { "critical": 0, "important": 0, "minor": 2 },
-        "fixed_issues": [
-          "C1: 补充缺失的装修中→已收回、已收回→已出租状态转换测试",
-          "I1: ranking 响应添加 succeeded 检查",
-          "I2: 所有 early return 添加 console.warn 日志",
-          "I3: 修复 FEAT-037 feature_list.json 双重 status 字段"
-        ],
-        "minor_issues": [
-          "S1: Test 6 前端验证可通过 API 播种已收回房间增强断言",
-          "S2: 测试间无 cleanup 钩子，依赖后端校验防止数据泄漏"
-        ]
-      },
+      "test_file": "tests/e2e/feat-049-cleanup-merged-references.spec.ts",
+      "status": "pending",
       "verification": {
         "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "required_tests": ["enum_consistency", "status_transition", "create_validation", "report_exclusion", "frontend_display"],
-        "verified_at": "2026-03-28T23:30:00Z"
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/meter",
+          "endpoints": ["bill/list", "bill/pay/{id}", "bill/{id}"]
+        }
+      }
+    },
+    {
+      "id": "FEAT-050",
+      "category": "后端",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "UtilityBill 增加 RentalRecordId 字段",
+      "acceptance_criteria": [
+        "UtilityBill 实体新增 RentalRecordId 和导航属性",
+        "MeterService.CreateUtilityBillAsync 改为查询活跃租约并关联",
+        "无活跃租约时不创建账单",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 UtilityBill 实体中新增字段",
+          "file": "Gentle/Gentle.Core/Entities/UtilityBill.cs",
+          "code_hint": "新增 RentalRecordId 属性、RentalRecord 导航属性、索引"
+        },
+        {
+          "step": 2,
+          "action": "修改 MeterService.CreateUtilityBillAsync",
+          "file": "Gentle/Gentle.Application/Services/MeterService.cs",
+          "code_hint": "查询活跃租约，设置 RentalRecordId，无租约时 return"
+        }
+      ],
+      "test_file": "tests/e2e/feat-050-utility-bill-rental-link.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": true,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-051",
+      "category": "后端",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "RentalRecord 新增 UtilityBills 导航属性并更新查询",
+      "acceptance_criteria": [
+        "RentalRecord 实体新增 UtilityBills 导航属性",
+        "RentalRecordDto 新增 UtilityBills 属性",
+        "RentalRecordService 查询添加 .Include(r => r.UtilityBills)",
+        "Mapper 添加 UtilityBills 映射",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 RentalRecord 实体中新增 UtilityBills 导航属性",
+          "file": "Gentle/Gentle.Core/Entities/RentalRecord.cs",
+          "code_hint": "新增 ICollection<UtilityBill> UtilityBills 属性"
+        },
+        {
+          "step": 2,
+          "action": "在 RentalRecordDto 中新增 UtilityBills 属性",
+          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs",
+          "code_hint": "新增 List<UtilityBillDto>? UtilityBills 属性"
+        },
+        {
+          "step": 3,
+          "action": "修改 RentalRecordService 查询",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": "在 GetByIdAsync 和 GetPagedListAsync 中添加 .Include(r => r.UtilityBills)"
+        },
+        {
+          "step": 4,
+          "action": "修改 Mapper.cs",
+          "file": "Gentle/Gentle.Application/Mapper.cs",
+          "code_hint": "添加 .Map(dest => dest.UtilityBills, src => src.UtilityBills)"
+        }
+      ],
+      "test_file": "tests/e2e/feat-051-rental-utility-bills-nav.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": true,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-052",
+      "category": "后端",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "static",
+      "description": "数据库迁移",
+      "acceptance_criteria": [
+        "生成迁移文件：删除 collection_record 和 bill 表",
+        "utility_bill 表新增 rental_record_id 列",
+        "将 utility_bill 中 status = 2 的记录改为 status = 1",
+        "迁移应用成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "生成迁移",
+          "file": "Gentle/Gentle.Database.Migrations/Migrations/",
+          "code_hint": "dotnet ef migrations add RemoveBillAndAddUtilityBillRentalLink"
+        },
+        {
+          "step": 2,
+          "action": "检查并补充迁移文件",
+          "file": "Gentle/Gentle.Database.Migrations/Migrations/",
+          "code_hint": "确保包含 UPDATE utility_bill SET status = 1 WHERE status = 2"
+        },
+        {
+          "step": 3,
+          "action": "应用迁移",
+          "file": "Gentle/Gentle.Database.Migrations/",
+          "code_hint": "dotnet ef database update"
+        }
+      ],
+      "test_file": "tests/e2e/feat-052-database-migration.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-053",
+      "category": "前端",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "static",
+      "description": "删除前端 Bill 相关文件",
+      "acceptance_criteria": [
+        "删除 bill 页面目录、API 文件、路由文件",
+        "清理 rentalModel.ts 中的 Bill 引用",
+        "清理 reportModel.ts 和 report.ts",
+        "删除催收统计报表页面",
+        "清理报表路由"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "删除文件",
+          "file": "Hans/src/pages/bill/",
+          "code_hint": "rm -rf Hans/src/pages/bill/ Hans/src/api/bill.ts Hans/src/api/model/billModel.ts Hans/src/router/modules/bill.ts"
+        },
+        {
+          "step": 2,
+          "action": "清理 rentalModel.ts",
+          "file": "Hans/src/api/model/rentalModel.ts",
+          "code_hint": "删除 BillItem 引用，新增 UtilityBillItem 引用"
+        },
+        {
+          "step": 3,
+          "action": "清理 report 相关文件",
+          "file": "Hans/src/api/model/reportModel.ts",
+          "code_hint": "删除 CollectionReport、OverdueBillInfo、GraceBillInfo 类型"
+        },
+        {
+          "step": 4,
+          "action": "删除催收统计报表页面和路由",
+          "file": "Hans/src/pages/report/collection/index.vue",
+          "code_hint": "rm Hans/src/pages/report/collection/index.vue，清理路由"
+        }
+      ],
+      "test_file": "tests/e2e/feat-053-delete-frontend-bill.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-054",
+      "category": "前端",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "前端租赁记录页展示 UtilityBills",
+      "acceptance_criteria": [
+        "清理 Bill 相关导入，新增 UtilityBill 导入",
+        "展开行数据源改为 utilityBills",
+        "列定义改为水电费账单列",
+        "npm run build:type 构建通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "清理 Bill 相关导入和函数",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "删除 BillStatus 导入，新增 UtilityBillStatus 导入"
+        },
+        {
+          "step": 2,
+          "action": "修改展开行数据源和列定义",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "rentalRow.bills 改为 rentalRow.utilityBills，更新 billColumns 为 utilityBillColumns"
+        }
+      ],
+      "test_file": "tests/e2e/feat-054-rental-utility-bills-page.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-055",
+      "category": "前端",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "前端水电费类型清理和页面适配",
+      "acceptance_criteria": [
+        "meterModel.ts 删除 Merged 枚举值和文本映射",
+        "UtilityBillItem 新增 rentalRecordId 字段",
+        "水电账单页面移除 Merged 状态处理",
+        "Dashboard 改为展示水电费待办"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "清理 meterModel.ts",
+          "file": "Hans/src/api/model/meterModel.ts",
+          "code_hint": "删除 Merged = 2 枚举值和文本映射，新增 rentalRecordId 字段"
+        },
+        {
+          "step": 2,
+          "action": "修改 UtilityBillDto Mapper 映射",
+          "file": "Gentle/Gentle.Application/Mapper.cs",
+          "code_hint": "新增 RentalRecordId 映射"
+        },
+        {
+          "step": 3,
+          "action": "修改水电账单页面",
+          "file": "Hans/src/pages/utility/bill/index.vue",
+          "code_hint": "移除所有 Merged 状态的筛选选项、状态展示和处理逻辑"
+        },
+        {
+          "step": 4,
+          "action": "修改 Dashboard 待办面板",
+          "file": "Hans/src/pages/dashboard/base/components/TodoPanel.vue",
+          "code_hint": "删除 Bill 待办，改为查询 Pending 状态的 UtilityBill"
+        }
+      ],
+      "test_file": "tests/e2e/feat-055-frontend-utility-bill-cleanup.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-056",
+      "category": "集成",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "清理 E2E 测试文件",
+      "acceptance_criteria": [
+        "删除 Bill 相关 E2E 测试文件",
+        "更新 dashboard-todo 测试",
+        "更新 utility-bill-page 测试（删除 Merged 测试）",
+        "更新 full-flow 测试",
+        "更新 rental-dto-mapper 测试"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "删除 Bill 相关 E2E 测试文件",
+          "file": "tests/e2e/",
+          "code_hint": "rm feat-015-bill-entity.spec.ts feat-016-collection-record-entity.spec.ts feat-017-bill-api.spec.ts feat-018-bill-page.spec.ts feat-019-collect-dialog.spec.ts feat-029-collection-report-page.spec.ts"
+        },
+        {
+          "step": 2,
+          "action": "更新 feat-020-dashboard-todo.spec.ts",
+          "file": "tests/e2e/feat-020-dashboard-todo.spec.ts",
+          "code_hint": "删除 Bill 待办断言，改为 UtilityBill"
+        },
+        {
+          "step": 3,
+          "action": "更新 feat-024-utility-bill-page.spec.ts",
+          "file": "tests/e2e/feat-024-utility-bill-page.spec.ts",
+          "code_hint": "删除 Merged 状态相关测试"
+        },
+        {
+          "step": 4,
+          "action": "更新其他测试文件",
+          "file": "tests/e2e/feat-030-full-flow.spec.ts",
+          "code_hint": "删除 Bill 催收流程步骤，更新 mapper 测试"
+        }
+      ],
+      "test_file": "tests/e2e/feat-056-cleanup-e2e-tests.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-057",
+      "category": "集成",
+      "module": "统一水电费账单",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "最终验证",
+      "acceptance_criteria": [
+        "后端 dotnet build 构建成功",
+        "前端 npm run build 构建成功",
+        "后端 API 正常启动",
+        "前端开发服务器正常启动",
+        "所有剩余 E2E 测试通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "后端构建验证",
+          "file": "Gentle/",
+          "code_hint": "dotnet build"
+        },
+        {
+          "step": 2,
+          "action": "前端构建验证",
+          "file": "Hans/",
+          "code_hint": "npm run build:type && npm run build"
+        },
+        {
+          "step": 3,
+          "action": "启动后端 API",
+          "file": "Gentle/",
+          "code_hint": "dotnet run --project Gentle.Web.Entry"
+        },
+        {
+          "step": 4,
+          "action": "启动前端开发服务器",
+          "file": "Hans/",
+          "code_hint": "npm run dev"
+        },
+        {
+          "step": 5,
+          "action": "运行 E2E 测试",
+          "file": "tests/",
+          "code_hint": "npm run test"
+        }
+      ],
+      "test_file": "tests/e2e/feat-057-final-verification.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "required_tests": ["backend_build", "frontend_build", "api_startup", "frontend_startup", "e2e_tests"]
       }
     }
   ]
