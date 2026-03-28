@@ -20,7 +20,9 @@
 1. **删除 Bill 及催收体系**：月租账单不符合实际业务
 2. **UtilityBill 成为唯一账单**：水电费按抄表周期收取
 3. **UtilityBill 增加 RentalRecordId**：直接关联租住记录，替代间接关联
-4. **无租客时抄表仅记录**：不生成账单，等有租客后再抄表时才产生账单
+4. **废弃 BillTenantId**：RentalRecordId 已可推导租客，BillTenantId 冗余，标记为不再使用（保留字段避免迁移复杂度）
+5. **无租客时抄表仅记录**：不生成账单，等有租客后再抄表时才产生账单
+6. **收入报表和催收报表暂时禁用**：删除依赖 Bill 的报表逻辑，后续按需从 RentalRecord 重新设计
 
 ## 业务流程
 
@@ -54,6 +56,7 @@
 | `Gentle.Application/Services/IBillService.cs` | 账单服务接口 |
 | `Gentle.Application/Services/BillService.cs` | 账单服务实现 |
 | `Gentle.Application/Dtos/Bill/` | 整个目录（BillDto、CollectInput、CollectionRecordDto、TodoBillsDto） |
+| `Gentle.Application/Dtos/Report/CollectionReportDto.cs` | 催收报表 DTO（含 OverdueBillDto、GraceBillDto） |
 
 ### 后端文件（清理引用）
 
@@ -61,8 +64,10 @@
 |------|------|
 | `Gentle.Core/Entities/RentalRecord.cs` | 删除 `ICollection<Bill> Bills` 导航属性 |
 | `Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs` | 删除 `List<BillDto>? Bills` 属性 |
-| `Gentle.Application/Mapper.cs` | 删除 Bill→BillDto、CollectionRecord→CollectionRecordDto 映射 |
-| `Gentle.Application/Services/ReportService.cs` | 删除催收报表逻辑（依赖 Bill），后续按需重新设计 |
+| `Gentle.Application/Mapper.cs` | 删除 Bill→BillDto、CollectionRecord→CollectionRecordDto 映射；将 `dest.Bills` 映射改为 `dest.UtilityBills`（见改造部分第 7 项） |
+| `Gentle.Application/Services/ReportService.cs` | 删除 `IRepository<Bill>` 注入；删除 `GetCollectionReportAsync` 方法；删除或改造 `GetIncomeReportAsync` 方法（租金收入改为从 RentalRecord 计算，或暂时返回空数据） |
+| `Gentle.Application/Services/IReportService.cs` | 删除 `GetCollectionReportAsync` 接口声明 |
+| `Gentle.Application/Apps/ReportAppService.cs` | 删除 `GetCollectionReport` 端点 |
 | `Gentle.Database.Migrations/Migrations/DefaultDbContextModelSnapshot.cs` | EF 快照会随迁移自动更新 |
 
 ### 前端文件（直接删除）
@@ -73,15 +78,38 @@
 | `Hans/src/api/bill.ts` | Bill API |
 | `Hans/src/api/model/billModel.ts` | Bill 类型定义 |
 | `Hans/src/router/modules/bill.ts` | Bill 路由 |
+| `Hans/src/pages/report/collection/index.vue` | 催收统计报表页 |
 
 ### 前端文件（清理引用）
 
 | 文件 | 改动 |
 |------|------|
 | `Hans/src/api/model/rentalModel.ts` | 删除 `bills?: BillItem[]` 属性和 BillItem 导入 |
-| `Hans/src/pages/housing/rental/index.vue` | 展开行改为展示 UtilityBill（见下方改造部分） |
-| `Hans/src/pages/dashboard/base/components/TodoPanel.vue` | 删除 Bill 待办，后续改为展示 UtilityBill 待办 |
-| `Hans/src/pages/report/collection/index.vue` | 删除催收统计报表页（依赖 Bill），后续按需重新设计 |
+| `Hans/src/pages/housing/rental/index.vue` | 展开行改为展示 UtilityBill（见改造部分第 8 项） |
+| `Hans/src/pages/dashboard/base/components/TodoPanel.vue` | 删除 Bill 待办，改为展示 UtilityBill 待办（见改造部分第 11 项） |
+| `Hans/src/api/model/reportModel.ts` | 删除 `CollectionReport`、`OverdueBillInfo`、`GraceBillInfo` 类型 |
+| `Hans/src/api/report.ts` | 删除 `getCollectionReport` 函数 |
+| `Hans/src/router/modules/report.ts` | 删除催收统计路由条目 |
+
+### E2E 测试文件（直接删除）
+
+| 文件 | 说明 |
+|------|------|
+| `tests/e2e/feat-015-bill-entity.spec.ts` | Bill 实体测试 |
+| `tests/e2e/feat-016-collection-record-entity.spec.ts` | 催收记录实体测试 |
+| `tests/e2e/feat-017-bill-api.spec.ts` | Bill API 测试 |
+| `tests/e2e/feat-018-bill-page.spec.ts` | Bill 前端页面测试 |
+| `tests/e2e/feat-019-collect-dialog.spec.ts` | 催收对话框测试 |
+| `tests/e2e/feat-029-collection-report-page.spec.ts` | 催收统计报表测试 |
+
+### E2E 测试文件（清理引用）
+
+| 文件 | 改动 |
+|------|------|
+| `tests/e2e/feat-020-dashboard-todo.spec.ts` | 删除 Bill 待办相关断言，改为 UtilityBill 待办 |
+| `tests/e2e/feat-024-utility-bill-page.spec.ts` | 移除 Merged 状态相关测试用例 |
+| `tests/e2e/feat-030-full-flow.spec.ts` | 移除 Bill 流程相关步骤 |
+| `tests/e2e/feat-031-rental-dto-mapper.spec.ts` | 将 Bill 映射断言改为 UtilityBill 映射断言 |
 
 ## 要改造的
 
@@ -97,6 +125,7 @@ RentalRecord   : RentalRecord? (新增，导航属性)
 ```
 
 - `RentalRecordId` 可空：抄表时无活跃租约则为 null，有活跃租约则自动填入
+- `BillTenantId` 保留但不再主动设置（历史数据兼容），新增账单统一通过 RentalRecordId 关联
 
 ### 2. UtilityBillStatus 枚举
 
@@ -111,15 +140,23 @@ public enum UtilityBillStatus
 }
 ```
 
-### 3. MeterService 抄表逻辑
+### 3. MeterService
 
 **文件**: `Gentle.Application/Services/MeterService.cs`
 
-`CreateUtilityBillAsync` 方法改造：
+改造 `CreateUtilityBillAsync` 方法：
 
 - 查找该房间当前活跃的 RentalRecord
 - 如果无活跃租约 → 不创建 UtilityBill（仅保存 MeterRecord）
 - 如果有活跃租约 → 创建 UtilityBill，填入 `RentalRecordId`
+
+清理 `PayAsync` 方法：
+
+- 删除 `UtilityBillStatus.Merged` 的检查分支（状态已删除）
+
+清理 `DeleteBillAsync` 方法：
+
+- 删除 `UtilityBillStatus.Merged` 的检查分支
 
 ### 4. RentalRecord 实体
 
@@ -144,14 +181,16 @@ public ICollection<UtilityBill> UtilityBills { get; set; } = new List<UtilityBil
 
 **文件**: `Gentle.Application/Dtos/Meter/UtilityBillDto.cs`
 
-确保包含：RentalRecordId、Status、PaidAmount、PaidDate 等所有前端需要的字段。
+- 确保包含 `RentalRecordId`、`Status`、`PaidAmount`、`PaidDate` 等前端需要的字段
+- 删除 `StatusText` 中的 `UtilityBillStatus.Merged => "已合并"` 分支
 
 ### 7. Mapper 配置
 
 **文件**: `Gentle.Application/Mapper.cs`
 
-- 删除 Bill / CollectionRecord 相关映射
-- 保留 UtilityBill → UtilityBillDto 映射
+- 删除 Bill→BillDto、CollectionRecord→CollectionRecordDto 映射
+- 将 `dest.Bills` 映射改为 `dest.UtilityBills`（`src.UtilityBills` → `dest.UtilityBills`）
+- 保留 UtilityBill→UtilityBillDto 映射
 
 ### 8. 前端租赁记录页
 
@@ -175,25 +214,30 @@ bills?: BillItem[]
 utilityBills?: UtilityBillItem[]
 ```
 
-### 10. 前端水电账单页
+### 10. 前端水电账单类型和页面
+
+**文件**: `Hans/src/api/model/meterModel.ts`
+
+- 删除 `UtilityBillStatus.Merged = 2` 枚举值
+- 删除 `UtilityBillStatusText` 中 Merged 的文本映射
 
 **文件**: `Hans/src/pages/utility/bill/index.vue`
 
-移除 Merged 状态的展示和处理。
+- 移除 Merged 状态的展示、筛选和处理逻辑
 
 ### 11. 前端 Dashboard 待办
 
 **文件**: `Hans/src/pages/dashboard/base/components/TodoPanel.vue`
 
 - 删除 `getTodayTodos` 调用（Bill 待办）
-- 改为展示 Pending 状态的 UtilityBill 列表
+- 改为查询并展示 Pending 状态的 UtilityBill 列表（调用 meter 相关 API）
 
-### 12. 前端报表
+### 12. 前端报表路由
 
-**文件**: `Hans/src/pages/report/collection/index.vue`、对应路由
+**文件**: `Hans/src/router/modules/report.ts`
 
-- 暂时删除催收统计报表页和路由
-- 后续按需重新设计水电费统计报表
+- 删除催收统计报表路由条目
+- 收入报表页保留，但租金收入数据后续需改为从 RentalRecord 计算
 
 ## 数据库迁移
 
@@ -210,13 +254,13 @@ dotnet ef migrations add RemoveBillAndAddUtilityBillRentalLink \
 1. 删除 `collection_record` 表
 2. 删除 `bill` 表
 3. `utility_bill` 表新增 `rental_record_id` 列（可空 int，外键）
-4. 删除 `utility_bill` 表中 `status = 2 (Merged)` 的数据（如有），或将 Merged 记录改为 Pending
+4. 将 `utility_bill` 表中 `status = 2 (Merged)` 的记录改为 `status = 1 (Paid)`（这些水电费已在原 Bill 中收取过，标记为 Paid 语义正确）
 
 ### 枚举值处理
 
 - `BillStatus` 枚举类型删除（数据库中以 int 存储，删除表后无影响）
 - `CollectResult` 枚举类型删除
-- `UtilityBillStatus` 枚举移除 `Merged = 2`，数据库中已有的 Merged 记录需在迁移中处理
+- `UtilityBillStatus` 枚举移除 `Merged = 2`，已有的 Merged 记录已在迁移中改为 Paid
 
 ## 不改动的部分
 
