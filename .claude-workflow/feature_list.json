@@ -1,181 +1,76 @@
 {
-  "module": "stay-at-your-house",
+  "module": "房间状态已收回",
   "version": "1.0.0",
-  "created_at": "2026-03-23",
+  "created_at": "2026-03-28",
   "source_docs": [
-    "docs/plans/2026-03-23-project-overview.md",
-    "docs/plans/2026-03-23-module-room.md",
-    "docs/plans/2026-03-23-module-tenant.md",
-    "docs/plans/2026-03-23-module-rent.md",
-    "docs/plans/2026-03-23-module-utility.md",
-    "docs/plans/2026-03-23-module-report.md"
+    "docs/superpowers/plans/2026-03-28-room-status-reclaimed.md"
   ],
   "features": [
     {
-      "id": "FEAT-001",
+      "id": "FEAT-036",
       "category": "后端",
-      "module": "房源管理",
+      "module": "房间状态已收回",
       "priority": "high",
       "test_type": "static",
-      "description": "后端：Community（小区）实体 + DbContext 配置",
+      "description": "后端枚举扩展：RoomStatus 新增 Reclaimed = 3",
       "acceptance_criteria": [
-        "创建 Community 实体类（id, name, address, property_phone, remark）",
-        "在 DbContext 中添加 DbSet<Community>",
+        "RoomStatus 枚举新增 Reclaimed = 3",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 Community 实体类",
-          "file": "Gentle/Gentle.Core/Entities/Community.cs",
-          "code_hint": "public class Community { public int Id { get; set; } public string Name { get; set; } public string? Address { get; set; } public string? PropertyPhone { get; set; } public string? Remark { get; set; } }"
-        },
-        {
-          "step": 2,
-          "action": "配置 DbContext",
-          "file": "Gentle/Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs",
-          "code_hint": "public DbSet<Community> Communities { get; set; }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-001-community-entity.spec.ts",
-      "status": "completed",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-23T12:00:00Z",
-        "tests_count": 9
-      }
-    },
-    {
-      "id": "FEAT-002",
-      "category": "后端",
-      "module": "房源管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端：Room（房间）实体 + DbContext 配置",
-      "acceptance_criteria": [
-        "创建 Room 实体类（含 status 枚举）",
-        "配置与 Community 的外键关系",
-        "在 DbContext 中添加 DbSet<Room>",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RoomStatus 枚举",
+          "action": "在 RoomStatus 枚举中新增 Reclaimed = 3",
           "file": "Gentle/Gentle.Core/Enums/RoomStatus.cs",
-          "code_hint": "public enum RoomStatus { Vacant = 0, Rented = 1, Renovating = 2 }"
-        },
-        {
-          "step": 2,
-          "action": "创建 Room 实体类",
-          "file": "Gentle/Gentle.Core/Entities/Room.cs",
-          "code_hint": "public class Room { public int Id { get; set; } public int CommunityId { get; set; } public Community Community { get; set; } public string Building { get; set; } public string RoomNumber { get; set; } public decimal? Area { get; set; } public string? RoomType { get; set; } public decimal CostPrice { get; set; } public decimal RentPrice { get; set; } public decimal? Deposit { get; set; } public decimal? WaterPrice { get; set; } public decimal? ElectricPrice { get; set; } public RoomStatus Status { get; set; } public string? ContractImage { get; set; } public string? Remark { get; set; } }"
-        },
-        {
-          "step": 3,
-          "action": "配置 DbContext",
-          "file": "Gentle/Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs",
-          "code_hint": "public DbSet<Room> Rooms { get; set; }"
+          "code_hint": "在 Renovating = 2 后添加: Reclaimed = 3"
         }
       ],
-      "test_file": "tests/e2e/feat-002-room-entity.spec.ts",
-      "status": "completed",
+      "test_file": "tests/e2e/feat-036-room-status-enum.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-23T14:30:00Z",
-        "tests_count": 14
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-003",
+      "id": "FEAT-037",
       "category": "后端",
-      "module": "房源管理",
+      "module": "房间状态已收回",
       "priority": "high",
       "test_type": "api_runtime",
-      "description": "后端：Community CRUD API",
+      "description": "后端状态转换校验 + 状态文本映射",
       "acceptance_criteria": [
-        "创建 ICommunityService 接口",
-        "实现 CommunityService 服务类",
-        "创建 CommunityAppService（Application/Apps 目录）",
-        "API 启动成功，可调用 get-list/get-by-id/add/edit/remove 接口"
+        "RoomService.UpdateAsync 添加状态转换校验",
+        "RoomService.AddAsync 不允许创建为已收回状态",
+        "RentalRecordService.GetRoomStatusText 添加 Reclaimed 映射",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建服务接口",
-          "file": "Gentle/Gentle.Application/Services/ICommunityService.cs",
-          "code_hint": "public interface ICommunityService : ITransient { Task<List<Community>> GetListAsync(); Task<Community> GetByIdAsync(int id); Task<Community> AddAsync(Community community); Task<Community> UpdateAsync(Community community); Task DeleteAsync(int id); }"
-        },
-        {
-          "step": 2,
-          "action": "实现服务类",
-          "file": "Gentle/Gentle.Application/Services/CommunityService.cs",
-          "code_hint": "public class CommunityService : ICommunityService { private readonly IRepository<Community> _repository; public CommunityService(IRepository<Community> repository) { _repository = repository; } ... }"
-        },
-        {
-          "step": 3,
-          "action": "创建 AppService（动态 WebAPI）",
-          "file": "Gentle/Gentle.Application/Apps/CommunityAppService.cs",
-          "code_hint": "public class CommunityAppService : IDynamicApiController { public async Task<List<Community>> GetList() { ... } public async Task<Community> GetById(int id) { ... } public async Task<Community> Add(Community community) { ... } public async Task<Community> Edit(Community community) { ... } public async Task Remove(int id) { ... } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-003-community-api.spec.ts",
-      "status": "completed",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-24T10:30:00Z",
-        "tests_count": 13,
-        "api_routes": {
-          "base": "/api/community",
-          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
-        }
-      }
-    },
-    {
-      "id": "FEAT-004",
-      "category": "后端",
-      "module": "房源管理",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端：Room CRUD API",
-      "acceptance_criteria": [
-        "创建 IRoomService 接口",
-        "实现 RoomService 服务类（含按小区/状态筛选）",
-        "创建 RoomAppService（Application/Apps 目录）",
-        "API 启动成功，可调用各接口"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建服务接口",
-          "file": "Gentle/Gentle.Application/Services/IRoomService.cs",
-          "code_hint": "public interface IRoomService : ITransient { Task<List<Room>> GetListAsync(int? communityId, RoomStatus? status); Task<Room> GetByIdAsync(int id); Task<Room> AddAsync(Room room); Task<Room> UpdateAsync(Room room); Task DeleteAsync(int id); }"
-        },
-        {
-          "step": 2,
-          "action": "实现服务类",
+          "action": "在 RoomService.UpdateAsync 中添加状态转换校验",
           "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "public class RoomService : IRoomService { ... }"
+          "code_hint": "仅空置状态可收回，已收回只能恢复为空置"
+        },
+        {
+          "step": 2,
+          "action": "在 RoomService.AddAsync 中添加创建校验",
+          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
+          "code_hint": "新建时不允许直接设为已收回，覆盖为空置"
         },
         {
           "step": 3,
-          "action": "创建 AppService（动态 WebAPI）",
-          "file": "Gentle/Gentle.Application/Apps/RoomAppService.cs",
-          "code_hint": "public class RoomAppService : IDynamicApiController { public async Task<List<Room>> GetList(int? communityId, RoomStatus? status) { ... } ... }"
+          "action": "更新 RentalRecordService.GetRoomStatusText",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": "RoomStatus.Reclaimed => \"已收回\""
         }
       ],
-      "test_file": "tests/e2e/feat-004-room-api.spec.ts",
-      "status": "completed",
+      "test_file": "tests/e2e/feat-037-status-transition.spec.ts",
+      "status": "pending",
       "verification": {
         "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-24T12:30:00Z",
-        "tests_count": 16,
+        "e2e_tests_passed": false,
         "api_routes": {
           "base": "/api/room-app",
           "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]
@@ -183,1939 +78,157 @@
       }
     },
     {
-      "id": "FEAT-005",
-      "category": "前端",
-      "module": "房源管理",
+      "id": "FEAT-038",
+      "category": "后端",
+      "module": "房间状态已收回",
       "priority": "high",
-      "test_type": "e2e",
-      "description": "前端：小区列表页",
+      "test_type": "api_runtime",
+      "description": "后端报表排除已收回房间",
       "acceptance_criteria": [
-        "创建小区列表页面组件",
-        "配置路由",
-        "实现新增/编辑/删除功能",
-        "E2E 测试通过"
+        "GetHousingOverviewAsync 排除 Reclaimed 房间",
+        "GetRoomProfitRankingAsync 排除 Reclaimed 房间",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 API 服务",
-          "file": "Hans/src/api/community.ts",
-          "code_hint": "export function getCommunityList() { return request.get('/api/community/list') } ..."
+          "action": "在 GetHousingOverviewAsync 中排除 Reclaimed",
+          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
+          "code_hint": ".Where(r => r.Status != RoomStatus.Reclaimed)"
         },
         {
           "step": 2,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/housing/community/index.vue",
-          "code_hint": "使用 TDesign DataTable 组件实现列表"
-        },
-        {
-          "step": 3,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/housing.ts",
-          "code_hint": "{ path: 'housing/community', name: 'CommunityList', component: () => import('@/pages/housing/community/index.vue') }"
+          "action": "在 GetRoomProfitRankingAsync 中排除 Reclaimed",
+          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
+          "code_hint": ".Where(r => r.Status != RoomStatus.Reclaimed) + 状态 switch 添加 Reclaimed"
         }
       ],
-      "test_file": "tests/e2e/feat-005-community-page.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-24T22:10:00Z",
+      "test_file": "tests/e2e/feat-038-report-exclude-reclaimed.spec.ts",
+      "status": "pending",
       "verification": {
+        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 9,
-        "verified_at": "2026-03-24T22:10:00Z",
-        "required_tests": ["page_load", "create", "edit", "delete", "search", "validation"]
-      },
-      "review": {
-        "last_review_at": "2026-03-24T14:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "important_issues_fixed": [
-          "添加前端分页说明注释",
-          "修复搜索分页重置注释",
-          "修复 E2E 测试路径（/housing/community）"
-        ],
-        "minor_issues_fixed": [
-          "定义 HeaderAffixedTopConfig 接口，移除 as any 类型断言",
-          "定义 CommunityFormData 接口，优化表单数据类型",
-          "实现 E2E 测试 afterAll 清理逻辑"
-        ]
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/report-app",
+          "endpoints": ["get-housing-overview", "get-profit-ranking"]
+        }
       }
     },
     {
-      "id": "FEAT-006",
+      "id": "FEAT-039",
       "category": "前端",
-      "module": "房源管理",
+      "module": "房间状态已收回",
+      "priority": "high",
+      "test_type": "static",
+      "description": "前端类型定义 + 枚举扩展",
+      "acceptance_criteria": [
+        "RoomStatus 枚举新增 Reclaimed = 3",
+        "RoomStatusText 新增已收回映射",
+        "npm run build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "扩展 RoomStatus 枚举和 RoomStatusText",
+          "file": "Hans/src/api/model/roomModel.ts",
+          "code_hint": "Reclaimed = 3 + [RoomStatus.Reclaimed]: '已收回'"
+        }
+      ],
+      "test_file": "tests/e2e/feat-039-frontend-enum.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-040",
+      "category": "前端",
+      "module": "房间状态已收回",
       "priority": "high",
       "test_type": "e2e",
-      "description": "前端：房间列表页",
+      "description": "前端房间列表页适配",
       "acceptance_criteria": [
-        "创建房间列表页面组件",
-        "实现按小区/状态筛选",
-        "显示利润计算列",
+        "statusOptions 新增已收回选项",
+        "getStatusTheme 函数新增 Reclaimed 映射",
         "E2E 测试通过"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 API 服务",
-          "file": "Hans/src/api/room.ts",
-          "code_hint": "export function getRoomList(params: { communityId?: number; status?: string }) { ... }"
-        },
-        {
-          "step": 2,
-          "action": "创建页面组件",
+          "action": "更新 statusOptions 筛选选项",
           "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "列表含小区筛选、状态筛选、利润列（rentPrice - costPrice）"
+          "code_hint": "添加 { label: '已收回', value: RoomStatus.Reclaimed }"
         },
         {
-          "step": 3,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/housing.ts",
-          "code_hint": "{ path: 'housing/room', name: 'RoomList', component: () => import('@/pages/housing/room/index.vue') }"
+          "step": 2,
+          "action": "更新 getStatusTheme 函数",
+          "file": "Hans/src/pages/housing/room/index.vue",
+          "code_hint": "[RoomStatus.Reclaimed]: 'default'"
         }
       ],
-      "test_file": "tests/e2e/feat-006-room-page.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T09:45:00Z",
+      "test_file": "tests/e2e/feat-040-room-list-adapt.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 5,
-        "verified_at": "2026-03-25T09:45:00Z",
-        "required_tests": ["page_load", "create", "edit", "delete", "search"]
-      },
-      "review": {
-        "last_review_at": "2026-03-25T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "important_issues_fixed": [
-          "修复筛选逻辑：移除全部选项，改用 clearable 特性"
-        ],
-        "suggestions_fixed": [
-          "提取共用 formatDateTime 工具函数到 @/utils/date.ts",
-          "更新 community/index.vue 和 room/index.vue 使用共享工具函数",
-          "E2E 测试用例 8 标记为 skip，待 FEAT-007 实现后启用"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-007",
+      "id": "FEAT-041",
       "category": "前端",
-      "module": "房源管理",
-      "priority": "medium",
+      "module": "房间状态已收回",
+      "priority": "high",
       "test_type": "e2e",
-      "description": "前端：房间详情页",
+      "description": "前端房间详情页适配",
       "acceptance_criteria": [
-        "创建房间详情页面",
-        "显示房间完整信息",
-        "显示当前租客信息（如有）",
-        "显示出租记录",
+        "getStatusTheme 函数新增 Reclaimed 映射",
         "E2E 测试通过"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建详情页面组件",
+          "action": "更新 detail.vue 的 getStatusTheme 函数",
           "file": "Hans/src/pages/housing/room/detail.vue",
-          "code_hint": "使用 t-card 分区显示：基本信息、当前租客、出租记录"
-        },
-        {
-          "step": 2,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/housing.ts",
-          "code_hint": "{ path: 'housing/room/detail/:id', name: 'RoomDetail', component: () => import('@/pages/housing/room/detail.vue') }"
+          "code_hint": "[RoomStatus.Reclaimed]: 'default'"
         }
       ],
-      "test_file": "tests/e2e/feat-007-room-detail-page.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T10:30:00Z",
+      "test_file": "tests/e2e/feat-041-room-detail-adapt.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 12,
-        "verified_at": "2026-03-25T10:30:00Z",
-        "required_tests": ["page_load", "display_info", "community_info", "price_info", "status_tag", "back_button"]
-      },
-      "review": {
-        "last_review_at": "2026-03-25T11:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "important_issues_fixed": [
-          "空值保护：costPrice/rentPrice/profit 使用 ?. 和 ?? 运算符",
-          "E2E 测试优化：使用 waitForPageReady 替代硬编码 waitForTimeout"
-        ],
-        "suggestions": [
-          "考虑添加页面级错误边界",
-          "编辑按钮功能待后续实现",
-          "路由 ID 验证可增加正整数检查"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-008",
-      "category": "后端",
-      "module": "租客管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端：Tenant（租客）实体",
-      "acceptance_criteria": [
-        "创建 Gender 枚举",
-        "创建 Tenant 实体类",
-        "配置 DbContext",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 Gender 枚举",
-          "file": "Gentle/Gentle.Core/Enums/Gender.cs",
-          "code_hint": "public enum Gender { Male = 0, Female = 1 }"
-        },
-        {
-          "step": 2,
-          "action": "创建 Tenant 实体类",
-          "file": "Gentle/Gentle.Core/Entities/Tenant.cs",
-          "code_hint": "public class Tenant { public int Id { get; set; } public string Name { get; set; } public string Phone { get; set; } public string? IdCard { get; set; } public Gender Gender { get; set; } public string? EmergencyContact { get; set; } public string? Remark { get; set; } }"
-        },
-        {
-          "step": 3,
-          "action": "配置 DbContext",
-          "file": "Gentle/Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs",
-          "code_hint": "public DbSet<Tenant> Tenants { get; set; }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-008-tenant-entity.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T12:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 12,
-        "verified_at": "2026-03-25T12:00:00Z"
-      }
-    },
-    {
-      "id": "FEAT-009",
-      "category": "后端",
-      "module": "租客管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端：RentalRecord（租住记录）实体",
-      "acceptance_criteria": [
-        "创建 LeaseType、RentalStatus、DepositStatus 枚举",
-        "创建 RentalRecord 实体类",
-        "配置与 Tenant、Room 的关系",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建枚举类型",
-          "file": "Gentle/Gentle.Core/Enums/",
-          "code_hint": "LeaseType: Monthly, HalfYear, Yearly; RentalStatus: Active, Terminated; DepositStatus: Received, Refunded, Deducted"
-        },
-        {
-          "step": 2,
-          "action": "创建 RentalRecord 实体类",
-          "file": "Gentle/Gentle.Core/Entities/RentalRecord.cs",
-          "code_hint": "public class RentalRecord { public int Id { get; set; } public int TenantId { get; set; } public int RoomId { get; set; } public DateTime CheckInDate { get; set; } public LeaseType LeaseType { get; set; } public DateTime ContractEndDate { get; set; } public decimal MonthlyRent { get; set; } public decimal Deposit { get; set; } public DepositStatus DepositStatus { get; set; } public RentalStatus Status { get; set; } ... }"
-        },
-        {
-          "step": 3,
-          "action": "配置 DbContext",
-          "file": "Gentle/Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs",
-          "code_hint": "public DbSet<RentalRecord> RentalRecords { get; set; }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-009-rental-record-entity.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T14:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 19,
-        "verified_at": "2026-03-25T14:30:00Z"
-      }
-    },
-    {
-      "id": "FEAT-010",
-      "category": "后端",
-      "module": "租客管理",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端：Tenant CRUD API",
-      "acceptance_criteria": [
-        "创建 ITenantService 接口",
-        "实现 TenantService 服务类",
-        "创建 TenantAppService（Application/Apps 目录）",
-        "API 启动成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建服务接口",
-          "file": "Gentle/Gentle.Application/Services/ITenantService.cs",
-          "code_hint": "public interface ITenantService : ITransient { ... }"
-        },
-        {
-          "step": 2,
-          "action": "实现服务类",
-          "file": "Gentle/Gentle.Application/Services/TenantService.cs",
-          "code_hint": "public class TenantService : ITenantService { ... }"
-        },
-        {
-          "step": 3,
-          "action": "创建 AppService（动态 WebAPI）",
-          "file": "Gentle/Gentle.Application/Apps/TenantAppService.cs",
-          "code_hint": "public class TenantAppService : IDynamicApiController { ... }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-010-tenant-api.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T11:05:00Z",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 17,
-        "verified_at": "2026-03-25T11:05:00Z",
-        "api_routes": {
-          "base": "/api/tenant-app",
-          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}"]
-        }
-      }
-    },
-    {
-      "id": "FEAT-011",
-      "category": "后端",
-      "module": "租客管理",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端：入住/退租业务逻辑 API",
-      "acceptance_criteria": [
-        "实现入住办理（更新房间状态、生成第一期账单）",
-        "实现退租结算（计算结算金额、处理押金、更新房间状态）",
-        "创建 RentalAppService（Application/Apps 目录）",
-        "API 启动成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建入住/退租 DTO",
-          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/",
-          "code_hint": "CheckInInput.cs, CheckOutInput.cs, RentalRecordDto.cs"
-        },
-        {
-          "step": 2,
-          "action": "扩展 RentalRecord 服务",
-          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
-          "code_hint": "实现 CheckInAsync、CheckOutAsync 方法"
-        },
-        {
-          "step": 3,
-          "action": "创建 AppService（动态 WebAPI）",
-          "file": "Gentle/Gentle.Application/Apps/RentalAppService.cs",
-          "code_hint": "public class RentalAppService : IDynamicApiController { public async Task CheckIn(CheckInDto dto) { ... } public async Task CheckOut(CheckOutDto dto) { ... } ... }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-011-checkin-checkout-api.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T12:25:00Z",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 16,
-        "verified_at": "2026-03-25T12:25:00Z",
-        "api_routes": {
-          "base": "/api/rental",
-          "endpoints": ["list", "{id}", "check-in", "check-out", "remove/{id}"]
-        }
-      },
-      "review": {
-        "last_review_at": "2026-03-25T16:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "并发安全：添加 [UnitOfWork] 特性到 CheckInAsync/CheckOutAsync/DeleteAsync",
-          "押金验证：添加抵扣金额不能超过押金的验证",
-          "押金状态一致性：验证押金状态为「已抵扣」时必须填写抵扣金额",
-          "代码清理：移除未使用的 _communityRepository 依赖",
-          "文档更新：修正 DTO 文件命名描述"
-        ]
-      },
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 16,
-        "verified_at": "2026-03-25T12:25:00Z",
-        "api_routes": {
-          "base": "/api/rental",
-          "endpoints": ["list", "{id}", "check-in", "check-out", "remove/{id}"]
-        }
-      }
-    },
-    {
-      "id": "FEAT-012",
-      "category": "前端",
-      "module": "租客管理",
+      "id": "FEAT-042",
+      "category": "集成",
+      "module": "房间状态已收回",
       "priority": "high",
       "test_type": "e2e",
-      "description": "前端：租客列表页",
+      "description": "E2E 完整已收回状态验证",
       "acceptance_criteria": [
-        "创建租客列表页面",
-        "实现搜索功能",
-        "显示当前房间和状态",
-        "E2E 测试通过"
+        "前后端 RoomStatus 枚举值对齐",
+        "状态转换校验正确（空置↔已收回）",
+        "创建房间不允许直接设为已收回",
+        "报表排除已收回房间",
+        "前端展示正确"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 API 服务",
-          "file": "Hans/src/api/tenant.ts",
-          "code_hint": "export function getTenantList(params) { ... }"
-        },
-        {
-          "step": 2,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/tenant/index.vue",
-          "code_hint": "列表显示租客信息、当前房间、状态"
-        },
-        {
-          "step": 3,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/tenant.ts",
-          "code_hint": "{ path: 'tenant', name: 'TenantList', component: () => import('@/pages/tenant/index.vue') }"
+          "action": "编写 E2E 测试",
+          "file": "tests/e2e/feat-042-reclaimed-e2e.spec.ts",
+          "code_hint": "枚举一致性 + 状态转换 + 创建校验 + 报表排除 + 前端展示"
         }
       ],
-      "test_file": "tests/e2e/feat-012-tenant-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-25T22:45:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 12,
-        "tests_skipped": 1,
-        "verified_at": "2026-03-25T22:45:00Z",
-        "required_tests": ["page_load", "create", "edit", "delete", "search"],
-        "test_fixes_applied": [
-          "修复登录路径：/auth/sign-in → /login",
-          "修复登录账号：admin → zhs",
-          "修复登录密码：admin123 → gentle8023",
-          "修复输入框选择器：请输入用户名 → 请输入账号",
-          "修复 main 选择器：添加 .first() 避免 strict mode 违规",
-          "修复 dialog 选择器：添加 .first() 避免 strict mode 违规",
-          "修复搜索输入框选择器：使用更精确的 placeholder 匹配",
-          "修复手机号输入框选择器：input[placeholder*=\"手机\"] → input[placeholder*=\"联系电话\"]",
-          "跳过退租按钮测试：退租功能在 FEAT-014 中实现"
-        ]
-      },
-      "review": {
-        "last_review_at": "2026-03-25T21:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "Critical: 实现「显示当前房间和状态」功能 - 扩展 TenantDto 添加 CurrentRoomInfo 和 Status 字段",
-          "Critical: 后端 TenantService.GetListAsync 关联查询活跃的 RentalRecord",
-          "Critical: 前端页面添加「当前房间」和「状态」列",
-          "Important: 分页改为后端分页 - 通过 page/pageSize 参数请求后端，total 由后端返回",
-          "Important: 修复非空断言风险 - 使用显式 null 检查替代 editingTenantId.value!",
-          "Important: 优化 N+1 查询 - 使用 GroupJoin 单次查询替代两次独立查询",
-          "Important: 统一身份证验证正则表达式 - 前端与后端保持一致",
-          "Important: 添加 onUnmounted 清理搜索防抖定时器，防止内存泄漏",
-          "Minor: 移除 API 中未使用的 keyword 参数",
-          "Minor: 修复 watch 清理函数无效 - 使用外部变量存储 timer 确保正确清理",
-          "Minor: 更新搜索注释 - 说明当前是后端分页模式"
-        ],
-        "suggestions": [
-          "后端分页参数可添加边界验证（Range Attribute）",
-          "E2E 测试可补充退租按钮可见性测试",
-          "考虑使用 VueUse useDebounceFn 替代手动防抖",
-          "后端可添加日志记录",
-          "前端搜索框可添加 loading 状态"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-013",
-      "category": "前端",
-      "module": "租客管理",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "前端：入住办理页面",
-      "acceptance_criteria": [
-        "创建入住办理表单",
-        "选择空置房间",
-        "填写合同信息",
-        "上传合同图片",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建入住办理页面",
-          "file": "Hans/src/pages/tenant/check-in.vue",
-          "code_hint": "表单：选择租客、选择房间（仅空置）、入住日期、租期类型、月租金、押金、合同图片上传"
-        },
-        {
-          "step": 2,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/tenant.ts",
-          "code_hint": "{ path: 'tenant/check-in', name: 'CheckIn', component: () => import('@/pages/tenant/check-in.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-013-check-in-page.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T23:45:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 15,
-        "verified_at": "2026-03-25T23:45:00Z",
-        "required_tests": ["page_load", "form_elements", "form_validation", "navigation"]
-      },
-      "review": {
-        "last_review_at": "2026-03-25T23:15:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "Critical: 添加文件上传响应格式验证 - isValidUploadResponse 类型守卫",
-          "Important: 修复非空断言风险 - 显式检查必填字段",
-          "Important: 修复日期时区问题 - 使用 getLocalDateString 本地日期函数",
-          "Important: 移除冗余的租客选择提示 - 简化 handleTenantChange",
-          "Minor: 分页数据加载限制 - 添加 TODO 注释说明后续优化方向",
-          "Minor: 合同到期日期计算抽取为工具函数 - calculateContractEndDate 到 @/utils/date",
-          "Minor: E2E 测试优化 - 移除 test.skip()，使用 expect 断言替代条件跳过"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-014",
-      "category": "前端",
-      "module": "租客管理",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "前端：退租办理弹窗",
-      "acceptance_criteria": [
-        "创建退租办理弹窗",
-        "自动计算结算金额",
-        "押金处理选项",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建退租弹窗组件",
-          "file": "Hans/src/pages/tenant/components/CheckOutDialog.vue",
-          "code_hint": "弹窗显示：房间、租客、退租日期、剩余天数、结算金额、押金处理"
-        }
-      ],
-      "test_file": "tests/e2e/feat-014-check-out-dialog.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T21:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 17,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-25T21:30:00Z",
-        "required_tests": ["dialog_open", "calculate", "submit"],
-        "test_fixes": [
-          "修复导航路径：/dashboard/tenant → /tenant/list",
-          "使用 test.describe.serial 避免并行测试状态冲突",
-          "使用精确选择器避免 strict mode 违规"
-        ]
-      },
-      "review": {
-        "last_review_at": "2026-03-25T18:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "CheckOutDialog.vue: 错误处理使用 e: unknown 替代 e: any",
-          "CheckOutDialog.vue: 添加 formatMoney 函数正确处理 0 值显示",
-          "CheckOutDialog.vue: 移除重复的自定义按钮，使用 Dialog 内置确认/关闭按钮",
-          "CheckOutDialog.vue: 提取 MS_PER_DAY 常量消除魔法数字",
-          "CheckOutDialog.vue: 移除未使用的 dialog-footer 样式",
-          "feat-014-check-out-dialog.spec.ts: 更新测试选择器适配 Dialog 内置按钮"
-        ],
-        "suggestions": [
-          "考虑添加退租二次确认弹窗"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-015",
-      "category": "后端",
-      "module": "收租管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端：Bill（账单）实体",
-      "acceptance_criteria": [
-        "创建 BillStatus 枚举",
-        "创建 Bill 实体类",
-        "配置 DbContext",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 BillStatus 枚举",
-          "file": "Gentle/Gentle.Core/Enums/BillStatus.cs",
-          "code_hint": "public enum BillStatus { Pending = 0, Grace = 1, Paid = 2, Overdue = 3 }"
-        },
-        {
-          "step": 2,
-          "action": "创建 Bill 实体类",
-          "file": "Gentle/Gentle.Core/Entities/Bill.cs",
-          "code_hint": "public class Bill { public int Id { get; set; } public int RentalRecordId { get; set; } public DateTime PeriodStart { get; set; } public DateTime PeriodEnd { get; set; } public DateTime DueDate { get; set; } public decimal RentAmount { get; set; } public decimal? WaterFee { get; set; } public decimal? ElectricFee { get; set; } public decimal TotalAmount { get; set; } public BillStatus Status { get; set; } ... }"
-        },
-        {
-          "step": 3,
-          "action": "配置 DbContext",
-          "file": "Gentle/Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs",
-          "code_hint": "public DbSet<Bill> Bills { get; set; }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-015-bill-entity.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-25T22:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 15,
-        "verified_at": "2026-03-25T22:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-25T23:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "金额验证边界修复：RentAmount 和 TotalAmount 从 Range(0, ...) 改为 Range(0.01, ...)，防止零金额账单"
-        ],
-        "suggestions": [
-          "日期类型精度优化：可添加 [Column(TypeName = \"date\")] 特性",
-          "账单周期验证增强：可添加周期不超过一年的验证",
-          "外键索引优化：可添加 [Index] 特性到 RentalRecordId"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-016",
-      "category": "后端",
-      "module": "收租管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端：CollectionRecord（催收记录）实体",
-      "acceptance_criteria": [
-        "创建 CollectResult 枚举",
-        "创建 CollectionRecord 实体类",
-        "配置 DbContext",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 CollectResult 枚举",
-          "file": "Gentle/Gentle.Core/Enums/CollectResult.cs",
-          "code_hint": "public enum CollectResult { Success = 0, Grace = 1, Refuse = 2 }"
-        },
-        {
-          "step": 2,
-          "action": "创建 CollectionRecord 实体类",
-          "file": "Gentle/Gentle.Core/Entities/CollectionRecord.cs",
-          "code_hint": "public class CollectionRecord { public int Id { get; set; } public int BillId { get; set; } public DateTime CollectDate { get; set; } public CollectResult Result { get; set; } public DateTime? GraceUntil { get; set; } public string? Remark { get; set; } }"
-        },
-        {
-          "step": 3,
-          "action": "配置 DbContext",
-          "file": "Gentle/Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs",
-          "code_hint": "public DbSet<CollectionRecord> CollectionRecords { get; set; }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-016-collection-record-entity.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-26T01:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 11,
-        "verified_at": "2026-03-26T01:00:00Z",
-      },
-      "review": {
-        "last_review_at": "2026-03-26T00:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "fixed_issues": [
-          "验证逻辑补充：非宽限情况下 GraceUntil 应为空"
-        ],
-        "suggestions": [
-          "日期类型精度优化:可添加 [Column(TypeName = \"date\")] 特性",
-          "外键索引优化:可添加 [Index] 特性到 BillId"
-        ]
-      }
-    },
-      "review": {
-        "last_review_at": "2026-03-26T00:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "fixed_issues": [
-          "验证逻辑补充：非宽限情况下 GraceUntil 应为空"
-        ],
-        "suggestions": [
-          "日期类型精度优化：可添加 [Column(TypeName = \"date\")] 特性",
-          "外键索引优化：可添加 [Index] 特性到 BillId"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-017",
-      "category": "后端",
-      "module": "收租管理",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端：账单 + 催收 API",
-      "acceptance_criteria": [
-        "创建 IBillService 接口",
-        "实现账单列表、催收功能",
-        "催收成功时自动生成下一期账单",
-        "创建 BillAppService（Application/Apps 目录）",
-        "API 启动成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建服务接口",
-          "file": "Gentle/Gentle.Application/Services/IBillService.cs",
-          "code_hint": "public interface IBillService : ITransient { Task<List<Bill>> GetListAsync(BillStatus? status, int? month); Task CollectAsync(int billId, CollectDto dto); Task<List<Bill>> GetTodayTodosAsync(); }"
-        },
-        {
-          "step": 2,
-          "action": "实现服务类",
-          "file": "Gentle/Gentle.Application/Services/BillService.cs",
-          "code_hint": "实现催收逻辑：成功时生成下一期账单、宽限时记录宽限期"
-        },
-        {
-          "step": 3,
-          "action": "创建 AppService（动态 WebAPI）",
-          "file": "Gentle/Gentle.Application/Apps/BillAppService.cs",
-          "code_hint": "public class BillAppService : IDynamicApiController { public async Task<List<Bill>> GetList(BillStatus? status, int? month) { ... } public async Task Collect(int billId, CollectDto dto) { ... } ... }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-017-bill-api.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-26T10:38:00+08:00",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 15,
-        "tests_skipped": 4,
-        "verified_at": "2026-03-26T10:38:00+08:00",
-        "api_routes": {
-          "base": "/api/bill-app",
-          "endpoints": ["get-list", "get-today-todos", "collect", "get-by-id/{id}", "remove/{id}"]
-        }
-      },
-      "review": {
-        "last_review_at": "2026-03-26T12:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 4
-        },
-        "fixed_issues": [
-          "移除 CollectAsync 中冗余的 SaveNowAsync 调用（与 UnitOfWork 冲突）",
-          "修复 TodoBillsDto 重复定义导致的命名冲突",
-          "修复 DesignTimeDbContextFactory 中 sys_user 表名错误为 user",
-          "添加 Bill 和 CollectionRecord 表的数据库迁移"
-        ],
-        "suggestions": [
-          "添加分页参数边界验证",
-          "添加无效状态参数日志",
-          "添加 N+1 查询说明注释",
-          "MapToDto 空值处理可优化"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-018",
-      "category": "前端",
-      "module": "收租管理",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "前端：账单列表页",
-      "acceptance_criteria": [
-        "创建账单列表页面",
-        "按状态/小区/月份筛选",
-        "显示催收按钮",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 API 服务",
-          "file": "Hans/src/api/bill.ts",
-          "code_hint": "export function getBillList(params) { ... }"
-        },
-        {
-          "step": 2,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/bill/index.vue",
-          "code_hint": "列表含状态筛选、月份筛选、催收按钮"
-        },
-        {
-          "step": 3,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/bill.ts",
-          "code_hint": "{ path: 'bill', name: 'BillList', component: () => import('@/pages/bill/index.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-018-bill-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-26T17:30:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 20,
-        "tests_passed": 19,
-        "tests_skipped": 1,
-        "verified_at": "2026-03-26T17:45:00+08:00",
-        "required_tests": [
-          "page_access",
-          "table_visible",
-          "headers",
-          "status_filter_exists",
-          "community_filter_exists",
-          "month_filter_exists",
-          "instant_filter_mode",
-          "data_load",
-          "status_filter_function",
-          "community_filter_function",
-          "month_filter_function",
-          "collect_button_pending",
-          "collect_button_paid",
-          "collect_dialog",
-          "empty_state",
-          "pagination",
-          "amount_format",
-          "date_format",
-          "status_tag",
-          "reset_filter"
-        ]
-      },
-      "review": {
-        "last_review_at": "2026-03-26T15:45:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "deleteBill 添加返回类型 void",
-          "handleView 添加 TODO 注释说明",
-          "日期选择器添加 value-format=\"YYYY-MM\" 确保格式与后端一致",
-          "E2E 测试更新：移除搜索按钮逻辑，改为即时筛选模式"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-019",
-      "category": "前端",
-      "module": "收租管理",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "前端：催收弹窗",
-      "acceptance_criteria": [
-        "创建催收弹窗组件",
-        "支持成功/宽限/拒付三种结果",
-        "显示催收历史",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建催收弹窗组件",
-          "file": "Hans/src/pages/bill/components/CollectDialog.vue",
-          "code_hint": "弹窗：选择催收结果、宽限日期（宽限时）、实收金额（成功时）、备注"
-        }
-      ],
-      "test_file": "tests/e2e/feat-019-collect-dialog.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-26T17:45:00+08:00",
-      "note": "代码已在 FEAT-018 中实现，测试文件存在，待验证",
+      "test_file": "tests/e2e/feat-042-reclaimed-e2e.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false,
-        "required_tests": ["dialog_open", "success", "grace", "refuse"]
-      }
-    },
-    {
-      "id": "FEAT-020",
-      "category": "前端",
-      "module": "收租管理",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "前端：首页待办提醒",
-      "acceptance_criteria": [
-        "改造 Dashboard 首页",
-        "显示即将到期/今日到期/宽限到期/逾期账单",
-        "点击可跳转催收",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "改造首页组件",
-          "file": "Hans/src/pages/dashboard/base/index.vue",
-          "code_hint": "调用 today-todos API，分区显示待办账单"
-        }
-      ],
-      "test_file": "tests/e2e/feat-020-dashboard-todo.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-26T20:30:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 22,
-        "tests_passed": 21,
-        "tests_skipped": 1,
-        "verified_at": "2026-03-26T20:30:00+08:00",
-        "required_tests": ["page_load", "display_todos", "sections_visible", "collect_button", "responsive"]
-      },
-      "review": {
-        "last_review_at": "2026-03-26T19:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "移除 console.error，仅保留 MessagePlugin.error",
-          "修复 Date 对象重复创建问题，共享 now 实例",
-          "合并 handleItemClick 和 handleCollect 重复代码为 navigateToBill 函数",
-          "修复 E2E 测试登录凭证，使用环境变量和正确凭证"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-021",
-      "category": "后端",
-      "module": "水电抄表",
-      "priority": "medium",
-      "test_type": "static",
-      "description": "后端：MeterRecord（抄表记录）+ UtilityBill（水电账单）实体",
-      "acceptance_criteria": [
-        "创建 MeterRecord 实体",
-        "创建 UtilityBill 实体",
-        "配置 DbContext",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 MeterRecord 实体",
-          "file": "Gentle/Gentle.Core/Entities/MeterRecord.cs",
-          "code_hint": "public class MeterRecord { public int Id { get; set; } public int RoomId { get; set; } public DateTime MeterDate { get; set; } public decimal WaterReading { get; set; } public decimal ElectricReading { get; set; } public decimal PrevWaterReading { get; set; } public decimal PrevElectricReading { get; set; } public decimal WaterUsage { get; set; } public decimal ElectricUsage { get; set; } public decimal WaterFee { get; set; } public decimal ElectricFee { get; set; } }"
-        },
-        {
-          "step": 2,
-          "action": "创建 UtilityBill 实体",
-          "file": "Gentle/Gentle.Core/Entities/UtilityBill.cs",
-          "code_hint": "public class UtilityBill { public int Id { get; set; } public int RoomId { get; set; } public int? TenantId { get; set; } public int MeterRecordId { get; set; } public decimal WaterUsage { get; set; } public decimal ElectricUsage { get; set; } public decimal WaterFee { get; set; } public decimal ElectricFee { get; set; } public decimal TotalAmount { get; set; } public UtilityBillStatus Status { get; set; } ... }"
-        },
-        {
-          "step": 3,
-          "action": "配置 DbContext",
-          "file": "Gentle/Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs",
-          "code_hint": "public DbSet<MeterRecord> MeterRecords { get; set; } public DbSet<UtilityBill> UtilityBills { get; set; }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-021-meter-utility-entity.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-26T21:45:00+08:00",
-      "verification": {
-        "build_passed": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 14,
-        "tests_passed": 13,
-        "tests_skipped": 1,
-        "verified_at": "2026-03-26T21:45:00+08:00"
-      },
-      "review": {
-        "last_review_at": "2026-03-26T21:40:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "添加 MeterRecordValidationAttribute 验证读数递增和用量计算",
-          "添加 UtilityBillValidationAttribute 验证账单周期、金额和状态一致性",
-          "添加用量属性精度 [Column(TypeName = \"decimal(10,2)\")]",
-          "Room 实体添加反向导航属性 MeterRecords 和 UtilityBills",
-          "E2E 测试更新：修复属性名期望值（MeterDate, PeriodStart/End）",
-          "E2E 测试更新：验证 Furion 框架规范和自定义验证特性"
-        ]
-      },
-      "implementation": {
-        "files_created": [
-          "Gentle/Gentle.Core/Enums/UtilityBillStatus.cs",
-          "Gentle/Gentle.Core/Entities/MeterRecord.cs",
-          "Gentle/Gentle.Core/Entities/UtilityBill.cs"
-        ],
-        "files_modified": [
-          "Gentle/Gentle.Core/Entities/Room.cs"
-        ],
-        "entities": [
-          {
-            "name": "MeterRecord",
-            "description": "抄表记录实体",
-            "properties": ["RoomId", "MeterDate", "WaterReading", "ElectricReading", "PrevWaterReading", "PrevElectricReading", "WaterUsage", "ElectricUsage", "WaterFee", "ElectricFee", "Remark"],
-            "validation": ["MeterRecordValidation", "读数递增验证", "用量计算验证"]
-          },
-          {
-            "name": "UtilityBill",
-            "description": "水电账单实体",
-            "properties": ["RoomId", "BillTenantId", "MeterRecordId", "PeriodStart", "PeriodEnd", "WaterUsage", "ElectricUsage", "WaterFee", "ElectricFee", "TotalAmount", "Status", "PaidAmount", "PaidDate", "Remark"],
-            "validation": ["UtilityBillValidation", "账单周期验证", "金额验证", "状态一致性验证"]
-          }
-        ]
-      }
-    },
-    {
-      "id": "FEAT-022",
-      "category": "后端",
-      "module": "水电抄表",
-      "priority": "medium",
-      "test_type": "api_runtime",
-      "description": "后端：水电抄表 + 账单 API",
-      "acceptance_criteria": [
-        "实现抄表录入（自动计算用量和费用）",
-        "实现水电账单生成",
-        "创建 MeterAppService（Application/Apps 目录）",
-        "API 启动成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建服务接口和实现",
-          "file": "Gentle/Gentle.Application/Services/IMeterService.cs",
-          "code_hint": "public interface IMeterService : ITransient { Task<List<MeterRecord>> GetListAsync(int? communityId); Task<MeterRecord> RecordAsync(RecordMeterDto dto); }"
-        },
-        {
-          "step": 2,
-          "action": "创建 AppService（动态 WebAPI）",
-          "file": "Gentle/Gentle.Application/Apps/MeterAppService.cs",
-          "code_hint": "public class MeterAppService : IDynamicApiController { public async Task<List<MeterRecord>> GetList(int? communityId) { ... } public async Task<MeterRecord> Record(RecordMeterDto dto) { ... } ... }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-022-meter-api.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-26T14:45:00+08:00",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 19,
-        "tests_passed": 19,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-26T21:30:00+08:00",
-        "api_routes": {
-          "base": "/api/meter-app",
-          "endpoints": ["get-list", "record", "get-utility-bills", "get-last-readings/{roomId}", "get-by-id/{id}", "remove/{id}", "pay", "get-utility-bill/{id}", "remove-utility-bill/{id}"]
-        },
-        "fixes_applied": [
-          "修复 MeterService.RecordAsync：在 InsertAsync 后调用 SaveNowAsync 立即获取 ID",
-          "添加 IMeterService.GetRecordByIdAsync 接口方法",
-          "添加 MeterAppService.GetById 端点（GET get-by-id/{id}）"
-        ]
-      },
-      "review": {
-        "last_review_at": "2026-03-26T22:00:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "score": 8.8,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "Important: 优化账单周期计算逻辑 - CreateUtilityBillAsync 接受 prevMeterDate 参数，避免重复查询",
-          "Important: 添加实收金额服务层边界验证",
-          "Minor: 添加分页常量 DefaultPageSize/MaxPageSize",
-          "Minor: 添加关键操作日志说明注释",
-          "Minor: 优化 E2E 测试清理逻辑 - 添加日志记录"
-        ],
-        "strengths": [
-          "完全遵循 Furion 框架规范",
-          "完善的实体验证（自定义 ValidationAttribute)",
-          "清晰的分层架构",
-          "完整的事务处理（[UnitOfWork]）",
-          "合理的 DTO 设计",
-          "全面的错误处理",
-          "良好的测试覆盖（19 个测试用例）"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-023",
-      "category": "前端",
-      "module": "水电抄表",
-      "priority": "medium",
-      "test_type": "e2e",
-      "description": "前端：抄表录入页",
-      "acceptance_criteria": [
-        "创建抄表录入页面",
-        "显示上次读数",
-        "自动计算用量和费用",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/utility/meter/index.vue",
-          "code_hint": "列表显示已出租房间，点击抄表弹出录入弹窗"
-        },
-        {
-          "step": 2,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/utility.ts",
-          "code_hint": "{ path: 'utility/meter', name: 'MeterList', component: () => import('@/pages/utility/meter/index.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-023-meter-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-26T23:15:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 19,
-        "tests_passed": 17,
-        "tests_skipped": 2,
-        "verified_at": "2026-03-26T23:15:00+08:00",
-        "required_tests": ["page_load", "form_interaction", "data_display", "responsive"],
-        "test_fixes_applied": [
-          "修复测试路径：/dashboard/utility/meter → /utility/meter",
-          "修复 main 选择器：添加 .first() 避免 strict mode 违规",
-          "修复操作按钮选择器：使用更宽松的选择器匹配 t-link 组件",
-          "优化弹窗关闭验证：使用更精确的对话框选择器"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-024",
-      "category": "前端",
-      "module": "水电抄表",
-      "priority": "medium",
-      "test_type": "e2e",
-      "description": "前端：水电账单列表页",
-      "acceptance_criteria": [
-        "创建水电账单列表页面",
-        "按状态/小区/月份筛选",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/utility/bill/index.vue",
-          "code_hint": "列表显示水电账单，支持筛选"
-        },
-        {
-          "step": 2,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/utility.ts",
-          "code_hint": "{ path: 'utility/bill', name: 'UtilityBillList', component: () => import('@/pages/utility/bill/index.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-024-utility-bill-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-26T23:45:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 23,
-        "tests_passed": 20,
-        "tests_skipped": 3,
-        "verified_at": "2026-03-26T23:45:00+08:00",
-        "required_tests": ["page_access", "table_visible", "filter", "data_load", "responsive"],
-        "test_fixes_applied": [
-          "修复登录路径：/auth/sign-in → /login",
-          "修复登录账号：admin → zhs",
-          "修复登录密码：admin123 → gentle8023",
-          "修复页面路径：/dashboard/utility/bill → /utility/bill",
-          "修复 main 选择器：添加 .first() 避免 strict mode 违规",
-          "优化页面标题验证：使用 URL 和表格验证替代标题文本"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-025",
-      "category": "后端",
-      "module": "统计报表",
-      "priority": "medium",
-      "test_type": "api_runtime",
-      "description": "后端：统计报表 API",
-      "acceptance_criteria": [
-        "实现收支统计接口",
-        "实现房源概览接口",
-        "实现利润排行接口",
-        "实现催收统计接口",
-        "创建 ReportAppService（Application/Apps 目录）",
-        "API 启动成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建服务接口和实现",
-          "file": "Gentle/Gentle.Application/Services/IReportService.cs",
-          "code_hint": "public interface IReportService : ITransient { Task<IncomeReport> GetIncomeReportAsync(int year); Task<HousingOverview> GetHousingOverviewAsync(); Task<List<RoomProfit>> GetRoomProfitRankingAsync(); Task<CollectionReport> GetCollectionReportAsync(int year, int month); }"
-        },
-        {
-          "step": 2,
-          "action": "创建 AppService（动态 WebAPI）",
-          "file": "Gentle/Gentle.Application/Apps/ReportAppService.cs",
-          "code_hint": "public class ReportAppService : IDynamicApiController { public async Task<IncomeReport> GetIncomeReport(int year) { ... } public async Task<HousingOverview> GetHousingOverview() { ... } ... }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-025-report-api.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-27T10:30:00+08:00",
-      "implementation": {
-        "files_created": [
-          "Gentle/Gentle.Application/Dtos/Report/IncomeReportDto.cs",
-          "Gentle/Gentle.Application/Dtos/Report/HousingOverviewDto.cs",
-          "Gentle/Gentle.Application/Dtos/Report/RoomProfitRankingDto.cs",
-          "Gentle/Gentle.Application/Dtos/Report/CollectionReportDto.cs",
-          "Gentle/Gentle.Application/Services/IReportService.cs",
-          "Gentle/Gentle.Application/Services/ReportService.cs",
-          "Gentle/Gentle.Application/Apps/ReportAppService.cs"
-        ],
-        "api_routes": {
-          "base": "/api/report-app",
-          "endpoints": ["get-income-report", "get-housing-overview", "get-profit-ranking", "get-collection-report"]
-        }
-      },
-      "review": {
-        "last_review_at": "2026-03-26T15:30:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "fixed_issues": [
-          "Critical: 修复逾期账单重复统计 - pendingBills 排除 DueDate < today 的账单",
-          "Important: 添加年份/月份参数验证 - GetIncomeReportAsync 和 GetCollectionReportAsync",
-          "Important: 修复 MonthText 显示异常 - 全年统计时显示 '2026年全年'"
-        ],
-        "suggestions": [
-          "考虑添加缓存提高统计报表性能",
-          "DTO 中的计算属性可考虑使用 [JsonIgnore] 控制序列化",
-          "建议在关键查询处添加日志"
-        ]
-      },
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 20,
-        "tests_passed": 20,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-27T10:30:00+08:00"
-      }
-    },
-    {
-      "id": "FEAT-026",
-      "category": "前端",
-      "module": "统计报表",
-      "priority": "medium",
-      "test_type": "e2e",
-      "description": "前端：收支统计页",
-      "acceptance_criteria": [
-        "创建收支统计页面",
-        "显示年度汇总",
-        "显示月度明细",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/report/income/index.vue",
-          "code_hint": "使用 t-card 显示汇总，t-table 显示月度明细"
-        },
-        {
-          "step": 2,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/report.ts",
-          "code_hint": "{ path: 'report/income', name: 'IncomeReport', component: () => import('@/pages/report/income/index.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-026-income-report-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-27T16:30:00+08:00",
-      "implementation": {
-        "files_created": [
-          "Hans/src/api/model/reportModel.ts",
-          "Hans/src/api/report.ts",
-          "Hans/src/pages/report/income/index.vue",
-          "Hans/src/router/modules/report.ts"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 12,
-        "tests_passed": 9,
-        "tests_skipped": 3,
-        "skip_reason": "API 返回空数据（新系统无账单记录）",
-        "verified_at": "2026-03-27T16:30:00+08:00"
-      }
-    },
-    {
-      "id": "FEAT-027",
-      "category": "前端",
-      "module": "统计报表",
-      "priority": "medium",
-      "test_type": "e2e",
-      "description": "前端：房源概览页",
-      "acceptance_criteria": [
-        "创建房源概览页面",
-        "显示总房源/已出租/空置/装修中统计卡片",
-        "显示空置房源列表",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/report/housing/index.vue",
-          "code_hint": "使用 t-row + t-col 显示统计卡片，t-table 显示空置列表"
-        },
-        {
-          "step": 2,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/report.ts",
-          "code_hint": "{ path: 'report/housing', name: 'HousingReport', component: () => import('@/pages/report/housing/index.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-027-housing-report-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-27T17:30:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 16,
-        "tests_passed": 15,
-        "tests_skipped": 1,
-        "verified_at": "2026-03-27T17:30:00+08:00",
-        "required_tests": ["page_load", "display_stats", "responsive"]
-      },
-      "implementation": {
-        "files_created": [
-          "Hans/src/pages/report/housing/index.vue"
-        ],
-        "files_modified": [
-          "Hans/src/api/report.ts",
-          "Hans/src/router/modules/report.ts"
-        ]
-      },
-      "review": {
-        "last_review_at": "2026-03-27T17:30:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "空值保护：使用 formatPercent 替代手动 (rate * 100).toFixed()",
-          "错误边界：添加 hasError 状态区分加载失败和无数据",
-          "小区统计空状态：添加空状态提示",
-          "表格列配置优化：移除 computed 改为常量",
-          "E2E 测试优化：添加 waitForDataLoad 辅助函数替代硬编码超时",
-          "E2E 测试覆盖：添加小区统计空状态测试用例"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-028",
-      "category": "前端",
-      "module": "统计报表",
-      "priority": "medium",
-      "test_type": "e2e",
-      "description": "前端：利润排行页",
-      "acceptance_criteria": [
-        "创建利润排行页面",
-        "按月利润/年利润排序",
-        "亏损房源红色标记",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/report/profit/index.vue",
-          "code_hint": "使用 t-table 显示排行，支持排序切换"
-        },
-        {
-          "step": 2,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/report.ts",
-          "code_hint": "{ path: 'report/profit', name: 'ProfitReport', component: () => import('@/pages/report/profit/index.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-028-profit-report-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-27T19:30:00+08:00",
-      "implementation": {
-        "files_created": [
-          "Hans/src/pages/report/profit/index.vue"
-        ],
-        "files_modified": [
-          "Hans/src/router/modules/report.ts"
-        ]
-      },
-      "review": {
-        "last_review_at": "2026-03-27T18:00:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "score": 8.5,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "fixed_issues": [
-          "移除未使用的 .section-title 样式规则"
-        ],
-        "suggestions": [
-          "利润率计算逻辑可考虑抽取为工具函数",
-          "大数据量时可考虑添加分页功能"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 22,
-        "tests_passed": 22,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-27T19:30:00+08:00",
-        "required_tests": ["page_load", "sort", "responsive", "accessibility"]
-      }
-    },
-    {
-      "id": "FEAT-029",
-      "category": "前端",
-      "module": "统计报表",
-      "priority": "medium",
-      "test_type": "e2e",
-      "description": "前端：催收统计页",
-      "acceptance_criteria": [
-        "创建催收统计页面",
-        "显示本月应收汇总",
-        "显示逾期/宽限名单",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建页面组件",
-          "file": "Hans/src/pages/report/collection/index.vue",
-          "code_hint": "使用 t-card 显示汇总，t-table 显示逾期名单"
-        },
-        {
-          "step": 2,
-          "action": "配置路由",
-          "file": "Hans/src/router/modules/report.ts",
-          "code_hint": "{ path: 'report/collection', name: 'CollectionReport', component: () => import('@/pages/report/collection/index.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-029-collection-report-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-27T19:45:00+08:00",
-      "implementation": {
-        "files_created": [
-          "Hans/src/pages/report/collection/index.vue"
-        ],
-        "files_modified": [
-          "Hans/src/api/model/reportModel.ts",
-          "Hans/src/router/modules/report.ts",
-          "tests/e2e/feat-029-collection-report-page.spec.ts"
-        ]
-      },
-      "verification": {
-        "build_passed": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 23,
-        "tests_passed": 23,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-27T19:45:00+08:00",
-        "required_tests": ["page_load", "month_switch", "stats_cards", "overdue_list", "grace_list", "filter", "responsive"],
-        "test_fixes_applied": [
-          "测试 9: 图表组件 → 进度条组件（页面使用 t-progress 而非图表）",
-          "测试 18: 移动端滚动条限制从 50px 放宽到 500px（表格页面允许适度溢出）",
-          "测试 21: 修复选择器语法错误，使用正确的 Playwright 选择器",
-          "测试 22: 放宽标题检查条件，验证页面内容而非标题数量"
-        ]
-      },
-      "review": {
-        "last_review_at": "2026-03-27T20:00:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "score": 8,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "ESLint/Prettier 格式问题 - 运行 npm run lint:fix 自动修复"
-        ],
-        "strengths": [
-          "功能完整，超出基本验收标准",
-          "代码组织清晰，遵循项目规范",
-          "类型安全，无 TypeScript 错误",
-          "架构与现有报表页面（FEAT-026/027/028）完全一致",
-          "响应式布局完善"
-        ],
-        "suggestions": [
-          "实现导出功能",
-          "E2E 测试凭证改用环境变量"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-030",
-      "category": "集成",
-      "module": "全流程",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "E2E 测试：完整业务流程",
-      "acceptance_criteria": [
-        "完整业务流程测试通过",
-        "小区创建 → 房间创建 → 租客创建 → 入住 → 收租 → 退租"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建完整流程测试",
-          "file": "tests/e2e/feat-030-full-flow.spec.ts",
-          "code_hint": "test.describe('FEAT-030: 完整业务流程', () => { test('完整流程', async ({ page }) => { ... }) })"
-        }
-      ],
-      "test_file": "tests/e2e/feat-030-full-flow.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-27T21:30:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 36,
-        "tests_passed": 36,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-27T22:30:00+08:00",
-        "verification_type": "full_e2e_retest_with_api_route_fix",
-        "backend_running": true,
-        "frontend_running": true,
-        "api_routes_checked": true,
-        "api_routes_fixed": [
-          "修复前端 API 路由格式：从查询参数改为路径参数",
-          "getIncomeReport: /report-app/income-report/{year}",
-          "getHousingOverview: /report-app/housing-overview",
-          "getProfitRanking: /report-app/profit-ranking/{sortBy}/{limit}",
-          "getCollectionReport: /report-app/collection-report/{year}/{month}",
-          "原因：Furion IDynamicApiController 自动根据方法参数生成路径参数路由",
-          "对比：BillAppService 使用 [HttpGet(\"get-list\")] 显式路由特性",
-          "而 ReportAppService 没有显式特性，使用 Furion 默认路由生成规则"
-        ],
-        "required_tests": [
-          "auth",
-          "community",
-          "room",
-          "tenant",
-          "checkin",
-          "bill",
-          "checkout",
-          "report",
-          "dashboard",
-          "navigation",
-          "responsive",
-          "accessibility"
-        ],
-        "related_tests": {
-          "feat-025_report_api": "20/20 passed",
-          "feat-026_income_report_page": "9/12 passed (3 skipped - empty data)",
-          "feat-027_housing_report_page": "15/16 passed (1 skipped)",
-          "feat-028_profit_report_page": "21/22 passed (1 performance test timeout)",
-          "feat-029_collection_report_page": "23/23 passed",
-          "feat-030_full_flow": "36/36 passed"
-        }
-      },
-      "review": {
-        "last_review_at": "2026-03-27T20:30:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "修复 CSS 选择器语法错误：text=/待收|已收|逾期/ 改为 [class*=\"tag\"], .t-tag",
-          "修复 CSS 选择器语法错误：text=/admin/ 改为 [class*=\"user\"], [class*=\"avatar\"]",
-          "修复 strict mode 违规：page.locator('main') 添加 .first()",
-          "调整无障碍测试断言：放宽标题元素验证条件"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-031",
-      "category": "后端",
-      "module": "租赁记录",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端：扩展 RentalRecordDto 新增 Bills 属性 + Mapster 映射",
-      "acceptance_criteria": [
-        "RentalRecordDto 新增 List<BillDto>? Bills 属性",
-        "Mapper.cs 中 RentalRecord → RentalRecordDto 映射新增 Bills 映射",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "在 RentalRecordDto 中新增 Bills 属性",
-          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs",
-          "code_hint": "public List<BillDto>? Bills { get; set; }"
-        },
-        {
-          "step": 2,
-          "action": "在 Mapper.cs 中新增 Bills 映射",
-          "file": "Gentle/Gentle.Application/Mapper.cs",
-          "code_hint": ".Map(dest => dest.Bills, src => src.Bills)"
-        },
-        {
-          "step": 3,
-          "action": "构建验证",
-          "file": "Gentle/",
-          "code_hint": "dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-031-rental-dto-mapper.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T10:30:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 5,
-        "tests_passed": 5,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-28T10:30:00+08:00",
-        "test_fixes_applied": [
-          "测试 1: 正则表达式增加属性名匹配 \\w+",
-          "测试 5: 改为构建 Gentle.Application 项目避免后端进程锁定 DLL"
-        ]
-      },
-      "review": {
-        "last_review_at": "2026-03-28T10:00:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "suggestions": [
-          "FEAT-032 需确保添加 .Include(r => r.Bills) 到查询中",
-          "BillDto 中 TenantName/RoomInfo 在展开行场景为空字符串，可接受",
-          "Bills 显式映射可添加注释说明意图"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-032",
-      "category": "后端",
-      "module": "租赁记录",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端：新增分页查询 Service + API 端点 GET /api/rental/page",
-      "acceptance_criteria": [
-        "IRentalRecordService 新增 GetPagedListAsync 接口",
-        "RentalRecordService 实现分页查询（含 Include Bills）",
-        "RentalRecordService.GetByIdAsync 加载 Bills",
-        "RentalAppService 新增 GET /api/rental/page 端点",
-        "新增 RentalRecordListResult 类",
-        "API 启动成功，分页端点返回正确数据结构"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "在 IRentalRecordService 中新增分页接口",
-          "file": "Gentle/Gentle.Application/Services/IRentalRecordService.cs",
-          "code_hint": "Task<(List<RentalRecordDto> Items, int Total)> GetPagedListAsync(RentalStatus? status, int? roomId, int? tenantId, int page, int pageSize)"
-        },
-        {
-          "step": 2,
-          "action": "在 RentalRecordService 中实现分页查询",
-          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
-          "code_hint": "Include Bills + 筛选 + CountAsync + Skip/Take + Adapt"
-        },
-        {
-          "step": 3,
-          "action": "修改 GetByIdAsync 加载 Bills",
-          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
-          "code_hint": ".Include(r => r.Bills)"
-        },
-        {
-          "step": 4,
-          "action": "在 RentalAppService 新增分页端点和结果类",
-          "file": "Gentle/Gentle.Application/Apps/RentalAppService.cs",
-          "code_hint": "[HttpGet(\"page\")] + RentalRecordListResult { Items, Total, Page, PageSize }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-032-rental-page-api.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T11:00:00+08:00",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 10,
-        "tests_passed": 10,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-28T11:00:00+08:00",
-        "api_routes": {
-          "base": "/api/rental",
-          "endpoints": ["page", "list", "{id}", "check-in", "check-out", "remove/{id}"]
-        },
-        "test_fixes_applied": [
-          "修复登录字段名：username/password → Account/Password",
-          "修复 token 字段名：accessToken → token",
-          "修复 page=0 边界验证：在 Controller 层添加分页参数边界保护"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-033",
-      "category": "前端",
-      "module": "租赁记录",
-      "priority": "high",
-      "test_type": "static",
-      "description": "前端：扩展租赁记录类型定义 + API 函数 + 路由配置",
-      "acceptance_criteria": [
-        "rentalModel.ts 扩展 RentalRecordDto 含 bills 字段",
-        "rentalModel.ts 新增 RentalPageParams 和 RentalPageResult 类型",
-        "rental.ts 新增 getRentalPage 函数",
-        "housing.ts 新增租赁记录路由",
-        "npx tsc --noEmit 无类型错误"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "在 rentalModel.ts 中扩展类型",
-          "file": "Hans/src/api/model/rentalModel.ts",
-          "code_hint": "bills?: BillItem[] + RentalPageParams + RentalPageResult"
-        },
-        {
-          "step": 2,
-          "action": "在 rental.ts 中新增分页查询函数",
-          "file": "Hans/src/api/rental.ts",
-          "code_hint": "getRentalPage(params: RentalPageParams)"
-        },
-        {
-          "step": 3,
-          "action": "在 housing.ts 中新增路由",
-          "file": "Hans/src/router/modules/housing.ts",
-          "code_hint": "{ path: 'rental', name: 'HousingRental', component: () => import('@/pages/housing/rental/index.vue') }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-033-rental-frontend-types.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T12:00:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 8,
-        "tests_passed": 8,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-28T12:00:00+08:00"
-      },
-      "review": {
-        "last_review_at": "2026-03-28T11:30:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "Important: 将 import type { BillItem } 从文件中间移到文件顶部，修复 simple-import-sort 违规"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-034",
-      "category": "前端",
-      "module": "租赁记录",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "前端：新建租赁记录列表页面（可展开行账单、分页、筛选）",
-      "acceptance_criteria": [
-        "创建租赁记录列表页面组件",
-        "使用 TDesign 可展开行表格显示关联账单",
-        "小区→房间级联筛选",
-        "后端分页",
-        "E2E 测试通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建页面目录",
-          "file": "Hans/src/pages/housing/rental/",
-          "code_hint": "mkdir -p Hans/src/pages/housing/rental"
-        },
-        {
-          "step": 2,
-          "action": "创建租赁记录页面组件",
-          "file": "Hans/src/pages/housing/rental/index.vue",
-          "code_hint": "t-table 可展开行 + 筛选栏（小区/房间/状态） + 后端分页"
-        },
-        {
-          "step": 3,
-          "action": "类型检查验证",
-          "file": "Hans/",
-          "code_hint": "npx tsc --noEmit"
-        }
-      ],
-      "test_file": "tests/e2e/feat-034-rental-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T15:00:00+08:00",
-      "review": {
-        "last_review_at": "2026-03-28T14:30:00+08:00",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_issues": [
-          "Critical: statusOptions 值体系与枚举不一致 - 添加映射注释文档化 string/number 差异",
-          "Important: 移除 as never 类型断言 - 改用 #expandedRow 模板插槽替代 h() 渲染函数",
-          "Important: 展开行改用 TDesign t-table 组件 - 替代手动构建 HTML",
-          "Important: 补充 E2E 测试 - 12 个测试用例覆盖筛选/分页/展开行/级联加载",
-          "Minor: 房间改为按需加载 - getRoomList({ communityId }) 替代全量加载",
-          "Minor: 添加请求竞态保护 - isUnmounted 标志位 + onUnmounted 清理"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 12,
-        "tests_passed": 12,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-28T15:00:00+08:00",
-        "required_tests": ["page_load", "table_visible", "filter_community_room", "filter_status", "pagination", "expanded_row_bills"]
-      }
-    },
-    {
-      "id": "FEAT-035",
-      "category": "集成",
-      "module": "租赁记录",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "E2E 测试：租赁记录页面完整验证（页面+API 联动）",
-      "acceptance_criteria": [
-        "后端构建成功",
-        "前端构建成功",
-        "API 分页端点返回正确数据结构",
-        "前端页面加载、筛选、分页、展开行功能正常"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 E2E 完整验证测试",
-          "file": "tests/e2e/feat-035-rental-e2e.spec.ts",
-          "code_hint": "test.describe.serial('FEAT-035: 租赁记录完整验证', () => { API 冒烟 + 页面验证 })"
-        }
-      ],
-      "test_file": "tests/e2e/feat-035-rental-e2e.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T16:00:00+08:00",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_count": 12,
-        "tests_passed": 12,
-        "tests_skipped": 0,
-        "verified_at": "2026-03-28T16:00:00+08:00",
-        "required_tests": ["api_smoke", "page_load", "table_render", "filter", "pagination", "expand_row", "bill_display"]
+        "required_tests": ["enum_consistency", "status_transition", "create_validation", "report_exclusion", "frontend_display"]
       }
     }
   ]
