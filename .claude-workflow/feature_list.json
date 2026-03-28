@@ -2117,6 +2117,257 @@
         "verified_at": "2026-03-28T16:00:00+08:00",
         "required_tests": ["api_smoke", "page_load", "table_render", "filter", "pagination", "expand_row", "bill_display"]
       }
+    },
+    {
+      "id": "FEAT-036",
+      "category": "后端",
+      "module": "房源管理",
+      "priority": "high",
+      "test_type": "static",
+      "description": "后端枚举扩展：RoomStatus 新增 Reclaimed = 3",
+      "acceptance_criteria": [
+        "RoomStatus 枚举新增 Reclaimed = 3",
+        "Renovating = 2 后面添加逗号",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 RoomStatus 枚举中新增 Reclaimed = 3",
+          "file": "Gentle/Gentle.Core/Enums/RoomStatus.cs",
+          "code_hint": "在 Renovating = 2 后添加: /// <summary>已收回</summary> Reclaimed = 3"
+        },
+        {
+          "step": 2,
+          "action": "验证编译通过",
+          "file": "Gentle/",
+          "code_hint": "dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-036-room-status-enum.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-037",
+      "category": "后端",
+      "module": "房源管理",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "后端状态转换校验 + 状态文本映射",
+      "acceptance_criteria": [
+        "RoomService.UpdateAsync 添加状态转换校验（仅空置可收回，收回只能恢复空置）",
+        "RoomService.AddAsync 创建时不允许直接设为已收回",
+        "RentalRecordService.GetRoomStatusText 新增已收回映射",
+        "dotnet build 构建成功",
+        "API 运行时验证通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "RoomService.UpdateAsync 添加状态转换校验",
+          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
+          "code_hint": "if (input.Status == RoomStatus.Reclaimed && existing.Status != RoomStatus.Vacant) throw Oops.Oh(\"仅空置状态的房间可以收回\");"
+        },
+        {
+          "step": 2,
+          "action": "RoomService.AddAsync 添加创建校验",
+          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
+          "code_hint": "if (room.Status == RoomStatus.Reclaimed) room.Status = RoomStatus.Vacant;"
+        },
+        {
+          "step": 3,
+          "action": "RentalRecordService.GetRoomStatusText 新增映射",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": "RoomStatus.Reclaimed => \"已收回\""
+        },
+        {
+          "step": 4,
+          "action": "验证编译通过",
+          "file": "Gentle/",
+          "code_hint": "dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-037-room-status-validation.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/room-app",
+          "endpoints": ["get-list", "get-by-id/{id}", "add", "edit", "remove/{id}"]
+        }
+      }
+    },
+    {
+      "id": "FEAT-038",
+      "category": "后端",
+      "module": "房源管理",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "后端报表排除 Reclaimed 房间",
+      "acceptance_criteria": [
+        "GetHousingOverviewAsync 查询排除 Reclaimed 房间",
+        "GetRoomProfitRankingAsync 查询排除 Reclaimed 房间",
+        "利润排行状态文本映射添加 Reclaimed",
+        "dotnet build 构建成功",
+        "API 运行时验证通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "GetHousingOverviewAsync 添加 Where 排除 Reclaimed",
+          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
+          "code_hint": ".Where(r => r.Status != RoomStatus.Reclaimed)"
+        },
+        {
+          "step": 2,
+          "action": "GetRoomProfitRankingAsync 添加 Where 排除 + 状态映射",
+          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
+          "code_hint": ".Where(r => r.Status != RoomStatus.Reclaimed) + RoomStatus.Reclaimed => \"已收回\""
+        },
+        {
+          "step": 3,
+          "action": "验证编译通过",
+          "file": "Gentle/",
+          "code_hint": "dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-038-room-status-report.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/report-app",
+          "endpoints": ["get-housing-overview", "get-profit-ranking/{sortBy}/{limit}"]
+        }
+      }
+    },
+    {
+      "id": "FEAT-039",
+      "category": "前端",
+      "module": "房源管理",
+      "priority": "high",
+      "test_type": "static",
+      "description": "前端类型定义 + 枚举扩展",
+      "acceptance_criteria": [
+        "RoomStatus 枚举新增 Reclaimed = 3",
+        "RoomStatusText 新增 [RoomStatus.Reclaimed]: '已收回'",
+        "npx tsc --noEmit 无类型错误"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "扩展 RoomStatus 枚举和 RoomStatusText",
+          "file": "Hans/src/api/model/roomModel.ts",
+          "code_hint": "Reclaimed = 3, [RoomStatus.Reclaimed]: '已收回'"
+        }
+      ],
+      "test_file": "tests/e2e/feat-039-room-status-frontend-types.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-040",
+      "category": "前端",
+      "module": "房源管理",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "前端房间列表页适配已收回状态",
+      "acceptance_criteria": [
+        "statusOptions 新增 { label: '已收回', value: RoomStatus.Reclaimed }",
+        "getStatusTheme 新增 [RoomStatus.Reclaimed]: 'default'",
+        "返回类型扩展包含 'default'",
+        "E2E 测试通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "statusOptions 新增已收回选项",
+          "file": "Hans/src/pages/housing/room/index.vue",
+          "code_hint": "{ label: '已收回', value: RoomStatus.Reclaimed }"
+        },
+        {
+          "step": 2,
+          "action": "getStatusTheme 扩展返回类型和映射",
+          "file": "Hans/src/pages/housing/room/index.vue",
+          "code_hint": "[RoomStatus.Reclaimed]: 'default'"
+        }
+      ],
+      "test_file": "tests/e2e/feat-040-room-list-adapt.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "required_tests": ["page_access", "filter_option", "status_tag"]
+      }
+    },
+    {
+      "id": "FEAT-041",
+      "category": "前端",
+      "module": "房源管理",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "前端房间详情页适配已收回状态",
+      "acceptance_criteria": [
+        "getStatusTheme 新增 [RoomStatus.Reclaimed]: 'default'",
+        "返回类型扩展包含 'default'",
+        "E2E 测试通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "getStatusTheme 扩展返回类型和映射",
+          "file": "Hans/src/pages/housing/room/detail.vue",
+          "code_hint": "[RoomStatus.Reclaimed]: 'default'"
+        }
+      ],
+      "test_file": "tests/e2e/feat-041-room-detail-adapt.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "required_tests": ["page_access", "status_theme"]
+      }
+    },
+    {
+      "id": "FEAT-042",
+      "category": "集成",
+      "module": "房源管理",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "E2E 测试验证房间已收回状态完整功能",
+      "acceptance_criteria": [
+        "API 状态转换校验正确（空置→已收回成功、非法转换拒绝）",
+        "报表统计排除已收回房间",
+        "前端筛选器包含已收回选项",
+        "前端状态 Tag 正确显示",
+        "页面无 JavaScript 错误"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建完整 E2E 验证测试",
+          "file": "tests/e2e/feat-042-room-status-e2e.spec.ts",
+          "code_hint": "test.describe('FEAT-042: 房间已收回状态 E2E', () => { API + 页面联动 })"
+        }
+      ],
+      "test_file": "tests/e2e/feat-042-room-status-e2e.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "required_tests": ["api_smoke", "status_transition", "illegal_transition", "report_exclusion", "filter_option", "page_access"]
+      }
     }
   ]
 }
