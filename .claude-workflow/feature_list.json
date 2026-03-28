@@ -181,6 +181,8 @@
       "priority": "high",
       "test_type": "e2e",
       "description": "前端房间列表页适配",
+      "status": "passed",
+      "completed_at": "2026-03-28T21:10:00Z",
       "acceptance_criteria": [
         "statusOptions 新增已收回选项",
         "getStatusTheme 函数新增 Reclaimed 映射",
@@ -201,10 +203,19 @@
         }
       ],
       "test_file": "tests/e2e/feat-040-room-list-adapt.spec.ts",
-      "status": "pending",
+      "review": {
+        "last_review_at": "2026-03-28T21:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": { "critical": 0, "important": 0, "minor": 1 },
+        "fixed_issues": ["I1: E2E 测试选择器从 .t-select().first() 改为 [data-testid='status-filter']"],
+        "minor_issues": ["S1: statusOptions 可考虑从 RoomStatusText 派生，保持单一数据源"]
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "build_passed": true,
+        "verified_at": "2026-03-28T21:10:00Z"
       }
     },
     {

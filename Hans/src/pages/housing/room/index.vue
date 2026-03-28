@@ -348,6 +348,7 @@ const statusOptions: SelectOption[] = [
   { label: '空置', value: RoomStatus.Vacant },
   { label: '已出租', value: RoomStatus.Rented },
   { label: '装修中', value: RoomStatus.Renovating },
+  { label: '已收回', value: RoomStatus.Reclaimed },
 ];
 
 // 对话框状态

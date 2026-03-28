@@ -39,8 +39,8 @@ test.describe('FEAT-040: 前端房间列表页适配', () => {
   test('2. 状态筛选器包含已收回选项', async ({ page }) => {
     await loginAndNavigate(page, '/housing/room');
 
-    // 点击状态筛选下拉框
-    const statusFilter = page.locator('.t-select').first();
+    // 点击状态筛选下拉框（使用 data-testid 精确定位）
+    const statusFilter = page.locator('[data-testid="status-filter"]');
     await statusFilter.click();
 
     // 检查下拉选项中包含"已收回"
@@ -53,7 +53,7 @@ test.describe('FEAT-040: 前端房间列表页适配', () => {
     await loginAndNavigate(page, '/housing/room');
 
     // 如果存在已收回状态的房间，验证标签显示
-    const table = page.locator('table');
+    const table = page.locator('[data-testid="room-table"]');
     await expect(table).toBeVisible({ timeout: 5000 });
   });
 });
