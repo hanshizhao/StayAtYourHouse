@@ -133,11 +133,12 @@ const roomDetail = ref<RoomItem | null>(null);
 // ==================== 方法 ====================
 
 /** 获取状态主题 */
-function getStatusTheme(status: RoomStatus): 'success' | 'warning' | 'primary' {
-  const themes: Record<RoomStatus, 'success' | 'warning' | 'primary'> = {
+function getStatusTheme(status: RoomStatus): 'success' | 'warning' | 'primary' | 'default' {
+  const themes: Record<RoomStatus, 'success' | 'warning' | 'primary' | 'default'> = {
     [RoomStatus.Vacant]: 'success',
     [RoomStatus.Rented]: 'warning',
     [RoomStatus.Renovating]: 'primary',
+    [RoomStatus.Reclaimed]: 'default',
   };
   return themes[status];
 }

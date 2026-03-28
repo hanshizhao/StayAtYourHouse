@@ -247,12 +247,12 @@ const roomDialogVisible = ref(false);
 const roomLoading = ref(false);
 const roomDialogTitle = ref('');
 const roomList = ref<RoomItem[]>([]);
-const roomColumns = [
+const roomColumns: PrimaryTableCol[] = [
   { colKey: 'building', title: '楼栋', width: 100 },
   { colKey: 'roomNumber', title: '房间号', width: 100 },
   { colKey: 'roomType', title: '类型', width: 120 },
   { colKey: 'rentPrice', title: '租金', width: 100 },
-  { colKey: 'status', title: '状态', width: 80, cell: (h: any, { row }: { row: RoomItem }) => RoomStatusText[row.status] || '未知' },
+  { colKey: 'status', title: '状态', width: 80, cell: (h: any, { row }: any) => RoomStatusText[(row as RoomItem).status] || '未知' },
 ];
 
 // 过滤数据
