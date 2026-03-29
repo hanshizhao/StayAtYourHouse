@@ -23,6 +23,10 @@
           <span class="info-label">月租金</span>
           <span class="info-value amount">¥{{ formatMoney(reminder.monthlyRent ?? 0) }}</span>
         </div>
+        <div v-if="reminder.rentalReminder?.contractEndDate" class="info-row">
+          <span class="info-label">合同到期</span>
+          <span class="info-value warning">{{ reminder.rentalReminder.contractEndDate }}</span>
+        </div>
       </div>
 
       <div class="info-section">
@@ -35,7 +39,7 @@
             <t-input-number
               v-model="formData.monthlyRent"
               placeholder="请输入新月租金"
-              :min="0"
+              :min="0.01"
               :decimal-places="2"
               style="width: 100%"
             />
@@ -46,6 +50,21 @@
               placeholder="请选择合同到期日"
               :min-date="tomorrow"
               style="width: 100%"
+            />
+          </t-form-item>
+          <t-form-item label="上传合同" name="contractImage">
+            <t-upload
+              v-model="contractFiles"
+              action="/api/file/upload"
+              :auto-upload="true"
+              :size-limit="{ size: 10, unit: 'MB' }"
+              :format-response="formatUploadResponse"
+              accept="image/*"
+              :multiple="false"
+              theme="image"
+              tips="支持 jpg、png 格式，单个文件不超过 10MB（可选）"
+              @success="handleUploadSuccess"
+              @fail="handleUploadFail"
             />
           </t-form-item>
           <t-form-item label="备注" name="remark">
@@ -67,12 +86,12 @@
 
     <div v-else class="empty-state">
       <t-icon name="error-circle" size="48px" style="color: var(--td-text-color-placeholder)" />
-      <p>暂无催收信息</p>
+      <p>暂无续租信息</p>
     </div>
   </t-dialog>
 </template>
 <script setup lang="ts">
-import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, SuccessContext, UploadFailContext, UploadFile } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, ref, watch } from 'vue';
 
@@ -99,11 +118,13 @@ const emit = defineEmits<{
 
 const loading = ref(false);
 const formRef = ref<FormInstanceFunctions>();
+const contractFiles = ref<UploadFile[]>([]);
 
 const formData = ref<RenewRentalInput>({
   leaseType: LeaseType.Monthly,
   monthlyRent: undefined as number | undefined,
   contractEndDate: '',
+  contractImage: '',
   remark: '',
 });
 
@@ -156,11 +177,50 @@ watch(
         leaseType: LeaseType.Monthly,
         monthlyRent: props.reminder.monthlyRent,
         contractEndDate: '',
+        contractImage: '',
         remark: '',
       };
+      contractFiles.value = [];
     }
   },
 );
+
+// ==================== 上传处理 ====================
+
+// 格式化上传响应
+function formatUploadResponse(res: any) {
+  if (res?.url) {
+    return { url: res.url };
+  }
+  return { error: '上传失败，请重试' };
+}
+
+// 验证上传响应格式
+function isValidUploadResponse(res: unknown): res is { url: string } {
+  return typeof res === 'object' && res !== null && 'url' in res && typeof (res as { url: string }).url === 'string';
+}
+
+// 上传成功
+function handleUploadSuccess(context: SuccessContext) {
+  try {
+    const res = typeof context.response === 'string' ? JSON.parse(context.response) : context.response;
+
+    if (isValidUploadResponse(res)) {
+      formData.value.contractImage = res.url;
+      MessagePlugin.success('合同图片上传成功');
+    } else {
+      MessagePlugin.error('上传响应格式错误，请重试');
+    }
+  } catch {
+    MessagePlugin.error('解析上传响应失败');
+  }
+}
+
+// 上传失败
+function handleUploadFail(context: UploadFailContext) {
+  const fileName = context.file?.name || '未知文件';
+  MessagePlugin.error(`文件 ${fileName} 上传失败`);
+}
 
 // ==================== 事件处理 ====================
 
@@ -192,6 +252,7 @@ async function handleConfirm() {
 // 关闭弹窗
 function handleClose() {
   formRef.value?.reset();
+  contractFiles.value = [];
   dialogVisible.value = false;
 }
 </script>
@@ -227,6 +288,11 @@ function handleClose() {
       &.amount {
         font-weight: 600;
         color: var(--td-warning-color);
+      }
+
+      &.warning {
+        color: var(--td-error-color);
+        font-weight: 500;
       }
     }
   }
