@@ -1156,9 +1156,14 @@
             年度水电费总收入
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.TotalDepositIncome">
+            <summary>
+            年度押金收入（不计入净利润）
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.TotalIncome">
             <summary>
-            年度总收入
+            年度总收入（用于净利润计算，不含押金）
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Report.IncomeReportDto.TotalExpense">
@@ -1201,9 +1206,14 @@
             水电费收入
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.DepositIncome">
+            <summary>
+            押金收入（不计入净利润）
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.TotalIncome">
             <summary>
-            总收入
+            总收入（用于净利润计算，不含押金）
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Report.MonthlyIncomeDto.Expense">

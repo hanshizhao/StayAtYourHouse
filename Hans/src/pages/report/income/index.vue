@@ -70,6 +70,10 @@
             <span class="breakdown-label">水电费收入</span>
             <span class="breakdown-value">¥{{ formatMoney(reportData.totalUtilityIncome) }}</span>
           </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">押金收入</span>
+            <span class="breakdown-value">¥{{ formatMoney(reportData.totalDepositIncome) }}</span>
+          </div>
         </div>
 
         <!-- 月度明细表格 -->
@@ -91,6 +95,9 @@
               </template>
               <template #utilityIncome="{ row }">
                 <span class="amount">¥{{ formatMoney(row.utilityIncome) }}</span>
+              </template>
+              <template #depositIncome="{ row }">
+                <span class="amount deposit">¥{{ formatMoney(row.depositIncome) }}</span>
               </template>
               <template #totalIncome="{ row }">
                 <span class="amount income">¥{{ formatMoney(row.totalIncome) }}</span>
@@ -138,11 +145,12 @@ const currentYear = ref(thisYear);
 const columns = computed<PrimaryTableCol[]>(() => {
   const baseColumns: PrimaryTableCol[] = [
     { colKey: 'monthText', title: '月份', width: 80, ellipsis: true },
-    { colKey: 'rentIncome', title: '租金收入', width: 120, ellipsis: true },
-    { colKey: 'utilityIncome', title: '水电费收入', width: 120, ellipsis: true },
-    { colKey: 'totalIncome', title: '总收入', width: 120, ellipsis: true },
-    { colKey: 'expense', title: '支出', width: 120, ellipsis: true },
-    { colKey: 'netProfit', title: '净利润', width: 120, ellipsis: true },
+    { colKey: 'rentIncome', title: '租金收入', width: 110, ellipsis: true },
+    { colKey: 'utilityIncome', title: '水电费收入', width: 111, ellipsis: true },
+    { colKey: 'depositIncome', title: '押金收入', width: 111, ellipsis: true },
+    { colKey: 'totalIncome', title: '总收入', width: 111, ellipsis: true },
+    { colKey: 'expense', title: '支出', width: 111, ellipsis: true },
+    { colKey: 'netProfit', title: '净利润', width: 111, ellipsis: true },
   ];
   return baseColumns;
 });
@@ -356,6 +364,11 @@ onMounted(() => {
 
       &.expense {
         color: var(--td-warning-color);
+      }
+
+      &.deposit {
+        color: var(--td-brand-color);
+        opacity: 0.7;
       }
 
       &.profit {
