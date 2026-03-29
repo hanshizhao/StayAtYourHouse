@@ -1001,6 +1001,30 @@
             每页数量
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Rental.DeferReminderInput">
+            <summary>
+            宽限提醒输入
+            </summary>
+            <remarks>
+            用于提交催收提醒的宽限请求。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferReminderInput.DeferredToDate">
+            <summary>
+            宽限至日期
+            </summary>
+            <remarks>
+            必填，必须是将来的日期。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferReminderInput.Remark">
+            <summary>
+            备注
+            </summary>
+            <remarks>
+            可选，记录宽限原因。
+            </remarks>
+        </member>
         <member name="T:Gentle.Application.Dtos.Rental.RentalReminderDto">
             <summary>
             催收提醒 DTO

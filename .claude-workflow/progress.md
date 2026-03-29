@@ -35,7 +35,7 @@
 | FEAT-064 | 创建 TodoItemDto | ✅ 已通过 |
 | FEAT-065 | 创建 TodoListResult | ✅ 已通过 | ✅ 通过 |
 | FEAT-066 | 创建 RentalReminderDto | ✅ 已通过 | ✅ 通过 |
-| FEAT-067 | 创建 DeferReminderInput | ⏳ 待开始 |
+| FEAT-067 | 创建 DeferReminderInput | ✅ 已通过 | ✅ 通过 |
 | FEAT-068 | 创建 RenewRentalInput | ⏳ 待开始 |
 | FEAT-069 | 创建 DeferralRecordDto | ⏳ 待开始 |
 
@@ -89,9 +89,10 @@
 
 ## 统计
 
-- **已完成**: 8/30 (27%)
+- **已完成**: 9/30 (30%)
+- **已通过**: 9/30 (30%)
 - **进行中**: 0
-- **待处理**: 22
+- **待处理**: 21
 
 ## 状态说明
 
@@ -119,3 +120,6 @@
 - FEAT-065 验证通过：静态测试 3/3 passed
 - FEAT-066 代码实现完成：创建 RentalReminderDto，包含催收提醒所需属性
 - FEAT-066 验证通过：静态测试 3/3 passed
+- FEAT-067 代码实现完成：创建 DeferReminderInput，包含 DeferredToDate（必填）和 Remark 属性
+- FEAT-067 代码审查通过：Critical=0, Important=0, Minor=2
+- FEAT-067 验证通过：静态测试 3/3 passed
