@@ -31,61 +31,61 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-063 | 创建待办类型枚举 TodoType | ⏳ 待开始 | - |
-| FEAT-064 | 创建 TodoItemDto | ⏳ 待开始 | - |
-| FEAT-065 | 创建 TodoListResult | ⏳ 待开始 | - |
-| FEAT-066 | 创建 RentalReminderDto | ⏳ 待开始 | - |
-| FEAT-067 | 创建 DeferReminderInput | ⏳ 待开始 | - |
-| FEAT-068 | 创建 RenewRentalInput | ⏳ 待开始 | - |
-| FEAT-069 | 创建 DeferralRecordDto | ⏳ 待开始 | - |
+| FEAT-063 | 创建待办类型枚举 TodoType | ⏳ 待开始 |
+| FEAT-064 | 创建 TodoItemDto | ⏳ 待开始 |
+| FEAT-065 | 创建 TodoListResult | ⏳ 待开始 |
+| FEAT-066 | 创建 RentalReminderDto | ⏳ 待开始 |
+| FEAT-067 | 创建 DeferReminderInput | ⏳ 待开始 |
+| FEAT-068 | 创建 RenewRentalInput | ⏳ 待开始 |
+| FEAT-069 | 创建 DeferralRecordDto | ⏳ 待开始 |
 
 #### Phase 3: 后端服务 (FEAT-070 ~ FEAT-073)
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-070 | 创建 ITodoService 接口 | ⏳ 待开始 | - |
-| FEAT-071 | 创建 TodoService 实现 | ⏳ 待开始 | - |
-| FEAT-072 | 创建 IRentalReminderService 接口 | ⏳ 待开始 | - |
-| FEAT-073 | 创建 RentalReminderService 实现 | ⏳ 待开始 | - |
+| FEAT-070 | 创建 ITodoService 接口 | ⏳ 待开始 |
+| FEAT-071 | 创建 TodoService 实现 | ⏳ 待开始 |
+| FEAT-072 | 创建 IRentalReminderService 接口 | ⏳ 待开始 |
+| FEAT-073 | 创建 RentalReminderService 实现 | ⏳ 待开始 |
 
 #### Phase 4: 后端 API (FEAT-074)
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-074 | 创建 TodoAppService API 控制器 | ⏳ 待开始 | - |
+| FEAT-074 | 创建 TodoAppService API 控制器 | ⏳ 待开始 |
 
 #### Phase 5: 定时任务 (FEAT-075 ~ FEAT-076)
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-075 | 创建催收提醒后台服务 | ⏳ 待开始 | - |
-| FEAT-076 | 注册后台服务 | ⏳ 待开始 | - |
+| FEAT-075 | 创建催收提醒后台服务 | ⏳ 待开始 |
+| FEAT-076 | 注册后台服务 | ⏳ 待开始 |
 
 #### Phase 6: 前端 API (FEAT-077 ~ FEAT-078)
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-077 | 创建 todoModel.ts 类型定义 | ⏳ 待开始 | - |
-| FEAT-078 | 创建 todo.ts API 封装 | ⏳ 待开始 | - |
+| FEAT-077 | 创建 todoModel.ts 类型定义 | ⏳ 待开始 |
+| FEAT-078 | 创建 todo.ts API 封装 | ⏳ 待开始 |
 
 #### Phase 7: 前端组件 (FEAT-079 ~ FEAT-084)
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-079 | 改造 TodoPanel 组件 | ⏳ 待开始 | - |
-| FEAT-080 | 创建 PayUtilityDialog 组件 | ⏳ 待开始 | - |
-| FEAT-081 | 创建 RentalReminderDialog 组件 | ⏳ 待开始 | - |
-| FEAT-082 | 创建 DeferDialog 组件 | ⏳ 待开始 | - |
-| FEAT-083 | 创建 RenewRentalDialog 组件 | ⏳ 待开始 | - |
-| FEAT-084 | 创建 DeferralRecordsDialog 组件 | ⏳ 待开始 | - |
+| FEAT-079 | 改造 TodoPanel 组件 | ⏳ 待开始 |
+| FEAT-080 | 创建 PayUtilityDialog 组件 | ⏳ 待开始 |
+| FEAT-081 | 创建 RentalReminderDialog 组件 | ⏳ 待开始 |
+| FEAT-082 | 创建 DeferDialog 组件 | ⏳ 待开始 |
+| FEAT-083 | 创建 RenewRentalDialog 组件 | ⏳ 待开始 |
+| FEAT-084 | 创建 DeferralRecordsDialog 组件 | ⏳ 待开始 |
 
 #### Phase 8: 测试与验证 (FEAT-085 ~ FEAT-087)
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-085 | 后端单元测试 | ⏳ 待开始 | - |
-| FEAT-086 | 集成测试 | ⏳ 待开始 | - |
-| FEAT-087 | E2E 测试 | ⏳ 待开始 | - |
+| FEAT-085 | 后端单元测试 | ⏳ 待开始 |
+| FEAT-086 | 集成测试 | ⏳ 待开始 |
+| FEAT-087 | E2E 测试 | ⏳ 待开始 |
 
 ## 统计
 
