@@ -1746,6 +1746,72 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Todo.TodoItemDto">
+            <summary>
+            待办事项 DTO
+            </summary>
+            <remarks>
+            统一的水电费和催收房租待办数据结构。
+            水电费待办使用 Amount, Period, UtilityBill 字段。
+            催收房租待办使用 TenantName, MonthlyRent, DeferralCount, RentalReminder 字段。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.Type">
+            <summary>
+            待办类型
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.Id">
+            <summary>
+            待办ID
+            </summary>
+            <remarks>
+            水电费待办为 UtilityBill.Id，催收房租待办为 RentalReminder.Id
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.RoomInfo">
+            <summary>
+            房间信息（小区+楼栋+房间号）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.Amount">
+            <summary>
+            账单金额（水电费专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.Period">
+            <summary>
+            账单周期（水电费专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.UtilityBill">
+            <summary>
+            水电账单详情（水电费专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.TenantName">
+            <summary>
+            租客姓名（催收房租专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.MonthlyRent">
+            <summary>
+            月租金（催收房租专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.DeferralCount">
+            <summary>
+            宽限次数（催收房租专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.RentalReminder">
+            <summary>
+            催收提醒详情（催收房租专用）
+            </summary>
+            <remarks>
+            TODO: FEAT-066 完成后替换为 RentalReminderDto 类型
+            </remarks>
+        </member>
         <member name="T:Gentle.Application.Dtos.User.CreateUserInput">
             <summary>
             创建用户请求

@@ -670,6 +670,21 @@
             获取房间状态的中文文本
             </summary>
         </member>
+        <member name="T:Gentle.Core.Enums.TodoType">
+            <summary>
+            待办事项类型
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.TodoType.Utility">
+            <summary>
+            水电费待办
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.TodoType.Rental">
+            <summary>
+            催收房租待办
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.UtilityBillStatus">
             <summary>
             水电账单状态
