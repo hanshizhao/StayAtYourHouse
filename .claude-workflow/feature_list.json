@@ -1,953 +1,865 @@
 {
-  "module": "统一水电费账单",
+  "module": "待办事项卡片增强",
   "version": "1.0.0",
-  "created_at": "2026-03-28",
+  "created_at": "2026-03-29",
   "source_docs": [
-    "docs/superpowers/plans/2026-03-28-unified-utility-billing.md"
+    "docs/superpowers/plans/2026-03-29-todo-panel-enhancement.md"
   ],
   "features": [
     {
-      "id": "FEAT-043",
+      "id": "FEAT-058",
       "category": "后端",
-      "module": "统一水电费账单",
+      "module": "待办事项卡片增强",
       "priority": "high",
       "test_type": "static",
-      "description": "删除后端 Bill/CollectionRecord 实体和枚举文件",
+      "description": "创建 RentalReminderStatus 枚举",
       "acceptance_criteria": [
-        "删除 Bill.cs, CollectionRecord.cs, BillStatus.cs, CollectResult.cs",
-        "编译失败是预期的（其他文件仍引用这些类型）"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "删除 4 个文件",
-          "file": "Gentle/Gentle.Core/Entities/Bill.cs",
-          "code_hint": "rm Gentle/Gentle.Core/Entities/Bill.cs Gentle/Gentle.Core/Entities/CollectionRecord.cs Gentle/Gentle.Core/Enums/BillStatus.cs Gentle/Gentle.Core/Enums/CollectResult.cs"
-        }
-      ],
-      "test_file": "tests/e2e/feat-043-delete-bill-entities.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-28T14:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-28T14:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-28T12:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "删除操作正确完成：Bill.cs, CollectionRecord.cs, BillStatus.cs, CollectResult.cs",
-          "编译失败符合预期（29 个文件仍引用已删除类型，将在后续 FEAT 中清理）",
-          "无安全风险：纯删除操作，无新代码引入"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-044",
-      "category": "后端",
-      "module": "统一水电费账单",
-      "priority": "high",
-      "test_type": "static",
-      "description": "删除后端 Bill 服务层和 DTO",
-      "acceptance_criteria": [
-        "删除 BillAppService.cs, IBillService.cs, BillService.cs",
-        "删除 Bill DTO 目录和 CollectionReportDto.cs"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "删除服务层文件",
-          "file": "Gentle/Gentle.Application/Apps/BillAppService.cs",
-          "code_hint": "rm Gentle/Gentle.Application/Apps/BillAppService.cs Gentle/Gentle.Application/Services/IBillService.cs Gentle/Gentle.Application/Services/BillService.cs"
-        },
-        {
-          "step": 2,
-          "action": "删除 DTO 目录和文件",
-          "file": "Gentle/Gentle.Application/Dtos/Bill/",
-          "code_hint": "rm -rf Gentle/Gentle.Application/Dtos/Bill/ Gentle/Gentle.Application/Dtos/Report/CollectionReportDto.cs"
-        }
-      ],
-      "test_file": "tests/e2e/feat-044-delete-bill-services.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T00:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T00:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T00:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "删除操作正确完成：BillAppService.cs, IBillService.cs, BillService.cs",
-          "DTO 目录和文件已删除：Gentle.Application/Dtos/Bill/, CollectionReportDto.cs",
-          "共删除约 1000 行代码",
-          "编译失败符合预期（RentalRecord.cs, RentalRecordDto.cs, Mapper.cs, ReportService.cs 等仍引用已删除类型）",
-          "这些引用将在 FEAT-045, FEAT-046, FEAT-047, FEAT-052 中清理",
-          "无安全风险：纯删除操作，无新代码引入"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-045",
-      "category": "后端",
-      "module": "统一水电费账单",
-      "priority": "high",
-      "test_type": "static",
-      "description": "清理后端共享文件中的 Bill 引用",
-      "acceptance_criteria": [
-        "RentalRecord.cs 删除 Bills 导航属性",
-        "RentalRecordDto.cs 删除 Bills 属性",
-        "Mapper.cs 删除 Bill 相关映射",
-        "编译仍有错误（ReportService、RentalRecordService 仍引用 Bill）"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "修改 RentalRecord.cs — 删除 Bills 导航属性",
-          "file": "Gentle/Gentle.Core/Entities/RentalRecord.cs",
-          "code_hint": "删除 ICollection<Bill> Bills 属性"
-        },
-        {
-          "step": 2,
-          "action": "修改 RentalRecordDto.cs — 删除 Bills 属性",
-          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs",
-          "code_hint": "删除 List<BillDto>? Bills 属性和 using 语句"
-        },
-        {
-          "step": 3,
-          "action": "修改 Mapper.cs — 删除 Bill 相关映射",
-          "file": "Gentle/Gentle.Application/Mapper.cs",
-          "code_hint": "删除 .Map(dest => dest.Bills, src => src.Bills) 和 Bill/CollectionRecord 映射配置"
-        }
-      ],
-      "test_file": "tests/e2e/feat-045-cleanup-bill-references.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T12:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T12:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T10:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "RentalRecord.cs: 已删除 Bills 导航属性，实体结构完整",
-          "RentalRecordDto.cs: 已删除 Bills 属性和 using 语句，DTO 结构完整",
-          "Mapper.cs: 已删除 Bill 相关映射配置，保留其他正确映射",
-          "编译错误符合预期（5个错误：ReportService、IReportService、ReportAppService 仍引用 CollectionReportDto 和 Bill）",
-          "无安全风险：纯删除操作，无新代码引入",
-          "代码质量符合标准，可以进入 workflow-verify 阶段"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-046",
-      "category": "后端",
-      "module": "统一水电费账单",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "清理 ReportService 中的 Bill 引用",
-      "acceptance_criteria": [
-        "ReportService.cs 删除 IRepository<Bill> 依赖",
-        "GetIncomeReportAsync 方法简化（租金收入归零）",
-        "删除 GetCollectionReportAsync 方法",
-        "IReportService.cs 删除接口声明",
-        "ReportAppService.cs 删除端点"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "修改 ReportService.cs",
-          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
-          "code_hint": "删除 IRepository<Bill> 依赖，简化 GetIncomeReportAsync，删除 GetCollectionReportAsync"
-        },
-        {
-          "step": 2,
-          "action": "修改 IReportService.cs",
-          "file": "Gentle/Gentle.Application/Services/IReportService.cs",
-          "code_hint": "删除 GetCollectionReportAsync 接口声明"
-        },
-        {
-          "step": 3,
-          "action": "修改 ReportAppService.cs",
-          "file": "Gentle/Gentle.Application/Apps/ReportAppService.cs",
-          "code_hint": "删除 GetCollectionReport 方法"
-        }
-      ],
-      "test_file": "tests/e2e/feat-046-cleanup-report-bill.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T15:30:00Z",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T15:30:00Z",
-        "api_routes": {
-          "base": "/api/report-app",
-          "endpoints": ["housing-overview", "profit-ranking", "income"]
-        }
-      },
-      "review": {
-        "last_review_at": "2026-03-29T14:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "ReportService.cs: 已删除 IRepository<Bill> 依赖注入，构造函数正确",
-          "ReportService.cs: GetIncomeReportAsync 方法已简化，租金收入归零，注释清晰说明原因",
-          "ReportService.cs: 已删除 GetCollectionReportAsync 方法（约95行代码）",
-          "IReportService.cs: 已删除 GetCollectionReportAsync 接口声明",
-          "ReportAppService.cs: 已删除 GetCollectionReport 端点",
-          "代码质量符合标准：遵循 Furion 最佳实践，使用 throw Oops.Oh() 异常处理",
-          "无安全风险：纯删除操作，无新代码引入",
-          "代码质量符合标准，可以进入 workflow-verify 阶段"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-047",
-      "category": "后端",
-      "module": "统一水电费账单",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "清理 RentalRecordService 中的 Bill 引用",
-      "acceptance_criteria": [
-        "GetByIdAsync 删除 .Include(r => r.Bills)",
-        "GetPagedListAsync 删除 .Include(r => r.Bills)",
+        "创建 RentalReminderStatus 枚举，包含 Pending = 0, Deferred = 1, Completed = 2",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "修改 GetByIdAsync",
-          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
-          "code_hint": "删除 .Include(r => r.Bills)"
-        },
-        {
-          "step": 2,
-          "action": "修改 GetPagedListAsync",
-          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
-          "code_hint": "删除 .Include(r => r.Bills)"
+          "action": "创建 RentalReminderStatus 枚举",
+          "file": "Gentle/Gentle.Core/Enums/RentalReminderStatus.cs",
+          "code_hint": "enum RentalReminderStatus { Pending = 0, Deferred = 1, Completed = 2 }"
         }
       ],
-      "test_file": "tests/e2e/feat-047-cleanup-rental-bill.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T16:30:00Z",
+      "test_file": "tests/e2e/feat-058-rental-reminder-status-enum.spec.ts",
+      "status": "pending",
       "verification": {
-        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T16:30:00Z",
-        "api_routes": {
-          "base": "/api/rental",
-          "endpoints": ["page", "list", "{id}"]
-        }
-      },
-      "review": {
-        "last_review_at": "2026-03-29T16:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "GetByIdAsync: 已删除 .Include(r => r.Bills)，查询结构正确",
-          "GetPagedListAsync: 已删除 .Include(r => r.Bills)，查询结构正确",
-          "dotnet build: 构建成功（0 警告，0 错误）",
-          "无残留的 Bill 引用（验证了 .Bills、ICollection<Bill>、using.*Bill）",
-          "代码质量符合标准：遵循 Furion 最佳实践，使用 throw Oops.Oh() 异常处理",
-          "无安全风险：纯删除操作，无新代码引入"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-048",
+      "id": "FEAT-059",
       "category": "后端",
-      "module": "统一水电费账单",
+      "module": "待办事项卡片增强",
       "priority": "high",
       "test_type": "static",
-      "description": "修改 UtilityBillStatus 枚举（移除 Merged）",
+      "description": "创建 RentalReminder 实体",
       "acceptance_criteria": [
-        "UtilityBillStatus 只保留 Pending = 0, Paid = 1",
-        "编译失败（MeterService 和 UtilityBillDto 引用 Merged）"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "移除 Merged 枚举值",
-          "file": "Gentle/Gentle.Core/Enums/UtilityBillStatus.cs",
-          "code_hint": "只保留 Pending = 0, Paid = 1"
-        }
-      ],
-      "test_file": "tests/e2e/feat-048-utility-bill-status-enum.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T17:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T17:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T17:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "UtilityBillStatus.cs: 正确移除 Merged 枚举值，只保留 Pending = 0 和 Paid = 1",
-          "编译错误符合预期（4 个错误）：",
-          "  - UtilityBillDto.cs:92 - StatusText 属性中的 Merged 分支",
-          "  - MeterAppService.cs:128 - GetUtilityBills 方法中的 Merged 状态映射",
-          "  - MeterService.cs:277 - PayAsync 方法中的 Merged 状态检查",
-          "  - MeterService.cs:357 - DeleteBillAsync 方法中的 Merged 状态检查",
-          "这些编译错误将在 FEAT-049 中清理",
-          "无安全风险：纯枚举修改，无新代码引入"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-049",
-      "category": "后端",
-      "module": "统一水电费账单",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "清理 MeterService 和 UtilityBillDto 中的 Merged 引用",
-      "acceptance_criteria": [
-        "MeterService.cs 删除 Merged 状态检查",
-        "UtilityBillDto.cs 删除 Merged 分支，新增 RentalRecordId 属性",
+        "创建 RentalReminder 实体类，继承 Entity<int>",
+        "包含 RentalRecordId, ReminderDate, Status 属性",
+        "包含 RentalRecord 和 Deferrals 导航属性",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "修改 MeterService.cs PayAsync 方法",
-          "file": "Gentle/Gentle.Application/Services/MeterService.cs",
-          "code_hint": "删除 Merged 状态检查代码块"
-        },
-        {
-          "step": 2,
-          "action": "修改 MeterService.cs DeleteBillAsync 方法",
-          "file": "Gentle/Gentle.Application/Services/MeterService.cs",
-          "code_hint": "删除 Merged 状态检查代码块"
-        },
-        {
-          "step": 3,
-          "action": "修改 UtilityBillDto.cs",
-          "file": "Gentle/Gentle.Application/Dtos/Meter/UtilityBillDto.cs",
-          "code_hint": "删除 Merged 分支，新增 RentalRecordId 属性"
+          "action": "创建 RentalReminder 实体类",
+          "file": "Gentle/Gentle.Core/Entities/RentalReminder.cs",
+          "code_hint": "public class RentalReminder : Entity<int> { public int RentalRecordId { get; set; } public DateTime ReminderDate { get; set; } public RentalReminderStatus Status { get; set; } public RentalRecord RentalRecord { get; set; } public ICollection<RentalDeferral> Deferrals { get; set; } }"
         }
       ],
-      "test_file": "tests/e2e/feat-049-cleanup-merged-references.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T18:00:00Z",
-      "completed_at": "2026-03-29T19:00:00Z",
+      "test_file": "tests/e2e/feat-059-rental-reminder-entity.spec.ts",
+      "status": "pending",
       "verification": {
-        "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T19:00:00Z",
-        "api_routes": {
-          "base": "/api/meter-app",
-          "endpoints": ["get-utility-bills", "pay", "remove-utility-bill/{id}"]
-        }
-      },
-      "review": {
-        "last_review_at": "2026-03-29T18:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "MeterService.cs PayAsync: 已删除 Merged 状态检查，只保留 Paid 状态检查",
-          "MeterService.cs DeleteBillAsync: 已删除 Merged 状态检查，只保留 Paid 状态检查",
-          "UtilityBillDto.cs StatusText: 已删除 Merged 分支，switch 表达式正确",
-          "UtilityBillDto.cs: 新增 RentalRecordId 属性（为 FEAT-050 预留）",
-          "MeterAppService.cs GetUtilityBills: 已删除 merged 状态映射",
-          "dotnet build: 构建成功（0 警告，0 错误）",
-          "代码质量符合标准：遵循 Furion 最佳实践，使用 throw Oops.Oh() 异常处理",
-          "无安全风险：纯删除操作，无新代码引入"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-050",
+      "id": "FEAT-060",
       "category": "后端",
-      "module": "统一水电费账单",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "UtilityBill 增加 RentalRecordId 字段",
-      "acceptance_criteria": [
-        "UtilityBill 实体新增 RentalRecordId 和导航属性",
-        "MeterService.CreateUtilityBillAsync 改为查询活跃租约并关联",
-        "无活跃租约时不创建账单",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "在 UtilityBill 实体中新增字段",
-          "file": "Gentle/Gentle.Core/Entities/UtilityBill.cs",
-          "code_hint": "新增 RentalRecordId 属性、RentalRecord 导航属性、索引"
-        },
-        {
-          "step": 2,
-          "action": "修改 MeterService.CreateUtilityBillAsync",
-          "file": "Gentle/Gentle.Application/Services/MeterService.cs",
-          "code_hint": "查询活跃租约，设置 RentalRecordId，无租约时 return"
-        }
-      ],
-      "test_file": "tests/e2e/feat-050-utility-bill-rental-link.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T23:00:00Z",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T23:00:00Z",
-        "test_result": "5/5 passed"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T21:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "UtilityBill.cs: 新增 RentalRecordId 属性（int? 可空）、RentalRecord 导航属性、[Index] 索引配置正确",
-          "MeterService.cs: 构造函数新增 IRepository<RentalRecord> 依赖注入，符合 DI 规范",
-          "MeterService.cs CreateUtilityBillAsync: 查询活跃租约逻辑正确（RoomId + Status == Active）",
-          "MeterService.cs CreateUtilityBillAsync: 无活跃租约时 return（不创建账单）逻辑正确",
-          "MeterService.cs CreateUtilityBillAsync: 设置 RentalRecordId = activeRental.Id 关联租约",
-          "UtilityBillDto.cs: RentalRecordId 属性正确定义为 int? 可空类型",
-          "Mapper.cs: UtilityBillDto.RentalRecordId 与 UtilityBill.RentalRecordId 同名，Mapster 自动映射",
-          "dotnet build: 构建成功（0 警告，0 错误）",
-          "代码质量符合标准：遵循 Furion 最佳实践，使用 throw Oops.Oh() 异常处理",
-          "无安全风险：使用 EF Core 参数化查询，无 SQL 注入风险"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-051",
-      "category": "后端",
-      "module": "统一水电费账单",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "RentalRecord 新增 UtilityBills 导航属性并更新查询",
-      "acceptance_criteria": [
-        "RentalRecord 实体新增 UtilityBills 导航属性",
-        "RentalRecordDto 新增 UtilityBills 属性",
-        "RentalRecordService 查询添加 .Include(r => r.UtilityBills)",
-        "Mapper 添加 UtilityBills 映射",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "在 RentalRecord 实体中新增 UtilityBills 导航属性",
-          "file": "Gentle/Gentle.Core/Entities/RentalRecord.cs",
-          "code_hint": "新增 ICollection<UtilityBill> UtilityBills 属性"
-        },
-        {
-          "step": 2,
-          "action": "在 RentalRecordDto 中新增 UtilityBills 属性",
-          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs",
-          "code_hint": "新增 List<UtilityBillDto>? UtilityBills 属性"
-        },
-        {
-          "step": 3,
-          "action": "修改 RentalRecordService 查询",
-          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
-          "code_hint": "在 GetByIdAsync 和 GetPagedListAsync 中添加 .Include(r => r.UtilityBills)"
-        },
-        {
-          "step": 4,
-          "action": "修改 Mapper.cs",
-          "file": "Gentle/Gentle.Application/Mapper.cs",
-          "code_hint": "添加 .Map(dest => dest.UtilityBills, src => src.UtilityBills)"
-        }
-      ],
-      "test_file": "tests/e2e/feat-051-rental-utility-bills-nav.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T23:30:00Z",
-      "completed_at": "2026-03-30T00:00:00Z",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T00:00:00Z",
-        "test_result": "5/5 passed (1 skipped)"
-      }
-    },
-    {
-      "id": "FEAT-052",
-      "category": "后端",
-      "module": "统一水电费账单",
+      "module": "待办事项卡片增强",
       "priority": "high",
       "test_type": "static",
-      "description": "数据库迁移",
+      "description": "创建 RentalDeferral 实体",
       "acceptance_criteria": [
-        "生成迁移文件：删除 collection_record 和 bill 表",
-        "utility_bill 表新增 rental_record_id 列",
-        "将 utility_bill 中 status = 2 的记录改为 status = 1",
-        "迁移应用成功"
+        "创建 RentalDeferral 实体类，继承 Entity<int>",
+        "包含 RentalReminderId, OriginalReminderDate, DeferredToDate, Remark 属性",
+        "包含 RentalReminder 导航属性",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "生成迁移",
+          "action": "创建 RentalDeferral 实体类",
+          "file": "Gentle/Gentle.Core/Entities/RentalDeferral.cs",
+          "code_hint": "public class RentalDeferral : Entity<int> { public int RentalReminderId { get; set; } public DateTime OriginalReminderDate { get; set; } public DateTime DeferredToDate { get; set; } public string? Remark { get; set; } public RentalReminder RentalReminder { get; set; } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-060-rental-deferral-entity.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-061",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建数据库迁移",
+      "acceptance_criteria": [
+        "生成迁移文件 AddRentalReminderAndDeferral",
+        "迁移 Up 方法包含 RentalReminder 和 RentalDeferral 表创建",
+        "迁移文件生成成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "生成数据库迁移",
           "file": "Gentle/Gentle.Database.Migrations/Migrations/",
-          "code_hint": "dotnet ef migrations add RemoveBillAndAddUtilityBillRentalLink"
-        },
+          "code_hint": "dotnet ef migrations add AddRentalReminderAndDeferral --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry",
+          "verify_command": "cd Gentle && dotnet ef migrations add AddRentalReminderAndDeferral --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
+        }
+      ],
+      "test_file": "tests/e2e/feat-061-rental-reminder-migration.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-062",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "执行数据库迁移",
+      "acceptance_criteria": [
+        "迁移应用成功",
+        "数据库表 rental_reminder 和 rental_deferral 创建成功"
+      ],
+      "implementation_steps": [
         {
-          "step": 2,
-          "action": "检查并补充迁移文件",
-          "file": "Gentle/Gentle.Database.Migrations/Migrations/",
-          "code_hint": "确保包含 UPDATE utility_bill SET status = 1 WHERE status = 2"
-        },
-        {
-          "step": 3,
-          "action": "应用迁移",
+          "step": 1,
+          "action": "执行数据库迁移",
           "file": "Gentle/Gentle.Database.Migrations/",
-          "code_hint": "dotnet ef database update"
+          "code_hint": "dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry",
+          "verify_command": "cd Gentle && dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
         }
       ],
-      "test_file": "tests/e2e/feat-052-database-migration.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T23:30:00Z",
-      "completed_at": "2026-03-30T01:30:00Z",
+      "test_file": "tests/e2e/feat-062-apply-rental-reminder-migration.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T01:30:00Z",
-        "test_result": "4/4 passed"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T01:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "迁移文件 Up 方法：6 个步骤全部正确",
-          "1. UPDATE utility_bill SET Status = 1 WHERE Status = 2 - 标准 SQL，正确",
-          "2. DROP TABLE IF EXISTS collection_record - MySQL 5.7+ 支持，正确",
-          "3. DROP TABLE IF EXISTS bill - MySQL 5.7+ 支持，正确",
-          "4. 添加 RentalRecordId 列（条件执行）- PREPARE/EXECUTE stmt 模式正确",
-          "5. 添加索引（条件执行）- PREPARE/EXECUTE stmt 模式正确",
-          "6. 添加外键约束（条件执行）- PREPARE/EXECUTE stmt 模式正确",
-          "Down 方法：使用 IF EXISTS 语法，MySQL 8.0+ 支持，正确",
-          "实体与迁移一致性：UtilityBill.RentalRecordId (int?) 与数据库 INT NULL 一致",
-          "安全性：无 SQL 注入风险，所有值都是静态的",
-          "数据迁移逻辑：status = 2 (Merged) 改为 status = 1 (Paid) 符合业务逻辑",
-          "dotnet build: 构建成功（0 警告，0 错误）",
-          "代码质量符合标准，可以进入 workflow-verify 阶段"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-053",
-      "category": "前端",
-      "module": "统一水电费账单",
+      "id": "FEAT-063",
+      "category": "后端",
+      "module": "待办事项卡片增强",
       "priority": "high",
       "test_type": "static",
-      "description": "删除前端 Bill 相关文件",
+      "description": "创建待办类型枚举 TodoType",
       "acceptance_criteria": [
-        "删除 bill 页面目录、API 文件、路由文件",
-        "清理 rentalModel.ts 中的 Bill 引用",
-        "清理 reportModel.ts 和 report.ts",
-        "删除催收统计报表页面",
-        "清理报表路由"
+        "创建 TodoType 枚举，包含 Utility = 0, Rental = 1",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "删除文件",
-          "file": "Hans/src/pages/bill/",
-          "code_hint": "rm -rf Hans/src/pages/bill/ Hans/src/api/bill.ts Hans/src/api/model/billModel.ts Hans/src/router/modules/bill.ts"
-        },
-        {
-          "step": 2,
-          "action": "清理 rentalModel.ts",
-          "file": "Hans/src/api/model/rentalModel.ts",
-          "code_hint": "删除 BillItem 引用，新增 UtilityBillItem 引用"
-        },
-        {
-          "step": 3,
-          "action": "清理 report 相关文件",
-          "file": "Hans/src/api/model/reportModel.ts",
-          "code_hint": "删除 CollectionReport、OverdueBillInfo、GraceBillInfo 类型"
-        },
-        {
-          "step": 4,
-          "action": "删除催收统计报表页面和路由",
-          "file": "Hans/src/pages/report/collection/index.vue",
-          "code_hint": "rm Hans/src/pages/report/collection/index.vue，清理路由"
+          "action": "创建 TodoType 枚举",
+          "file": "Gentle/Gentle.Application/Dtos/Todo/TodoType.cs",
+          "code_hint": "enum TodoType { Utility = 0, Rental = 1 }"
         }
       ],
-      "test_file": "tests/e2e/feat-053-delete-frontend-bill.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T18:00:00Z",
-      "completed_at": "2026-03-30T02:00:00Z",
+      "test_file": "tests/e2e/feat-063-todo-type-enum.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T02:00:00Z",
-        "test_result": "5/5 passed"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T19:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "删除操作正确完成：Hans/src/pages/bill/, Hans/src/api/bill.ts, Hans/src/api/model/billModel.ts, Hans/src/router/modules/bill.ts",
-          "rentalModel.ts: 已删除 BillItem 引用，新增 UtilityBillItem 引用，类型定义正确",
-          "reportModel.ts: 已删除 CollectionReport、OverdueBillInfo、GraceBillInfo 类型，保留正确的 IncomeReport、HousingOverview、RoomProfitRanking 类型",
-          "report.ts: 已删除 getTodayTodos API 和催收报表相关代码，保留正确的收支统计 API",
-          "report.ts 路由: 已删除催收统计路由，保留收支统计、房源概览、利润排行路由",
-          "npm run build:type: 编译失败符合预期（3 个错误）",
-          "  - TodoPanel.vue:178-179 - 仍引用 @/api/bill 和 @/api/model/billModel（FEAT-054/055 范围）",
-          "  - rental/index.vue:113 - 仍引用 BillStatus（FEAT-054 范围）",
-          "这些编译错误将在 FEAT-054 和 FEAT-055 中清理",
-          "无安全风险：纯删除操作，无新代码引入"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-054",
-      "category": "前端",
-      "module": "统一水电费账单",
+      "id": "FEAT-064",
+      "category": "后端",
+      "module": "待办事项卡片增强",
       "priority": "high",
-      "test_type": "e2e",
-      "description": "前端租赁记录页展示 UtilityBills",
+      "test_type": "static",
+      "description": "创建 TodoItemDto",
       "acceptance_criteria": [
-        "清理 Bill 相关导入，新增 UtilityBill 导入",
-        "展开行数据源改为 utilityBills",
-        "列定义改为水电费账单列",
+        "创建 TodoItemDto 类，包含水电费和催收房租两种类型的字段",
+        "包含 Type, Id, RoomInfo 等公共字段",
+        "包含水电费专用字段 Amount, Period, UtilityBill",
+        "包含催收房租专用字段 TenantName, MonthlyRent, RentalReminder 等",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 TodoItemDto 类",
+          "file": "Gentle/Gentle.Application/Dtos/Todo/TodoItemDto.cs",
+          "code_hint": "public class TodoItemDto { public TodoType Type { get; set; } public int Id { get; set; } public string RoomInfo { get; set; } public decimal? Amount { get; set; } public string? Period { get; set; } public string? TenantName { get; set; } public decimal? MonthlyRent { get; set; } public int DeferralCount { get; set; } public UtilityBillDto? UtilityBill { get; set; } public RentalReminderDto? RentalReminder { get; set; } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-064-todo-item-dto.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-065",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建 TodoListResult",
+      "acceptance_criteria": [
+        "创建 TodoListResult 类",
+        "包含 Items, Total, UtilityCount, RentalCount 属性",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 TodoListResult 类",
+          "file": "Gentle/Gentle.Application/Dtos/Todo/TodoListResult.cs",
+          "code_hint": "public class TodoListResult { public List<TodoItemDto> Items { get; set; } public int Total { get; set; } public int UtilityCount { get; set; } public int RentalCount { get; set; } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-065-todo-list-result.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-066",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建 RentalReminderDto",
+      "acceptance_criteria": [
+        "创建 RentalReminderDto 类",
+        "包含 Id, RentalRecordId, RoomInfo, TenantName, MonthlyRent 等属性",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 RentalReminderDto 类",
+          "file": "Gentle/Gentle.Application/Dtos/Rental/RentalReminderDto.cs",
+          "code_hint": "public class RentalReminderDto { public int Id { get; set; } public int RentalRecordId { get; set; } public string RoomInfo { get; set; } public string TenantName { get; set; } public decimal MonthlyRent { get; set; } public DateTime ContractEndDate { get; set; } public int DeferralCount { get; set; } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-066-rental-reminder-dto.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-067",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建 DeferReminderInput",
+      "acceptance_criteria": [
+        "创建 DeferReminderInput 类",
+        "包含 DeferredToDate（必填）和 Remark 属性",
+        "使用 [Required] 特性验证",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 DeferReminderInput 类",
+          "file": "Gentle/Gentle.Application/Dtos/Rental/DeferReminderInput.cs",
+          "code_hint": "public class DeferReminderInput { [Required] public DateTime DeferredToDate { get; set; } public string? Remark { get; set; } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-067-defer-reminder-input.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-068",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建 RenewRentalInput",
+      "acceptance_criteria": [
+        "创建 RenewRentalInput 类",
+        "包含 LeaseType, MonthlyRent, ContractEndDate（必填）和 ContractImage, Remark 属性",
+        "使用 [Required] 和 [Range] 特性验证",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 RenewRentalInput 类",
+          "file": "Gentle/Gentle.Application/Dtos/Rental/RenewRentalInput.cs",
+          "code_hint": "public class RenewRentalInput { [Required] public LeaseType LeaseType { get; set; } [Required, Range(0.01, double.MaxValue)] public decimal MonthlyRent { get; set; } [Required] public DateTime ContractEndDate { get; set; } public string? ContractImage { get; set; } public string? Remark { get; set; } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-068-renew-rental-input.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-069",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建 DeferralRecordDto",
+      "acceptance_criteria": [
+        "创建 DeferralRecordDto 和 DeferralListResult 类",
+        "包含宽限记录的所有属性",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 DeferralRecordDto 和 DeferralListResult 类",
+          "file": "Gentle/Gentle.Application/Dtos/Rental/DeferralRecordDto.cs",
+          "code_hint": "public class DeferralRecordDto { public int Id { get; set; } public DateTime OriginalReminderDate { get; set; } public DateTime DeferredToDate { get; set; } public string? Remark { get; set; } public DateTime CreatedTime { get; set; } } public class DeferralListResult { public List<DeferralRecordDto> Items { get; set; } public int Total { get; set; } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-069-deferral-record-dto.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-070",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建 ITodoService 接口",
+      "acceptance_criteria": [
+        "创建 ITodoService 接口",
+        "包含 GetTodoListAsync 方法",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 ITodoService 接口",
+          "file": "Gentle/Gentle.Application/Services/ITodoService.cs",
+          "code_hint": "public interface ITodoService { Task<TodoListResult> GetTodoListAsync(string? type, int page, int pageSize); }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-070-todo-service-interface.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-071",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "创建 TodoService 实现",
+      "acceptance_criteria": [
+        "创建 TodoService 类，实现 ITodoService 和 ITransient",
+        "注入 IRepository<UtilityBill>, IRepository<RentalReminder>, IRepository<RentalRecord>",
+        "实现 GetTodoListAsync 方法，聚合水电费和催收房租待办",
+        "dotnet build 构建成功，应用启动成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 TodoService 类",
+          "file": "Gentle/Gentle.Application/Services/TodoService.cs",
+          "code_hint": "public class TodoService : ITodoService, ITransient { public async Task<TodoListResult> GetTodoListAsync(string? type, int page, int pageSize) { /* 聚合水电费和催收房租 */ } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-071-todo-service.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-072",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建 IRentalReminderService 接口",
+      "acceptance_criteria": [
+        "创建 IRentalReminderService 接口",
+        "包含 DeferAsync, RenewAsync, GetDeferralsAsync 方法",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 IRentalReminderService 接口",
+          "file": "Gentle/Gentle.Application/Services/IRentalReminderService.cs",
+          "code_hint": "public interface IRentalReminderService { Task DeferAsync(int reminderId, DeferReminderInput input); Task<int> RenewAsync(int reminderId, RenewRentalInput input); Task<DeferralListResult> GetDeferralsAsync(int reminderId); }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-072-rental-reminder-service-interface.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-073",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "创建 RentalReminderService 实现",
+      "acceptance_criteria": [
+        "创建 RentalReminderService 类，实现 IRentalReminderService 和 ITransient",
+        "注入 IRepository<RentalReminder>, IRepository<RentalDeferral>, IRepository<RentalRecord>",
+        "实现 DeferAsync（宽限处理）、RenewAsync（续租处理）、GetDeferralsAsync（获取宽限记录）",
+        "使用 throw Oops.Oh() 异常处理",
+        "dotnet build 构建成功，应用启动成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 RentalReminderService 类",
+          "file": "Gentle/Gentle.Application/Services/RentalReminderService.cs",
+          "code_hint": "public class RentalReminderService : IRentalReminderService, ITransient { public async Task DeferAsync(int reminderId, DeferReminderInput input) { /* 宽限处理：创建宽限记录、更新状态、创建新提醒 */ } public async Task<int> RenewAsync(int reminderId, RenewRentalInput input) { /* 续租处理：创建新租赁记录、更新原记录状态 */ } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-073-rental-reminder-service.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-074",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "创建 TodoAppService API 控制器",
+      "acceptance_criteria": [
+        "创建 TodoAppService 类，实现 IDynamicApiController",
+        "使用 [Route(\"api/todo\")] 和 [Authorize] 特性",
+        "包含 GetList, Defer, Renew, GetDeferrals 端点",
+        "dotnet build 构建成功，Swagger 显示 API"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 TodoAppService 控制器",
+          "file": "Gentle/Gentle.Application/Apps/TodoAppService.cs",
+          "code_hint": "[Route(\"api/todo\")][Authorize] public class TodoAppService : IDynamicApiController { [HttpGet(\"list\")] public async Task<TodoListResult> GetList(...) { } [HttpPost(\"rental-reminder/{id}/defer\")] public async Task Defer(...) { } [HttpPost(\"rental-reminder/{id}/renew\")] public async Task<RenewResult> Renew(...) { } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-074-todo-app-service.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/todo",
+          "endpoints": [
+            "list",
+            "rental-reminder/{id}/defer",
+            "rental-reminder/{id}/renew",
+            "rental-reminder/{id}/deferrals"
+          ]
+        }
+      }
+    },
+    {
+      "id": "FEAT-075",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "medium",
+      "test_type": "static",
+      "description": "创建催收提醒后台服务",
+      "acceptance_criteria": [
+        "创建 RentalReminderBackgroundService 类，继承 BackgroundService",
+        "每日凌晨扫描即将到期的租赁记录并创建提醒",
+        "提前 3 天创建提醒",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 RentalReminderBackgroundService 类",
+          "file": "Gentle/Gentle.Application/BackgroundServices/RentalReminderBackgroundService.cs",
+          "code_hint": "public class RentalReminderBackgroundService : BackgroundService { protected override async Task ExecuteAsync(CancellationToken stoppingToken) { /* 每日扫描，创建提醒 */ } }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-075-rental-reminder-background-service.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-076",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "medium",
+      "test_type": "api_runtime",
+      "description": "注册后台服务",
+      "acceptance_criteria": [
+        "在 Program.cs 中注册 RentalReminderBackgroundService",
+        "应用启动成功，无报错"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "注册后台服务到 Program.cs",
+          "file": "Gentle/Gentle.Web.Entry/Program.cs",
+          "code_hint": "builder.Services.AddHostedService<RentalReminderBackgroundService>();"
+        }
+      ],
+      "test_file": "tests/e2e/feat-076-register-background-service.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-077",
+      "category": "前端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "创建 todoModel.ts 类型定义",
+      "acceptance_criteria": [
+        "创建 todoModel.ts 文件",
+        "定义 TodoType 枚举、TodoItem 接口、TodoListResult 接口",
+        "定义 RentalReminderItem、DeferReminderInput、RenewRentalInput、DeferralRecord 接口",
         "npm run build:type 构建通过"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "清理 Bill 相关导入和函数",
-          "file": "Hans/src/pages/housing/rental/index.vue",
-          "code_hint": "删除 BillStatus 导入，新增 UtilityBillStatus 导入"
-        },
-        {
-          "step": 2,
-          "action": "修改展开行数据源和列定义",
-          "file": "Hans/src/pages/housing/rental/index.vue",
-          "code_hint": "rentalRow.bills 改为 rentalRow.utilityBills，更新 billColumns 为 utilityBillColumns"
+          "action": "创建 todoModel.ts",
+          "file": "Hans/src/api/model/todoModel.ts",
+          "code_hint": "export enum TodoType { Utility = 0, Rental = 1 } export interface TodoItem { type: TodoType; id: number; roomInfo: string; amount?: number; tenantName?: string; ... }"
         }
       ],
-      "test_file": "tests/e2e/feat-054-rental-utility-bills-page.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T18:00:00Z",
-      "completed_at": "2026-03-29T20:30:00Z",
+      "test_file": "tests/e2e/feat-077-todo-model.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T20:30:00Z",
-        "test_result": "4 passed, 2 skipped (需要前后端服务运行)"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T20:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "notes": [
-          "rental/index.vue: 导入正确 - 删除 BillStatus,新增 UtilityBillStatus",
-          "rental/index.vue: 展开行数据源正确 - rentalRow.utilityBills",
-          "rental/index.vue: 列定义完整 - utilityBillColumns 包含周期、费用、状态、收款日期",
-          "rentalModel.ts: 类型定义正确 - utilityBills?: UtilityBillItem[]",
-          "TodoPanel.vue: 简化为空状态，待 FEAT-055 实现 UtilityBill 待办功能",
-          "npm run build:type: 类型检查通过（0 错误）",
-          "Minor 1: getUtilityBillStatusTheme 函数引用 Merged 枚举（待 FEAT-055 清理）",
-          "Minor 2: TodoPanel.vue refresh 方法空实现（待 FEAT-055 实现）",
-          "代码质量符合标准：样式隔离、错误处理完整、组件卸载保护"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-055",
+      "id": "FEAT-078",
       "category": "前端",
-      "module": "统一水电费账单",
+      "module": "待办事项卡片增强",
       "priority": "high",
-      "test_type": "e2e",
-      "description": "前端水电费类型清理和页面适配",
+      "test_type": "static",
+      "description": "创建 todo.ts API 封装",
       "acceptance_criteria": [
-        "meterModel.ts 删除 Merged 枚举值和文本映射",
-        "UtilityBillItem 新增 rentalRecordId 字段",
-        "水电账单页面移除 Merged 状态处理",
-        "Dashboard 改为展示水电费待办"
+        "创建 todo.ts 文件",
+        "定义 getTodoList, deferReminder, renewRental, getDeferrals 函数",
+        "npm run build:type 构建通过"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "清理 meterModel.ts",
-          "file": "Hans/src/api/model/meterModel.ts",
-          "code_hint": "删除 Merged = 2 枚举值和文本映射，新增 rentalRecordId 字段"
-        },
+          "action": "创建 todo.ts API 文件",
+          "file": "Hans/src/api/todo.ts",
+          "code_hint": "export function getTodoList(type?: string, pageSize = 10) { return request.get<TodoListResult>('/api/todo/list', { params: { type, page: 1, pageSize } }); }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-078-todo-api.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-079",
+      "category": "前端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "改造 TodoPanel 组件",
+      "acceptance_criteria": [
+        "添加类型筛选下拉框",
+        "支持水电费和催收房租两种待办类型渲染",
+        "点击待办触发对应弹窗",
+        "页面正常渲染，筛选功能正常"
+      ],
+      "implementation_steps": [
         {
-          "step": 2,
-          "action": "修改 UtilityBillDto Mapper 映射",
-          "file": "Gentle/Gentle.Application/Mapper.cs",
-          "code_hint": "新增 RentalRecordId 映射"
-        },
-        {
-          "step": 3,
-          "action": "修改水电账单页面",
-          "file": "Hans/src/pages/utility/bill/index.vue",
-          "code_hint": "移除所有 Merged 状态的筛选选项、状态展示和处理逻辑"
-        },
-        {
-          "step": 4,
-          "action": "修改 Dashboard 待办面板",
+          "step": 1,
+          "action": "改造 TodoPanel 组件",
           "file": "Hans/src/pages/dashboard/base/components/TodoPanel.vue",
-          "code_hint": "删除 Bill 待办，改为查询 Pending 状态的 UtilityBill"
+          "code_hint": "添加 filterType 状态、typeOptions 选项、渲染两种类型待办、添加弹窗组件引用"
         }
       ],
-      "test_file": "tests/e2e/feat-055-frontend-utility-bill-cleanup.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T16:00:00Z",
-      "completed_at": "2026-03-29T18:00:00Z",
+      "test_file": "tests/e2e/feat-079-todo-panel.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T18:00:00Z",
-        "test_result": "5 passed, 2 skipped (需要前后端服务运行)"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T12:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "notes": [
-          "meterModel.ts: 正确删除 Merged 枚举值和文本映射，新增 rentalRecordId 字段",
-          "TodoPanel.vue: 改为展示 Pending 状态的 UtilityBill 待办，API 调用正确",
-          "utility/bill/index.vue: 移除 Merged 状态筛选选项和状态主题处理",
-          "rental/index.vue: 展开行使用 utilityBills，getUtilityBillStatusTheme 移除 Merged 分支",
-          "npm run build:type: 类型检查通过（0 错误）",
-          "Minor 1: TodoPanel.vue onUnmounted 空实现（可移除或添加注释）",
-          "Minor 2: now 变量在组件外部定义（当前场景无问题）",
-          "代码质量符合标准：错误处理完整、类型安全、样式隔离、无 console.log 残留",
-          "无安全风险：纯前端代码清理，无新代码引入"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-056",
-      "category": "集成",
-      "module": "统一水电费账单",
+      "id": "FEAT-080",
+      "category": "前端",
+      "module": "待办事项卡片增强",
       "priority": "high",
       "test_type": "e2e",
-      "description": "清理 E2E 测试文件",
+      "description": "创建 PayUtilityDialog 组件",
       "acceptance_criteria": [
-        "删除 Bill 相关 E2E 测试文件",
-        "更新 dashboard-todo 测试",
-        "更新 utility-bill-page 测试（删除 Merged 测试）",
-        "更新 full-flow 测试",
-        "更新 rental-dto-mapper 测试"
+        "从 utility/bill/index.vue 抽取收款弹窗逻辑为独立组件",
+        "支持 visible 和 bill props",
+        "支持 update:visible 和 success events",
+        "弹窗正常显示，收款功能正常"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "删除 Bill 相关 E2E 测试文件",
-          "file": "tests/e2e/",
-          "code_hint": "rm feat-015-bill-entity.spec.ts feat-016-collection-record-entity.spec.ts feat-017-bill-api.spec.ts feat-018-bill-page.spec.ts feat-019-collect-dialog.spec.ts feat-029-collection-report-page.spec.ts"
-        },
-        {
-          "step": 2,
-          "action": "更新 feat-020-dashboard-todo.spec.ts",
-          "file": "tests/e2e/feat-020-dashboard-todo.spec.ts",
-          "code_hint": "删除 Bill 待办断言，改为 UtilityBill"
-        },
-        {
-          "step": 3,
-          "action": "更新 feat-024-utility-bill-page.spec.ts",
-          "file": "tests/e2e/feat-024-utility-bill-page.spec.ts",
-          "code_hint": "删除 Merged 状态相关测试"
-        },
-        {
-          "step": 4,
-          "action": "更新其他测试文件",
-          "file": "tests/e2e/feat-030-full-flow.spec.ts",
-          "code_hint": "删除 Bill 催收流程步骤，更新 mapper 测试"
+          "action": "创建 PayUtilityDialog 组件",
+          "file": "Hans/src/pages/dashboard/base/components/PayUtilityDialog.vue",
+          "code_hint": "defineProps<{ visible: boolean; bill: UtilityBillItem | null }>() defineEmits<{ 'update:visible': [value: boolean]; 'success': [] }>()"
         }
       ],
-      "test_file": "tests/e2e/feat-056-cleanup-e2e-tests.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T16:00:00Z",
-      "completed_at": "2026-03-29T19:00:00Z",
+      "test_file": "tests/e2e/feat-080-pay-utility-dialog.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T19:00:00Z",
-        "test_result": "14/14 passed"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T18:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": [
-          "步骤1 完成：6 个 Bill 相关测试文件已删除（约 1900 行代码）",
-          "  - feat-015-bill-entity.spec.ts",
-          "  - feat-016-collection-record-entity.spec.ts",
-          "  - feat-017-bill-api.spec.ts",
-          "  - feat-018-bill-page.spec.ts",
-          "  - feat-019-collect-dialog.spec.ts",
-          "  - feat-029-collection-report-page.spec.ts",
-          "步骤2 完成：feat-020-dashboard-todo.spec.ts 已更新",
-          "  - 删除即将到期、今日到期、宽限到期、逾期区域测试",
-          "  - 删除催收按钮相关测试",
-          "  - 新增水电费待办功能测试",
-          "步骤3 完成：feat-024-utility-bill-page.spec.ts 不包含 Merged 引用",
-          "步骤4 完成：feat-030-full-flow.spec.ts 已更新",
-          "  - 账单管理流程 → 水电费管理流程",
-          "  - /bill/list → /utility/bill",
-          "  - 收款流程 → 缴费流程",
-          "步骤5 完成：feat-031-rental-dto-mapper.spec.ts 已更新",
-          "  - Bills 属性 → UtilityBills 属性",
-          "  - BillDto 命名空间 → UtilityBillDto 命名空间",
-          "E2E 测试验证：14/14 passed",
-          "代码质量符合标准：测试文件结构清晰，断言完整",
-          "无安全风险：纯测试文件删除和更新"
-        ]
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-057",
-      "category": "集成",
-      "module": "统一水电费账单",
+      "id": "FEAT-081",
+      "category": "前端",
+      "module": "待办事项卡片增强",
       "priority": "high",
       "test_type": "e2e",
-      "description": "最终验证",
+      "description": "创建 RentalReminderDialog 组件",
       "acceptance_criteria": [
-        "后端 dotnet build 构建成功",
-        "前端 npm run build 构建成功",
-        "后端 API 正常启动",
-        "前端开发服务器正常启动",
-        "所有剩余 E2E 测试通过"
+        "显示租客、房间、入住信息",
+        "显示宽限次数（可点击查看记录）",
+        "宽限/续租/取消按钮",
+        "弹窗正常显示，信息正确"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "后端构建验证",
-          "file": "Gentle/",
-          "code_hint": "dotnet build"
-        },
-        {
-          "step": 2,
-          "action": "前端构建验证",
-          "file": "Hans/",
-          "code_hint": "npm run build:type && npm run build"
-        },
-        {
-          "step": 3,
-          "action": "启动后端 API",
-          "file": "Gentle/",
-          "code_hint": "dotnet run --project Gentle.Web.Entry"
-        },
-        {
-          "step": 4,
-          "action": "启动前端开发服务器",
-          "file": "Hans/",
-          "code_hint": "npm run dev"
-        },
-        {
-          "step": 5,
-          "action": "运行 E2E 测试",
-          "file": "tests/",
-          "code_hint": "npm run test"
+          "action": "创建 RentalReminderDialog 组件",
+          "file": "Hans/src/pages/dashboard/base/components/RentalReminderDialog.vue",
+          "code_hint": "显示租客信息、宽限次数、三个操作按钮"
         }
       ],
-      "test_file": "tests/e2e/feat-057-final-verification.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T18:00:00Z",
-      "completed_at": "2026-03-29T20:00:00Z",
+      "test_file": "tests/e2e/feat-081-rental-reminder-dialog.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "required_tests": ["backend_build", "frontend_build", "api_startup", "frontend_startup", "e2e_tests"],
-        "verified_at": "2026-03-29T20:00:00Z",
-        "test_result": "6 passed, 3 skipped (需要服务运行)"
-      },
-      "review": {
-        "last_review_at": "2026-03-29T19:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "notes": [
-          "后端构建：0 警告，0 错误",
-          "前端类型检查：通过",
-          "前端完整构建：通过",
-          "Bill 相关文件已完全删除（后端 7 个文件，前端 4 个文件/目录）",
-          "UtilityBill.RentalRecordId 关联正确（实体 + DTO + 前端）",
-          "RentalRecord.UtilityBills 导航属性正确",
-          "前端 UtilityBillStatus 不包含 Merged",
-          "E2E 测试：6/6 通过（3 个跳过需要服务运行）",
-          "Minor 1: 测试断言修复 - 兼容中英文 dotnet build 输出",
-          "代码质量符合标准：无安全风险，纯验证任务"
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-082",
+      "category": "前端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "创建 DeferDialog 组件",
+      "acceptance_criteria": [
+        "日期选择器（最小明天，默认+3天）",
+        "备注输入",
+        "确认/取消按钮",
+        "宽限功能正常，数据正确提交"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 DeferDialog 组件",
+          "file": "Hans/src/pages/dashboard/base/components/DeferDialog.vue",
+          "code_hint": "t-date-picker with min-date, t-textarea, 提交调用 deferReminder API"
+        }
+      ],
+      "test_file": "tests/e2e/feat-082-defer-dialog.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-083",
+      "category": "前端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "创建 RenewRentalDialog 组件",
+      "acceptance_criteria": [
+        "显示租客、房间（只读）",
+        "显示上个租期",
+        "新租期类型选择、新月租金输入、新合同到期日",
+        "合同图片上传、备注输入、押金继承提示",
+        "续租功能正常，新租赁记录创建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 RenewRentalDialog 组件",
+          "file": "Hans/src/pages/dashboard/base/components/RenewRentalDialog.vue",
+          "code_hint": "t-select for leaseType, t-input-number for monthlyRent, t-date-picker for contractEndDate, t-upload for contractImage"
+        }
+      ],
+      "test_file": "tests/e2e/feat-083-renew-rental-dialog.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-084",
+      "category": "前端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "创建 DeferralRecordsDialog 组件",
+      "acceptance_criteria": [
+        "表格显示宽限记录",
+        "按时间倒序排列",
+        "空状态提示",
+        "宽限记录正常显示"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 DeferralRecordsDialog 组件",
+          "file": "Hans/src/pages/dashboard/base/components/DeferralRecordsDialog.vue",
+          "code_hint": "t-table with columns, t-empty for empty state"
+        }
+      ],
+      "test_file": "tests/e2e/feat-084-deferral-records-dialog.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-085",
+      "category": "后端",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "static",
+      "description": "后端单元测试",
+      "acceptance_criteria": [
+        "创建 TodoServiceTests.cs 测试类",
+        "测试 GetTodoListAsync 返回水电费和催收房租待办",
+        "测试 DeferAsync 验证宽限日期",
+        "测试 RenewAsync 创建新租赁记录",
+        "dotnet test 通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 TodoServiceTests 测试类",
+          "file": "Gentle/Gentle.Tests/Services/TodoServiceTests.cs",
+          "code_hint": "[Fact] public async Task GetTodoListAsync_ReturnsUtilityBills() { } [Fact] public async Task DeferAsync_ValidatesDate() { }"
+        }
+      ],
+      "test_file": "tests/e2e/feat-085-todo-service-tests.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-086",
+      "category": "集成",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "集成测试",
+      "acceptance_criteria": [
+        "创建即将到期的租赁记录",
+        "运行定时任务",
+        "验证待办列表显示催收房租",
+        "测试宽限流程",
+        "测试续租流程",
+        "验证原租赁记录状态变更"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建集成测试",
+          "file": "tests/e2e/feat-086-integration-test.spec.ts",
+          "code_hint": "测试完整流程：创建租赁 -> 触发提醒 -> 宽限/续租 -> 验证状态"
+        }
+      ],
+      "test_file": "tests/e2e/feat-086-integration-test.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-087",
+      "category": "集成",
+      "module": "待办事项卡片增强",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "E2E 测试",
+      "acceptance_criteria": [
+        "待办列表显示两种类型",
+        "筛选功能正常",
+        "水电费收款弹窗正常",
+        "催收房租弹窗正常",
+        "宽限功能正常",
+        "续租功能正常",
+        "宽限记录弹窗正常"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 E2E 测试文件",
+          "file": "tests/e2e/feat-087-todo-panel-enhancement.spec.ts",
+          "code_hint": "test('待办列表显示两种类型', async ({ page }) => { }); test('筛选功能正常', async ({ page }) => { });"
+        }
+      ],
+      "test_file": "tests/e2e/feat-087-todo-panel-enhancement.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "required_tests": [
+          "page_load",
+          "filter",
+          "utility_dialog",
+          "rental_dialog",
+          "defer",
+          "renew",
+          "deferral_records"
         ]
       }
     }
