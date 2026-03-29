@@ -17,10 +17,14 @@
   - `git checkout -b feat/todo-panel-enhancement`
 
 - [ ] **Task 0.1: 确认现有枚举和扩展方法**
-  - 确认 `Gentle.Core/Enums/LeaseType.cs` 存在且有 `ToText()` 扩展方法
+  - 确认 `Gentle.Core/Enums/LeaseType.cs` 存在
   - 确认 `Gentle.Core/Enums/RentalStatus.cs` 存在且包含 `Terminated` 值
   - 确认 `Gentle.Core/Enums/UtilityBillStatus.cs` 存在
-  - 如缺少扩展方法，需在 `Gentle.Core/Extensions/EnumExtensions.cs` 中添加
+  - 确认 `Gentle.Core/Enums/RoomStatusExtensions.cs` 存在（提供 `RoomStatus.ToText()`）
+  - **需要创建以下扩展方法文件：**
+    - `Gentle.Core/Enums/LeaseTypeExtensions.cs` - 提供 `LeaseType.ToText()`
+    - `Gentle.Core/Enums/RentalStatusExtensions.cs` - 提供 `RentalStatus.ToText()`
+    - `Gentle.Core/Enums/UtilityBillStatusExtensions.cs` - 提供 `UtilityBillStatus.ToText()`
 
 ---
 
@@ -544,7 +548,7 @@ namespace Gentle.Application.Services;
 /// <summary>
 /// 待办服务实现
 /// </summary>
-public class TodoService : ITodoService
+public class TodoService : ITodoService, ITransient, ITransient
 {
     private readonly IRepository<UtilityBill> _billRepository;
     private readonly IRepository<RentalReminder> _reminderRepository;
@@ -762,7 +766,7 @@ namespace Gentle.Application.Services;
 /// <summary>
 /// 催收提醒服务实现
 /// </summary>
-public class RentalReminderService : IRentalReminderService
+public class RentalReminderService : IRentalReminderService, ITransient
 {
     private readonly IRepository<RentalReminder> _reminderRepository;
     private readonly IRepository<RentalDeferral> _deferralRepository;
