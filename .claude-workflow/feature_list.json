@@ -1338,14 +1338,27 @@
       "started_at": "2026-03-29T17:00:00Z",
       "completed_at": "2026-03-29T17:30:00Z",
       "review": {
-        "last_review_at": "2026-03-29T17:30:00Z",
-        "reviewer": "workflow-review",
+        "last_review_at": "2026-03-30T14:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
         "status": "passed",
         "issues": {
           "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
+          "important": 2,
+          "minor": 2
+        },
+        "important_issues": [
+          "缺少 data-testid 属性用于 E2E 测试",
+          "未使用的 success emit 定义"
+        ],
+        "minor_issues": [
+          "空的 .records-table CSS 规则块",
+          "导入顺序可能需要 lint 修复"
+        ],
+        "fixes_applied": [
+          "添加 data-testid=\"deferral-records-dialog\" 属性",
+          "移除未使用的 success emit 定义",
+          "移除空的 CSS 规则块"
+        ]
       },
       "verification": {
         "e2e_tests_created": true,

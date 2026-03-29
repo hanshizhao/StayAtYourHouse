@@ -1,5 +1,5 @@
 <template>
-  <t-dialog v-model:visible="dialogVisible" header="宽限记录" width="600px" :footer="false">
+  <t-dialog v-model:visible="dialogVisible" header="宽限记录" width="600px" :footer="false" data-testid="deferral-records-dialog">
     <div v-if="loading" class="loading-state">
       <t-loading text="加载中..." />
     </div>
@@ -44,7 +44,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:visible': [value: boolean];
-  success: [];
 }>();
 
 // ==================== 状态 ====================
@@ -98,10 +97,6 @@ watch(
   display: flex;
   justify-content: center;
   padding: 40px 0;
-}
-
-.records-table {
-  // TDesign table styles are handled by the component
 }
 
 .empty-state {
