@@ -74,6 +74,7 @@ const dialogVisible = computed({
 // 计算属性：明天日期
 const tomorrowDate = computed(() => {
   const tomorrow = new Date();
+  tomorrow.setHours(0, 0, 0, 0);
   tomorrow.setDate(tomorrow.getDate() + 1);
   return tomorrow;
 });
@@ -81,8 +82,9 @@ const tomorrowDate = computed(() => {
 // 计算属性：默认宽限日期（明天 + 3 天)
 const defaultDate = computed(() => {
   const date = new Date();
+  date.setHours(0, 0, 0, 0);
   date.setDate(date.getDate() + 4);
-  return date.toISOString().split('T')[0];
+  return date;
 });
 
 // ==================== 监听 ====================
@@ -93,7 +95,7 @@ watch(
   (visible) => {
     if (visible) {
       formData.value = {
-        deferredToDate: defaultDate.value,
+        deferredToDate: defaultDate.value.toISOString().split('T')[0],
         remark: '',
       };
     }
@@ -120,8 +122,8 @@ async function handleConfirm() {
     emit('success');
     dialogVisible.value = false;
   } catch (e: unknown) {
-    const error = e as { message?: string };
-    MessagePlugin.error(error.message || '宽限失败');
+    const errorMessage = e instanceof Error ? e.message : '宽限失败';
+    MessagePlugin.error(errorMessage);
   } finally {
     loading.value = false;
   }
@@ -133,6 +135,3 @@ function handleClose() {
   dialogVisible.value = false;
 }
 </script>
-<style lang="less" scoped>
-// 表单样式由 TDesign 组件处理
-</style>
