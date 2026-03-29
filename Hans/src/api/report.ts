@@ -1,7 +1,7 @@
 // 类型导入说明：
 // - IncomeReport: 当前使用（FEAT-026 收支统计页）
-// - HousingOverview, RoomProfitRanking, CollectionReport: 预留类型（FEAT-027~029 使用）
-import type { CollectionReport, HousingOverview, IncomeReport, RoomProfitRanking } from '@/api/model/reportModel';
+// - HousingOverview, RoomProfitRanking: 预留类型（FEAT-027~028 使用）
+import type { HousingOverview, IncomeReport, RoomProfitRanking } from '@/api/model/reportModel';
 import { request } from '@/utils/request';
 
 /**
@@ -37,20 +37,3 @@ export function getProfitRanking(sortBy?: string, limit?: number) {
   });
 }
 
-/**
- * 获取催收统计报表
- * @param year 年份，默认当前年份
- * @param month 月份（可选，不传则统计全年）
- */
-export function getCollectionReport(year?: number, month?: number) {
-  const yearValue = year ?? new Date().getFullYear();
-  // 如果有月份，使用 /collection-report/{year}/{month} 格式
-  // 否则使用 /collection-report/{year} 格式
-  const url = month
-    ? `/report-app/collection-report/${yearValue}/${month}`
-    : `/report-app/collection-report/${yearValue}`;
-
-  return request.get<CollectionReport>({
-    url,
-  });
-}

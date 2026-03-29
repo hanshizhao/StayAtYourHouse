@@ -46,7 +46,9 @@ test.describe('FEAT-051: RentalRecord 新增 UtilityBills 导航属性', () => {
 
   test('5. 验证编译通过', async () => {
     const result = execSync('dotnet build', { cwd: gentlePath, stdio: 'pipe', timeout: 60000 });
-    expect(result.toString()).toContain('Build succeeded');
+    const output = result.toString();
+    // 支持中文和英文环境
+    expect(output.includes('Build succeeded') || output.includes('已成功生成')).toBe(true);
   });
 
   // API 运行时测试

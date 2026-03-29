@@ -52,6 +52,8 @@ test.describe('FEAT-052: 数据库迁移', () => {
 
   test('4. 验证编译通过', async () => {
     const result = execSync('dotnet build', { cwd: gentlePath, stdio: 'pipe', timeout: 60000 });
-    expect(result.toString()).toContain('Build succeeded');
+    const output = result.toString();
+    // 支持中文和英文环境
+    expect(output.includes('Build succeeded') || output.includes('已成功生成')).toBeTruthy();
   });
 });

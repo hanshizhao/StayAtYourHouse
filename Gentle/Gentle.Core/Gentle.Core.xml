@@ -139,6 +139,11 @@
             房间导航属性
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.UtilityBills">
+            <summary>
+            关联的水电账单集合
+            </summary>
+        </member>
         <member name="P:Gentle.Core.Entities.RentalRecord.CheckInDate">
             <summary>
             入住日期

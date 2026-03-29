@@ -1,3 +1,4 @@
+using Gentle.Application.Dtos.Meter;
 using Gentle.Core.Enums;
 
 namespace Gentle.Application.Dtos.RentalRecord;
@@ -123,4 +124,9 @@ public class RentalRecordDto
     /// 创建时间
     /// </summary>
     public DateTimeOffset CreatedTime { get; set; }
+
+    /// <summary>
+    /// 关联的水电账单集合
+    /// </summary>
+    public List<UtilityBillDto>? UtilityBills { get; set; }
 }

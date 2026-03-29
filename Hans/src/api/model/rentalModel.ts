@@ -1,4 +1,4 @@
-import type { BillItem } from '@/api/model/billModel';
+import type { UtilityBillItem } from '@/api/model/meterModel';
 
 /**
  * 租期类型枚举
@@ -105,8 +105,8 @@ export interface RentalRecordDto {
   remark?: string;
   checkOutRemark?: string;
   createdTime: string;
-  /** 关联账单列表 */
-  bills?: BillItem[];
+  /** 关联水电账单列表 */
+  utilityBills?: UtilityBillItem[];
 }
 
 /**

@@ -503,11 +503,15 @@
         }
       ],
       "test_file": "tests/e2e/feat-051-rental-utility-bills-nav.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "started_at": "2026-03-29T23:30:00Z",
+      "completed_at": "2026-03-30T00:00:00Z",
       "verification": {
         "api_routes_checked": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-30T00:00:00Z",
+        "test_result": "5/5 passed (1 skipped)"
       }
     },
     {
@@ -544,10 +548,39 @@
         }
       ],
       "test_file": "tests/e2e/feat-052-database-migration.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "started_at": "2026-03-29T23:30:00Z",
+      "completed_at": "2026-03-30T01:30:00Z",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-30T01:30:00Z",
+        "test_result": "4/4 passed"
+      },
+      "review": {
+        "last_review_at": "2026-03-30T01:00:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "notes": [
+          "迁移文件 Up 方法：6 个步骤全部正确",
+          "1. UPDATE utility_bill SET Status = 1 WHERE Status = 2 - 标准 SQL，正确",
+          "2. DROP TABLE IF EXISTS collection_record - MySQL 5.7+ 支持，正确",
+          "3. DROP TABLE IF EXISTS bill - MySQL 5.7+ 支持，正确",
+          "4. 添加 RentalRecordId 列（条件执行）- PREPARE/EXECUTE stmt 模式正确",
+          "5. 添加索引（条件执行）- PREPARE/EXECUTE stmt 模式正确",
+          "6. 添加外键约束（条件执行）- PREPARE/EXECUTE stmt 模式正确",
+          "Down 方法：使用 IF EXISTS 语法，MySQL 8.0+ 支持，正确",
+          "实体与迁移一致性：UtilityBill.RentalRecordId (int?) 与数据库 INT NULL 一致",
+          "安全性：无 SQL 注入风险，所有值都是静态的",
+          "数据迁移逻辑：status = 2 (Merged) 改为 status = 1 (Paid) 符合业务逻辑",
+          "dotnet build: 构建成功（0 警告，0 错误）",
+          "代码质量符合标准，可以进入 workflow-verify 阶段"
+        ]
       }
     },
     {
@@ -591,10 +624,36 @@
         }
       ],
       "test_file": "tests/e2e/feat-053-delete-frontend-bill.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "started_at": "2026-03-29T18:00:00Z",
+      "completed_at": "2026-03-30T02:00:00Z",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-30T02:00:00Z",
+        "test_result": "5/5 passed"
+      },
+      "review": {
+        "last_review_at": "2026-03-29T19:00:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "notes": [
+          "删除操作正确完成：Hans/src/pages/bill/, Hans/src/api/bill.ts, Hans/src/api/model/billModel.ts, Hans/src/router/modules/bill.ts",
+          "rentalModel.ts: 已删除 BillItem 引用，新增 UtilityBillItem 引用，类型定义正确",
+          "reportModel.ts: 已删除 CollectionReport、OverdueBillInfo、GraceBillInfo 类型，保留正确的 IncomeReport、HousingOverview、RoomProfitRanking 类型",
+          "report.ts: 已删除 getTodayTodos API 和催收报表相关代码，保留正确的收支统计 API",
+          "report.ts 路由: 已删除催收统计路由，保留收支统计、房源概览、利润排行路由",
+          "npm run build:type: 编译失败符合预期（3 个错误）",
+          "  - TodoPanel.vue:178-179 - 仍引用 @/api/bill 和 @/api/model/billModel（FEAT-054/055 范围）",
+          "  - rental/index.vue:113 - 仍引用 BillStatus（FEAT-054 范围）",
+          "这些编译错误将在 FEAT-054 和 FEAT-055 中清理",
+          "无安全风险：纯删除操作，无新代码引入"
+        ]
       }
     },
     {

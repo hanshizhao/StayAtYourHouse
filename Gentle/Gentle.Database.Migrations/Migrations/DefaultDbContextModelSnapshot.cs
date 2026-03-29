@@ -19,106 +19,6 @@ namespace Gentle.Database.Migrations.Migrations
                 .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Gentle.Core.Entities.Bill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal?>("ElectricFee")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("GraceUntil")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal?>("PaidAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime?>("PaidDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("PeriodEnd")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("PeriodStart")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Remark")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<decimal>("RentAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("RentalRecordId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTimeOffset?>("UpdatedTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<decimal?>("WaterFee")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RentalRecordId");
-
-                    b.ToTable("bill", (string)null);
-                });
-
-            modelBuilder.Entity("Gentle.Core.Entities.CollectionRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("BillId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CollectDate")
-                        .HasColumnType("date");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<DateTime?>("GraceUntil")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Remark")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<int>("Result")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTimeOffset?>("UpdatedTime")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BillId");
-
-                    b.ToTable("collection_record", (string)null);
-                });
-
             modelBuilder.Entity("Gentle.Core.Entities.Community", b =>
                 {
                     b.Property<int>("Id")
@@ -126,8 +26,7 @@ namespace Gentle.Database.Migrations.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetime");
@@ -138,21 +37,70 @@ namespace Gentle.Database.Migrations.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<string>("PropertyPhone")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Remark")
                         .HasColumnType("longtext");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("char(36)");
 
                     b.Property<DateTimeOffset?>("UpdatedTime")
                         .HasColumnType("datetime");
 
                     b.HasKey("Id");
 
-                    b.ToTable("community", (string)null);
+                    b.ToTable("Community");
+                });
+
+            modelBuilder.Entity("Gentle.Core.Entities.MeterRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal>("ElectricFee")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("ElectricReading")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ElectricUsage")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("MeterDate")
+                        .HasColumnType("date");
+
+                    b.Property<decimal>("PrevElectricReading")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PrevWaterReading")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Remark")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("UpdatedTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<decimal>("WaterFee")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("WaterReading")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("WaterUsage")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("meter_record");
                 });
 
             modelBuilder.Entity("Gentle.Core.Entities.RentalRecord", b =>
@@ -205,9 +153,6 @@ namespace Gentle.Database.Migrations.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("char(36)");
-
                     b.Property<DateTimeOffset?>("UpdatedTime")
                         .HasColumnType("datetime");
 
@@ -217,7 +162,7 @@ namespace Gentle.Database.Migrations.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("rental_record", (string)null);
+                    b.ToTable("rental_record");
                 });
 
             modelBuilder.Entity("Gentle.Core.Entities.Room", b =>
@@ -231,8 +176,7 @@ namespace Gentle.Database.Migrations.Migrations
 
                     b.Property<string>("Building")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("CommunityId")
                         .HasColumnType("int");
@@ -260,18 +204,13 @@ namespace Gentle.Database.Migrations.Migrations
 
                     b.Property<string>("RoomNumber")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("RoomType")
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("char(36)");
 
                     b.Property<DateTimeOffset?>("UpdatedTime")
                         .HasColumnType("datetime");
@@ -283,10 +222,10 @@ namespace Gentle.Database.Migrations.Migrations
 
                     b.HasIndex("CommunityId");
 
-                    b.ToTable("room", (string)null);
+                    b.ToTable("Room");
                 });
 
-            modelBuilder.Entity("Gentle.Core.Entities.MeterRecord", b =>
+            modelBuilder.Entity("Gentle.Core.Entities.Tenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -295,48 +234,82 @@ namespace Gentle.Database.Migrations.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("ElectricFee")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<string>("EmergencyContact")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<decimal>("ElectricReading")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("ElectricUsage")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("IdCard")
+                        .HasMaxLength(18)
+                        .HasColumnType("varchar(18)");
 
-                    b.Property<DateTime>("MeterDate")
-                        .HasColumnType("date");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<decimal>("PrevElectricReading")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("PrevWaterReading")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Remark")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTimeOffset?>("UpdatedTime")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("WaterFee")
-                        .HasColumnType("decimal(10,2)");
+                    b.HasKey("Id");
 
-                    b.Property<decimal>("WaterReading")
-                        .HasColumnType("decimal(18,2)");
+                    b.ToTable("Tenant");
+                });
 
-                    b.Property<decimal>("WaterUsage")
-                        .HasColumnType("decimal(18,2)");
+            modelBuilder.Entity("Gentle.Core.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("LastLoginTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset?>("UpdatedTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomId");
+                    b.ToTable("User");
 
-                    b.ToTable("meter_record", (string)null);
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedTime = new DateTimeOffset(new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 8, 0, 0, 0)),
+                            DisplayName = "管理员",
+                            IsEnabled = true,
+                            PasswordHash = "$2a$11$Apk.iF7ilohOOHXfF0jIY.rkJlO3x1IAqrsdnO2wi4KQsqFXhobQa",
+                            Username = "zhs"
+                        });
                 });
 
             modelBuilder.Entity("Gentle.Core.Entities.UtilityBill", b =>
@@ -376,6 +349,9 @@ namespace Gentle.Database.Migrations.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
 
+                    b.Property<int?>("RentalRecordId")
+                        .HasColumnType("int");
+
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
 
@@ -401,127 +377,22 @@ namespace Gentle.Database.Migrations.Migrations
                     b.HasIndex("MeterRecordId")
                         .IsUnique();
 
+                    b.HasIndex("RentalRecordId");
+
                     b.HasIndex("RoomId");
 
-                    b.ToTable("utility_bill", (string)null);
+                    b.ToTable("utility_bill");
                 });
 
-            modelBuilder.Entity("Gentle.Core.Entities.Tenant", b =>
+            modelBuilder.Entity("Gentle.Core.Entities.MeterRecord", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("EmergencyContact")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdCard")
-                        .HasMaxLength(18)
-                        .HasColumnType("varchar(18)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("Remark")
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTimeOffset?>("UpdatedTime")
-                        .HasColumnType("datetime");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tenant", (string)null);
-                });
-
-            modelBuilder.Entity("Gentle.Core.Entities.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<bool>("IsEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("LastLoginTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTimeOffset?>("UpdatedTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("user", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedTime = new DateTimeOffset(new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 8, 0, 0, 0)),
-                            DisplayName = "管理员",
-                            IsEnabled = true,
-                            PasswordHash = "$2a$11$sezJHIDHouppe6smmsZVuOj/WkFyvYN5UUNFzOwVr02RaWZeLGHla",
-                            Username = "zhs"
-                        });
-                });
-
-            modelBuilder.Entity("Gentle.Core.Entities.Bill", b =>
-                {
-                    b.HasOne("Gentle.Core.Entities.RentalRecord", "RentalRecord")
-                        .WithMany("Bills")
-                        .HasForeignKey("RentalRecordId")
+                    b.HasOne("Gentle.Core.Entities.Room", "Room")
+                        .WithMany("MeterRecords")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("RentalRecord");
-                });
-
-            modelBuilder.Entity("Gentle.Core.Entities.CollectionRecord", b =>
-                {
-                    b.HasOne("Gentle.Core.Entities.Bill", "Bill")
-                        .WithMany("CollectionRecords")
-                        .HasForeignKey("BillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Bill");
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Gentle.Core.Entities.RentalRecord", b =>
@@ -554,29 +425,21 @@ namespace Gentle.Database.Migrations.Migrations
                     b.Navigation("Community");
                 });
 
-            modelBuilder.Entity("Gentle.Core.Entities.MeterRecord", b =>
-                {
-                    b.HasOne("Gentle.Core.Entities.Room", "Room")
-                        .WithMany("MeterRecords")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Room");
-                });
-
             modelBuilder.Entity("Gentle.Core.Entities.UtilityBill", b =>
                 {
                     b.HasOne("Gentle.Core.Entities.Tenant", "BillTenant")
                         .WithMany()
-                        .HasForeignKey("BillTenantId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("BillTenantId");
 
                     b.HasOne("Gentle.Core.Entities.MeterRecord", "MeterRecord")
                         .WithOne("UtilityBill")
                         .HasForeignKey("Gentle.Core.Entities.UtilityBill", "MeterRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Gentle.Core.Entities.RentalRecord", "RentalRecord")
+                        .WithMany("UtilityBills")
+                        .HasForeignKey("RentalRecordId");
 
                     b.HasOne("Gentle.Core.Entities.Room", "Room")
                         .WithMany("UtilityBills")
@@ -588,17 +451,19 @@ namespace Gentle.Database.Migrations.Migrations
 
                     b.Navigation("MeterRecord");
 
+                    b.Navigation("RentalRecord");
+
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("Gentle.Core.Entities.Bill", b =>
+            modelBuilder.Entity("Gentle.Core.Entities.MeterRecord", b =>
                 {
-                    b.Navigation("CollectionRecords");
+                    b.Navigation("UtilityBill");
                 });
 
             modelBuilder.Entity("Gentle.Core.Entities.RentalRecord", b =>
                 {
-                    b.Navigation("Bills");
+                    b.Navigation("UtilityBills");
                 });
 
             modelBuilder.Entity("Gentle.Core.Entities.Room", b =>
@@ -606,11 +471,6 @@ namespace Gentle.Database.Migrations.Migrations
                     b.Navigation("MeterRecords");
 
                     b.Navigation("UtilityBills");
-                });
-
-            modelBuilder.Entity("Gentle.Core.Entities.MeterRecord", b =>
-                {
-                    b.Navigation("UtilityBill");
                 });
 #pragma warning restore 612, 618
         }

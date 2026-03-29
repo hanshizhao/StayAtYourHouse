@@ -71,6 +71,11 @@ public class RentalRecord : Entity<int>, IEntitySeedData<RentalRecord>
     public Room Room { get; set; } = null!;
 
     /// <summary>
+    /// 关联的水电账单集合
+    /// </summary>
+    public ICollection<UtilityBill> UtilityBills { get; set; } = new List<UtilityBill>();
+
+    /// <summary>
     /// 入住日期
     /// </summary>
     [Required(ErrorMessage = "入住日期不能为空")]

@@ -971,6 +971,11 @@
             创建时间
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.UtilityBills">
+            <summary>
+            关联的水电账单集合
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.RentalRecord.RentalRecordListResult">
             <summary>
             租住记录分页结果
