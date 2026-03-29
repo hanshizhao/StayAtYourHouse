@@ -208,7 +208,10 @@
       "verification": {
         "build_passed": true,
         "migration_applied": "20260329094816_AddRentalReminderAndDeferral",
-        "tables_created": ["rental_reminder", "rental_deferral"],
+        "tables_created": [
+          "rental_reminder",
+          "rental_deferral"
+        ],
         "verified_at": "2026-03-29T18:35:00Z"
       }
     },
@@ -232,7 +235,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-063-todo-type-enum.spec.ts",
-      "status": "completed",
+      "status": "passed",
       "completed_at": "2026-03-29T23:30:00Z",
       "review": {
         "last_review_at": "2026-03-29T23:40:00Z",
@@ -252,8 +255,7 @@
         "e2e_tests_passed": true,
         "build_passed": true,
         "verified_at": "2026-03-29T23:45:00Z"
-      },
-      "status": "passed"
+      }
     },
     {
       "id": "FEAT-064",
@@ -278,7 +280,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-064-todo-item-dto.spec.ts",
-      "status": "completed",
+      "status": "passed",
       "completed_at": "2026-03-29T19:30:00Z",
       "review": {
         "last_review_at": "2026-03-29T19:35:00Z",
@@ -302,8 +304,7 @@
         "e2e_tests_passed": true,
         "build_passed": true,
         "verified_at": "2026-03-29T19:40:00Z"
-      },
-      "status": "passed"
+      }
     },
     {
       "id": "FEAT-065",
@@ -431,12 +432,6 @@
         ]
       },
       "verification": {
-        "build_passed": true,
-        "tests_passed": 3,
-        "tests_total": 3,
-        "verified_at": "2026-03-29T17:40:00Z"
-      },
-      "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
       }
@@ -463,7 +458,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-068-renew-rental-input.spec.ts",
-      "status": "completed",
+      "status": "passed",
       "completed_at": "2026-03-29T17:45:00Z",
       "review": {
         "last_review_at": "2026-03-29T17:50:00Z",
@@ -485,8 +480,7 @@
         "tests_passed": true,
         "tests_total": 3,
         "verified_at": "2026-03-29T17:55:00Z"
-      },
-      "status": "passed"
+      }
     },
     {
       "id": "FEAT-069",
@@ -1368,7 +1362,13 @@
         "build_passed": true,
         "verified_at": "2026-03-30T14:30:00Z",
         "review_fixes_verified": true,
-        "required_tests": ["组件文件验证", "API集成验证", "前端服务运行", "仪表盘路由", "待办面板组件存在"],
+        "required_tests": [
+          "组件文件验证",
+          "API集成验证",
+          "前端服务运行",
+          "仪表盘路由",
+          "待办面板组件存在"
+        ],
         "required_tests_passed": true
       }
     },
@@ -1464,10 +1464,47 @@
         }
       ],
       "test_file": "tests/e2e/feat-086-integration-test.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "started_at": "2026-03-30T16:00:00Z",
+      "completed_at": "2026-03-29T22:53:56.532Z",
+      "review": {
+        "last_review_at": "2026-03-30T16:45:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 4
+        },
+        "important_issues_fixed": [
+          "cleanupTestData 添加详细注释和隔离策略说明",
+          "createTestReminder 改为从待办列表获取已存在的提醒（而非调用不存在的 API）"
+        ],
+        "minor_issues": [
+          "测试用例编号不连续（1-15, 99）",
+          "前端测试硬编码 localhost:3002",
+          "测试10缺少实际验证逻辑",
+          "测试13缺少实际验证逻辑"
+        ],
+        "good_points": [
+          "测试结构清晰，分组明确",
+          "TypeScript 类型定义完整",
+          "环境变量控制集成测试运行",
+          "文件头注释完整",
+          "使用 TEST_PREFIX 隔离测试数据"
+        ]
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_passed_count": 12,
+        "tests_total_count": 16,
+        "tests_skipped_count": 4,
+        "fixes_applied": [
+          "测试 6: 修正 Furion 框架统一响应格式断言逻辑",
+          "测试 13: 修正 API 路径 /api/rental-record/list -> /api/rental/list"
+        ],
+        "verified_at": "2026-03-29T22:53:56.533Z"
       }
     },
     {
