@@ -69,9 +69,7 @@
         <div class="occupancy-section" data-testid="occupancy-section">
           <div class="occupancy-header">
             <span class="occupancy-label">整体出租率</span>
-            <span class="occupancy-value" data-testid="occupancy-rate">{{
-              reportData.occupancyRate.toFixed(1)
-            }}%</span>
+            <span class="occupancy-value" data-testid="occupancy-rate">{{ reportData.occupancyRate.toFixed(1) }}%</span>
           </div>
           <t-progress
             :percentage="reportData.occupancyRate"
@@ -84,7 +82,7 @@
         <!-- 小区统计 -->
         <div class="community-stats">
           <h3 class="section-title">小区统计</h3>
-          <div class="table-wrapper" data-testid="community-table-wrapper" v-if="reportData.communityStats.length > 0">
+          <div v-if="reportData.communityStats.length > 0" class="table-wrapper" data-testid="community-table-wrapper">
             <t-table
               :data="reportData.communityStats"
               :columns="communityColumns"
@@ -123,7 +121,7 @@
         </div>
 
         <!-- 空置房源列表 -->
-        <div class="vacant-rooms" v-if="reportData.vacantRooms.length > 0">
+        <div v-if="reportData.vacantRooms.length > 0" class="vacant-rooms">
           <h3 class="section-title">
             空置房源
             <span class="vacant-count">（{{ reportData.vacantRooms.length }} 间）</span>

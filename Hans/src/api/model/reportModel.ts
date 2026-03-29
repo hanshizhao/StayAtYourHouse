@@ -105,4 +105,3 @@ export interface RoomProfitRanking {
   /** 年利润 */
   yearlyProfit: number;
 }
-

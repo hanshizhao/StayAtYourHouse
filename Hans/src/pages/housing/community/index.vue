@@ -133,12 +133,7 @@
     </t-dialog>
 
     <!-- 房间列表对话框 -->
-    <t-dialog
-      v-model:visible="roomDialogVisible"
-      :header="roomDialogTitle"
-      width="700px"
-      :footer="false"
-    >
+    <t-dialog v-model:visible="roomDialogVisible" :header="roomDialogTitle" width="700px" :footer="false">
       <t-table
         :data="roomList"
         :columns="roomColumns"
@@ -158,10 +153,10 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
 import { createCommunity, deleteCommunity, getCommunityList, updateCommunity } from '@/api/community';
-import { getRoomList } from '@/api/room';
 import type { CommunityItem } from '@/api/model/communityModel';
-import { RoomStatusText } from '@/api/model/roomModel';
 import type { RoomItem } from '@/api/model/roomModel';
+import { RoomStatusText } from '@/api/model/roomModel';
+import { getRoomList } from '@/api/room';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
 import { formatDateTime } from '@/utils/date';
@@ -252,7 +247,12 @@ const roomColumns: PrimaryTableCol[] = [
   { colKey: 'roomNumber', title: '房间号', width: 100 },
   { colKey: 'roomType', title: '类型', width: 120 },
   { colKey: 'rentPrice', title: '租金', width: 100 },
-  { colKey: 'status', title: '状态', width: 80, cell: (h: any, { row }: any) => RoomStatusText[(row as RoomItem).status] || '未知' },
+  {
+    colKey: 'status',
+    title: '状态',
+    width: 80,
+    cell: (h: any, { row }: any) => RoomStatusText[(row as RoomItem).status] || '未知',
+  },
 ];
 
 // 过滤数据

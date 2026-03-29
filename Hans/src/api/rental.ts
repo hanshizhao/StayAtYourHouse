@@ -1,4 +1,10 @@
-import type { CheckInInput, CheckOutInput, RentalPageParams, RentalPageResult, RentalRecordDto } from '@/api/model/rentalModel';
+import type {
+  CheckInInput,
+  CheckOutInput,
+  RentalPageParams,
+  RentalPageResult,
+  RentalRecordDto,
+} from '@/api/model/rentalModel';
 import { request } from '@/utils/request';
 
 const Api = {

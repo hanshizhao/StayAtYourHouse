@@ -36,4 +36,3 @@ export function getProfitRanking(sortBy?: string, limit?: number) {
     url: `/report-app/profit-ranking/${sortByValue}/${limitValue}`,
   });
 }
-
