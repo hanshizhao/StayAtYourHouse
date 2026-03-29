@@ -1,5 +1,6 @@
 using Gentle.Core.Enums;
 using Gentle.Application.Dtos.Meter;
+using Gentle.Application.Dtos.Rental;
 
 namespace Gentle.Application.Dtos.Todo;
 
@@ -70,10 +71,7 @@ public class TodoItemDto
     /// <summary>
     /// 催收提醒详情（催收房租专用）
     /// </summary>
-    /// <remarks>
-    /// TODO: FEAT-066 完成后替换为 RentalReminderDto 类型
-    /// </remarks>
-    public object? RentalReminder { get; set; }
+    public RentalReminderDto? RentalReminder { get; set; }
 
     #endregion
 }

@@ -1001,6 +1001,74 @@
             每页数量
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Rental.RentalReminderDto">
+            <summary>
+            催收提醒 DTO
+            </summary>
+            <remarks>
+            用于前端显示催收房租待办信息。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.Id">
+            <summary>
+            提醒ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.RentalRecordId">
+            <summary>
+            租赁记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.RoomInfo">
+            <summary>
+            房间信息（小区+楼栋+房间号）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.TenantName">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.MonthlyRent">
+            <summary>
+            月租金（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.ContractEndDate">
+            <summary>
+            合同到期日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.ReminderDate">
+            <summary>
+            提醒日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.Status">
+            <summary>
+            提醒状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.StatusText">
+            <summary>
+            提醒状态文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.DeferralCount">
+            <summary>
+            宽限次数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RentalReminderDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Report.HousingOverviewDto">
             <summary>
             房源概览统计
@@ -1808,9 +1876,34 @@
             <summary>
             催收提醒详情（催收房租专用）
             </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Todo.TodoListResult">
+            <summary>
+            待办事项列表结果
+            </summary>
             <remarks>
-            TODO: FEAT-066 完成后替换为 RentalReminderDto 类型
+            包含水电费和催收房租待办的聚合列表结果。
             </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoListResult.Items">
+            <summary>
+            待办事项列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoListResult.Total">
+            <summary>
+            待办总数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoListResult.UtilityCount">
+            <summary>
+            水电费待办数量
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoListResult.RentalCount">
+            <summary>
+            催收房租待办数量
+            </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.User.CreateUserInput">
             <summary>

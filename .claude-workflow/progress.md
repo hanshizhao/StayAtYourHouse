@@ -34,7 +34,7 @@
 | FEAT-063 | 创建待办类型枚举 TodoType | ✅ 已通过 | ✅ 通过 |
 | FEAT-064 | 创建 TodoItemDto | ✅ 已通过 |
 | FEAT-065 | 创建 TodoListResult | ✅ 已通过 | ✅ 通过 |
-| FEAT-066 | 创建 RentalReminderDto | ⏳ 待开始 |
+| FEAT-066 | 创建 RentalReminderDto | ✅ 已通过 | ✅ 通过 |
 | FEAT-067 | 创建 DeferReminderInput | ⏳ 待开始 |
 | FEAT-068 | 创建 RenewRentalInput | ⏳ 待开始 |
 | FEAT-069 | 创建 DeferralRecordDto | ⏳ 待开始 |
@@ -117,3 +117,5 @@
 - FEAT-064 验证通过：创建 TodoItemDto，统一水电费和催收房租待办数据结构
 - FEAT-065 代码实现完成：创建 TodoListResult，包含 Items/Total/UtilityCount/RentalCount 属性
 - FEAT-065 验证通过：静态测试 3/3 passed
+- FEAT-066 代码实现完成：创建 RentalReminderDto，包含催收提醒所需属性
+- FEAT-066 验证通过：静态测试 3/3 passed
