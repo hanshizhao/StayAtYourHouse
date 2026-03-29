@@ -2005,6 +2005,14 @@
             催收提醒详情（催收房租专用）
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.CreatedTime">
+            <summary>
+            统一的创建时间（用于排序）
+            </summary>
+            <remarks>
+            水电费待办返回 UtilityBill.CreatedTime，催收房租待办返回 RentalReminder.CreatedTime。
+            </remarks>
+        </member>
         <member name="T:Gentle.Application.Dtos.Todo.TodoListResult">
             <summary>
             待办事项列表结果
@@ -2544,6 +2552,42 @@
         </member>
         <member name="M:Gentle.Application.Services.TenantService.DeleteAsync(System.Int32)">
             <inheritdoc />
+        </member>
+        <member name="T:Gentle.Application.Services.TodoService">
+            <summary>
+            待办事项服务实现
+            </summary>
+            <remarks>
+            聚合水电费和催收房租待办事项的服务实现。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Services.TodoService.#ctor(Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.UtilityBill},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalReminder},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalRecord})">
+            <summary>
+            初始化待办事项服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.TodoService.GetTodoListAsync(System.String,System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.TodoService.GetUtilityBillTodosAsync">
+            <summary>
+            获取水电费待办列表
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.TodoService.GetRentalReminderTodosAsync">
+            <summary>
+            获取催收房租待办列表
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.TodoService.MapFromUtilityBill(Gentle.Core.Entities.UtilityBill)">
+            <summary>
+            将水电账单映射为待办项 DTO
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.TodoService.MapFromRentalReminder(Gentle.Core.Entities.RentalReminder)">
+            <summary>
+            将催收提醒映射为待办项 DTO
+            </summary>
         </member>
     </members>
 </doc>

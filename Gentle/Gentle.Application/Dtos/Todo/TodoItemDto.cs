@@ -74,4 +74,14 @@ public class TodoItemDto
     public RentalReminderDto? RentalReminder { get; set; }
 
     #endregion
+
+    /// <summary>
+    /// 统一的创建时间（用于排序）
+    /// </summary>
+    /// <remarks>
+    /// 水电费待办返回 UtilityBill.CreatedTime，催收房租待办返回 RentalReminder.CreatedTime。
+    /// </remarks>
+    public DateTimeOffset CreatedTime => Type == TodoType.Utility
+        ? UtilityBill?.CreatedTime ?? DateTimeOffset.MinValue
+        : RentalReminder?.CreatedTime ?? DateTimeOffset.MinValue;
 }

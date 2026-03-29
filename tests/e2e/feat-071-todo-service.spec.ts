@@ -14,9 +14,14 @@ test.describe('FEAT-071: 创建 TodoService 实现', () => {
     expect(fs.existsSync(servicePath)).toBeTruthy();
   });
 
-  test('2. 验证服务实现 ITransient', async () => {
+  test('2. 验证服务实现 ITodoService', async () => {
     const content = fs.readFileSync(servicePath, 'utf-8');
     expect(content).toContain(': ITodoService');
+  });
+
+  test('2.1 验证接口继承 ITransient', async () => {
+    const interfacePath = path.join(projectRoot, 'Gentle/Gentle.Application/Services/ITodoService.cs');
+    const content = fs.readFileSync(interfacePath, 'utf-8');
     expect(content).toContain('ITransient');
   });
 
