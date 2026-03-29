@@ -307,7 +307,7 @@ namespace Gentle.Database.Migrations.Migrations
                             CreatedTime = new DateTimeOffset(new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 8, 0, 0, 0)),
                             DisplayName = "管理员",
                             IsEnabled = true,
-                            PasswordHash = "$2a$11$Apk.iF7ilohOOHXfF0jIY.rkJlO3x1IAqrsdnO2wi4KQsqFXhobQa",
+                            PasswordHash = "$2a$11$jJoUNJ0hN/g0UjgEwNszkOKIkoQxPcGGgn8fE1wPZltGx4gIYNVkS",
                             Username = "zhs"
                         });
                 });

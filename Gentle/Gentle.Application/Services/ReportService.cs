@@ -43,17 +43,16 @@ public class ReportService : IReportService
             .Where(b => b.Status == UtilityBillStatus.Paid && b.PaidDate >= yearStart && b.PaidDate <= yearEnd)
             .ToListAsync();
 
-        // 计算年度总支出（成本）
-        // 获取所有活跃租住记录关联的房间成本
-        var activeRentals = await _rentalRecordRepository
+        // 获取所有相关租住记录（用于计算租金收入、押金收入和成本）
+        var relevantRentals = await _rentalRecordRepository
             .AsQueryable(false)
             .Include(r => r.Room)
             .Where(r => r.CheckInDate <= yearEnd && (r.CheckOutDate == null || r.CheckOutDate >= yearStart))
             .ToListAsync();
 
-        // 按月计算成本（简化计算：每个活跃租住记录按月计算成本）
+        // 按月计算成本
         var monthlyExpenses = new decimal[12];
-        foreach (var rental in activeRentals)
+        foreach (var rental in relevantRentals)
         {
             var startMonth = Math.Max(1, rental.CheckInDate.Month);
             var endMonth = rental.CheckOutDate?.Month ?? 12;
@@ -67,15 +66,40 @@ public class ReportService : IReportService
             }
         }
 
-        // 按月汇总收入（租金收入归零，因为 Bill 实体已删除）
+        // 按月计算租金收入（每月统计活跃租约的月租金）
+        var monthlyRentIncomes = new decimal[12];
+        foreach (var rental in relevantRentals)
+        {
+            var startMonth = Math.Max(1, rental.CheckInDate.Month);
+            var endMonth = rental.CheckOutDate?.Month ?? 12;
+
+            if (rental.CheckInDate.Year < year) startMonth = 1;
+            if (rental.CheckOutDate == null || rental.CheckOutDate.Value.Year > year) endMonth = 12;
+
+            for (var m = startMonth; m <= endMonth; m++)
+            {
+                monthlyRentIncomes[m - 1] += rental.MonthlyRent;
+            }
+        }
+
+        // 按月计算押金收入（仅在入住月份计入，且押金状态为已收）
+        var monthlyDepositIncomes = new decimal[12];
+        foreach (var rental in relevantRentals)
+        {
+            // 只有在当前年份入住且押金已收的记录才计入
+            if (rental.CheckInDate.Year == year && rental.DepositStatus == DepositStatus.Received)
+            {
+                var checkInMonth = rental.CheckInDate.Month;
+                monthlyDepositIncomes[checkInMonth - 1] += rental.Deposit;
+            }
+        }
+
+        // 按月汇总
         var monthlyDetails = new List<MonthlyIncomeDto>();
         for (var month = 1; month <= 12; month++)
         {
             var monthStart = new DateTime(year, month, 1);
             var monthEnd = monthStart.AddMonths(1).AddDays(-1);
-
-            // 租金收入归零（Bill 实体已删除，后续将通过新的统一账单体系实现）
-            var rentIncome = 0m;
 
             var utilityIncome = paidUtilityBills
                 .Where(b => b.PaidDate >= monthStart && b.PaidDate <= monthEnd)
@@ -84,8 +108,9 @@ public class ReportService : IReportService
             monthlyDetails.Add(new MonthlyIncomeDto
             {
                 Month = month,
-                RentIncome = rentIncome,
+                RentIncome = monthlyRentIncomes[month - 1],
                 UtilityIncome = utilityIncome,
+                DepositIncome = monthlyDepositIncomes[month - 1],
                 Expense = monthlyExpenses[month - 1]
             });
         }
@@ -93,8 +118,9 @@ public class ReportService : IReportService
         return new IncomeReportDto
         {
             Year = year,
-            TotalRentIncome = 0m, // 租金收入归零（Bill 实体已删除）
+            TotalRentIncome = monthlyRentIncomes.Sum(),
             TotalUtilityIncome = paidUtilityBills.Sum(b => b.PaidAmount ?? b.TotalAmount),
+            TotalDepositIncome = monthlyDepositIncomes.Sum(),
             TotalExpense = monthlyExpenses.Sum(),
             MonthlyDetails = monthlyDetails
         };

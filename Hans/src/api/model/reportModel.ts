@@ -12,7 +12,9 @@ export interface MonthlyIncome {
   rentIncome: number;
   /** 水电费收入 */
   utilityIncome: number;
-  /** 总收入 */
+  /** 押金收入（不计入净利润） */
+  depositIncome: number;
+  /** 总收入（不含押金） */
   totalIncome: number;
   /** 支出（成本） */
   expense: number;
@@ -28,7 +30,9 @@ export interface IncomeReport {
   totalRentIncome: number;
   /** 年度水电费总收入 */
   totalUtilityIncome: number;
-  /** 年度总收入 */
+  /** 年度押金收入（不计入净利润） */
+  totalDepositIncome: number;
+  /** 年度总收入（不含押金） */
   totalIncome: number;
   /** 年度总支出（成本） */
   totalExpense: number;

@@ -21,7 +21,12 @@ public class IncomeReportDto
     public decimal TotalUtilityIncome { get; set; }
 
     /// <summary>
-    /// 年度总收入
+    /// 年度押金收入（不计入净利润）
+    /// </summary>
+    public decimal TotalDepositIncome { get; set; }
+
+    /// <summary>
+    /// 年度总收入（用于净利润计算，不含押金）
     /// </summary>
     public decimal TotalIncome => TotalRentIncome + TotalUtilityIncome;
 
@@ -67,7 +72,12 @@ public class MonthlyIncomeDto
     public decimal UtilityIncome { get; set; }
 
     /// <summary>
-    /// 总收入
+    /// 押金收入（不计入净利润）
+    /// </summary>
+    public decimal DepositIncome { get; set; }
+
+    /// <summary>
+    /// 总收入（用于净利润计算，不含押金）
     /// </summary>
     public decimal TotalIncome => RentIncome + UtilityIncome;
 
