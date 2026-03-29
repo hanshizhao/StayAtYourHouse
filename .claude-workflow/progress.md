@@ -31,7 +31,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-063 | 创建待办类型枚举 TodoType | ⏳ 待开始 |
+| FEAT-063 | 创建待办类型枚举 TodoType | ✅ 已通过 | ✅ 通过 |
 | FEAT-064 | 创建 TodoItemDto | ⏳ 待开始 |
 | FEAT-065 | 创建 TodoListResult | ⏳ 待开始 |
 | FEAT-066 | 创建 RentalReminderDto | ⏳ 待开始 |
@@ -89,9 +89,9 @@
 
 ## 统计
 
-- **已完成**: 5/30 (17%)
+- **已完成**: 6/30 (20%)
 - **进行中**: 0
-- **待处理**: 25
+- **待处理**: 24
 
 ## 状态说明
 
@@ -113,3 +113,4 @@
 - FEAT-060 验证通过：创建 RentalDeferral 实体
 - FEAT-061 验证通过：创建数据库迁移
 - FEAT-062 验证通过：执行数据库迁移，rental_reminder 和 rental_deferral 表创建成功
+- FEAT-063 验证通过：创建 TodoType 枚举（Utility=0, Rental=1）

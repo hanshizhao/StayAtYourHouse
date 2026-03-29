@@ -8,7 +8,7 @@ import { execSync } from 'child_process';
 
 test.describe('FEAT-063: 创建待办类型枚举 TodoType', () => {
   const projectRoot = path.join(__dirname, '../../');
-  const enumPath = path.join(projectRoot, 'Gentle/Gentle.Application/Dtos/Todo/TodoType.cs');
+  const enumPath = path.join(projectRoot, 'Gentle/Gentle.Core/Enums/TodoType.cs');
 
   test('1. 检查枚举文件存在', async () => {
     expect(fs.existsSync(enumPath)).toBeTruthy();
