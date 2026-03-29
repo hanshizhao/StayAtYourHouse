@@ -174,7 +174,7 @@ test.describe.serial('FEAT-035: 租赁记录完整验证', () => {
     }
   });
 
-  test('7. API 数据中包含 bills 嵌套', async ({ request }) => {
+  test('7. API 数据中包含 utilityBills 嵌套', async ({ request }) => {
     const token = await getApiToken(request);
 
     const response = await request.get(`${API_BASE}/api/rental/page?page=1&pageSize=5`, {
@@ -186,13 +186,14 @@ test.describe.serial('FEAT-035: 租赁记录完整验证', () => {
 
     if (items.length > 0) {
       for (const item of items) {
-        // bills 应该存在（可能为 null 或数组）
-        expect(item).toHaveProperty('bills');
-        if (item.bills && Array.isArray(item.bills) && item.bills.length > 0) {
-          const bill = item.bills[0];
+        // utilityBills 应该存在（可能为 null 或数组）
+        expect(item).toHaveProperty('utilityBills');
+        if (item.utilityBills && Array.isArray(item.utilityBills) && item.utilityBills.length > 0) {
+          const bill = item.utilityBills[0];
           expect(bill).toHaveProperty('id');
-          expect(bill).toHaveProperty('dueDate');
-          expect(bill).toHaveProperty('rentAmount');
+          expect(bill).toHaveProperty('meterId');
+          expect(bill).toHaveProperty('billingStartDate');
+          expect(bill).toHaveProperty('billingEndDate');
           expect(bill).toHaveProperty('totalAmount');
         }
       }
