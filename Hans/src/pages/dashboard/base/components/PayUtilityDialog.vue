@@ -6,6 +6,7 @@
     :confirm-btn="{ content: '确认收款', loading }"
     :on-confirm="handleConfirm"
     :on-close="handleClose"
+    data-testid="pay-utility-dialog"
   >
     <div v-if="bill" class="pay-utility-form">
       <div class="info-row">
