@@ -529,6 +529,26 @@
             年租
             </summary>
         </member>
+        <member name="T:Gentle.Core.Enums.RentalReminderStatus">
+            <summary>
+            催收提醒状态
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.RentalReminderStatus.Pending">
+            <summary>
+            待处理
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.RentalReminderStatus.Deferred">
+            <summary>
+            已宽限
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.RentalReminderStatus.Completed">
+            <summary>
+            已完成
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.RentalStatus">
             <summary>
             租住状态枚举

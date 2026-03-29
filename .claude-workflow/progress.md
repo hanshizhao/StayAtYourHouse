@@ -21,7 +21,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-058 | 创建 RentalReminderStatus 枚举 | ⏳ 待开始 | - |
+| FEAT-058 | 创建 RentalReminderStatus 枚举 | 🔍 已审查 | ✅ 通过 |
 | FEAT-059 | 创建 RentalReminder 实体 | ⏳ 待开始 | - |
 | FEAT-060 | 创建 RentalDeferral 实体 | ⏳ 待开始 | - |
 | FEAT-061 | 创建数据库迁移 | ⏳ 待开始 | - |

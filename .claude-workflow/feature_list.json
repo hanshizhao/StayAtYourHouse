@@ -26,10 +26,22 @@
         }
       ],
       "test_file": "tests/e2e/feat-058-rental-reminder-status-enum.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-29T17:15:00Z",
+      "review": {
+        "last_review_at": "2026-03-29T17:00:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        }
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-29T17:15:00Z"
       }
     },
     {
@@ -54,7 +66,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-059-rental-reminder-entity.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -82,7 +94,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-060-rental-deferral-entity.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -110,7 +122,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-061-rental-reminder-migration.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -137,7 +149,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-062-apply-rental-reminder-migration.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -163,7 +175,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-063-todo-type-enum.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -192,7 +204,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-064-todo-item-dto.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -219,7 +231,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-065-todo-list-result.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -246,7 +258,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-066-rental-reminder-dto.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -274,7 +286,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-067-defer-reminder-input.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -302,7 +314,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-068-renew-rental-input.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -329,7 +341,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-069-deferral-record-dto.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -356,7 +368,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-070-todo-service-interface.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -412,7 +424,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-072-rental-reminder-service-interface.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -508,7 +520,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-075-rental-reminder-background-service.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -534,7 +546,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-076-register-background-service.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -562,7 +574,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-077-todo-model.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -589,7 +601,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-078-todo-api.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -617,7 +629,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-079-todo-panel.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -645,7 +657,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-080-pay-utility-dialog.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -673,7 +685,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-081-rental-reminder-dialog.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -701,7 +713,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-082-defer-dialog.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -730,7 +742,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-083-renew-rental-dialog.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -758,7 +770,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-084-deferral-records-dialog.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -787,7 +799,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-085-todo-service-tests.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
@@ -817,7 +829,7 @@
         }
       ],
       "test_file": "tests/e2e/feat-086-integration-test.spec.ts",
-      "status": "pending",
+      "status": "in_progress",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
