@@ -6,6 +6,7 @@
     :confirm-btn="{ content: '确认续租', loading }"
     :on-confirm="handleConfirm"
     :on-close="handleClose"
+    data-testid="renew-rental-dialog"
   >
     <div v-if="reminder" class="renew-dialog-content">
       <div class="info-section">
@@ -166,11 +167,17 @@ watch(
 // 确认续租
 async function handleConfirm() {
   const valid = await formRef.value?.validate();
-  if (valid !== true || !props.reminder?.rentalReminder) return;
+  // 防御性检查：reminderId 必须有效
+  if (valid !== true || !props.reminder?.rentalReminder?.id) {
+    if (!props.reminder?.rentalReminder?.id) {
+      MessagePlugin.error('提醒ID无效');
+    }
+    return;
+  }
 
   loading.value = true;
   try {
-    await renewRental(props.reminder!.rentalReminder!.id, formData.value);
+    await renewRental(props.reminder.rentalReminder.id, formData.value);
     MessagePlugin.success('续租成功');
     emit('success');
     dialogVisible.value = false;

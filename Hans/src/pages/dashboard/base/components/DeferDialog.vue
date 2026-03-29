@@ -6,6 +6,7 @@
     :confirm-btn="{ content: '确认宽限', loading }"
     :on-confirm="handleConfirm"
     :on-close="handleClose"
+    data-testid="defer-dialog"
   >
     <t-form ref="formRef" :data="formData" :rules="formRules" label-align="right" label-width="100px">
       <t-form-item label="宽限至" name="deferredToDate">
@@ -105,6 +106,12 @@ watch(
 async function handleConfirm() {
   const valid = await formRef.value?.validate();
   if (valid !== true) return;
+
+  // 防御性检查：reminderId 必须有效
+  if (!props.reminderId || props.reminderId <= 0) {
+    MessagePlugin.error('提醒ID无效');
+    return;
+  }
 
   loading.value = true;
   try {

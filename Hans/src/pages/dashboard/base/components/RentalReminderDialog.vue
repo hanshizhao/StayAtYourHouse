@@ -1,5 +1,5 @@
 <template>
-  <t-dialog v-model:visible="dialogVisible" header="催收房租" width="560px" :footer="false">
+  <t-dialog v-model:visible="dialogVisible" header="催收房租" width="560px" :footer="false" data-testid="rental-reminder-dialog">
     <div v-if="reminder" class="rental-reminder-content">
       <!-- 租客信息 -->
       <div class="info-section">
@@ -59,13 +59,13 @@
     </div>
 
     <!-- 宽限弹窗 -->
-    <defer-dialog v-model:visible="deferDialogVisible" :reminder-id="reminder?.id ?? 0" @success="handleDeferSuccess" />
+    <defer-dialog v-model:visible="deferDialogVisible" :reminder-id="reminder?.rentalReminder?.id ?? 0" @success="handleDeferSuccess" />
 
     <!-- 续租弹窗 -->
     <renew-rental-dialog v-model:visible="renewDialogVisible" :reminder="reminder" @success="handleRenewSuccess" />
 
     <!-- 宽限记录弹窗 -->
-    <deferral-records-dialog v-model:visible="deferralRecordsDialogVisible" :reminder-id="reminder?.id ?? 0" />
+    <deferral-records-dialog v-model:visible="deferralRecordsDialogVisible" :reminder-id="reminder?.rentalReminder?.id ?? 0" />
   </t-dialog>
 </template>
 <script setup lang="ts">
