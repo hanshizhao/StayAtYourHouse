@@ -31,20 +31,19 @@ public class RentalReminder : Entity<int>
     /// </summary>
     public RentalReminderStatus Status { get; set; } = RentalReminderStatus.Pending;
 
-    /// <summary>
-    /// 宽限记录集合（暂时注释，将在 FEAT-060 中创建）
-    /// </summary>
+    // TODO: FEAT-060 - 在创建 RentalDeferral 实体后取消注释
     // public ICollection<RentalDeferral> Deferrals { get; set; } = new List<RentalDeferral>();
 
     /// <summary>
-    /// 租记录导航属性
+    /// 租赁记录导航属性
     /// </summary>
     public RentalRecord RentalRecord { get; set; } = null!;
 
     /// <summary>
-    /// 房间导航属性（通过 RentalRecord 关联)
+    /// 房间信息（通过 RentalRecord 关联获取，不映射到数据库）
     /// </summary>
-    public Room? Room { get; set; }
+    [NotMapped]
+    public Room? Room => RentalRecord?.Room;
 
     /// <summary>
     /// 备注
