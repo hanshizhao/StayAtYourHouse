@@ -286,7 +286,6 @@ const communityOptions = ref<SelectOption[]>([]);
 const statusOptions: SelectOption[] = [
   { label: '待收款', value: 'pending' },
   { label: '已收款', value: 'paid' },
-  { label: '已合并', value: 'merged' },
 ];
 
 // 收款弹窗状态
@@ -452,14 +451,12 @@ async function onConfirmDelete() {
 // ==================== 辅助函数 ====================
 
 // 获取状态标签主题
-function getStatusTheme(status: UtilityBillStatus): 'default' | 'warning' | 'success' | 'primary' {
+function getStatusTheme(status: UtilityBillStatus): 'default' | 'warning' | 'success' {
   switch (status) {
     case UtilityBillStatus.Pending:
       return 'warning';
     case UtilityBillStatus.Paid:
       return 'success';
-    case UtilityBillStatus.Merged:
-      return 'primary';
     default:
       return 'default';
   }

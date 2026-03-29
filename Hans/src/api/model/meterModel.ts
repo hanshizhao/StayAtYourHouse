@@ -6,8 +6,6 @@ export enum UtilityBillStatus {
   Pending = 0,
   /** 已收款 */
   Paid = 1,
-  /** 已合并到租金账单 */
-  Merged = 2,
 }
 
 /**
@@ -16,7 +14,6 @@ export enum UtilityBillStatus {
 export const UtilityBillStatusText: Record<UtilityBillStatus, string> = {
   [UtilityBillStatus.Pending]: '待收款',
   [UtilityBillStatus.Paid]: '已收款',
-  [UtilityBillStatus.Merged]: '已合并',
 };
 
 /**
@@ -64,6 +61,7 @@ export interface UtilityBillItem {
   billTenantId?: number;
   tenantName?: string;
   meterRecordId: number;
+  rentalRecordId?: number;
   periodStart: string;
   periodEnd: string;
   waterUsage: number;

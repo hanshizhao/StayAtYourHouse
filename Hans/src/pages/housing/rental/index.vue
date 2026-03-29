@@ -74,25 +74,31 @@
           {{ formatDate(row.contractEndDate) }}
         </template>
 
-        <!-- 展开行：关联账单 -->
+        <!-- 展开行：关联水电账单 -->
         <template #expandedRow="{ row: rentalRow }">
-          <div v-if="!rentalRow.bills?.length" class="expanded-bills-empty">暂无关联账单</div>
+          <div v-if="!rentalRow.utilityBills?.length" class="expanded-bills-empty">暂无关联水电账单</div>
           <div v-else class="expanded-bills-container">
-            <div class="expanded-bills-title">关联账单（{{ rentalRow.bills.length }} 条）</div>
-            <t-table :data="rentalRow.bills" :columns="billColumns" row-key="id" size="small">
+            <div class="expanded-bills-title">关联水电账单（{{ rentalRow.utilityBills.length }} 条）</div>
+            <t-table :data="rentalRow.utilityBills" :columns="utilityBillColumns" row-key="id" size="small">
               <template #totalAmount="{ row: bill }">
                 <span class="amount">¥{{ formatMoney(bill.totalAmount) }}</span>
               </template>
-              <template #rentAmount="{ row: bill }">
-                <span>¥{{ formatMoney(bill.rentAmount) }}</span>
+              <template #waterFee="{ row: bill }">
+                <span>¥{{ formatMoney(bill.waterFee) }}</span>
+              </template>
+              <template #electricFee="{ row: bill }">
+                <span>¥{{ formatMoney(bill.electricFee) }}</span>
               </template>
               <template #status="{ row: bill }">
-                <t-tag :theme="getBillStatusTheme(bill.status)" variant="light" size="small">
+                <t-tag :theme="getUtilityBillStatusTheme(bill.status)" variant="light" size="small">
                   {{ bill.statusText }}
                 </t-tag>
               </template>
-              <template #dueDate="{ row: bill }">
-                {{ formatDate(bill.dueDate) }}
+              <template #periodStart="{ row: bill }">
+                {{ formatDate(bill.periodStart) }}
+              </template>
+              <template #periodEnd="{ row: bill }">
+                {{ formatDate(bill.periodEnd) }}
               </template>
               <template #paidDate="{ row: bill }">
                 {{ formatDate(bill.paidDate) || '-' }}
@@ -110,8 +116,8 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 import { getCommunityList } from '@/api/community';
-import { BillStatus } from '@/api/model/billModel';
 import type { CommunityItem } from '@/api/model/communityModel';
+import { UtilityBillStatus } from '@/api/model/meterModel';
 import type { RentalPageParams, RentalRecordDto } from '@/api/model/rentalModel';
 import { RentalStatus } from '@/api/model/rentalModel';
 import type { RoomItem } from '@/api/model/roomModel';
@@ -152,13 +158,14 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'status', title: '状态', width: 100 },
 ];
 
-// 展开行账单列配置
-const billColumns: PrimaryTableCol[] = [
-  { colKey: 'periodText', title: '账单周期', width: 200 },
+// 展开行水电账单列配置
+const utilityBillColumns: PrimaryTableCol[] = [
+  { colKey: 'periodStart', title: '周期开始', width: 120 },
+  { colKey: 'periodEnd', title: '周期结束', width: 120 },
+  { colKey: 'waterFee', title: '水费', width: 100 },
+  { colKey: 'electricFee', title: '电费', width: 100 },
   { colKey: 'totalAmount', title: '总金额', width: 120 },
-  { colKey: 'rentAmount', title: '租金', width: 100 },
   { colKey: 'status', title: '状态', width: 100 },
-  { colKey: 'dueDate', title: '应收日期', width: 120 },
   { colKey: 'paidDate', title: '收款日期', width: 120 },
 ];
 
@@ -288,16 +295,12 @@ function getStatusTheme(status: RentalStatus): 'success' | 'default' {
   return status === RentalStatus.Active ? 'success' : 'default';
 }
 
-function getBillStatusTheme(status: BillStatus): 'warning' | 'primary' | 'success' | 'danger' | 'default' {
+function getUtilityBillStatusTheme(status: UtilityBillStatus): 'warning' | 'success' | 'default' {
   switch (status) {
-    case BillStatus.Pending:
+    case UtilityBillStatus.Pending:
       return 'warning';
-    case BillStatus.Grace:
-      return 'primary';
-    case BillStatus.Paid:
+    case UtilityBillStatus.Paid:
       return 'success';
-    case BillStatus.Overdue:
-      return 'danger';
     default:
       return 'default';
   }
