@@ -109,6 +109,37 @@
             配置种子数据
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.RentalDeferral">
+            <summary>
+            租赁宽限记录实体
+            记录租赁提醒的宽限历史
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalDeferral.RentalReminderId">
+            <summary>
+            租赁提醒ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalDeferral.OriginalReminderDate">
+            <summary>
+            原始提醒日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalDeferral.DeferredToDate">
+            <summary>
+            宽限后日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalDeferral.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalDeferral.RentalReminder">
+            <summary>
+            租赁提醒导航属性
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.RentalRecordValidationAttribute">
             <summary>
             租住记录实体验证特性
@@ -224,14 +255,19 @@
             提醒状态
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.RentalReminder.Deferrals">
+            <summary>
+            宽限记录集合
+            </summary>
+        </member>
         <member name="P:Gentle.Core.Entities.RentalReminder.RentalRecord">
             <summary>
-            租记录导航属性
+            租赁记录导航属性
             </summary>
         </member>
         <member name="P:Gentle.Core.Entities.RentalReminder.Room">
             <summary>
-            房间导航属性（通过 RentalRecord 关联)
+            房间信息（通过 RentalRecord 关联获取，不映射到数据库）
             </summary>
         </member>
         <member name="P:Gentle.Core.Entities.RentalReminder.Remark">

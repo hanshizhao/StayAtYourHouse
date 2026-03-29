@@ -20,13 +20,18 @@ test.describe('FEAT-061: 创建数据库迁移', () => {
 
   test('2. 验证迁移包含表创建', async () => {
     const files = fs.readdirSync(migrationsDir);
-    const migrationFile = files.find(f => 
+    const migrationFile = files.find(f =>
       f.includes('AddRentalReminderAndDeferral') && f.endsWith('.cs')
     );
     if (migrationFile) {
       const content = fs.readFileSync(path.join(migrationsDir, migrationFile), 'utf-8');
-      expect(content).toContain('RentalReminder');
-      expect(content).toContain('RentalDeferral');
+      // 迁移使用 snake_case 表名
+      expect(content).toContain('rental_reminder');
+      expect(content).toContain('rental_deferral');
+      // 验证关键列
+      expect(content).toContain('RentalRecordId');
+      expect(content).toContain('RentalReminderId');
+      expect(content).toContain('DeferredToDate');
     }
   });
 });

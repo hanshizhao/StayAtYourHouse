@@ -31,8 +31,10 @@ public class RentalReminder : Entity<int>
     /// </summary>
     public RentalReminderStatus Status { get; set; } = RentalReminderStatus.Pending;
 
-    // TODO: FEAT-060 - 在创建 RentalDeferral 实体后取消注释
-    // public ICollection<RentalDeferral> Deferrals { get; set; } = new List<RentalDeferral>();
+    /// <summary>
+    /// 宽限记录集合
+    /// </summary>
+    public ICollection<RentalDeferral> Deferrals { get; set; } = new List<RentalDeferral>();
 
     /// <summary>
     /// 租赁记录导航属性
