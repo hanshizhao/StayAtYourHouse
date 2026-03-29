@@ -103,10 +103,10 @@
 
 ## 统计
 
-- **已完成**: 16/30 (53%)
-- **已通过**: 16/30 (53%)
+- **已完成**: 17/30 (57%)
+- **已通过**: 17/30 (57%)
 - **进行中**: 0
-- **待处理**: 14
+- **待处理**: 13
 
 ## 状态说明
 
@@ -155,3 +155,5 @@
 - FEAT-075 代码审查通过：Critical=0, Important=2（评估后保持现状）, Minor=3
 - FEAT-076 代码实现完成：在 Startup.cs 中注册 RentalReminderBackgroundService 后台服务
 - FEAT-076 验证通过：api_runtime 验证成功，应用启动成功，后台服务正确启动
+- FEAT-077 代码实现完成：创建 todoModel.ts 类型定义，包含 TodoType 枚举、RentalReminderStatus 枚举、多个接口定义
+- FEAT-077 验证通过：静态测试 5/5 passed，TypeScript 构建通过
