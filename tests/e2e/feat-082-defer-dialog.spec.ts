@@ -16,12 +16,12 @@ test.describe('FEAT-082: 创建 DeferDialog 组件', () => {
 
   test('2. 验证日期选择器', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('t-date-picker') || expect(content).toContain('DatePicker');
+    expect(content.includes('t-date-picker') || content.includes('DatePicker')).toBeTruthy();
   });
 
   test('3. 验证备注输入', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('remark') || expect(content).toContain('Remark') || expect(content).toContain('备注');
+    expect(content.includes('remark') || content.includes('Remark') || content.includes('备注')).toBeTruthy();
   });
 
   test('4. 验证前端构建成功', async () => {

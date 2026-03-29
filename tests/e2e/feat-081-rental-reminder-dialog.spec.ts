@@ -16,13 +16,13 @@ test.describe('FEAT-081: 创建 RentalReminderDialog 组件', () => {
 
   test('2. 验证租客信息展示', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('TenantName') || expect(content).toContain('tenantName');
+    expect(content.includes('TenantName') || content.includes('tenantName')).toBeTruthy();
   });
 
   test('3. 验证操作按钮', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('宽限') || expect(content).toContain('defer');
-    expect(content).toContain('续租') || expect(content).toContain('renew');
+    expect(content.includes('宽限') || content.includes('defer')).toBeTruthy();
+    expect(content.includes('续租') || content.includes('renew')).toBeTruthy();
   });
 
   test('4. 验证前端构建成功', async () => {

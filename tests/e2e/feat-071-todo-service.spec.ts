@@ -1,12 +1,10 @@
 /**
- * FEAT-071: 创建 TodoService 实现 - API 运行时验证
+ * FEAT-071: 创建 TodoService 实现 - 静态验证
  */
 import { test, expect } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
-
-const API_BASE = process.env.API_BASE || 'http://localhost:5000';
 
 test.describe('FEAT-071: 创建 TodoService 实现', () => {
   const projectRoot = path.join(__dirname, '../../');

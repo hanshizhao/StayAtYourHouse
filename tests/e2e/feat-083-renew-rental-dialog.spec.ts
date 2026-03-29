@@ -16,17 +16,17 @@ test.describe('FEAT-083: 创建 RenewRentalDialog 组件', () => {
 
   test('2. 验证租期类型选择', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('leaseType') || expect(content).toContain('LeaseType');
+    expect(content.includes('leaseType') || content.includes('LeaseType')).toBeTruthy();
   });
 
   test('3. 验证月租金输入', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('monthlyRent') || expect(content).toContain('MonthlyRent');
+    expect(content.includes('monthlyRent') || content.includes('MonthlyRent')).toBeTruthy();
   });
 
   test('4. 验证合同到期日', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('contractEndDate') || expect(content).toContain('ContractEndDate');
+    expect(content.includes('contractEndDate') || content.includes('ContractEndDate')).toBeTruthy();
   });
 
   test('5. 验证前端构建成功', async () => {

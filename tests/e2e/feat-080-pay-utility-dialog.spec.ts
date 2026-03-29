@@ -22,8 +22,8 @@ test.describe('FEAT-080: 创建 PayUtilityDialog 组件', () => {
 
   test('3. 验证 emits 定义', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('update:visible');
-    expect(content).toContain('success');
+    expect(content.includes('update:visible') || content.includes('@update:visible')).toBeTruthy();
+    expect(content.includes('success') || content.includes('@success')).toBeTruthy();
   });
 
   test('4. 验证前端构建成功', async () => {

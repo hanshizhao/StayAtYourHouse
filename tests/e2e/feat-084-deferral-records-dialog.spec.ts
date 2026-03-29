@@ -16,12 +16,12 @@ test.describe('FEAT-084: 创建 DeferralRecordsDialog 组件', () => {
 
   test('2. 验证表格组件', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('t-table') || expect(content).toContain('Table');
+    expect(content.includes('t-table') || content.includes('Table')).toBeTruthy();
   });
 
   test('3. 验证空状态', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content).toContain('t-empty') || expect(content).toContain('Empty') || expect(content).toContain('empty');
+    expect(content.includes('t-empty') || content.includes('Empty') || content.includes('empty')).toBeTruthy();
   });
 
   test('4. 验证前端构建成功', async () => {
