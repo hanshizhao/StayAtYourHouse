@@ -66,19 +66,19 @@ public class ReportService : IReportService
             }
         }
 
-        // 按月计算租金收入（每月统计活跃租约的月租金）
+        // 按月计算租金收入（仅在入住月份一次性计入全部租金）
         var monthlyRentIncomes = new decimal[12];
         foreach (var rental in relevantRentals)
         {
-            var startMonth = Math.Max(1, rental.CheckInDate.Month);
-            var endMonth = rental.CheckOutDate?.Month ?? 12;
-
-            if (rental.CheckInDate.Year < year) startMonth = 1;
-            if (rental.CheckOutDate == null || rental.CheckOutDate.Value.Year > year) endMonth = 12;
-
-            for (var m = startMonth; m <= endMonth; m++)
+            // 只有在当前年份入住的记录才计入租金收入
+            if (rental.CheckInDate.Year == year)
             {
-                monthlyRentIncomes[m - 1] += rental.MonthlyRent;
+                var checkInMonth = rental.CheckInDate.Month;
+                // 计算租期月数（从入住到合同结束）
+                var leaseMonths = (rental.ContractEndDate.Year - rental.CheckInDate.Year) * 12
+                                  + rental.ContractEndDate.Month - rental.CheckInDate.Month + 1;
+                // 一次性在入住月份计入全部租金收入
+                monthlyRentIncomes[checkInMonth - 1] += rental.MonthlyRent * leaseMonths;
             }
         }
 

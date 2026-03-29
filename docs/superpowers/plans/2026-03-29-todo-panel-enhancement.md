@@ -548,7 +548,7 @@ namespace Gentle.Application.Services;
 /// <summary>
 /// 待办服务实现
 /// </summary>
-public class TodoService : ITodoService, ITransient, ITransient
+public class TodoService : ITodoService, ITransient
 {
     private readonly IRepository<UtilityBill> _billRepository;
     private readonly IRepository<RentalReminder> _reminderRepository;
