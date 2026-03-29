@@ -3,7 +3,7 @@
     v-model:visible="dialogVisible"
     header="续租处理"
     width="600px"
-    :confirm-btn="{ content: '确认续租', loading: loading }"
+    :confirm-btn="{ content: '确认续租', loading }"
     :on-confirm="handleConfirm"
     :on-close="handleClose"
   >
@@ -70,15 +70,14 @@
     </div>
   </t-dialog>
 </template>
-
 <script setup lang="ts">
-import { MessagePlugin } from 'tdesign-vue-next';
 import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, ref, watch } from 'vue';
 
-import { renewRental } from '@/api/todo';
-import { LeaseType } from '@/api/model/todoModel';
 import type { RenewRentalInput, TodoItem } from '@/api/model/todoModel';
+import { LeaseType } from '@/api/model/todoModel';
+import { renewRental } from '@/api/todo';
 import { formatMoney } from '@/utils/format';
 
 defineOptions({
@@ -189,7 +188,6 @@ function handleClose() {
   dialogVisible.value = false;
 }
 </script>
-
 <style lang="less" scoped>
 .renew-dialog-content {
   .info-section {

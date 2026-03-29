@@ -7,9 +7,7 @@
         <span class="weekday-text">{{ weekdayText }}</span>
       </div>
       <div class="todo-summary">
-        <t-tag theme="primary" variant="light">
-          待办 {{ todoCount }} 项
-        </t-tag>
+        <t-tag theme="primary" variant="light"> 待办 {{ todoCount }} 项 </t-tag>
       </div>
     </div>
 
@@ -52,9 +50,7 @@
             <template v-else>
               <span class="todo-type-tag todo-type-tag--rental">催收房租</span>
               {{ item.tenantName }} · ¥{{ formatMoney(item.monthlyRent ?? 0) }}/月
-              <span v-if="item.deferralCount > 0" class="deferral-badge">
-                宽限{{ item.deferralCount }}次
-              </span>
+              <span v-if="item.deferralCount > 0" class="deferral-badge"> 宽限{{ item.deferralCount }}次 </span>
             </template>
           </div>
         </div>
@@ -71,29 +67,28 @@
     </div>
 
     <!-- 水电费收款弹窗 -->
-    <PayUtilityDialog
+    <pay-utility-dialog
       v-model:visible="payUtilityDialogVisible"
       :bill="selectedUtilityBill"
       @success="handlePaySuccess"
     />
 
     <!-- 催收房租弹窗 -->
-    <RentalReminderDialog
+    <rental-reminder-dialog
       v-model:visible="rentalReminderDialogVisible"
       :reminder="selectedRentalReminder"
       @success="handleRentalSuccess"
     />
   </div>
 </template>
-
 <script setup lang="ts">
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
-import { getTodoList } from '@/api/todo';
-import { TodoType } from '@/api/model/todoModel';
-import type { TodoItem, TodoListResult } from '@/api/model/todoModel';
 import type { UtilityBillItem } from '@/api/model/meterModel';
+import type { TodoItem, TodoListResult } from '@/api/model/todoModel';
+import { TodoType } from '@/api/model/todoModel';
+import { getTodoList } from '@/api/todo';
 import { formatMoney } from '@/utils/format';
 
 import PayUtilityDialog from './PayUtilityDialog.vue';
@@ -108,8 +103,6 @@ defineOptions({
 type FilterTypeValue = TodoType | undefined;
 
 // ==================== 状态 ====================
-
-const now = new Date();
 
 // 加载状态
 const loading = ref(false);
@@ -134,18 +127,19 @@ const selectedRentalReminder = ref<TodoItem | null>(null);
 
 // ==================== 计算属性 ====================
 
+// 当前日期（每次访问获取最新）
+const currentDate = computed(() => new Date());
+
 // 今日日期
 const todayDate = computed(() => {
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-  return `${year}年${month}月${day}日`;
+  const date = currentDate.value;
+  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 });
 
 // 星期
 const weekdayText = computed(() => {
   const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-  return weekdays[now.getDay()];
+  return weekdays[currentDate.value.getDay()];
 });
 
 // 待办数量
@@ -224,7 +218,6 @@ onMounted(() => {
   fetchTodos();
 });
 </script>
-
 <style lang="less" scoped>
 .todo-panel {
   background: var(--td-bg-color-container);
@@ -291,24 +284,19 @@ onMounted(() => {
   &:hover {
     background: var(--td-bg-color-specialcomponent);
     transform: translateX(2px);
+    box-shadow: var(--todo-hover-shadow);
   }
 
   // 水电费样式
   &--utility {
+    --todo-hover-shadow: 0 2px 8px rgba(0, 82, 217, 0.1);
     border-left-color: var(--td-brand-color);
-
-    &:hover {
-      box-shadow: 0 2px 8px rgba(0, 82, 217, 0.1);
-    }
   }
 
   // 催收房租样式
   &--rental {
+    --todo-hover-shadow: 0 2px 8px rgba(237, 125, 43, 0.1);
     border-left-color: var(--td-warning-color);
-
-    &:hover {
-      box-shadow: 0 2px 8px rgba(237, 125, 43, 0.1);
-    }
   }
 }
 

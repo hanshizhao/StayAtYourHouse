@@ -1,23 +1,11 @@
 <template>
-  <t-dialog
-    v-model:visible="dialogVisible"
-    header="宽限记录"
-    width="600px"
-    :footer="false"
-  >
+  <t-dialog v-model:visible="dialogVisible" header="宽限记录" width="600px" :footer="false">
     <div v-if="loading" class="loading-state">
       <t-loading text="加载中..." />
     </div>
 
     <div v-else-if="records.length > 0" class="records-table">
-      <t-table
-        :data="records"
-        :columns="columns"
-        row-key="id"
-        size="small"
-        hover
-        stripe
-      >
+      <t-table :data="records" :columns="columns" row-key="id" size="small" hover stripe>
         <template #originalReminderDate="{ row }">
           {{ formatDate(row.originalReminderDate) }}
         </template>
@@ -36,14 +24,13 @@
     </div>
   </t-dialog>
 </template>
-
 <script setup lang="ts">
-import { MessagePlugin } from 'tdesign-vue-next';
 import type { PrimaryTableCol } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, ref, watch } from 'vue';
 
-import { getDeferrals } from '@/api/todo';
 import type { DeferralRecordItem } from '@/api/model/todoModel';
+import { getDeferrals } from '@/api/todo';
 import { formatDate, formatDateTime } from '@/utils/date';
 
 defineOptions({
@@ -106,7 +93,6 @@ watch(
   { immediate: true },
 );
 </script>
-
 <style lang="less" scoped>
 .loading-state {
   display: flex;

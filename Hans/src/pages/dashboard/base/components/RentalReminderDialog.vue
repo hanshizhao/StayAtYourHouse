@@ -1,10 +1,5 @@
 <template>
-  <t-dialog
-    v-model:visible="dialogVisible"
-    header="催收房租"
-    width="560px"
-    :footer="false"
-  >
+  <t-dialog v-model:visible="dialogVisible" header="催收房租" width="560px" :footer="false">
     <div v-if="reminder" class="rental-reminder-content">
       <!-- 租客信息 -->
       <div class="info-section">
@@ -33,20 +28,12 @@
       <div class="info-section">
         <div class="section-title">
           宽限记录
-          <t-link
-            v-if="reminder.deferralCount > 0"
-            theme="primary"
-            hover="color"
-            @click="showDeferralRecords"
-          >
+          <t-link v-if="reminder.deferralCount > 0" theme="primary" hover="color" @click="showDeferralRecords">
             查看详情
           </t-link>
         </div>
         <div class="deferral-info">
-          <t-tag
-            :theme="reminder.deferralCount > 0 ? 'warning' : 'default'"
-            variant="light"
-          >
+          <t-tag :theme="reminder.deferralCount > 0 ? 'warning' : 'default'" variant="light">
             已宽限 {{ reminder.deferralCount }} 次
           </t-tag>
         </div>
@@ -62,9 +49,7 @@
           <template #icon><t-icon name="refresh" /></template>
           续租
         </t-button>
-        <t-button variant="outline" theme="default" @click="handleClose">
-          取消
-        </t-button>
+        <t-button variant="outline" theme="default" @click="handleClose"> 取消 </t-button>
       </div>
     </div>
 
@@ -74,27 +59,15 @@
     </div>
 
     <!-- 宽限弹窗 -->
-    <DeferDialog
-      v-model:visible="deferDialogVisible"
-      :reminder-id="reminder?.id ?? 0"
-      @success="handleDeferSuccess"
-    />
+    <defer-dialog v-model:visible="deferDialogVisible" :reminder-id="reminder?.id ?? 0" @success="handleDeferSuccess" />
 
     <!-- 续租弹窗 -->
-    <RenewRentalDialog
-      v-model:visible="renewDialogVisible"
-      :reminder="reminder"
-      @success="handleRenewSuccess"
-    />
+    <renew-rental-dialog v-model:visible="renewDialogVisible" :reminder="reminder" @success="handleRenewSuccess" />
 
     <!-- 宽限记录弹窗 -->
-    <DeferralRecordsDialog
-      v-model:visible="deferralRecordsDialogVisible"
-      :reminder-id="reminder?.id ?? 0"
-    />
+    <deferral-records-dialog v-model:visible="deferralRecordsDialogVisible" :reminder-id="reminder?.id ?? 0" />
   </t-dialog>
 </template>
-
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
@@ -169,7 +142,6 @@ function handleClose() {
   dialogVisible.value = false;
 }
 </script>
-
 <style lang="less" scoped>
 .rental-reminder-content {
   .info-section {

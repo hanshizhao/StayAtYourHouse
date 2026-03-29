@@ -3,7 +3,7 @@
     v-model:visible="dialogVisible"
     header="水电费收款"
     width="500px"
-    :confirm-btn="{ content: '确认收款', loading: loading }"
+    :confirm-btn="{ content: '确认收款', loading }"
     :on-confirm="handleConfirm"
     :on-close="handleClose"
   >
@@ -56,10 +56,9 @@
     </div>
   </t-dialog>
 </template>
-
 <script setup lang="ts">
-import { MessagePlugin } from 'tdesign-vue-next';
 import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, ref, watch } from 'vue';
 
 import { payUtilityBill } from '@/api/meter';
@@ -148,7 +147,6 @@ function handleClose() {
   dialogVisible.value = false;
 }
 </script>
-
 <style lang="less" scoped>
 .pay-utility-form {
   .info-row {

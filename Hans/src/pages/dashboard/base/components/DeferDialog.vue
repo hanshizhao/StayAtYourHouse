@@ -3,7 +3,7 @@
     v-model:visible="dialogVisible"
     header="宽限提醒"
     width="400px"
-    :confirm-btn="{ content: '确认宽限', loading: loading }"
+    :confirm-btn="{ content: '确认宽限', loading }"
     :on-confirm="handleConfirm"
     :on-close="handleClose"
   >
@@ -28,14 +28,13 @@
     </t-form>
   </t-dialog>
 </template>
-
 <script setup lang="ts">
-import { MessagePlugin } from 'tdesign-vue-next';
 import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, ref, watch } from 'vue';
 
-import { deferReminder } from '@/api/todo';
 import type { DeferReminderInput } from '@/api/model/todoModel';
+import { deferReminder } from '@/api/todo';
 
 defineOptions({
   name: 'DeferDialog',
@@ -127,7 +126,6 @@ function handleClose() {
   dialogVisible.value = false;
 }
 </script>
-
 <style lang="less" scoped>
 // 表单样式由 TDesign 组件处理
 </style>

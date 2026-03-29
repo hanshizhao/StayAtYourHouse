@@ -1,6 +1,8 @@
 // 从 rentalModel 复用 LeaseType 枚举（避免重复定义）
-import { LeaseType } from './rentalModel';
-export { LeaseType, LeaseTypeText } from './rentalModel';
+import type { LeaseType } from './rentalModel';
+
+// 从 meterModel 复用 UtilityBillItem 接口（避免重复定义）
+export type { UtilityBillItem } from './meterModel';
 
 /**
  * 待办类型枚举（与后端 Gentle.Core.Enums.TodoType 保持一致)
@@ -41,8 +43,7 @@ export const RentalReminderStatusText: Record<RentalReminderStatus, string> = {
   [RentalReminderStatus.Completed]: '已完成',
 };
 
-// 从 meterModel 复用 UtilityBillItem 接口（避免重复定义）
-export type { UtilityBillItem } from './meterModel';
+export { LeaseType, LeaseTypeText } from './rentalModel';
 
 /**
  * 水电账单简略 DTO（用于 TodoItem）

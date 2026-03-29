@@ -1,6 +1,6 @@
 import type {
-  DeferReminderInput,
   DeferralListResult,
+  DeferReminderInput,
   RenewRentalInput,
   TodoListResult,
   TodoType,
