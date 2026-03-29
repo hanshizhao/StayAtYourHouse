@@ -44,8 +44,9 @@
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
 | FEAT-070 | 创建 ITodoService 接口 | ✅ 已通过 | ✅ 通过 |
-| FEAT-071 | 创建 TodoService 实现 | ⏳ 待开始 |
-| FEAT-072 | 创建 IRentalReminderService 接口 | ⏳ 待开始 |
+| FEAT-071 | 创建 TodoService 实现 | ✅ 已通过 | ✅ 通过 |
+| FEAT-072 | 创建 IRentalReminderService 接口 | ✅ 已通过 | ✅ 通过 |
+| FEAT-072 | 创建 IRentalReminderService 接口 | 🚧 进行中 |
 | FEAT-073 | 创建 RentalReminderService 实现 | ⏳ 待开始 |
 
 #### Phase 4: 后端 API (FEAT-074)
@@ -89,8 +90,8 @@
 
 ## 统计
 
-- **已完成**: 11/30 (37%)
-- **已通过**: 11/30 (37%)
+- **已完成**: 12/30 (40%)
+- **已通过**: 12/30 (40%)
 - **进行中**: 0
 - **待处理**: 19
 
@@ -129,3 +130,6 @@
 - FEAT-070 代码实现完成：创建 ITodoService 接口，包含 GetTodoListAsync 方法
 - FEAT-070 代码审查通过：Critical=0, Important=1（type 参数建议使用枚举）
 - FEAT-070 验证通过：静态测试 3/3 passed
+- FEAT-072 代码实现完成：创建 IRentalReminderService 接口，包含 DeferAsync/RenewAsync/GetDeferralsAsync 方法
+- FEAT-072 代码审查通过：Critical=0, Important=1（评估后保持现状）, Minor=0
+- FEAT-072 验证通过：dotnet build 成功，0 警告，0 错误
