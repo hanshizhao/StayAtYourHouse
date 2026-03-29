@@ -58,8 +58,17 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-075 | 创建催收提醒后台服务 | ⏳ 待开始 |
-| FEAT-076 | 注册后台服务 | ⏳ 待开始 |
+| FEAT-075 | 创建催收提醒后台服务 | ✅ 已完成 | ⏳ 待验证 |
+| FEAT-076 | 注册后台服务 | ✅ 已通过 | ✅ 通过 |
+
+**FEAT-076 验证通过**
+- 静态测试: 3/3 passed
+- 应用启动成功: 催收提醒后台服务已启动
+- DI 配置正确: AddHostedService 生效
+- 定时任务正常: 下次执行时间 03/30/2026 00:00:00
+- Critical: 0 | Important: 0 | Minor: 0
+- 优点: 正确使用 AddHostedService, 遵循 Furion 框架规范, 代码简洁
+改动最小化 |
 
 #### Phase 6: 前端 API (FEAT-077 ~ FEAT-078)
 
@@ -89,10 +98,10 @@
 
 ## 统计
 
-- **已完成**: 15/30 (50%)
-- **已通过**: 15/30 (50%)
+- **已完成**: 16/30 (53%)
+- **已通过**: 16/30 (53%)
 - **进行中**: 0
-- **待处理**: 15
+- **待处理**: 14
 
 ## 状态说明
 
@@ -137,3 +146,7 @@
 - FEAT-073 验证通过：api_runtime 验证成功，dotnet build 成功，应用启动成功（DI 配置正确）
 - FEAT-074 代码实现完成：创建 TodoAppService API 控制器，包含 GetList/Defer/Renew/GetDeferrals 四个端点
 - FEAT-074 代码审查通过：Critical=0, Important=0, Minor=3（均为低优先级建议）
+- FEAT-075 代码实现完成：创建 RentalReminderBackgroundService 后台服务，每日凌晨扫描即将到期的租赁记录并创建提醒
+- FEAT-075 代码审查通过：Critical=0, Important=2（评估后保持现状）, Minor=3
+- FEAT-076 代码实现完成：在 Startup.cs 中注册 RentalReminderBackgroundService 后台服务
+- FEAT-076 验证通过：api_runtime 验证成功，应用启动成功，后台服务正确启动

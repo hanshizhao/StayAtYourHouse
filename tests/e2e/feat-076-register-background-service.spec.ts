@@ -8,14 +8,14 @@ import { execSync } from 'child_process';
 
 test.describe('FEAT-076: 注册后台服务', () => {
   const projectRoot = path.join(__dirname, '../../');
-  const programPath = path.join(projectRoot, 'Gentle/Gentle.Web.Entry/Program.cs');
+  const startupPath = path.join(projectRoot, 'Gentle/Gentle.Web.Core/Startup.cs');
 
-  test('1. 检查 Program.cs 存在', async () => {
-    expect(fs.existsSync(programPath)).toBeTruthy();
+  test('1. 检查 Startup.cs 存在', async () => {
+    expect(fs.existsSync(startupPath)).toBeTruthy();
   });
 
   test('2. 验证后台服务注册', async () => {
-    const content = fs.readFileSync(programPath, 'utf-8');
+    const content = fs.readFileSync(startupPath, 'utf-8');
     expect(content).toContain('AddHostedService');
     expect(content).toContain('RentalReminderBackgroundService');
   });

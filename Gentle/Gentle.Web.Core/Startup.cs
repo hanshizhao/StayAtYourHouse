@@ -1,4 +1,5 @@
 ﻿using Furion;
+using Gentle.Application.BackgroundServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,9 @@ public class Startup : AppStartup
 
         services.AddControllers()
                 .AddInjectWithUnifyResult();
+
+        // 注册后台服务
+        services.AddHostedService<RentalReminderBackgroundService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

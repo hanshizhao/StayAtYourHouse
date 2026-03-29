@@ -894,16 +894,41 @@
       "implementation_steps": [
         {
           "step": 1,
-          "action": "注册后台服务到 Program.cs",
-          "file": "Gentle/Gentle.Web.Entry/Program.cs",
-          "code_hint": "builder.Services.AddHostedService<RentalReminderBackgroundService>();"
+          "action": "注册后台服务到 Startup.cs",
+          "file": "Gentle/Gentle.Web.Core/Startup.cs",
+          "code_hint": "services.AddHostedService<RentalReminderBackgroundService>();"
         }
       ],
       "test_file": "tests/e2e/feat-076-register-background-service.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "started_at": "2026-03-29T13:00:00Z",
+      "completed_at": "2026-03-29T13:05:00Z",
+      "review": {
+        "last_review_at": "2026-03-29T21:40:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "good_points": [
+          "正确使用 AddHostedService 注册后台服务",
+          "遵循 Furion 框架规范",
+          "代码简洁，改动最小化"
+        ]
+      },
       "verification": {
+        "api_routes_checked": true,
+        "build_passed": true,
+        "app_started": true,
+        "di_configured": true,
+        "background_service_started": true,
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_passed": 3,
+        "tests_total": 3,
+        "verified_at": "2026-03-29T21:45:00Z"
       }
     },
     {
