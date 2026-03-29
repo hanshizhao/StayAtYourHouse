@@ -2,7 +2,7 @@
  * FEAT-030: 完整业务流程测试 - E2E 测试（严谨版）
  * 类型: e2e
  *
- * 测试完整业务流程：小区创建 → 房间创建 → 租客创建 → 入住 → 收租 → 退租
+ * 测试完整业务流程：小区创建 → 房间创建 → 租客创建 → 入住 → 水电费管理 → 退租
  *
  * 测试覆盖：
  * 1. 认证验证
@@ -10,7 +10,7 @@
  * 3. 房间管理流程
  * 4. 租客管理流程
  * 5. 入住流程
- * 6. 账单管理流程
+ * 6. 水电费管理流程
  * 7. 退租流程
  * 8. 数据一致性验证
  */
@@ -28,7 +28,6 @@ let testData = {
   tenantId: '',
   tenantName: `${TEST_DATA_PREFIX}_测试租客`,
   tenantPhone: '13800138001',
-  billId: '',
   rentalRecordId: '',
 };
 
@@ -505,11 +504,11 @@ test.describe('FEAT-030: 完整业务流程', () => {
     await expect(errorToast).not.toBeVisible();
   });
 
-  // ==================== 步骤6: 账单管理 ====================
+  // ==================== 步骤6: 水电费管理 ====================
 
-  test('步骤6.1: 账单列表页 - 可以访问', async ({ page }) => {
+  test('步骤6.1: 水电费列表页 - 可以访问', async ({ page }) => {
     const consoleErrors = setupConsoleErrorTracker(page);
-    await loginAndNavigate(page, '/bill/list');
+    await loginAndNavigate(page, '/utility/bill');
     await waitForPageReady(page);
 
     await expect(page.locator('main').first()).toBeVisible({ timeout: 5000 });
@@ -517,8 +516,8 @@ test.describe('FEAT-030: 完整业务流程', () => {
     expect(criticalErrors).toHaveLength(0);
   });
 
-  test('步骤6.2: 账单列表 - 验证表格显示', async ({ page }) => {
-    await loginAndNavigate(page, '/bill/list');
+  test('步骤6.2: 水电费列表 - 验证表格显示', async ({ page }) => {
+    await loginAndNavigate(page, '/utility/bill');
     await waitForPageReady(page);
 
     const table = page.locator('table, .t-table');
@@ -526,8 +525,8 @@ test.describe('FEAT-030: 完整业务流程', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('步骤6.3: 账单状态 - 显示状态标签', async ({ page }) => {
-    await loginAndNavigate(page, '/bill/list');
+  test('步骤6.3: 水电费状态 - 显示状态标签', async ({ page }) => {
+    await loginAndNavigate(page, '/utility/bill');
     await waitForPageReady(page);
 
     // 等待数据加载
@@ -543,23 +542,23 @@ test.describe('FEAT-030: 完整业务流程', () => {
     }
   });
 
-  // ==================== 步骤7: 收款流程 ====================
+  // ==================== 步骤7: 缴费流程 ====================
 
-  test('步骤7.1: 收款对话框 - 可以打开', async ({ page }) => {
-    await loginAndNavigate(page, '/bill/list');
+  test('步骤7.1: 缴费对话框 - 可以打开', async ({ page }) => {
+    await loginAndNavigate(page, '/utility/bill');
     await waitForPageReady(page);
 
     // 等待数据加载
     await page.waitForTimeout(1000);
 
-    // 查找收款/收费按钮
-    const collectButton = page.locator(
-      'button:has-text("收款"), button:has-text("收费"), button:has-text("收租")',
+    // 查找缴费/收款按钮
+    const payButton = page.locator(
+      'button:has-text("缴费"), button:has-text("收款"), button:has-text("确认缴费")',
     );
-    const count = await collectButton.count();
+    const count = await payButton.count();
 
     if (count > 0) {
-      await collectButton.first().click();
+      await payButton.first().click();
       await page.waitForTimeout(500);
 
       // 验证对话框出现
@@ -620,13 +619,6 @@ test.describe('FEAT-030: 完整业务流程', () => {
 
   test('步骤9.3: 利润排行报表 - 可以访问', async ({ page }) => {
     await loginAndNavigate(page, '/report/profit');
-    await waitForPageReady(page);
-
-    await expect(page.locator('main').first()).toBeVisible({ timeout: 5000 });
-  });
-
-  test('步骤9.4: 催收统计报表 - 可以访问', async ({ page }) => {
-    await loginAndNavigate(page, '/report/collection');
     await waitForPageReady(page);
 
     await expect(page.locator('main').first()).toBeVisible({ timeout: 5000 });
