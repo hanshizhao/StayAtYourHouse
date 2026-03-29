@@ -376,6 +376,37 @@
             </summary>
             <param name="id">用户ID</param>
         </member>
+        <member name="T:Gentle.Application.BackgroundServices.RentalReminderBackgroundService">
+            <summary>
+            催收提醒后台服务
+            </summary>
+            <remarks>
+            每日凌晨扫描即将到期的租赁记录，提前 3 天创建催收提醒。
+            </remarks>
+        </member>
+        <member name="F:Gentle.Application.BackgroundServices.RentalReminderBackgroundService.ReminderDaysBeforeExpiry">
+            <summary>
+            提前提醒天数
+            </summary>
+        </member>
+        <member name="F:Gentle.Application.BackgroundServices.RentalReminderBackgroundService.DailyExecutionHour">
+            <summary>
+            每日执行时间（小时）
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.BackgroundServices.RentalReminderBackgroundService.#ctor(Microsoft.Extensions.DependencyInjection.IServiceScopeFactory,Microsoft.Extensions.Logging.ILogger{Gentle.Application.BackgroundServices.RentalReminderBackgroundService})">
+            <summary>
+            初始化催收提醒后台服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.BackgroundServices.RentalReminderBackgroundService.ExecuteAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.BackgroundServices.RentalReminderBackgroundService.ScanAndCreateRemindersAsync(System.Threading.CancellationToken)">
+            <summary>
+            扫描并创建催收提醒
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Auth.LoginInput">
             <summary>
             登录请求

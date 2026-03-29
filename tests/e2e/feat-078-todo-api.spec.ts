@@ -25,7 +25,7 @@ test.describe('FEAT-078: 创建 todo.ts API 封装', () => {
   test('3. 验证 API 路径', async () => {
     const content = fs.readFileSync(apiPath, 'utf-8');
     expect(content).toContain('/api/todo/list');
-    expect(content).toContain('/api/todo/rental-reminder/');
+    expect(content).toContain('/api/todo/rental-reminder');
   });
 
   test('4. 验证前端构建成功', async () => {

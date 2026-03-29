@@ -75,12 +75,18 @@
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
 | FEAT-077 | 创建 todoModel.ts 类型定义 | ✅ 已通过 | ✅ 通过 |
-| FEAT-078 | 创建 todo.ts API 封装 | ⏳ 待开始 |
+| FEAT-078 | 创建 todo.ts API 封装 | ✅ 已通过 | ✅ 通过 |
 
 **FEAT-077 代码审查通过**
 - 静态测试: npm run build:type 通过
 - Critical: 0 | Important: 0 | Minor: 2
 - 优点: 枚举值与后端完全一致, 完整的 JSDoc 注释, 提供文本映射, 日期字段正确使用 string 类型
+
+**FEAT-078 代码审查通过**
+- 静态测试: npm run build:type 通过
+- Critical: 0 | Important: 0 | Minor: 1
+- 修复: renewRental 返回类型从 RenewResult 改为 number（与后端一致）
+- 优点: 代码风格与项目一致, 类型安全, URL 路径与后端匹配, API 常量复用
 
 #### Phase 7: 前端组件 (FEAT-079 ~ FEAT-084)
 
@@ -103,10 +109,10 @@
 
 ## 统计
 
-- **已完成**: 17/30 (57%)
-- **已通过**: 17/30 (57%)
+- **已完成**: 18/30 (60%)
+- **已通过**: 18/30 (60%)
 - **进行中**: 0
-- **待处理**: 13
+- **待处理**: 12
 
 ## 状态说明
 
@@ -157,3 +163,8 @@
 - FEAT-076 验证通过：api_runtime 验证成功，应用启动成功，后台服务正确启动
 - FEAT-077 代码实现完成：创建 todoModel.ts 类型定义，包含 TodoType 枚举、RentalReminderStatus 枚举、多个接口定义
 - FEAT-077 验证通过：静态测试 5/5 passed，TypeScript 构建通过
+- FEAT-078 代码实现完成：创建 todo.ts API 封装，包含 getTodoList/deferReminder/renewRental/getDeferrals 四个函数
+- FEAT-078 代码审查通过：Critical=0, Important=0, Minor=1
+- FEAT-078 修复：renewRental 返回类型从 RenewResult 改为 number（与后端一致）
+- FEAT-078 修复：getTodoList 的 type 参数类型优化，添加枚举到字符串的转换函数
+- FEAT-078 验证通过：静态测试 4/4 passed，TypeScript 构建通过

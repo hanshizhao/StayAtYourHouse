@@ -142,6 +142,7 @@ export interface RenewRentalInput {
 
 /**
  * 续租结果
+ * @note 后端当前返回 int（新租赁记录ID），此类型保留以备将来扩展
  */
 export interface RenewResult {
   /** 新租赁记录ID */
