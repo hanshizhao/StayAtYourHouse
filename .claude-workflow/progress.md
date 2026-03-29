@@ -22,16 +22,16 @@
 | FEAT-051 | RentalRecord 新增 UtilityBills 导航属性并更新查询 | ✅ 已通过 | 2026-03-30T00:00:00Z |
 | FEAT-052 | 数据库迁移 | ✅ 已通过 | 2026-03-30T01:30:00Z |
 | FEAT-053 | 删除前端 Bill 相关文件 | ✅ 已通过 | 2026-03-30T02:00:00Z |
-| FEAT-054 | 前端租赁记录页展示 UtilityBills | ⏳ 待处理 | - |
-| FEAT-055 | 前端水电费类型清理和页面适配 | ⏳ 待处理 | - |
-| FEAT-056 | 清理 E2E 测试文件 | ⏳ 待处理 | - |
-| FEAT-057 | 最终验证 | ⏳ 待处理 | - |
+| FEAT-054 | 前端租赁记录页展示 UtilityBills | ✅ 已通过 | 2026-03-29T20:30:00Z |
+| FEAT-055 | 前端水电费类型清理和页面适配 | ✅ 已通过 | 2026-03-29T18:00:00Z |
+| FEAT-056 | 清理 E2E 测试文件 | ✅ 已通过 | 2026-03-29T19:00:00Z |
+| FEAT-057 | 最终验证 | ✅ 已通过 | 2026-03-29T20:00:00Z |
 
 ## 统计
 
-- **已完成**: 11/15 (73.3%)
+- **已完成**: 15/15 (100%)
 - **进行中**: 0
-- **待处理**: 4
+- **待处理**: 0
 
 ## 更新日志
 
@@ -83,4 +83,40 @@
 
 - **FEAT-044 验证通过**: 删除后端 Bill 服务层和 DTO
 
-- **FEAT-043 验证通过**: 删除后端 Bill/CollectionRecord 实体和枚举文件
+### 2026-03-29
+
+  - **FEAT-057 验证通过**: 最终验证
+    - 后端 dotnet build: 0 警告，0 错误
+    - 前端 npm run build:type: 通过
+    - 前端 npm run build: 通过
+    - 验证 UtilityBill 与 RentalRecord 关联正确
+    - 验证前端 UtilityBillStatus 不包含 Merged
+    - 验证 Bill 相关文件已完全删除
+    - 3 个测试跳过（需要前后端服务运行)
+
+  - **FEAT-056 验证通过**: 清理 E2E 测试文件
+
+  - 删除 6 个 Bill 相关测试文件（约 1900 行代码）
+  - 更新 dashboard-todo 测试（删除 Bill 待办断言）
+  - 更新 full-flow 测试（账单流程 → 水电费流程）
+
+  - **FEAT-055 验证通过**: 前端水电费类型清理和页面适配
+  - meterModel.ts: 删除 Merged 枚举值和文本映射
+  - TodoPanel.vue: 改为展示 Pending 状态的 UtilityBill 待办
+  - utility/bill/index.vue: 移除 Merged 状态筛选选项
+  - rental/index.vue: 展开行使用 utilityBills
+
+  - **FEAT-054 验证通过**: 前端租赁记录页展示 UtilityBills
+  - rental/index.vue: 导入正确
+  - rental/index.vue: 展开行数据源正确
+  - rental/index.vue: 列定义完整
+
+  - **FEAT-053 验证通过**: 删除前端 Bill 相关文件
+  - 删除 Hans/src/pages/bill/ 目录
+  - 删除 Hans/src/api/bill.ts, Hans/src/api/model/billModel.ts, Hans/src/router/modules/bill.ts
+  - 清理 rentalModel.ts 中的 BillItem 引用，新增 UtilityBillItem 引用
+  - 清理 reportModel.ts: 删除 CollectionReport, OverdueBillInfo, GraceBillInfo 类型
+  - 清理 report.ts: 删除 getTodayTodos API 和催收报表相关代码
+  - 删除催收统计报表页面和路由
+
+  - **FEAT-043 验证通过**: 删除后端 Bill/CollectionRecord 实体和枚举文件

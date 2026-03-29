@@ -16,7 +16,9 @@ test.describe('FEAT-057: 最终验证', () => {
 
   test('1. 后端构建成功', async () => {
     const result = execSync('dotnet build', { cwd: gentlePath, stdio: 'pipe', timeout: 120000 });
-    expect(result.toString()).toContain('Build succeeded');
+    const output = result.toString();
+    // 兼容中英文环境：Build succeeded / 已成功生成
+    expect(output.includes('Build succeeded') || output.includes('已成功生成')).toBeTruthy();
   });
 
   test('2. 前端类型检查通过', async () => {
