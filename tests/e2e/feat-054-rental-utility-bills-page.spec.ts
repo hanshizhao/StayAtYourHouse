@@ -21,9 +21,12 @@ test.describe('FEAT-054: 前端租赁记录页展示 UtilityBills', () => {
     const pagePath = path.join(projectRoot, 'Hans/src/pages/housing/rental/index.vue');
     const content = fs.readFileSync(pagePath, 'utf-8');
 
-    // 应使用 UtilityBillStatus 而非 BillStatus
+    // 应使用 UtilityBillStatus 而非独立的 BillStatus
     expect(content).toContain('UtilityBillStatus');
-    expect(content).not.toContain('BillStatus');
+    // 检查是否包含独立的 BillStatus 导入（非 UtilityBillStatus 的一部分）
+    // 使用正则表达式检查是否有独立的 BillStatus（不在 UtilityBillStatus 中）
+    const standaloneBillStatusPattern = /(?<!Utility)BillStatus(?!.*Utility)/;
+    expect(standaloneBillStatusPattern.test(content)).toBe(false);
   });
 
   test('3. 验证展开行使用 utilityBills', async () => {
