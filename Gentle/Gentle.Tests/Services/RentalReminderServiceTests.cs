@@ -1,3 +1,10 @@
+// -----------------------------------------------------------------------------
+// 文件: RentalReminderServiceTests.cs
+// 模块: 催收提醒服务单元测试
+// 创建日期: 2026-03-29
+// 描述: 测试 RentalReminderService 的异常验证、业务逻辑和 DTO 验证逻辑
+// -----------------------------------------------------------------------------
+
 using Furion.DatabaseAccessor;
 using Gentle.Application.Dtos.Rental;
 using Gentle.Application.Services;

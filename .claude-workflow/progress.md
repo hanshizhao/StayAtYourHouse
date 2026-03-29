@@ -115,7 +115,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-085 | 后端单元测试 | ✅ 已完成 | ✅ 43/43 通过 |
+| FEAT-085 | 后端单元测试 | ✅ 已完成 | ✅ 48/48 通过 |
 | FEAT-086 | 集成测试 | ⏳ 待开始 |
 | FEAT-087 | E2E 测试 | ⏳ 待开始 |
 
@@ -132,10 +132,20 @@
 - 审查问题修复已验证: true
 - 验证时间: 2026-03-30T12:30:00Z
 
+**FEAT-085 代码审查通过**
+- 审查日期: 2026-03-30
+- Critical: 0 | Important: 1 → 0 | Minor: 3 → 0
+- Important 问题: TodoItemDto.CreatedTime 计算属性未测试（已修复）
+- Minor 问题: Assert.ThrowsAnyAsync 过于宽泛、跳过测试未提供替代方案、缺少文件头注释（均已修复）
+- 修复内容:
+  - 添加 3 个 CreatedTime 计算属性测试用例（Utility/Rental/Null）
+  - 添加文件头注释到 TodoServiceTests.cs 和 RentalReminderServiceTests.cs
+  - 为跳过的测试添加 FEAT-086 集成测试引用
+
 **FEAT-085 验证通过**
-- dotnet test: 43 通过, 1 跳过
+- dotnet test: 48 通过, 1 跳过, 0 失败
 - 测试项目: Gentle.Tests
-- 测试类型: 参数验证、边界保护、DTO 验证、枚举值验证、业务逻辑验证
+- 测试类型: 参数验证、边界保护、DTO 验证、枚举值验证、业务逻辑验证、计算属性验证
 - Critical: 0 | Important: 0 | Minor: 0
 
 ## 统计

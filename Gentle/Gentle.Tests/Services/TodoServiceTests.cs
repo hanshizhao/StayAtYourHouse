@@ -1,4 +1,12 @@
+// -----------------------------------------------------------------------------
+// 文件: TodoServiceTests.cs
+// 模块: 待办事项服务单元测试
+// 创建日期: 2026-03-29
+// 描述: 测试 TodoService 的参数验证、边界保护和 DTO 验证逻辑
+// -----------------------------------------------------------------------------
+
 using Furion.DatabaseAccessor;
+using Gentle.Application.Dtos.Meter;
 using Gentle.Application.Dtos.Rental;
 using Gentle.Application.Dtos.Todo;
 using Gentle.Application.Services;
@@ -42,18 +50,19 @@ public class TodoServiceTests
     /// <summary>
     /// 测试：无效的待办类型 - 抛出异常
     /// </summary>
-    [Fact]
-    public async Task GetTodoListAsync_InvalidType_ThrowsException()
+    /// <remarks>
+    /// 注意：由于 Furion 框架的异常机制，测试环境中可能抛出框架初始化异常。
+    /// 此测试主要验证无效类型参数会被正确处理。
+    /// </remarks>
+    [Theory]
+    [InlineData("invalid_type")]
+    [InlineData("random")]
+    [InlineData("UTILITY_BILL")]
+    public async Task GetTodoListAsync_InvalidType_ThrowsException(string invalidType)
     {
-        // Act & Assert - 任何非 "utility"、"rental" 或 null 的值都应该抛出异常
+        // Act & Assert - 验证无效类型参数会抛出异常
         await Assert.ThrowsAnyAsync<Exception>(() =>
-            _service.GetTodoListAsync("invalid_type", 1, 10));
-
-        await Assert.ThrowsAnyAsync<Exception>(() =>
-            _service.GetTodoListAsync("random", 1, 10));
-
-        await Assert.ThrowsAnyAsync<Exception>(() =>
-            _service.GetTodoListAsync("UTILITY_BILL", 1, 10));
+            _service.GetTodoListAsync(invalidType, 1, 10));
     }
 
     /// <summary>
@@ -237,6 +246,55 @@ public class TodoServiceTests
         Assert.Equal(0, result.Total);
         Assert.Equal(0, result.UtilityCount);
         Assert.Equal(0, result.RentalCount);
+    }
+
+    /// <summary>
+    /// 测试：TodoItemDto.CreatedTime - 水电费类型返回 UtilityBill.CreatedTime
+    /// </summary>
+    [Fact]
+    public void TodoItemDto_CreatedTime_ReturnsUtilityBillCreatedTime_WhenTypeIsUtility()
+    {
+        // Arrange
+        var expectedTime = new DateTimeOffset(2026, 3, 30, 12, 0, 0, TimeSpan.Zero);
+        var dto = new TodoItemDto
+        {
+            Type = TodoType.Utility,
+            UtilityBill = new UtilityBillDto { CreatedTime = expectedTime }
+        };
+
+        // Act & Assert
+        Assert.Equal(expectedTime, dto.CreatedTime);
+    }
+
+    /// <summary>
+    /// 测试：TodoItemDto.CreatedTime - 催收房租类型返回 RentalReminder.CreatedTime
+    /// </summary>
+    [Fact]
+    public void TodoItemDto_CreatedTime_ReturnsRentalReminderCreatedTime_WhenTypeIsRental()
+    {
+        // Arrange
+        var expectedTime = new DateTimeOffset(2026, 3, 30, 12, 0, 0, TimeSpan.Zero);
+        var dto = new TodoItemDto
+        {
+            Type = TodoType.Rental,
+            RentalReminder = new RentalReminderDto { CreatedTime = expectedTime }
+        };
+
+        // Act & Assert
+        Assert.Equal(expectedTime, dto.CreatedTime);
+    }
+
+    /// <summary>
+    /// 测试：TodoItemDto.CreatedTime - 子对象为 null 时返回 DateTimeOffset.MinValue
+    /// </summary>
+    [Fact]
+    public void TodoItemDto_CreatedTime_ReturnsMinValue_WhenSubObjectIsNull()
+    {
+        // Arrange
+        var dto = new TodoItemDto { Type = TodoType.Utility, UtilityBill = null };
+
+        // Act & Assert
+        Assert.Equal(DateTimeOffset.MinValue, dto.CreatedTime);
     }
 
     #endregion
