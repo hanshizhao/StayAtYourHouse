@@ -77,6 +77,12 @@
 | FEAT-077 | 创建 todoModel.ts 类型定义 | ✅ 已通过 | ✅ 通过 |
 | FEAT-078 | 创建 todo.ts API 封装 | ✅ 已通过 | ✅ 通过 |
 
+**FEAT-078 验证通过**
+- 静态测试: 4/4 passed
+- TypeScript 构建通过
+- Critical: 0 | Important: 0 | Minor: 1
+- 优点: 代码风格与项目一致, 类型安全, URL 路径与后端匹配, API 常量复用
+
 **FEAT-077 代码审查通过**
 - 静态测试: npm run build:type 通过
 - Critical: 0 | Important: 0 | Minor: 2
