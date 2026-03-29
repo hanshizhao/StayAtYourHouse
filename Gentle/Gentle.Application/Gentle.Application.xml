@@ -1001,6 +1001,62 @@
             每页数量
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Rental.DeferralRecordDto">
+            <summary>
+            宽限记录 DTO
+            </summary>
+            <remarks>
+            用于前端展示租赁提醒的宽限历史记录。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferralRecordDto.Id">
+            <summary>
+            宽限记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferralRecordDto.OriginalReminderDate">
+            <summary>
+            原始提醒日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferralRecordDto.DeferredToDate">
+            <summary>
+            宽限后日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferralRecordDto.DeferralDays">
+            <summary>
+            宽限天数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferralRecordDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferralRecordDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Rental.DeferralListResult">
+            <summary>
+            宽限记录列表结果
+            </summary>
+            <remarks>
+            用于分页返回宽限记录列表。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferralListResult.Items">
+            <summary>
+            宽限记录列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.DeferralListResult.Total">
+            <summary>
+            总数
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Rental.DeferReminderInput">
             <summary>
             宽限提醒输入
@@ -1023,6 +1079,54 @@
             </summary>
             <remarks>
             可选，记录宽限原因。
+            </remarks>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Rental.RenewRentalInput">
+            <summary>
+            续租输入
+            </summary>
+            <remarks>
+            用于提交租赁续租请求。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RenewRentalInput.LeaseType">
+            <summary>
+            租期类型
+            </summary>
+            <remarks>
+            必填，月租/半年租/年租。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RenewRentalInput.MonthlyRent">
+            <summary>
+            月租金
+            </summary>
+            <remarks>
+            必填，必须大于 0。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RenewRentalInput.ContractEndDate">
+            <summary>
+            合同到期日
+            </summary>
+            <remarks>
+            必填，新合同的到期日期。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RenewRentalInput.ContractImage">
+            <summary>
+            合同图片
+            </summary>
+            <remarks>
+            可选，合同照片 URL。
+            </remarks>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Rental.RenewRentalInput.Remark">
+            <summary>
+            备注
+            </summary>
+            <remarks>
+            可选，续租备注信息。
             </remarks>
         </member>
         <member name="T:Gentle.Application.Dtos.Rental.RentalReminderDto">

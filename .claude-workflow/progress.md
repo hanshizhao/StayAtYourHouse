@@ -37,7 +37,7 @@
 | FEAT-066 | 创建 RentalReminderDto | ✅ 已通过 | ✅ 通过 |
 | FEAT-067 | 创建 DeferReminderInput | ✅ 已通过 | ✅ 通过 |
 | FEAT-068 | 创建 RenewRentalInput | ✅ 已通过 |
-| FEAT-069 | 创建 DeferralRecordDto | ⏳ 待开始 |
+| FEAT-069 | 创建 DeferralRecordDto | ✅ 已通过 | ✅ 通过 |
 
 #### Phase 3: 后端服务 (FEAT-070 ~ FEAT-073)
 
