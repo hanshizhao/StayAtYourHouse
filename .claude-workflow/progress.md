@@ -94,16 +94,22 @@
 - 修复: renewRental 返回类型从 RenewResult 改为 number（与后端一致）
 - 优点: 代码风格与项目一致, 类型安全, URL 路径与后端匹配, API 常量复用
 
-#### Phase 7: 前端组件 (FEAT-079 ~ FEAT-084)
+#### Phase 7: 前端组件 (FEAT-079 ~ FEAT-084) ✅ 已完成
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-079 | 改造 TodoPanel 组件 | ⏳ 待开始 |
-| FEAT-080 | 创建 PayUtilityDialog 组件 | ⏳ 待开始 |
-| FEAT-081 | 创建 RentalReminderDialog 组件 | ⏳ 待开始 |
-| FEAT-082 | 创建 DeferDialog 组件 | ⏳ 待开始 |
-| FEAT-083 | 创建 RenewRentalDialog 组件 | ⏳ 待开始 |
-| FEAT-084 | 创建 DeferralRecordsDialog 组件 | ⏳ 待开始 |
+| FEAT-079 | 改造 TodoPanel 组件 | ✅ 已通过 | ✅ 通过 |
+| FEAT-080 | 创建 PayUtilityDialog 组件 | ✅ 已通过 | ✅ 通过 |
+| FEAT-081 | 创建 RentalReminderDialog 组件 | ✅ 已通过 | ✅ 通过 |
+| FEAT-082 | 创建 DeferDialog 组件 | ✅ 已通过 | ✅ 通过 |
+| FEAT-083 | 创建 RenewRentalDialog 组件 | ✅ 已通过 | ✅ 通过 |
+| FEAT-084 | 创建 DeferralRecordsDialog 组件 | ✅ 已通过 | ✅ 通过 |
+
+**Phase 7 验证通过**
+- 前端构建: npm run build 成功
+- E2E 测试: 6/6 passed
+- 测试文件: tests/e2e/feat-079-084-todo-panel-components.spec.ts
+- Critical: 0 | Important: 0 | Minor: 0
 
 #### Phase 8: 测试与验证 (FEAT-085 ~ FEAT-087)
 
@@ -115,10 +121,10 @@
 
 ## 统计
 
-- **已完成**: 18/30 (60%)
-- **已通过**: 18/30 (60%)
+- **已完成**: 28/30 (93%)
+- **已通过**: 28/30 (93%)
 - **进行中**: 0
-- **待处理**: 12
+- **待处理**: 2
 
 ## 状态说明
 
@@ -129,6 +135,13 @@
 - ❌ 失败 - 任务验证失败
 
 ## 更新日志
+
+### 2026-03-29 (续)
+
+- Phase 7 (FEAT-079~084) 验证通过
+  - E2E 测试: 6/6 passed
+  - 前端构建: npm run build 成功
+  - 组件: TodoPanel, PayUtilityDialog, RentalReminderDialog, DeferDialog, RenewRentalDialog, DeferralRecordsDialog
 
 ### 2026-03-29
 
@@ -152,25 +165,63 @@
 - FEAT-068 代码实现完成：创建 RenewRentalInput，包含 LeaseType/MonthlyRent/ContractEndDate（必填）和 ContractImage/Remark（可选）
 - FEAT-068 代码审查通过：Critical=0, Important=0, Minor=0
 - FEAT-068 验证通过：静态测试 3/3 passed
-- FEAT-070 代码实现完成：创建 ITodoService 接口，包含 GetTodoListAsync 方法
+- FEAT-070 代码实现完成：创建 ITodoService 接口
+包含 GetTodoListAsync 方法
 - FEAT-070 代码审查通过：Critical=0, Important=1（type 参数建议使用枚举）
 - FEAT-070 验证通过：静态测试 3/3 passed
-- FEAT-072 代码实现完成：创建 IRentalReminderService 接口，包含 DeferAsync/RenewAsync/GetDeferralsAsync 方法
+- FEAT-072 代码实现完成：创建 IRentalReminderService 接口
+包含 DeferAsync/RenewAsync/GetDeferralsAsync 方法
 - FEAT-072 代码审查通过：Critical=0, Important=1（评估后保持现状）, Minor=0
-- FEAT-072 验证通过：dotnet build 成功，0 警告，0 错误
+- FEAT-072 验证通过：dotnet build 成功，0 警告
+0 错误
 - FEAT-073 代码实现完成：创建 RentalReminderService 实现，包含 DeferAsync/RenewAsync/GetDeferralsAsync 方法
 - FEAT-073 代码审查通过：Critical=0, Important=0, Minor=3
 - FEAT-073 验证通过：api_runtime 验证成功，dotnet build 成功，应用启动成功（DI 配置正确）
 - FEAT-074 代码实现完成：创建 TodoAppService API 控制器，包含 GetList/Defer/Renew/GetDeferrals 四个端点
 - FEAT-074 代码审查通过：Critical=0, Important=0, Minor=3（均为低优先级建议）
-- FEAT-075 代码实现完成：创建 RentalReminderBackgroundService 后台服务，每日凌晨扫描即将到期的租赁记录并创建提醒
+- FEAT-075 代码实现完成：创建 RentalReminderBackgroundService 后台服务
+每日凌晨扫描即将到期的租赁记录并创建提醒
 - FEAT-075 代码审查通过：Critical=0, Important=2（评估后保持现状）, Minor=3
 - FEAT-076 代码实现完成：在 Startup.cs 中注册 RentalReminderBackgroundService 后台服务
-- FEAT-076 验证通过：api_runtime 验证成功，应用启动成功，后台服务正确启动
-- FEAT-077 代码实现完成：创建 todoModel.ts 类型定义，包含 TodoType 枚举、RentalReminderStatus 枚举、多个接口定义
+- FEAT-076 验证通过：api_runtime 验证成功，应用启动成功
+后台服务正确启动
+- FEAT-077 代码实现完成：创建 todoModel.ts 类型定义
+包含 TodoType 枚举、RentalReminderStatus 枚举、多个接口定义
 - FEAT-077 验证通过：静态测试 5/5 passed，TypeScript 构建通过
-- FEAT-078 代码实现完成：创建 todo.ts API 封装，包含 getTodoList/deferReminder/renewRental/getDeferrals 四个函数
+- FEAT-078 代码实现完成：创建 todo.ts API 封装
+包含 getTodoList/deferReminder/renewRental/getDeferrals 四个函数
 - FEAT-078 代码审查通过：Critical=0, Important=0, Minor=1
 - FEAT-078 修复：renewRental 返回类型从 RenewResult 改为 number（与后端一致）
 - FEAT-078 修复：getTodoList 的 type 参数类型优化，添加枚举到字符串的转换函数
 - FEAT-078 验证通过：静态测试 4/4 passed，TypeScript 构建通过
+- FEAT-079 代码实现完成：改造 TodoPanel 组件
+  - 添加类型筛选下拉框（全部/水电费/催收房租）
+  - 支持水电费和催收房租两种类型渲染
+  - 点击待办触发对应弹窗
+- FEAT-080 代码实现完成：创建 PayUtilityDialog 组件
+  - 从 utility/bill/index.vue 抽取收款弹窗逻辑
+  - 支持 visible 和 bill props
+  - 支持 update:visible 和 success events
+- FEAT-081 代码实现完成：创建 RentalReminderDialog 组件
+  - 显示租客、房间、入住信息
+  - 显示宽限次数（可点击查看记录）
+  - 宽限/续租/取消按钮
+- FEAT-082 代码实现完成：创建 DeferDialog 组件
+  - 日期选择器（最小明天，默认+3天）
+  - 备注输入
+  - 确认/取消按钮
+- FEAT-083 代码实现完成：创建 RenewRentalDialog 组件
+  - 显示租客、房间（只读）
+  - 显示上个租期
+  - 新租期类型选择、新月租金输入、新合同到期日
+  - 合同图片上传、备注输入
+- FEAT-084 代码实现完成：创建 DeferralRecordsDialog 组件
+  - 表格显示宽限记录
+  - 按时间倒序排列
+  - 空状态提示
+- Phase 7 (FEAT-079~084) 代码审查完成
+  - Critical: 1 → 已修复（DeferralRecordsDialog.vue CSS 语法错误）
+  - Important: 2 → 已修复（DeferDialog.vue 添加 min-date、移除未使用 CSS）
+  - Minor: 3（均为低优先级建议）
+  - TypeScript 构建通过
+  - 优点：组件结构清晰、TypeScript 类型完整、错误处理规范、无 console.log

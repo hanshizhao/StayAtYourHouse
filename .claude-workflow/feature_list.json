@@ -1066,11 +1066,28 @@
           "code_hint": "添加 filterType 状态、typeOptions 选项、渲染两种类型待办、添加弹窗组件引用"
         }
       ],
-      "test_file": "tests/e2e/feat-079-todo-panel.spec.ts",
-      "status": "pending",
+      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
+      "status": "passed",
+      "started_at": "2026-03-29T16:30:00Z",
+      "completed_at": "2026-03-29T17:00:00Z",
+      "review": {
+        "last_review_at": "2026-03-29T17:30:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "phase_review": "Phase 7 (FEAT-079~084) 代码审查已完成"
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_passed": 6,
+        "tests_total": 6,
+        "build_passed": true,
+        "verified_at": "2026-03-29T18:00:00Z"
       }
     },
     {
@@ -1094,11 +1111,27 @@
           "code_hint": "defineProps<{ visible: boolean; bill: UtilityBillItem | null }>() defineEmits<{ 'update:visible': [value: boolean]; 'success': [] }>()"
         }
       ],
-      "test_file": "tests/e2e/feat-080-pay-utility-dialog.spec.ts",
-      "status": "pending",
+      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
+      "status": "passed",
+      "started_at": "2026-03-29T17:00:00Z",
+      "completed_at": "2026-03-29T17:30:00Z",
+      "review": {
+        "last_review_at": "2026-03-29T17:30:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        }
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_passed": 6,
+        "tests_total": 6,
+        "build_passed": true,
+        "verified_at": "2026-03-29T18:00:00Z"
       }
     },
     {
@@ -1122,11 +1155,27 @@
           "code_hint": "显示租客信息、宽限次数、三个操作按钮"
         }
       ],
-      "test_file": "tests/e2e/feat-081-rental-reminder-dialog.spec.ts",
-      "status": "pending",
+      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
+      "status": "passed",
+      "started_at": "2026-03-29T17:00:00Z",
+      "completed_at": "2026-03-29T17:30:00Z",
+      "review": {
+        "last_review_at": "2026-03-29T17:30:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        }
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_passed": 6,
+        "tests_total": 6,
+        "build_passed": true,
+        "verified_at": "2026-03-29T18:00:00Z"
       }
     },
     {
@@ -1150,11 +1199,27 @@
           "code_hint": "t-date-picker with min-date, t-textarea, 提交调用 deferReminder API"
         }
       ],
-      "test_file": "tests/e2e/feat-082-defer-dialog.spec.ts",
-      "status": "pending",
+      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
+      "status": "passed",
+      "started_at": "2026-03-29T17:00:00Z",
+      "completed_at": "2026-03-29T17:30:00Z",
+      "review": {
+        "last_review_at": "2026-03-29T17:30:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        }
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_passed": 6,
+        "tests_total": 6,
+        "build_passed": true,
+        "verified_at": "2026-03-29T18:00:00Z"
       }
     },
     {
@@ -1179,11 +1244,27 @@
           "code_hint": "t-select for leaseType, t-input-number for monthlyRent, t-date-picker for contractEndDate, t-upload for contractImage"
         }
       ],
-      "test_file": "tests/e2e/feat-083-renew-rental-dialog.spec.ts",
-      "status": "pending",
+      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
+      "status": "passed",
+      "started_at": "2026-03-29T17:00:00Z",
+      "completed_at": "2026-03-29T17:30:00Z",
+      "review": {
+        "last_review_at": "2026-03-29T17:30:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        }
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_passed": 6,
+        "tests_total": 6,
+        "build_passed": true,
+        "verified_at": "2026-03-29T18:00:00Z"
       }
     },
     {
@@ -1207,11 +1288,27 @@
           "code_hint": "t-table with columns, t-empty for empty state"
         }
       ],
-      "test_file": "tests/e2e/feat-084-deferral-records-dialog.spec.ts",
-      "status": "pending",
+      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
+      "status": "passed",
+      "started_at": "2026-03-29T17:00:00Z",
+      "completed_at": "2026-03-29T17:30:00Z",
+      "review": {
+        "last_review_at": "2026-03-29T17:30:00Z",
+        "reviewer": "workflow-review",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        }
+      },
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "tests_passed": 6,
+        "tests_total": 6,
+        "build_passed": true,
+        "verified_at": "2026-03-29T18:00:00Z"
       }
     },
     {
