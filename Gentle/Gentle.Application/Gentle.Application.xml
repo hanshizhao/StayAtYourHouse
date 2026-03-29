@@ -2365,6 +2365,23 @@
             删除租客
             </summary>
         </member>
+        <member name="T:Gentle.Application.Services.ITodoService">
+            <summary>
+            待办事项服务接口
+            </summary>
+            <remarks>
+            聚合水电费和催收房租待办事项的服务接口。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Services.ITodoService.GetTodoListAsync(System.String,System.Int32,System.Int32)">
+            <summary>
+            获取待办事项列表
+            </summary>
+            <param name="type">待办类型筛选：null=全部, "utility"=水电费, "rental"=催收房租</param>
+            <param name="page">页码（从1开始）</param>
+            <param name="pageSize">每页数量</param>
+            <returns>待办事项列表结果</returns>
+        </member>
         <member name="T:Gentle.Application.Services.MeterService">
             <summary>
             水电抄表服务实现

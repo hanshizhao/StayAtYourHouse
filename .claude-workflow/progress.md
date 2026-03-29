@@ -43,7 +43,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-070 | 创建 ITodoService 接口 | ⏳ 待开始 |
+| FEAT-070 | 创建 ITodoService 接口 | ✅ 已通过 | ✅ 通过 |
 | FEAT-071 | 创建 TodoService 实现 | ⏳ 待开始 |
 | FEAT-072 | 创建 IRentalReminderService 接口 | ⏳ 待开始 |
 | FEAT-073 | 创建 RentalReminderService 实现 | ⏳ 待开始 |
@@ -89,10 +89,10 @@
 
 ## 统计
 
-- **已完成**: 10/30 (33%)
-- **已通过**: 10/30 (33%)
+- **已完成**: 11/30 (37%)
+- **已通过**: 11/30 (37%)
 - **进行中**: 0
-- **待处理**: 20
+- **待处理**: 19
 
 ## 状态说明
 
@@ -126,3 +126,6 @@
 - FEAT-068 代码实现完成：创建 RenewRentalInput，包含 LeaseType/MonthlyRent/ContractEndDate（必填）和 ContractImage/Remark（可选）
 - FEAT-068 代码审查通过：Critical=0, Important=0, Minor=0
 - FEAT-068 验证通过：静态测试 3/3 passed
+- FEAT-070 代码实现完成：创建 ITodoService 接口，包含 GetTodoListAsync 方法
+- FEAT-070 代码审查通过：Critical=0, Important=1（type 参数建议使用枚举）
+- FEAT-070 验证通过：静态测试 3/3 passed
