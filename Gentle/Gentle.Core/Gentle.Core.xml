@@ -204,6 +204,41 @@
             配置种子数据
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.RentalReminder">
+            <summary>
+            暂收提醒实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalReminder.RentalRecordId">
+            <summary>
+            租赁记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalReminder.ReminderDate">
+            <summary>
+            提醒日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalReminder.Status">
+            <summary>
+            提醒状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalReminder.RentalRecord">
+            <summary>
+            租记录导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalReminder.Room">
+            <summary>
+            房间导航属性（通过 RentalRecord 关联)
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalReminder.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.Room">
             <summary>
             房间实体
