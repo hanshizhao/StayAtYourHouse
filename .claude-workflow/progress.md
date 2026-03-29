@@ -52,7 +52,7 @@
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-074 | 创建 TodoAppService API 控制器 | ⏳ 待开始 |
+| FEAT-074 | 创建 TodoAppService API 控制器 | ✅ 已通过 | ✅ 通过 |
 
 #### Phase 5: 定时任务 (FEAT-075 ~ FEAT-076)
 
@@ -89,10 +89,10 @@
 
 ## 统计
 
-- **已完成**: 14/30 (47%)
-- **已通过**: 14/30 (47%)
+- **已完成**: 15/30 (50%)
+- **已通过**: 15/30 (50%)
 - **进行中**: 0
-- **待处理**: 16
+- **待处理**: 15
 
 ## 状态说明
 
@@ -135,3 +135,5 @@
 - FEAT-073 代码实现完成：创建 RentalReminderService 实现，包含 DeferAsync/RenewAsync/GetDeferralsAsync 方法
 - FEAT-073 代码审查通过：Critical=0, Important=0, Minor=3
 - FEAT-073 验证通过：api_runtime 验证成功，dotnet build 成功，应用启动成功（DI 配置正确）
+- FEAT-074 代码实现完成：创建 TodoAppService API 控制器，包含 GetList/Defer/Renew/GetDeferrals 四个端点
+- FEAT-074 代码审查通过：Critical=0, Important=0, Minor=3（均为低优先级建议）

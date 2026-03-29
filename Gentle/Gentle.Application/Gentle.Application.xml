@@ -267,6 +267,51 @@
             删除租客
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.TodoAppService">
+            <summary>
+            待办事项应用服务
+            </summary>
+            <remarks>
+            提供待办事项列表查询、催收提醒宽限、续租处理等功能。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Apps.TodoAppService.GetList(System.String,System.Int32,System.Int32)">
+            <summary>
+            获取待办事项列表
+            </summary>
+            <param name="type">待办类型筛选（utility=水电费, rental=催收房租, null=全部）</param>
+            <param name="page">页码（从1开始）</param>
+            <param name="pageSize">每页数量（默认20）</param>
+            <returns>待办事项列表结果</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.TodoAppService.Defer(System.Int32,Gentle.Application.Dtos.Rental.DeferReminderInput)">
+            <summary>
+            宽限催收提醒
+            </summary>
+            <param name="id">催收提醒ID</param>
+            <param name="input">宽限输入参数</param>
+            <remarks>
+            创建宽限记录，更新提醒状态为 Deferred，并创建新的催收提醒。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Apps.TodoAppService.Renew(System.Int32,Gentle.Application.Dtos.Rental.RenewRentalInput)">
+            <summary>
+            续租处理
+            </summary>
+            <param name="id">催收提醒ID</param>
+            <param name="input">续租输入参数</param>
+            <returns>新租赁记录ID</returns>
+            <remarks>
+            创建新的租赁记录，继承押金，更新原租赁记录状态为已完成。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Apps.TodoAppService.GetDeferrals(System.Int32)">
+            <summary>
+            获取宽限记录列表
+            </summary>
+            <param name="id">催收提醒ID</param>
+            <returns>宽限记录列表结果</returns>
+        </member>
         <member name="T:Gentle.Application.Apps.UserAppService">
             <summary>den
             用户管理服务
@@ -2287,6 +2332,42 @@
             删除租住记录
             </summary>
         </member>
+        <member name="T:Gentle.Application.Services.IRentalReminderService">
+            <summary>
+            催收提醒服务接口
+            </summary>
+            <remarks>
+            提供催收提醒的宽限、续租和宽限记录查询功能。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Services.IRentalReminderService.DeferAsync(System.Int32,Gentle.Application.Dtos.Rental.DeferReminderInput)">
+            <summary>
+            宽限催收提醒
+            </summary>
+            <param name="reminderId">催收提醒ID</param>
+            <param name="input">宽限输入参数</param>
+            <remarks>
+            创建宽限记录，更新提醒状态为 Deferred，并创建新的催收提醒。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Services.IRentalReminderService.RenewAsync(System.Int32,Gentle.Application.Dtos.Rental.RenewRentalInput)">
+            <summary>
+            续租处理
+            </summary>
+            <param name="reminderId">催收提醒ID</param>
+            <param name="input">续租输入参数</param>
+            <returns>新租赁记录ID</returns>
+            <remarks>
+            创建新的租赁记录，继承押金，更新原租赁记录状态为已完成。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Services.IRentalReminderService.GetDeferralsAsync(System.Int32)">
+            <summary>
+            获取宽限记录列表
+            </summary>
+            <param name="reminderId">催收提醒ID</param>
+            <returns>宽限记录列表结果</returns>
+        </member>
         <member name="T:Gentle.Application.Services.IReportService">
             <summary>
             统计报表服务接口
@@ -2498,6 +2579,31 @@
             <summary>
             获取房间状态文本
             </summary>
+        </member>
+        <member name="T:Gentle.Application.Services.RentalReminderService">
+            <summary>
+            催收提醒服务实现
+            </summary>
+            <remarks>
+            提供催收提醒的宽限、续租和宽限记录查询功能。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Services.RentalReminderService.#ctor(Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalReminder},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalDeferral},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalRecord})">
+            <summary>
+            初始化催收提醒服务
+            </summary>
+            <param name="reminderRepository">提醒仓储</param>
+            <param name="deferralRepository">宽限记录仓储</param>
+            <param name="rentalRecordRepository">租赁记录仓储</param>
+        </member>
+        <member name="M:Gentle.Application.Services.RentalReminderService.DeferAsync(System.Int32,Gentle.Application.Dtos.Rental.DeferReminderInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalReminderService.RenewAsync(System.Int32,Gentle.Application.Dtos.Rental.RenewRentalInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalReminderService.GetDeferralsAsync(System.Int32)">
+            <inheritdoc />
         </member>
         <member name="T:Gentle.Application.Services.ReportService">
             <summary>
