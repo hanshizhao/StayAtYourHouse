@@ -20,7 +20,7 @@
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
 | FEAT-088 | HousingStatsCards 组件 | ✅ 已完成 | 8/8 passed |
-| FEAT-089 | FinanceSummary 组件 | ⏳ 待开始 | - |
+| FEAT-089 | FinanceSummary 组件 | ✅ 已通过 | 3/3 passed |
 | FEAT-090 | CommunityStatsTable 组件 | ⏳ 待开始 | - |
 | FEAT-091 | VacantRoomsList 组件 | ⏳ 待开始 | - |
 | FEAT-092 | 重写 index.vue | ⏳ 待开始 | - |
@@ -31,10 +31,10 @@
 
 ## 统计
 
-- **已完成**: 1/9 (11%)
-- **已通过**: 1/9 (11%)
+- **已完成**: 2/9 (22%)
+- **已通过**: 2/9 (22%)
 - **进行中**: 0
-- **待处理**: 8
+- **待处理**: 7
 
 ## 状态说明
 

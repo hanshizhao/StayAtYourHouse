@@ -68,10 +68,26 @@
         }
       ],
       "test_file": "tests/e2e/feat-089-finance-summary.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-30T13:10:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-30T13:10:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-03-30T13:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "minor_issues": [
+          "finance-grid 缺少响应式断点样式",
+          "getProgressStatus 阈值 80/50 可提取为常量"
+        ]
       }
     },
     {
