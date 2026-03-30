@@ -105,6 +105,8 @@ export interface RentalRecordDto {
   remark?: string;
   checkOutRemark?: string;
   createdTime: string;
+  /** 是否已提交安居码 */
+  isAnJuCodeSubmitted: boolean;
   /** 关联水电账单列表 */
   utilityBills?: UtilityBillItem[];
 }

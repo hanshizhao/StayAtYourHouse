@@ -22,15 +22,15 @@
 | FEAT-098 | 后端服务层 — 新增 ConfirmAnJuCodeAsync 方法 | 后端 | api_runtime | ✅ 已完成 | - |
 | FEAT-099 | 后端 API 层 — 新增确认接口端点 | 后端 | api_runtime | ✅ 已完成 | 4/4 |
 | FEAT-100 | 数据库迁移 | 后端 | static | ✅ 已完成 | 4/4 |
-| FEAT-101 | 前端类型与 API — 新增 confirmAnjuCode | 前端 | static | ⏳ 待开始 | - |
+| FEAT-101 | 前端类型与 API — 新增 confirmAnjuCode | 前端 | static | ✅ 已完成 | 7/7 |
 | FEAT-102 | 前端 UI — 表格新增安居码列及确认交互 | 前端 | e2e | ⏳ 待开始 | - |
 | FEAT-103 | 端到端验证 | 集成 | e2e | ⏳ 待开始 | - |
 
 ## 统计
 
-- **已完成**: 4/7 (57%)
+- **已完成**: 5/7 (71%)
 - **进行中**: 0
-- **待处理**: 3
+- **待处理**: 2
 
 ## 更新日志
 

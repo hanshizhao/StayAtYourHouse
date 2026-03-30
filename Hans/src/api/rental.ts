@@ -13,6 +13,7 @@ const Api = {
   Detail: '/rental',
   CheckIn: '/rental/check-in',
   CheckOut: '/rental/check-out',
+  ConfirmAnJuCode: '/rental/confirm-anju-code',
   Delete: '/rental/remove',
 };
 
@@ -71,5 +72,14 @@ export function checkOut(data: CheckOutInput) {
 export function deleteRental(id: number) {
   return request.delete({
     url: `${Api.Delete}/${id}`,
+  });
+}
+
+/**
+ * 确认提交安居码
+ */
+export function confirmAnjuCode(id: number) {
+  return request.post<RentalRecordDto>({
+    url: `${Api.ConfirmAnJuCode}/${id}`,
   });
 }
