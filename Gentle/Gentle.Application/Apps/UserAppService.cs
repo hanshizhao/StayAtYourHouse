@@ -36,7 +36,7 @@ public class UserAppService : IDynamicApiController
     {
         if (ProtectedUsernames.Contains(user.Username))
         {
-            throw Oops.Oh($"< {user.Username} >是爸爸，爸爸不让这么做。");
+            throw Oops.Oh($"想害我？");
         }
     }
 
@@ -93,7 +93,8 @@ public class UserAppService : IDynamicApiController
             Username = input.Username,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(input.Password),
             DisplayName = input.DisplayName,
-            IsEnabled = true
+            IsEnabled = true,
+            CreatedTime = DateTimeOffset.Now
         };
 
         var entry = await _userRepository.InsertAsync(user);

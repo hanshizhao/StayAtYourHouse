@@ -117,6 +117,7 @@ public class TenantService : ITenantService
         }
 
         var tenant = input.Adapt<Core.Entities.Tenant>();
+        tenant.CreatedTime = DateTimeOffset.Now;
         var entry = await _repository.InsertAsync(tenant);
         await _repository.SaveNowAsync();
         return entry.Entity.Adapt<TenantDto>();

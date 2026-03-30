@@ -119,7 +119,6 @@ const settingStore = useSettingStore();
 
 // 表格列配置
 const columns: PrimaryTableCol[] = [
-  { colKey: 'id', title: 'ID', width: 80 },
   { colKey: 'username', title: '用户名', width: 150 },
   { colKey: 'displayName', title: '显示名称', width: 150 },
   { colKey: 'isEnabled', title: '状态', width: 100 },

@@ -219,7 +219,6 @@ const router = useRouter();
 
 // 表格列配置
 const columns: PrimaryTableCol[] = [
-  { colKey: 'id', title: 'ID', width: 80 },
   { colKey: 'name', title: '租客姓名', width: 120 },
   { colKey: 'phone', title: '联系电话', width: 140 },
   { colKey: 'idCard', title: '身份证号', width: 180 },

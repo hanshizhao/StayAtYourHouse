@@ -147,7 +147,6 @@ let isUnmounted = false;
 
 // 表格列配置
 const columns: PrimaryTableCol[] = [
-  { colKey: 'id', title: 'ID', width: 80 },
   { colKey: 'tenantName', title: '租客姓名', width: 120 },
   { colKey: 'roomInfo', title: '房间信息', width: 200, ellipsis: true },
   { colKey: 'checkInDate', title: '入住日期', width: 120 },
