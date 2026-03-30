@@ -1042,6 +1042,11 @@
             退租备注
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.IsAnJuCodeSubmitted">
+            <summary>
+            安居码是否已提交
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.CreatedTime">
             <summary>
             创建时间

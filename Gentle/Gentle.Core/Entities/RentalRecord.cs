@@ -138,6 +138,11 @@ public class RentalRecord : Entity<int>, IEntitySeedData<RentalRecord>
     public string? CheckOutRemark { get; set; }
 
     /// <summary>
+    /// 安居码是否已提交
+    /// </summary>
+    public bool IsAnJuCodeSubmitted { get; set; } = false;
+
+    /// <summary>
     /// 配置种子数据
     /// </summary>
     public IEnumerable<RentalRecord> HasData(DbContext dbContext, Type dbContextLocator)

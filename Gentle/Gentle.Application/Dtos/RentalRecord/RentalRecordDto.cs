@@ -121,6 +121,11 @@ public class RentalRecordDto
     public string? CheckOutRemark { get; set; }
 
     /// <summary>
+    /// 安居码是否已提交
+    /// </summary>
+    public bool IsAnJuCodeSubmitted { get; set; }
+
+    /// <summary>
     /// 创建时间
     /// </summary>
     public DateTimeOffset CreatedTime { get; set; }

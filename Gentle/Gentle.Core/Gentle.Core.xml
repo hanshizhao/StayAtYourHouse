@@ -230,6 +230,11 @@
             退租备注
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.IsAnJuCodeSubmitted">
+            <summary>
+            安居码是否已提交
+            </summary>
+        </member>
         <member name="M:Gentle.Core.Entities.RentalRecord.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
             <summary>
             配置种子数据

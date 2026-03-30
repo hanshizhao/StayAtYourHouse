@@ -38,10 +38,11 @@
         }
       ],
       "test_file": "tests/e2e/feat-097-anju-code-entity.spec.ts",
-      "status": "pending",
+      "status": "passed",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-30T17:15:00Z"
       }
     },
     {
