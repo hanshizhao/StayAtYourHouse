@@ -35,7 +35,7 @@
       "test_file": "tests/e2e/feat-088-housing-stats-cards.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false
       }
     },
@@ -68,7 +68,7 @@
       "test_file": "tests/e2e/feat-089-finance-summary.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false
       }
     },
@@ -101,7 +101,7 @@
       "test_file": "tests/e2e/feat-090-community-stats-table.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false
       }
     },
@@ -134,7 +134,7 @@
       "test_file": "tests/e2e/feat-091-vacant-rooms-list.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false
       }
     },
@@ -168,7 +168,7 @@
       "test_file": "tests/e2e/feat-092-dashboard-index-rewrite.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false
       }
     },
@@ -207,7 +207,7 @@
       "test_file": "tests/e2e/feat-093-dashboard-i18n.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false
       }
     },
@@ -253,7 +253,7 @@
       "test_file": "tests/e2e/feat-094-cleanup-old-files.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false
       }
     },
@@ -288,7 +288,7 @@
       "test_file": "tests/e2e/feat-095-dashboard-redesign.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false,
         "required_tests": ["stats_cards", "finance_summary", "todo_panel", "community_stats", "vacant_rooms", "old_content_removed"]
       }
@@ -322,7 +322,7 @@
       "test_file": "tests/e2e/feat-096-final-verification.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
+        "e2e_tests_created": false,
         "e2e_tests_passed": false
       }
     }
