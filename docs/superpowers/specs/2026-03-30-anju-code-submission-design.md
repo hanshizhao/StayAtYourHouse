@@ -67,15 +67,41 @@ POST /api/rental/confirm-anju-code/{id}
 - 返回：更新后的 `RentalRecordDto`
 - 逻辑：将 `IsAnJuCodeSubmitted` 设为 `true` 并保存
 - 校验：记录不存在时 `throw Oops.Oh("租赁记录不存在")`
-- 需要 `[Authorize]` 认证
+- 幂等性：如果已经是 `true`，直接返回当前记录不做修改
+- 需要 `[Authorize]` 认证（类级别已有，无需额外添加）
+- DTO 映射：通过 Mapster 约定映射（属性名一致，无需额外配置）
+
+### 服务层变更
+
+文件：`Gentle/Gentle.Application/Services/IRentalRecordService.cs`
+
+新增接口方法：
+
+```csharp
+Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id);
+```
+
+实现类中：
+
+- 使用 `[UnitOfWork]` 修饰（与 CheckIn/CheckOut 保持一致）
+- 查找记录 → 校验存在性 → 设置 `IsAnJuCodeSubmitted = true` → 保存
+- 返回映射后的 `RentalRecordDto`
 
 ### 前端 API
 
 文件：`Hans/src/api/rental.ts`
 
+在 `Api` 常量中新增：
+
+```typescript
+ConfirmAnJuCode: '/rental/confirm-anju-code',
+```
+
+新增函数（遵循现有对象参数模式）：
+
 ```typescript
 export function confirmAnjuCode(id: number) {
-  return request.post<RentalRecordDto>(`/rental/confirm-anju-code/${id}`)
+  return request.post<RentalRecordDto>({ url: `${Api.ConfirmAnJuCode}/${id}` })
 }
 ```
 
@@ -99,9 +125,12 @@ export function confirmAnjuCode(id: number) {
 - 未提交（`isAnJuCodeSubmitted === false`）：渲染 `<t-link theme="danger" underline>未提交</t-link>`
   - 点击触发确认弹窗
   - 弹窗使用 TDesign `DialogPlugin.confirm`
-  - 弹窗内容：显示租客姓名和房间信息
+  - 需要导入 `DialogPlugin`（当前文件未导入）
+  - 弹窗标题：`确认安居码提交`
+  - 弹窗内容：`确认将 {租客姓名}（{房间信息}）标记为已提交安居码？`
   - 确认后调用 `confirmAnjuCode(id)`
-  - 成功后刷新列表数据
+  - 成功后提示成功消息并刷新列表数据
+  - 失败时显示错误提示（MessagePlugin.error）
 
 ## 涉及文件
 
@@ -110,7 +139,8 @@ export function confirmAnjuCode(id: number) {
 | `Gentle/Gentle.Core/Entities/RentalRecord.cs` | 修改：新增属性 |
 | `Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs` | 修改：新增字段 |
 | `Gentle/Gentle.Application/Apps/RentalAppService.cs` | 修改：新增确认 API |
-| `Gentle/Gentle.Database.Migrations/` | 新增：EF Core 迁移 |
+| `Gentle/Gentle.Application/Services/IRentalRecordService.cs` | 修改：新增服务接口方法 |
+| `Gentle/Gentle.Database.Migrations/` | 新增：EF Core 迁移（`AddAnJuCodeSubmittedToRentalRecord`） |
 | `Hans/src/api/model/rentalModel.ts` | 修改：新增字段 |
 | `Hans/src/api/rental.ts` | 修改：新增 API 函数 |
 | `Hans/src/pages/housing/rental/index.vue` | 修改：新增列和交互逻辑 |
