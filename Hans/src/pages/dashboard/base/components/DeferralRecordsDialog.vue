@@ -1,5 +1,11 @@
 <template>
-  <t-dialog v-model:visible="dialogVisible" header="宽限记录" width="600px" :footer="false" data-testid="deferral-records-dialog">
+  <t-dialog
+    v-model:visible="dialogVisible"
+    header="宽限记录"
+    width="600px"
+    :footer="false"
+    data-testid="deferral-records-dialog"
+  >
     <div v-if="loading" class="loading-state">
       <t-loading text="加载中..." />
     </div>

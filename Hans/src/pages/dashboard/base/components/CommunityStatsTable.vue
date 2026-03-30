@@ -41,7 +41,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import type { PrimaryTableCol } from 'tdesign-vue-next';
 
@@ -53,11 +52,14 @@ defineOptions({
   name: 'CommunityStatsTable',
 });
 
-withDefaults(defineProps<{
-  communityStats: CommunityStat[];
-}>(), {
-  communityStats: () => [],
-});
+withDefaults(
+  defineProps<{
+    communityStats: CommunityStat[];
+  }>(),
+  {
+    communityStats: () => [],
+  },
+);
 
 const communityColumns: PrimaryTableCol[] = [
   { colKey: 'communityName', title: '小区名称', ellipsis: true },
@@ -67,7 +69,6 @@ const communityColumns: PrimaryTableCol[] = [
   { colKey: 'occupancyRate', title: '出租率', width: 140 },
 ];
 </script>
-
 <style lang="less" scoped>
 .community-stats {
   background: var(--td-bg-color-container);
@@ -93,8 +94,12 @@ const communityColumns: PrimaryTableCol[] = [
 .room-count {
   font-weight: 500;
 
-  &.rented { color: var(--td-success-color); }
-  &.vacant { color: var(--td-warning-color); }
+  &.rented {
+    color: var(--td-success-color);
+  }
+  &.vacant {
+    color: var(--td-warning-color);
+  }
 }
 
 .rate-cell {
@@ -102,7 +107,10 @@ const communityColumns: PrimaryTableCol[] = [
   align-items: center;
   gap: 8px;
 
-  .t-progress { flex: 1; min-width: 60px; }
+  .t-progress {
+    flex: 1;
+    min-width: 60px;
+  }
 
   .rate-text {
     font-size: 13px;

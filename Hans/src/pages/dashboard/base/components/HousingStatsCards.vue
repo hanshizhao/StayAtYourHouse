@@ -50,7 +50,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 defineOptions({
   name: 'HousingStatsCards',
@@ -63,7 +62,6 @@ defineProps<{
   renovatingCount: number;
 }>();
 </script>
-
 <style lang="less" scoped>
 .housing-stats-cards {
   display: grid;

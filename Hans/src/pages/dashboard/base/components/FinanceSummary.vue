@@ -37,7 +37,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { formatMoney } from '@/utils/format';
 
@@ -55,7 +54,6 @@ defineProps<{
   occupancyRate: number;
 }>();
 </script>
-
 <style lang="less" scoped>
 .finance-summary {
   background: var(--td-bg-color-container);
@@ -96,22 +94,30 @@ defineProps<{
 
   &.rent-income {
     background: rgba(0, 82, 217, 0.06);
-    .finance-value { color: var(--td-brand-color); }
+    .finance-value {
+      color: var(--td-brand-color);
+    }
   }
 
   &.utility-income {
     background: rgba(0, 168, 112, 0.06);
-    .finance-value { color: var(--td-success-color); }
+    .finance-value {
+      color: var(--td-success-color);
+    }
   }
 
   &.expense {
     background: rgba(237, 123, 47, 0.06);
-    .finance-value { color: var(--td-warning-color); }
+    .finance-value {
+      color: var(--td-warning-color);
+    }
   }
 
   &.net-profit {
     background: rgba(0, 82, 217, 0.06);
-    .finance-value { color: var(--td-brand-color); }
+    .finance-value {
+      color: var(--td-brand-color);
+    }
   }
 }
 

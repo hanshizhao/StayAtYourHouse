@@ -14,11 +14,7 @@
           <span class="room-info">{{ row.roomInfo }}</span>
         </template>
         <template #vacantDays="{ row }">
-          <t-tag
-            :theme="getVacantDaysTheme(row.vacantDays)"
-            size="small"
-            data-testid="vacant-days-tag"
-          >
+          <t-tag :theme="getVacantDaysTheme(row.vacantDays)" size="small" data-testid="vacant-days-tag">
             {{ row.vacantDays }}天
           </t-tag>
         </template>
@@ -33,23 +29,24 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import type { PrimaryTableCol } from 'tdesign-vue-next';
 
 import type { VacantRoomInfo } from '@/api/model/reportModel';
-
 import { formatPrice } from '@/utils/format';
 
 defineOptions({
   name: 'VacantRoomsList',
 });
 
-withDefaults(defineProps<{
-  vacantRooms: VacantRoomInfo[];
-}>(), {
-  vacantRooms: () => [],
-});
+withDefaults(
+  defineProps<{
+    vacantRooms: VacantRoomInfo[];
+  }>(),
+  {
+    vacantRooms: () => [],
+  },
+);
 
 const VACANT_DAYS_THRESHOLD = { SAFE: 7, WARNING: 30 } as const;
 
@@ -65,7 +62,6 @@ function getVacantDaysTheme(days: number): 'success' | 'warning' | 'danger' {
   return 'danger';
 }
 </script>
-
 <style lang="less" scoped>
 .vacant-rooms {
   background: var(--td-bg-color-container);

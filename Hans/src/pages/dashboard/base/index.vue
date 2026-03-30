@@ -57,7 +57,6 @@
     </template>
   </div>
 </template>
-
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
@@ -84,10 +83,7 @@ async function fetchData() {
   errorMessage.value = '';
 
   try {
-    const [housingRes, financeRes] = await Promise.all([
-      getHousingOverview(),
-      getIncomeReport(),
-    ]);
+    const [housingRes, financeRes] = await Promise.all([getHousingOverview(), getIncomeReport()]);
 
     housingData.value = housingRes ?? null;
     financeData.value = financeRes ?? null;
@@ -103,7 +99,6 @@ onMounted(() => {
   fetchData();
 });
 </script>
-
 <style lang="less" scoped>
 .dashboard-container {
   min-height: 200px;
