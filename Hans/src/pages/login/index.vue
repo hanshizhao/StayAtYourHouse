@@ -4,14 +4,8 @@
 
     <div class="login-container">
       <div class="title-container">
-        <h1 class="title margin-no">{{ t('pages.login.loginTitle') }}</h1>
-        <h1 class="title">TDesign Starter</h1>
-        <div class="sub-title">
-          <p class="tip">{{ type === 'register' ? t('pages.login.existAccount') : t('pages.login.noAccount') }}</p>
-          <p class="tip" @click="switchType(type === 'register' ? 'login' : 'register')">
-            {{ type === 'register' ? t('pages.login.signIn') : t('pages.login.createAccount') }}
-          </p>
-        </div>
+        <h1 class="title margin-no">Stay</h1>
+        <h1 class="title">At Your House</h1>
       </div>
 
       <login v-if="type === 'login'" />
@@ -19,7 +13,7 @@
       <tdesign-setting />
     </div>
 
-    <footer class="copyright">Copyright @ 2021-2025 Tencent. All Rights Reserved</footer>
+    <footer class="copyright">@ 2007-2013 A Doomed Relationship!!!</footer>
   </div>
 </template>
 <script setup lang="ts">

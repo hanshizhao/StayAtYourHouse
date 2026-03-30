@@ -13,6 +13,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     token: '',
     userInfo: { ...InitUserInfo },
+    userInfoFetched: false,
   }),
   getters: {
     roles: (state) => {
@@ -28,11 +29,13 @@ export const useUserStore = defineStore('user', {
       this.token = res.token;
     },
     async getUserInfo() {
+      if (this.userInfoFetched) return;
       const res = await getProfile();
       this.userInfo = {
         name: res.displayName,
         roles: ['all'],
       };
+      this.userInfoFetched = true;
     },
     async logout() {
       try {
@@ -44,6 +47,7 @@ export const useUserStore = defineStore('user', {
       }
       this.token = '';
       this.userInfo = { ...InitUserInfo };
+      this.userInfoFetched = false;
     },
   },
   persist: {
