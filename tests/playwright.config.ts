@@ -9,6 +9,7 @@ export default defineConfig({
   reporter: 'list',
   timeout: 60000,
   use: {
+    baseURL: 'http://localhost:3002',
     trace: 'on-first-retry',
   },
 });

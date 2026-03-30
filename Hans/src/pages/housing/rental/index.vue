@@ -50,6 +50,18 @@
         <template #tenantName="{ row }">
           <span class="tenant-name">{{ row.tenantName }}</span>
         </template>
+        <template #isAnJuCodeSubmitted="{ row }">
+          <span v-if="row.isAnJuCodeSubmitted" class="anju-submitted" data-testid="anju-submitted">✅</span>
+          <t-link
+            v-else
+            theme="danger"
+            hover="color"
+            data-testid="anju-unsubmitted"
+            @click="handleConfirmAnjuCode(row)"
+          >
+            未提交
+          </t-link>
+        </template>
         <template #roomInfo="{ row }">
           <span class="room-info">{{ row.roomInfo }}</span>
         </template>
@@ -112,7 +124,7 @@
 </template>
 <script setup lang="ts">
 import type { PageInfo, PrimaryTableCol, SelectOption } from 'tdesign-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
+import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 import { getCommunityList } from '@/api/community';
@@ -121,7 +133,7 @@ import { UtilityBillStatus } from '@/api/model/meterModel';
 import type { RentalPageParams, RentalRecordDto } from '@/api/model/rentalModel';
 import { RentalStatus } from '@/api/model/rentalModel';
 import type { RoomItem } from '@/api/model/roomModel';
-import { getRentalPage } from '@/api/rental';
+import { confirmAnjuCode, getRentalPage } from '@/api/rental';
 import { getRoomList } from '@/api/room';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
@@ -148,6 +160,7 @@ let isUnmounted = false;
 // 表格列配置
 const columns: PrimaryTableCol[] = [
   { colKey: 'tenantName', title: '租客姓名', width: 120 },
+  { colKey: 'isAnJuCodeSubmitted', title: '安居码', width: 100 },
   { colKey: 'roomInfo', title: '房间信息', width: 200, ellipsis: true },
   { colKey: 'checkInDate', title: '入住日期', width: 120 },
   { colKey: 'contractEndDate', title: '合同到期', width: 120 },
@@ -288,6 +301,27 @@ function handleExpandChange(value: Array<string | number>) {
   expandedRowKeys.value = value;
 }
 
+async function handleConfirmAnjuCode(row: RentalRecordDto) {
+  const confirmDialog = DialogPlugin.confirm({
+    header: '确认提交安居码',
+    body: `确认租客「${row.tenantName}」的房间「${row.roomInfo}」已提交安居码？`,
+    confirmBtn: '确认',
+    cancelBtn: '取消',
+    onConfirm: async () => {
+      try {
+        await confirmAnjuCode(row.id);
+        MessagePlugin.success('安居码确认成功');
+        fetchData();
+      } catch (e: unknown) {
+        const error = e as { message?: string };
+        MessagePlugin.error(error.message || '安居码确认失败');
+      } finally {
+        confirmDialog.destroy();
+      }
+    },
+  });
+}
+
 // ==================== 辅助函数 ====================
 
 function getStatusTheme(status: RentalStatus): 'success' | 'default' {
@@ -340,6 +374,10 @@ onUnmounted(() => {
   .tenant-name {
     font-weight: 500;
     color: var(--td-text-color-primary);
+  }
+
+  .anju-submitted {
+    font-size: 16px;
   }
 
   .room-info {
