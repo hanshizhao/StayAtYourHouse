@@ -144,6 +144,7 @@
       "priority": "high",
       "test_type": "static",
       "description": "数据库迁移",
+      "status": "passed",
       "acceptance_criteria": [
         "生成 EF Core 迁移 AddAnJuCodeSubmittedToRentalRecord",
         "迁移文件包含 AddColumn 操作（is_an_ju_code_submitted, boolean, 默认 false）",
@@ -170,8 +171,28 @@
       "test_file": "tests/e2e/feat-100-anju-code-migration.spec.ts",
       "status": "pending",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-30T18:05:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-03-30T17:55:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 2,
+          "minor": 3
+        },
+        "important_issues": [
+          "User 种子数据 BCrypt 非确定性哈希导致每次迁移都包含 PasswordHash UpdateData（已有技术债，超出本 FEAT 范围）",
+          "Gentle.Application.xml 是 FEAT-099 构建产物，应与 FEAT-099 一同提交"
+        ],
+        "minor_issues": [
+          "测试文件重复文件查找逻辑",
+          "测试未验证 Designer.cs 文件存在",
+          "测试未验证 tinyint(1) 列类型"
+        ]
       }
     },
     {

@@ -173,6 +173,11 @@
             退租办理
             </summary>
         </member>
+        <member name="M:Gentle.Application.Apps.RentalAppService.ConfirmAnJuCode(System.Int32)">
+            <summary>
+            确认安居码提交
+            </summary>
+        </member>
         <member name="M:Gentle.Application.Apps.RentalAppService.Remove(System.Int32)">
             <summary>
             删除租住记录
