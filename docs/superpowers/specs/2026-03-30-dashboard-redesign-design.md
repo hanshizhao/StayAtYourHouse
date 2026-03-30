@@ -69,9 +69,13 @@ DashboardBase (index.vue)
 
 **TodoPanel.vue** — 不做任何修改，保持现有逻辑和样式。
 
+### 修改文件
+
+- `src/pages/dashboard/base/index.vue` — 重写：移除旧组件引用，改为新组件架构
+
 ### 删除文件
 
-**TDesign 示例组件：**
+**TDesign 示例组件（`src/pages/dashboard/base/` 下）：**
 - `components/TopPanel.vue`
 - `components/MiddleChart.vue`
 - `components/RankList.vue`
@@ -79,10 +83,17 @@ DashboardBase (index.vue)
 - `constants.ts`（示例数据）
 - `index.ts`（echarts 配置导出）
 
+**注意保留 TodoPanel 相关文件：**
+- `components/TodoPanel.vue`
+- `components/PayUtilityDialog.vue`
+- `components/RentalReminderDialog.vue`
+- `components/DeferDialog.vue`
+- `components/RenewRentalDialog.vue`
+- `components/DeferralRecordsDialog.vue`
+
 **房源报表页面：**
 - `src/pages/report/housing/index.vue`
-- `src/router/modules/report.ts` 中 housing 路由条目
-- 侧边栏菜单中"房源报表"入口
+- `src/router/modules/report.ts` 中 housing 路由条目（侧边栏菜单由路由自动生成，移除路由即可）
 
 ## 数据获取
 
@@ -96,7 +107,12 @@ const [housingData, incomeData] = await Promise.all([
 ```
 
 - 房源数据（统计卡片、小区统计、空置房源、出租率）来自 `getHousingOverview()`
-- 收支数据（租金收入、水电收入、支出、净利润）来自 `getIncomeReport().monthlyDetails[当前月份]`
+- 收支数据（租金收入、水电收入、支出、净利润）来自当月月度明细：
+  ```typescript
+  const currentMonth = new Date().getMonth() + 1; // 1-12
+  const currentMonthData = incomeData.monthlyDetails.find(m => m.month === currentMonth);
+  ```
+  注意：使用 `find` 而非数组下标访问，因为 `month` 字段是 1-12 而数组可能不包含未来月份
 
 不新建后端接口。
 
@@ -106,6 +122,7 @@ const [housingData, incomeData] = await Promise.all([
 - 房源数据和收支数据独立处理：一方失败不影响另一方显示
 - 失败区域显示"加载失败"提示和重试按钮
 - 使用 `MessagePlugin.error()` 显示轻提示
+- 当月无收支数据时，FinanceSummary 显示"暂无本月数据"提示（租金收入、水电收入等均显示 ¥0）
 
 ## 响应式布局
 
