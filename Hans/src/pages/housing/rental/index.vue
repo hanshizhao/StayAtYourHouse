@@ -51,12 +51,13 @@
           <span class="tenant-name">{{ row.tenantName }}</span>
         </template>
         <template #isAnJuCodeSubmitted="{ row }">
-          <span v-if="row.isAnJuCodeSubmitted" class="anju-submitted" data-testid="anju-submitted">✅</span>
+          <t-tag v-if="row.isAnJuCodeSubmitted" theme="success">已提交</t-tag>
           <t-link
             v-else
             theme="danger"
             hover="color"
             data-testid="anju-unsubmitted"
+            underline
             @click="handleConfirmAnjuCode(row)"
           >
             未提交
@@ -160,8 +161,8 @@ let isUnmounted = false;
 // 表格列配置
 const columns: PrimaryTableCol[] = [
   { colKey: 'tenantName', title: '租客姓名', width: 120 },
-  { colKey: 'isAnJuCodeSubmitted', title: '安居码', width: 100 },
   { colKey: 'roomInfo', title: '房间信息', width: 200, ellipsis: true },
+  { colKey: 'isAnJuCodeSubmitted', title: '安居码', width: 100 },
   { colKey: 'checkInDate', title: '入住日期', width: 120 },
   { colKey: 'contractEndDate', title: '合同到期', width: 120 },
   { colKey: 'leaseTypeText', title: '租期类型', width: 100 },
@@ -303,8 +304,8 @@ function handleExpandChange(value: Array<string | number>) {
 
 async function handleConfirmAnjuCode(row: RentalRecordDto) {
   const confirmDialog = DialogPlugin.confirm({
-    header: '确认提交安居码',
-    body: `确认租客「${row.tenantName}」的房间「${row.roomInfo}」已提交安居码？`,
+    header: '提交安居码',
+    body: `「${row.tenantName}」的房间「${row.roomInfo}」已提交安居码？`,
     confirmBtn: '确认',
     cancelBtn: '取消',
     onConfirm: async () => {
