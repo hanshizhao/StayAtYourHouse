@@ -66,8 +66,8 @@
         <template #roomInfo="{ row }">
           <span class="room-info">{{ row.roomInfo }}</span>
         </template>
-        <template #leaseTypeText="{ row }">
-          <t-tag variant="light">{{ row.leaseTypeText }}</t-tag>
+        <template #leaseMonthsText="{ row }">
+          <t-tag variant="light">{{ row.leaseMonthsText }}</t-tag>
         </template>
         <template #monthlyRent="{ row }">
           <span class="amount">¥{{ formatMoney(row.monthlyRent) }}</span>
@@ -165,7 +165,7 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'isAnJuCodeSubmitted', title: '安居码', width: 100 },
   { colKey: 'checkInDate', title: '入住日期', width: 120 },
   { colKey: 'contractEndDate', title: '合同到期', width: 120 },
-  { colKey: 'leaseTypeText', title: '租期类型', width: 100 },
+  { colKey: 'leaseMonthsText', title: '租期', width: 100 },
   { colKey: 'monthlyRent', title: '月租金', width: 110 },
   { colKey: 'deposit', title: '押金', width: 110 },
   { colKey: 'status', title: '状态', width: 100 },
