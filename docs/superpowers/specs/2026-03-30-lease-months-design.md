@@ -1,163 +1,83 @@
-# 租期类型改为月数输入
+# 租期类型改为月数输入 — 设计文档
+
+日期：2026-03-30
 
 ## 背景
 
-当前办理入住页面使用三选一的租期类型枚举（月租/半年租/年租），不够灵活。用户可能需要 3 个月、9 个月等非标准租期。
+当前入住页面的租期类型是固定三选一的枚举（月租/半年租/年租），不够灵活。改为让用户直接输入月数，覆盖 1~36 个月的任意租期。
 
-## 目标
+## 方案
 
-将租期类型（LeaseType 枚举）改为用户直接输入月数（LeaseMonths 整数），范围 1-12 个月。
+彻底替换：废弃 `LeaseType` 枚举，用 `LeaseMonths`（int）字段替代。数据库迁移时将旧枚举值转换为对应月数。
 
-## 变更范围
+## 变更详情
 
-### 数据库迁移
+### 1. 数据库
 
-**表：** `rental_record`
+- 新增 `lease_months` 列（int, not null, default 1）
+- 迁移 SQL 将旧值转换：`lease_type = 0→1`, `1→6`, `2→12`
+- 删除 `lease_type` 列
+- 删除枚举文件 `Gentle.Core/Enums/LeaseType.cs`
 
-采用分步迁移策略，降低不可逆风险：
+### 2. 实体
 
-**第一步迁移 — 新增列并填充数据：**
-1. 新增 `LeaseMonths` 列（int, NOT NULL, 默认 1）
-2. 数据迁移 SQL：
-   ```sql
-   UPDATE rental_record SET LeaseMonths = CASE LeaseType
-     WHEN 0 THEN 1   -- Monthly
-     WHEN 1 THEN 6   -- HalfYear
-     WHEN 2 THEN 12  -- Yearly
-     ELSE 1
-   END;
-   ```
+`RentalRecord.cs`：
 
-**第二步迁移 — 删除旧列：**
-3. 确认数据正确后，删除 `LeaseType` 列
+```csharp
+// 删除
+public LeaseType LeaseType { get; set; } = LeaseType.Monthly;
 
-**EF Core 迁移文件：** `Gentle/Gentle.Database.Migrations/Migrations/`
-**EF Core 迁移快照：** `Gentle/Gentle.Database.Migrations/Migrations/DefaultDbContextModelSnapshot.cs`（自动更新）
+// 替换为
+public int LeaseMonths { get; set; } = 1;
+```
 
-### 后端改动
+### 3. 后端 API
 
-#### 1. 删除枚举（删除文件）
+**DTO：**
 
-`Gentle/Gentle.Core/Enums/LeaseType.cs` — 整个文件删除
+- `CheckInInput.cs`：`LeaseType LeaseType` → `int LeaseMonths`，加 `[Range(1, 36)]` 验证
+- `RentalRecordDto.cs`：`LeaseType LeaseType` → `int LeaseMonths`，增加 `LeaseMonthsText` 输出（如 "3个月"）
 
-#### 2. 实体修改
+**服务层：**
 
-`Gentle/Gentle.Core/Entities/RentalRecord.cs`
-- 删除 `public LeaseType LeaseType { get; set; } = LeaseType.Monthly;`
-- 新增 `public int LeaseMonths { get; set; } = 1;`
+- `RentalRecordService.cs`：`CalculateContractEndDate` 改为接收 `int leaseMonths`，直接 `checkInDate.AddMonths(leaseMonths).AddDays(-1)`
+- 续租等引用 `LeaseType` 的方法同步更新
 
-#### 3. DTO 修改
+### 4. 前端
 
-`Gentle/Gentle.Application/Dtos/RentalRecord/CheckInInput.cs`
-- 删除 `LeaseType` 属性
-- 新增 `[Range(1, 12)] public int LeaseMonths { get; set; } = 1;`
+**类型定义（rentalModel.ts）：**
 
-`Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs`
-- 删除 `LeaseType` 属性和 `LeaseTypeText` 计算属性
-- 新增 `public int LeaseMonths { get; set; }`
-- 新增 `public string LeaseMonthsText => $"{LeaseMonths}个月";`
+- 删除 `LeaseType` 枚举和 `LeaseTypeText` 映射
+- `CheckInFormData` 接口中 `leaseType` → `leaseMonths: number`
 
-`Gentle/Gentle.Application/Dtos/Rental/RenewRentalInput.cs`
-- 删除 `LeaseType` 属性
-- 新增 `[Range(1, 12)] public int LeaseMonths { get; set; } = 1;`
+**入住页面（check-in.vue）：**
 
-#### 4. 服务层修改
+- 单选按钮组 → `t-input-number` 数字输入框（min=1, max=36, step=1）
+- 输入框后缀显示"个月"
+- 合同结束日期直接用月数计算
+- 默认值 `leaseMonths: 1`
 
-`Gentle/Gentle.Application/Services/RentalRecordService.cs`
-- `CheckInAsync`：`input.LeaseType` → `input.LeaseMonths`，传给 `CalculateContractEndDate`
-- `CalculateContractEndDate`：参数从 `LeaseType` 改为 `int months`，逻辑简化为 `checkInDate.AddMonths(months).AddDays(-1)`
-- 删除所有 `LeaseType` 枚举引用
+**工具函数（date.ts）：**
 
-`Gentle/Gentle.Application/Services/RentalReminderService.cs`
-- `RenewAsync`：`LeaseType = input.LeaseType` → `LeaseMonths = input.LeaseMonths`
+- `calculateContractEndDate` 改为接收 `leaseMonths: number`
+- 内部简化为 `checkIn.add(leaseMonths, 'month').subtract(1, 'day')`
 
-#### 5. 后端单元测试修改
+**其他引用点：**
 
-`Gentle/Gentle.Tests/Services/RentalReminderServiceTests.cs`
-- 删除 `LeaseType_EnumValues_AreCorrect` 测试方法（整个方法删除）
-- 所有 `LeaseType = LeaseType.Monthly` → `LeaseMonths = 1`
-- `Assert.Equal(default, input.LeaseType)` → `Assert.Equal(1, input.LeaseMonths)`
+- 租赁列表页、续租对话框等显示租期的地方，从"月租/半年租/年租"改为"X个月"
 
-`Gentle/Gentle.Tests/Services/TodoServiceTests.cs`
-- `Assert.Equal(default, input.LeaseType)` → `Assert.Equal(1, input.LeaseMonths)`
+## 影响范围
 
-### 前端改动
-
-#### 1. 类型定义
-
-`Hans/src/api/model/rentalModel.ts`
-- 删除 `LeaseType` 枚举
-- 删除 `LeaseTypeText` 常量
-- `CheckInInput` 接口：`leaseType` → `leaseMonths: number`
-- `RentalRecord` 接口：`leaseType` → `leaseMonths: number`，`leaseTypeText` → `leaseMonthsText: string`
-
-`Hans/src/api/model/todoModel.ts`
-- 删除 `LeaseType, LeaseTypeText` 的 re-export
-- `RenewRentalInput` 接口：`leaseType` → `leaseMonths: number`
-
-#### 2. 工具函数
-
-`Hans/src/utils/date.ts`
-- 删除 `LeaseType` 的 re-export
-- `calculateContractEndDate(checkInDate, leaseType)` → `calculateContractEndDate(checkInDate, months: number)`
-- 逻辑简化：直接 `dayjs(checkInDate).add(months, 'month').subtract(1, 'day')`
-
-#### 3. 办理入住页面
-
-`Hans/src/pages/tenant/check-in.vue`
-- 表单字段：`leaseType` → `leaseMonths`（默认 1）
-- Radio 组替换为 `t-input-number`（min=1, max=12）
-- 合同结束日期计算更新
-
-#### 4. 续租对话框
-
-`Hans/src/pages/dashboard/base/components/RenewRentalDialog.vue`
-- Select 下拉替换为 `t-input-number`（min=1, max=12）
-- 表单字段名更新
-- **交互说明：** `contractEndDate` 仍由用户手动选择（后端 `ContractEndDate` 是必填字段），`leaseMonths` 仅用于前端预览参考和续租记录存储
-
-#### 5. 租赁记录列表
-
-`Hans/src/pages/housing/rental/index.vue`
-- 列定义：`leaseTypeText` → `leaseMonthsText`
-- Tag 显示：从枚举文本改为 `${months}个月`
-
-### E2E 测试改动
-
-以下 6 个测试文件需要同步修改：
-
-| 文件 | 改动内容 |
+| 文件 | 变更类型 |
 |------|----------|
-| `tests/e2e/feat-009-rental-record-entity.spec.ts` | 删除验证 `LeaseType` 枚举文件的测试，改为验证 `LeaseMonths` 属性 |
-| `tests/e2e/feat-011-checkin-checkout-api.spec.ts` | API 请求参数 `leaseType: 0` → `leaseMonths: 1` |
-| `tests/e2e/feat-068-renew-rental-input.spec.ts` | 请求参数 `leaseType` → `leaseMonths` |
-| `tests/e2e/feat-083-renew-rental-dialog.spec.ts` | 删除验证枚举文件内容的断言，改为验证月数输入 |
-| `tests/e2e/feat-086-integration-test.spec.ts` | 续租对话框的 `t-select` 验证改为 `t-input-number` 验证 |
-| `tests/e2e/feat-087-todo-panel-enhancement.spec.ts` | API 参数 `leaseType: 0/1` → `leaseMonths: 1/6` |
-
-### 自动更新（无需手动修改）
-
-| 文件 | 说明 |
-|------|------|
-| `Gentle/Gentle.Application/Gentle.Application.xml` | 构建时自动生成，含 LeaseType 注释 |
-| `Gentle/Gentle.Core/Gentle.Core.xml` | 构建时自动生成，含 LeaseType 注释 |
-| `Gentle/Gentle.Database.Migrations/Migrations/DefaultDbContextModelSnapshot.cs` | EF Core 迁移时自动更新 |
-
-## 不做的事
-
-- 不修改已有的合同结束日期计算逻辑（仍然 checkInDate + months - 1 day）
-- 不修改到期提醒、催收等其他业务逻辑（它们依赖 ContractEndDate，不依赖 LeaseType）
-- 不增加租期输入的"常用快捷"按钮（如 3/6/12 月），保持简单
-- 不修改 `ReportService` 中手动计算 `leaseMonths` 的逻辑（它是局部变量，从 ContractEndDate 推算，与 LeaseType 无关）
-
-## 可选优化（不在本次范围内）
-
-- `Gentle/Gentle.Application/Services/ReportService.cs` 第 78 行手动从 `ContractEndDate` 计算 `leaseMonths`，改为 `LeaseMonths` 后可直接使用实体属性，省去重复计算
-
-## 风险与缓解
-
-| 风险 | 缓解措施 |
-|------|----------|
-| 数据库迁移不可逆 | 分两步执行：先加列填数据确认，再删旧列；执行前备份数据库 |
-| 已有数据的枚举值转换错误 | 迁移后验证：`SELECT LeaseType, LeaseMonths FROM rental_record` 确认映射正确 |
-| 单元测试 / E2E 测试编译失败 | 逐文件修改所有 LeaseType 引用，确保测试通过 |
+| `Gentle.Core/Enums/LeaseType.cs` | 删除 |
+| `Gentle.Core/Entities/RentalRecord.cs` | 字段替换 |
+| `Gentle.Application/Dtos/RentalRecord/CheckInInput.cs` | 字段替换 + 验证 |
+| `Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs` | 字段替换 + 新增文本 |
+| `Gentle.Application/Services/RentalRecordService.cs` | 方法签名更新 |
+| `Gentle.Application/Apps/RentalAppService.cs` | 透传更新 |
+| `Gentle.Database.Migrations/` | 新增迁移 |
+| `Hans/src/api/model/rentalModel.ts` | 删除枚举，字段替换 |
+| `Hans/src/pages/tenant/check-in.vue` | 单选→数字输入 |
+| `Hans/src/utils/date.ts` | 函数签名简化 |
+| 租赁列表页、续租对话框等 | 显示文本更新 |
