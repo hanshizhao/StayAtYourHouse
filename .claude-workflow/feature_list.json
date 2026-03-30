@@ -1,9 +1,484 @@
 {
-  "module": "安居码提交状态",
+  "module": "租期月数输入",
   "version": "1.0.0",
   "created_at": "2026-03-30",
   "source_docs": [
-    "docs/superpowers/plans/2026-03-30-anju-code-submission.md"
+    "docs/superpowers/plans/2026-03-30-lease-months-plan.md"
   ],
-  "features": []
+  "features": [
+    {
+      "id": "FEAT-104",
+      "category": "后端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "static",
+      "description": "删除枚举 + 更新实体",
+      "acceptance_criteria": [
+        "删除 LeaseType.cs 文件",
+        "RentalRecord 实体 LeaseType 改为 LeaseMonths int",
+        "添加 Range(1,36) 验证"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "删除 LeaseType.cs",
+          "file": "Gentle/Gentle.Core/Enums/LeaseType.cs",
+          "code_hint": "删除整个文件"
+        },
+        {
+          "step": 2,
+          "action": "更新 RentalRecord 实体，LeaseType 改为 LeaseMonths int",
+          "file": "Gentle/Gentle.Core/Entities/RentalRecord.cs",
+          "code_hint": "替换 LeaseType 属性为: [Range(1,36)] public int LeaseMonths { get; set; } = 1; 移除 using Gentle.Core.Enums (如无其他枚举引用)"
+        },
+        {
+          "step": 3,
+          "action": "验证编译",
+          "file": "Gentle/Gentle.Core/Entities/RentalRecord.cs",
+          "verify_command": "cd Gentle && dotnet build Gentle.Core/Gentle.Core"
+        }
+      ],
+      "test_file": "tests/e2e/feat-104-delete-lease-type-enum.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-105",
+      "category": "后端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "static",
+      "description": "更新后端 DTO",
+      "acceptance_criteria": [
+        "CheckInInput: LeaseType → LeaseMonths int",
+        "RentalRecordDto: LeaseType/LeaseTypeText → LeaseMonths/LeaseMonthsText",
+        "RenewRentalInput: LeaseType → LeaseMonths int"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新 CheckInInput.cs",
+          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/CheckInInput.cs",
+          "code_hint": "LeaseType → [Range(1,36)] public int LeaseMonths { get; set; } = 1; 移除 using Gentle.Core.Enums"
+        },
+        {
+          "step": 2,
+          "action": "更新 RentalRecordDto.cs",
+          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs",
+          "code_hint": "LeaseType/LeaseTypeText → LeaseMonths int + LeaseMonthsText ($\"{LeaseMonths}个月\"), 保留 using (有 DepositStatus/RentalStatus)"
+        },
+        {
+          "step": 3,
+          "action": "更新 RenewRentalInput.cs",
+          "file": "Gentle/Gentle.Application/Dtos/Rental/RenewRentalInput.cs",
+          "code_hint": "LeaseType → [Range(1,36)] public int LeaseMonths { get; set; } = 1; 移除 using Gentle.Core.Enums"
+        },
+        {
+          "step": 4,
+          "action": "验证编译",
+          "verify_command": "cd Gentle && dotnet build Gentle.Application/Gentle.Application"
+        }
+      ],
+      "test_file": "tests/e2e/feat-105-update-backend-dtos.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-106",
+      "category": "后端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "static",
+      "description": "更新后端服务层",
+      "acceptance_criteria": [
+        "RentalRecordService: LeaseType 引用改为 LeaseMonths",
+        "CalculateContractEndDate 简化为 int leaseMonths 参数",
+        "RentalReminderService: LeaseType 引用改为 LeaseMonths",
+        "dotnet build 编译成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新 RentalRecordService.cs",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": "LeaseType → LeaseMonths; CalculateContractEndDate(DateTime, int leaseMonths) → checkInDate.AddMonths(leaseMonths).AddDays(-1)"
+        },
+        {
+          "step": 2,
+          "action": "更新 RentalReminderService.cs",
+          "file": "Gentle/Gentle.Application/Services/RentalReminderService.cs",
+          "code_hint": "LeaseType → LeaseMonths; 检查 using Gentle.Core.Enums 是否有其他枚举引用"
+        },
+        {
+          "step": 3,
+          "action": "验证编译",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-106-update-backend-services.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-107",
+      "category": "后端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "static",
+      "description": "生成数据库迁移",
+      "acceptance_criteria": [
+        "EF Core 迁移文件生成成功",
+        "迁移包含 AddColumn lease_months",
+        "迁移包含数据转换 SQL (lease_type → lease_months)",
+        "迁移包含 DropColumn lease_type"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "生成 EF Core 迁移",
+          "file": "Gentle/Gentle.Database.Migrations/Migrations/<timestamp>_LeaseTypeToLeaseMonths.cs",
+          "verify_command": "cd Gentle && dotnet ef migrations add LeaseTypeToLeaseMonths --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
+        },
+        {
+          "step": 2,
+          "action": "检查并修改迁移文件，添加数据迁移 SQL",
+          "file": "Gentle/Gentle.Database.Migrations/Migrations/<timestamp>_LeaseTypeToLeaseMonths.cs",
+          "code_hint": "AddColumn lease_months → Sql UPDATE rental_record SET lease_months = CASE lease_type WHEN 0 THEN 1 WHEN 1 THEN 6 WHEN 2 THEN 12 ELSE 1 END → DropColumn lease_type"
+        },
+        {
+          "step": 3,
+          "action": "验证编译",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-107-db-migration-lease-months.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-108",
+      "category": "后端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "static",
+      "description": "更新后端单元测试",
+      "acceptance_criteria": [
+        "RentalReminderServiceTests: 删除 LeaseType 枚举测试，更新续租输入测试",
+        "TodoServiceTests: 更新 RenewRentalInput 测试",
+        "dotnet test 全部通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新 RentalReminderServiceTests.cs",
+          "file": "Gentle/Gentle.Tests/Services/RentalReminderServiceTests.cs",
+          "code_hint": "删除 LeaseType_EnumValues_AreCorrect; LeaseType → LeaseMonths = 1; 移除 using (如仅 LeaseType)"
+        },
+        {
+          "step": 2,
+          "action": "更新 TodoServiceTests.cs",
+          "file": "Gentle/Gentle.Tests/Services/TodoServiceTests.cs",
+          "code_hint": "LeaseType → LeaseMonths; 移除 using (如仅 LeaseType)"
+        },
+        {
+          "step": 3,
+          "action": "运行后端单元测试",
+          "verify_command": "cd Gentle && dotnet test Gentle.Tests/"
+        }
+      ],
+      "test_file": "tests/e2e/feat-108-update-backend-unit-tests.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-109",
+      "category": "前端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "static",
+      "description": "更新前端类型定义",
+      "acceptance_criteria": [
+        "rentalModel.ts: 删除 LeaseType 枚举和 LeaseTypeText 映射，更新接口字段",
+        "todoModel.ts: 删除 LeaseType 导入/导出，更新接口",
+        "date.ts: 简化 calculateContractEndDate 函数",
+        "npm run build:type 通过（check-in.vue 等可能仍报错，预期）"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新 rentalModel.ts",
+          "file": "Hans/src/api/model/rentalModel.ts",
+          "code_hint": "删除 LeaseType 枚举和 LeaseTypeText; CheckInInput: leaseType → leaseMonths: number; RentalRecordDto: leaseType/leaseTypeText → leaseMonths: number + leaseMonthsText: string"
+        },
+        {
+          "step": 2,
+          "action": "更新 todoModel.ts",
+          "file": "Hans/src/api/model/todoModel.ts",
+          "code_hint": "删除 import/export LeaseType, LeaseTypeText; RenewRentalInput: leaseType → leaseMonths: number"
+        },
+        {
+          "step": 3,
+          "action": "更新 date.ts",
+          "file": "Hans/src/utils/date.ts",
+          "code_hint": "删除 LeaseType 导出/导入; calculateContractEndDate(checkInDate, leaseMonths) → dayjs(checkInDate).add(leaseMonths,'month').subtract(1,'day')"
+        },
+        {
+          "step": 4,
+          "action": "验证类型检查",
+          "verify_command": "cd Hans && npm run build:type"
+        }
+      ],
+      "test_file": "tests/e2e/feat-109-update-frontend-types.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-110",
+      "category": "前端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "更新入住页面",
+      "acceptance_criteria": [
+        "模板: radio-group → input-number (min=1, max=36)",
+        "script: 移除 LeaseTypeText 导入，更新接口和默认值",
+        "合同结束日期计算使用 leaseMonths",
+        "npm run build:type 通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新模板：radio-group → input-number",
+          "file": "Hans/src/pages/tenant/check-in.vue",
+          "code_hint": "<t-input-number v-model=\"formData.leaseMonths\" :min=\"1\" :max=\"36\" :step=\"1\" theme=\"normal\" suffix=\"个月\" data-testid=\"lease-months\" />"
+        },
+        {
+          "step": 2,
+          "action": "更新 script 导入和接口",
+          "file": "Hans/src/pages/tenant/check-in.vue",
+          "code_hint": "移除 LeaseTypeText 导入; date 导入移除 LeaseType; 接口 leaseType → leaseMonths: number; 默认值 leaseMonths: 1"
+        },
+        {
+          "step": 3,
+          "action": "更新合同日期计算和提交参数",
+          "file": "Hans/src/pages/tenant/check-in.vue",
+          "code_hint": "calculateContractEndDate(checkInDate, leaseMonths); 提交: leaseMonths: formData.value.leaseMonths"
+        },
+        {
+          "step": 4,
+          "action": "验证类型检查",
+          "verify_command": "cd Hans && npm run build:type"
+        }
+      ],
+      "test_file": "tests/e2e/feat-110-checkin-page-lease-months.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-111",
+      "category": "前端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "更新续租对话框",
+      "acceptance_criteria": [
+        "模板: t-select → t-input-number",
+        "script: 移除 LeaseType 导入，删除 leaseTypeOptions computed",
+        "formData/验证规则更新为 leaseMonths",
+        "npm run build:type 通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新模板：t-select → t-input-number",
+          "file": "Hans/src/pages/dashboard/base/components/RenewRentalDialog.vue",
+          "code_hint": "<t-input-number v-model=\"formData.leaseMonths\" :min=\"1\" :max=\"36\" :step=\"1\" theme=\"normal\" suffix=\"个月\" />"
+        },
+        {
+          "step": 2,
+          "action": "更新 script",
+          "file": "Hans/src/pages/dashboard/base/components/RenewRentalDialog.vue",
+          "code_hint": "移除 LeaseType 导入; 删除 leaseTypeOptions computed; formData leaseType → leaseMonths: 1; 验证规则更新; 提交参数更新"
+        },
+        {
+          "step": 3,
+          "action": "验证类型检查",
+          "verify_command": "cd Hans && npm run build:type"
+        }
+      ],
+      "test_file": "tests/e2e/feat-111-renew-dialog-lease-months.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-112",
+      "category": "前端",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "更新租赁列表页",
+      "acceptance_criteria": [
+        "表格列 leaseTypeText → leaseMonthsText",
+        "模板 slot 更新",
+        "npm run build:type 通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新表格列定义和模板 slot",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "列: leaseTypeText → leaseMonthsText, title: 租期类型 → 租期; slot: #leaseTypeText → #leaseMonthsText, row.leaseTypeText → row.leaseMonthsText"
+        },
+        {
+          "step": 2,
+          "action": "验证类型检查",
+          "verify_command": "cd Hans && npm run build:type"
+        }
+      ],
+      "test_file": "tests/e2e/feat-112-rental-list-lease-months.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-113",
+      "category": "集成",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "更新 E2E 测试",
+      "acceptance_criteria": [
+        "feat-009: 删除 LeaseType 断言，改为 LeaseMonths",
+        "feat-011: leaseType:X → leaseMonths:Y",
+        "feat-068: leaseType → leaseMonths",
+        "feat-083: t-select → t-input-number",
+        "feat-086: leaseType → leaseMonths",
+        "feat-087: .t-select → .t-input-number",
+        "全部测试通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新 feat-009 租赁记录实体测试",
+          "file": "tests/e2e/feat-009-rental-record-entity.spec.ts",
+          "code_hint": "删除 LeaseType.cs 存在性断言和枚举值验证; 改为验证 LeaseMonths int 属性"
+        },
+        {
+          "step": 2,
+          "action": "更新 feat-011 入住退房 API 测试",
+          "file": "tests/e2e/feat-011-checkin-checkout-api.spec.ts",
+          "code_hint": "leaseType:0 → leaseMonths:1, leaseType:1 → leaseMonths:6, leaseType:99 → leaseMonths:0"
+        },
+        {
+          "step": 3,
+          "action": "更新 feat-068 续租输入测试",
+          "file": "tests/e2e/feat-068-renew-rental-input.spec.ts",
+          "code_hint": "leaseType → leaseMonths 属性断言和引用"
+        },
+        {
+          "step": 4,
+          "action": "更新 feat-083 续租对话框测试",
+          "file": "tests/e2e/feat-083-renew-rental-dialog.spec.ts",
+          "code_hint": "t-select 相关测试 → t-input-number 测试"
+        },
+        {
+          "step": 5,
+          "action": "更新 feat-086 集成测试",
+          "file": "tests/e2e/feat-086-integration-test.spec.ts",
+          "code_hint": "第96行 leaseType:0 → leaseMonths:1, 第411行 leaseType:1 → leaseMonths:6"
+        },
+        {
+          "step": 6,
+          "action": "更新 feat-087 Todo面板增强测试",
+          "file": "tests/e2e/feat-087-todo-panel-enhancement.spec.ts",
+          "code_hint": ".t-select → .t-input-number 验证"
+        },
+        {
+          "step": 7,
+          "action": "运行全部 E2E 测试",
+          "verify_command": "cd tests && npm run test"
+        }
+      ],
+      "test_file": "tests/e2e/feat-113-update-e2e-tests.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-114",
+      "category": "集成",
+      "module": "租期月数输入",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "端到端验证",
+      "acceptance_criteria": [
+        "后端 dotnet build 成功",
+        "前端 npm run build 成功",
+        "后端 dotnet test 通过",
+        "前端 npm run lint 无错误",
+        "E2E 入住 API 测试通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "后端完整构建",
+          "verify_command": "cd Gentle && dotnet build"
+        },
+        {
+          "step": 2,
+          "action": "前端完整构建",
+          "verify_command": "cd Hans && npm run build"
+        },
+        {
+          "step": 3,
+          "action": "后端单元测试",
+          "verify_command": "cd Gentle && dotnet test"
+        },
+        {
+          "step": 4,
+          "action": "前端 lint 检查",
+          "verify_command": "cd Hans && npm run lint"
+        },
+        {
+          "step": 5,
+          "action": "E2E 入住 API 验证",
+          "verify_command": "cd tests && npx playwright test e2e/feat-011-checkin-checkout-api.spec.ts"
+        }
+      ],
+      "test_file": "tests/e2e/feat-114-e2e-verification.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    }
+  ]
 }
