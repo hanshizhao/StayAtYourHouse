@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Gentle.Core.Enums;
 
 namespace Gentle.Application.Dtos.Rental;
 
@@ -12,13 +11,13 @@ namespace Gentle.Application.Dtos.Rental;
 public class RenewRentalInput
 {
     /// <summary>
-    /// 租期类型
+    /// 租期月数
     /// </summary>
     /// <remarks>
-    /// 必填，月租/半年租/年租。
+    /// 必填，1-36个月。
     /// </remarks>
-    [Required(ErrorMessage = "租期类型不能为空")]
-    public LeaseType LeaseType { get; set; }
+    [Range(1, 36, ErrorMessage = "租期月数必须在1到36之间")]
+    public int LeaseMonths { get; set; } = 1;
 
     /// <summary>
     /// 月租金

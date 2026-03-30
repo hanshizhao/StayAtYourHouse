@@ -39,20 +39,14 @@ public class RentalRecordDto
     public DateTime CheckInDate { get; set; }
 
     /// <summary>
-    /// 租期类型
+    /// 租期月数
     /// </summary>
-    public LeaseType LeaseType { get; set; }
+    public int LeaseMonths { get; set; }
 
     /// <summary>
-    /// 租期类型文本
+    /// 租期文本
     /// </summary>
-    public string LeaseTypeText => LeaseType switch
-    {
-        LeaseType.Monthly => "月租",
-        LeaseType.HalfYear => "半年租",
-        LeaseType.Yearly => "年租",
-        _ => "未知"
-    };
+    public string LeaseMonthsText => $"{LeaseMonths}个月";
 
     /// <summary>
     /// 合同结束日期
