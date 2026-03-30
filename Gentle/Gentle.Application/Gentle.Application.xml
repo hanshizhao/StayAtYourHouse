@@ -2368,6 +2368,11 @@
             删除租住记录
             </summary>
         </member>
+        <member name="M:Gentle.Application.Services.IRentalRecordService.ConfirmAnJuCodeAsync(System.Int32)">
+            <summary>
+            确认安居码已提交
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Services.IRentalReminderService">
             <summary>
             催收提醒服务接口
@@ -2604,6 +2609,9 @@
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.RentalRecordService.DeleteAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.ConfirmAnJuCodeAsync(System.Int32)">
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.RentalRecordService.CalculateContractEndDate(System.DateTime,Gentle.Core.Enums.LeaseType)">

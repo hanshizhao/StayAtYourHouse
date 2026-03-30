@@ -292,6 +292,43 @@ public class RentalRecordService : IRentalRecordService
         await _repository.SaveNowAsync();
     }
 
+    /// <inheritdoc />
+    [UnitOfWork]
+    public async Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id)
+    {
+        var record = await _repository
+            .AsQueryable()
+            .Include(r => r.Renter)
+            .Include(r => r.Room)
+                .ThenInclude(room => room.Community)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (record == null)
+        {
+            throw Oops.Oh($"租住记录 {id} 不存在");
+        }
+
+        // 幂等处理：已提交则直接返回
+        if (record.IsAnJuCodeSubmitted)
+        {
+            return record.Adapt<RentalRecordDto>();
+        }
+
+        record.IsAnJuCodeSubmitted = true;
+        await _repository.UpdateAsync(record);
+        await _repository.SaveNowAsync();
+
+        // 重新查询以获取完整导航属性
+        var updatedRecord = await _repository
+            .AsQueryable(false)
+            .Include(r => r.Renter)
+            .Include(r => r.Room)
+                .ThenInclude(room => room.Community)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        return updatedRecord!.Adapt<RentalRecordDto>();
+    }
+
     /// <summary>
     /// 计算合同结束日期
     /// </summary>

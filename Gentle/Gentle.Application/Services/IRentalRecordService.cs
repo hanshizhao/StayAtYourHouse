@@ -45,4 +45,9 @@ public interface IRentalRecordService : ITransient
     /// 删除租住记录
     /// </summary>
     Task DeleteAsync(int id);
+
+    /// <summary>
+    /// 确认安居码已提交
+    /// </summary>
+    Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id);
 }
