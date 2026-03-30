@@ -1,5 +1,5 @@
 <template>
-  <div :class="`${prefix}-footer`">Copyright © 2021-{{ new Date().getFullYear() }} Tencent. All Rights Reserved</div>
+  <div :class="`${prefix}-footer`">@ 2007-2013 A Doomed Relationship...</div>
 </template>
 <script setup lang="ts">
 import { prefix } from '@/config/global';

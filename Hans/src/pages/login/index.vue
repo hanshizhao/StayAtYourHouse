@@ -13,7 +13,7 @@
       <tdesign-setting />
     </div>
 
-    <footer class="copyright">@ 2007-2013 A Doomed Relationship!!!</footer>
+    <footer class="copyright">@ 2007-2013 A Doomed Relationship...</footer>
   </div>
 </template>
 <script setup lang="ts">

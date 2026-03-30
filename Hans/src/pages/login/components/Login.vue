@@ -30,7 +30,7 @@
     </div>
 
     <t-form-item class="btn-container">
-      <t-button block size="large" type="submit"> {{ t('pages.login.signIn') }} </t-button>
+      <t-button block size="large" type="submit" :loading="loginLoading"> {{ t('pages.login.signIn') }} </t-button>
     </t-form-item>
   </t-form>
 </template>
@@ -56,25 +56,53 @@ const FORM_RULES: Record<string, FormRule[]> = {
   password: [{ required: true, message: t('pages.login.required.password'), type: 'error' }],
 };
 
+const REMEMBER_KEY = 'login_remember';
+
 const form = ref<FormInstanceFunctions>();
 const formData = ref({ ...INITIAL_DATA });
 const showPsw = ref(false);
+const loginLoading = ref(false);
 
 const router = useRouter();
 const route = useRoute();
 
+// 恢复记住的账号和密码
+const saved = localStorage.getItem(REMEMBER_KEY);
+if (saved) {
+  try {
+    const { account, password } = JSON.parse(saved);
+    formData.value.account = account;
+    formData.value.password = password;
+    formData.value.remember = true;
+  } catch {
+    localStorage.removeItem(REMEMBER_KEY);
+  }
+}
+
 const onSubmit = async (ctx: SubmitContext) => {
   if (ctx.validateResult === true) {
+    loginLoading.value = true;
     try {
       await userStore.login(formData.value);
+
+      // 记住/清除账号和密码
+      if (formData.value.remember) {
+        localStorage.setItem(REMEMBER_KEY, JSON.stringify({
+          account: formData.value.account,
+          password: formData.value.password,
+        }));
+      } else {
+        localStorage.removeItem(REMEMBER_KEY);
+      }
 
       MessagePlugin.success('登录成功');
       const redirect = route.query.redirect as string;
       const redirectUrl = redirect ? decodeURIComponent(redirect) : '/dashboard';
       router.push(redirectUrl);
     } catch (e: any) {
-      console.log(e);
       MessagePlugin.error(e.message || '登录失败');
+    } finally {
+      loginLoading.value = false;
     }
   }
 };
