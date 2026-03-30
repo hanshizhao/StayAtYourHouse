@@ -180,9 +180,9 @@
             入住日期
             </summary>
         </member>
-        <member name="P:Gentle.Core.Entities.RentalRecord.LeaseType">
+        <member name="P:Gentle.Core.Entities.RentalRecord.LeaseMonths">
             <summary>
-            租期类型
+            租期月数
             </summary>
         </member>
         <member name="P:Gentle.Core.Entities.RentalRecord.ContractEndDate">
@@ -583,26 +583,6 @@
         <member name="F:Gentle.Core.Enums.Gender.Female">
             <summary>
             女
-            </summary>
-        </member>
-        <member name="T:Gentle.Core.Enums.LeaseType">
-            <summary>
-            租期类型枚举
-            </summary>
-        </member>
-        <member name="F:Gentle.Core.Enums.LeaseType.Monthly">
-            <summary>
-            月租
-            </summary>
-        </member>
-        <member name="F:Gentle.Core.Enums.LeaseType.HalfYear">
-            <summary>
-            半年租
-            </summary>
-        </member>
-        <member name="F:Gentle.Core.Enums.LeaseType.Yearly">
-            <summary>
-            年租
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.RentalReminderStatus">

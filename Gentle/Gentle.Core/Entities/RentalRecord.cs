@@ -82,9 +82,10 @@ public class RentalRecord : Entity<int>, IEntitySeedData<RentalRecord>
     public DateTime CheckInDate { get; set; }
 
     /// <summary>
-    /// 租期类型
+    /// 租期月数
     /// </summary>
-    public LeaseType LeaseType { get; set; } = LeaseType.Monthly;
+    [Range(1, 36, ErrorMessage = "租期月数必须在1到36之间")]
+    public int LeaseMonths { get; set; } = 1;
 
     /// <summary>
     /// 合同结束日期
