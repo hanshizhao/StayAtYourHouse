@@ -887,9 +887,9 @@
             入住日期
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.LeaseType">
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.LeaseMonths">
             <summary>
-            租期类型
+            租期月数
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.MonthlyRent">
@@ -982,14 +982,14 @@
             入住日期
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.LeaseType">
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.LeaseMonths">
             <summary>
-            租期类型
+            租期月数
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.LeaseTypeText">
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.LeaseMonthsText">
             <summary>
-            租期类型文本
+            租期文本
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.ContractEndDate">
@@ -1175,12 +1175,12 @@
             用于提交租赁续租请求。
             </remarks>
         </member>
-        <member name="P:Gentle.Application.Dtos.Rental.RenewRentalInput.LeaseType">
+        <member name="P:Gentle.Application.Dtos.Rental.RenewRentalInput.LeaseMonths">
             <summary>
-            租期类型
+            租期月数
             </summary>
             <remarks>
-            必填，月租/半年租/年租。
+            必填，1-36个月。
             </remarks>
         </member>
         <member name="P:Gentle.Application.Dtos.Rental.RenewRentalInput.MonthlyRent">
@@ -2619,7 +2619,7 @@
         <member name="M:Gentle.Application.Services.RentalRecordService.ConfirmAnJuCodeAsync(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Gentle.Application.Services.RentalRecordService.CalculateContractEndDate(System.DateTime,Gentle.Core.Enums.LeaseType)">
+        <member name="M:Gentle.Application.Services.RentalRecordService.CalculateContractEndDate(System.DateTime,System.Int32)">
             <summary>
             计算合同结束日期
             </summary>

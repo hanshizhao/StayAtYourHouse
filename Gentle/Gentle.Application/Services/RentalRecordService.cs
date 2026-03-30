@@ -156,7 +156,7 @@ public class RentalRecordService : IRentalRecordService
         }
 
         // 计算合同结束日期
-        var contractEndDate = CalculateContractEndDate(input.CheckInDate, input.LeaseType);
+        var contractEndDate = CalculateContractEndDate(input.CheckInDate, input.LeaseMonths);
 
         // 创建租住记录
         var record = new RentalRecord
@@ -164,7 +164,7 @@ public class RentalRecordService : IRentalRecordService
             RenterId = input.TenantId,
             RoomId = input.RoomId,
             CheckInDate = input.CheckInDate,
-            LeaseType = input.LeaseType,
+            LeaseMonths = input.LeaseMonths,
             ContractEndDate = contractEndDate,
             MonthlyRent = input.MonthlyRent,
             Deposit = input.Deposit,
@@ -332,15 +332,9 @@ public class RentalRecordService : IRentalRecordService
     /// <summary>
     /// 计算合同结束日期
     /// </summary>
-    private static DateTime CalculateContractEndDate(DateTime checkInDate, LeaseType leaseType)
+    private static DateTime CalculateContractEndDate(DateTime checkInDate, int leaseMonths)
     {
-        return leaseType switch
-        {
-            LeaseType.Monthly => checkInDate.AddMonths(1).AddDays(-1),
-            LeaseType.HalfYear => checkInDate.AddMonths(6).AddDays(-1),
-            LeaseType.Yearly => checkInDate.AddYears(1).AddDays(-1),
-            _ => checkInDate.AddMonths(1).AddDays(-1)
-        };
+        return checkInDate.AddMonths(leaseMonths).AddDays(-1);
     }
 
     /// <summary>

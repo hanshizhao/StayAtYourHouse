@@ -122,7 +122,7 @@ public class RentalReminderService : IRentalReminderService
             RenterId = originalRecord.RenterId,
             RoomId = originalRecord.RoomId,
             CheckInDate = originalRecord.ContractEndDate,
-            LeaseType = input.LeaseType,
+            LeaseMonths = input.LeaseMonths,
             ContractEndDate = input.ContractEndDate,
             MonthlyRent = input.MonthlyRent,
             Deposit = originalRecord.Deposit,
