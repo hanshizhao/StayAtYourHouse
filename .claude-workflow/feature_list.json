@@ -1,484 +1,299 @@
 {
-  "module": "Dashboard 页面重构",
+  "module": "安居码提交状态",
   "version": "1.0.0",
   "created_at": "2026-03-30",
   "source_docs": [
-    "docs/superpowers/plans/2026-03-30-dashboard-redesign.md"
+    "docs/superpowers/plans/2026-03-30-anju-code-submission.md"
   ],
   "features": [
     {
-      "id": "FEAT-088",
-      "category": "前端",
-      "module": "Dashboard 页面重构",
+      "id": "FEAT-097",
+      "category": "后端",
+      "module": "安居码提交状态",
       "priority": "high",
       "test_type": "static",
-      "description": "HousingStatsCards 组件",
+      "description": "后端实体 — 新增 IsAnJuCodeSubmitted 属性",
       "acceptance_criteria": [
-        "创建 HousingStatsCards.vue 组件",
-        "显示 4 个统计卡片：总房源、已出租、空置、装修中",
-        "使用 data-testid 标记核心元素",
-        "vue-tsc 编译通过"
+        "RentalRecord 实体新增 IsAnJuCodeSubmitted 布尔属性（默认 false）",
+        "RentalRecordDto 新增 IsAnJuCodeSubmitted 字段",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 HousingStatsCards.vue",
-          "file": "Hans/src/pages/dashboard/base/components/HousingStatsCards.vue",
-          "code_hint": "4 个统计卡片组件，纯 props 驱动：totalRooms, rentedCount, vacantCount, renovatingCount"
+          "action": "在 RentalRecord 实体中新增 IsAnJuCodeSubmitted 属性",
+          "file": "Gentle/Gentle.Core/Entities/RentalRecord.cs",
+          "code_hint": "在 CheckOutRemark 属性之后添加: public bool IsAnJuCodeSubmitted { get; set; } = false;"
         },
         {
           "step": 2,
-          "action": "验证编译",
-          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
-        }
-      ],
-      "test_file": "tests/e2e/feat-088-housing-stats-cards.spec.ts",
-      "status": "completed",
-      "completed_at": "2026-03-30T12:20:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T12:20:00Z"
-      }
-    },
-    {
-      "id": "FEAT-089",
-      "category": "前端",
-      "module": "Dashboard 页面重构",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "FinanceSummary 组件",
-      "acceptance_criteria": [
-        "创建 FinanceSummary.vue 组件",
-        "显示本月收支摘要：租金收入、水电收入、支出、净利润",
-        "显示出租率进度条",
-        "vue-tsc 编译通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 FinanceSummary.vue",
-          "file": "Hans/src/pages/dashboard/base/components/FinanceSummary.vue",
-          "code_hint": "收支摘要组件，props: rentIncome, utilityIncome, expense, netProfit, occupancyRate"
-        },
-        {
-          "step": 2,
-          "action": "验证编译",
-          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
-        }
-      ],
-      "test_file": "tests/e2e/feat-089-finance-summary.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-30T13:10:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T13:10:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T13:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "finance-grid 缺少响应式断点样式",
-          "getProgressStatus 阈值 80/50 可提取为常量"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-090",
-      "category": "前端",
-      "module": "Dashboard 页面重构",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "CommunityStatsTable 组件",
-      "acceptance_criteria": [
-        "创建 CommunityStatsTable.vue 组件",
-        "显示小区统计表格：小区名称、总房源、已出租、空置、出租率",
-        "使用 TDesign t-table 组件",
-        "vue-tsc 编译通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 CommunityStatsTable.vue",
-          "file": "Hans/src/pages/dashboard/base/components/CommunityStatsTable.vue",
-          "code_hint": "小区统计表格，props: communityStats (CommunityStat[])"
-        },
-        {
-          "step": 2,
-          "action": "验证编译",
-          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
-        }
-      ],
-      "test_file": "tests/e2e/feat-090-community-stats-table.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-30T14:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T14:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T14:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "Prop 默认值已添加 withDefaults",
-          "t-progress 缺少 data-testid（不影响当前测试）",
-          "execSync 超时在慢 CI 环境可能不稳定"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-091",
-      "category": "前端",
-      "module": "Dashboard 页面重构",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "VacantRoomsList 组件",
-      "acceptance_criteria": [
-        "创建 VacantRoomsList.vue 组件",
-        "显示空置房源列表：房间信息、空置天数、月租金",
-        "使用 TDesign t-table 组件",
-        "vue-tsc 编译通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 VacantRoomsList.vue",
-          "file": "Hans/src/pages/dashboard/base/components/VacantRoomsList.vue",
-          "code_hint": "空置房源列表，props: vacantRooms (VacantRoomInfo[])"
-        },
-        {
-          "step": 2,
-          "action": "验证编译",
-          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
-        }
-      ],
-      "test_file": "tests/e2e/feat-091-vacant-rooms-list.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-30T15:10:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T15:10:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T15:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "硬编码中文字符串需在 FEAT-093 i18n 中处理",
-          "no-data-tip 样式与 CommunityStatsTable 重复，可后续提取共享样式"
-        ],
-        "fixed_issues": [
-          "formatPrice 改为使用 @/utils/format 共享函数",
-          "getVacantDaysTheme 阈值提取为 VACANT_DAYS_THRESHOLD 常量"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-092",
-      "category": "前端",
-      "module": "Dashboard 页面重构",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "重写 index.vue",
-      "acceptance_criteria": [
-        "重写 index.vue 页面入口",
-        "使用 Promise.all 并行调用 getHousingOverview() 和 getIncomeReport()",
-        "分发数据到各子组件",
-        "加载中/错误/重试状态处理",
-        "vue-tsc 编译通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "重写 index.vue",
-          "file": "Hans/src/pages/dashboard/base/index.vue",
-          "code_hint": "导入子组件，Promise.all 并行获取数据，分发 props，loading/error/retry 状态"
-        },
-        {
-          "step": 2,
-          "action": "验证编译",
-          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
-        }
-      ],
-      "test_file": "tests/e2e/feat-092-dashboard-index-rewrite.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-30T16:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T16:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T16:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 2,
-          "minor": 4
-        },
-        "important_issues": [
-          "Promise.all 无部分失败降级（可接受，与计划一致）",
-          "MessagePlugin.error 与内联错误重复显示（已修复）"
-        ],
-        "minor_issues": [
-          "旧 TDesign 示例组件仍在磁盘上（FEAT-094 清理）",
-          "occupancyRate 跨 API 数据边界提示",
-          "vue-tsc 测试运行较慢（180s 超时）",
-          "TodoPanel 自行管理数据获取（正确设计）"
-        ],
-        "fixed_issues": [
-          "移除 MessagePlugin.error，仅保留内联错误状态"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-093",
-      "category": "前端",
-      "module": "Dashboard 页面重构",
-      "priority": "medium",
-      "test_type": "static",
-      "description": "更新 i18n 文件",
-      "acceptance_criteria": [
-        "替换中文 i18n 文件内容",
-        "替换英文 i18n 文件内容",
-        "包含 stats/finance/occupancy/community/vacant/error 所有命名空间",
-        "vue-tsc 编译通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "替换中文 i18n",
-          "file": "Hans/src/locales/lang/zh_CN/pages/dashboard-base.ts",
-          "code_hint": "替换为新的 i18n 结构：stats/finance/occupancy/community/vacant/error"
-        },
-        {
-          "step": 2,
-          "action": "替换英文 i18n",
-          "file": "Hans/src/locales/lang/en_US/pages/dashboard-base.ts",
-          "code_hint": "替换为对应的英文翻译"
+          "action": "在 RentalRecordDto 中新增 IsAnJuCodeSubmitted 字段",
+          "file": "Gentle/Gentle.Application/Dtos/RentalRecord/RentalRecordDto.cs",
+          "code_hint": "在 UtilityBills 属性之前添加: public bool IsAnJuCodeSubmitted { get; set; }"
         },
         {
           "step": 3,
-          "action": "验证编译",
-          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
+          "action": "验证后端构建通过",
+          "verify_command": "cd Gentle && dotnet build"
         }
       ],
-      "test_file": "tests/e2e/feat-093-dashboard-i18n.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-30T19:00:00Z",
+      "test_file": "tests/e2e/feat-097-anju-code-entity.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T19:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T18:50:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 1,
-          "minor": 3
-        },
-        "important_issues": [
-          "组件仍使用硬编码字符串而非 i18n 键（超出 FEAT-093 范围，需后续集成）"
-        ],
-        "minor_issues": [
-          "测试字符串匹配较宽泛（toContain 模式）",
-          "todo 命名空间超出计划范围但正确包含",
-          "feature_list.json 验收标准需补充 todo 命名空间"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-094",
-      "category": "前端",
-      "module": "Dashboard 页面重构",
+      "id": "FEAT-098",
+      "category": "后端",
+      "module": "安居码提交状态",
       "priority": "high",
-      "test_type": "e2e",
-      "description": "清理旧文件和路由",
+      "test_type": "api_runtime",
+      "description": "后端服务层 — 新增 ConfirmAnJuCodeAsync 方法",
       "acceptance_criteria": [
-        "删除 TDesign 示例组件（TopPanel, MiddleChart, RankList, OutputOverview）",
-        "删除示例数据文件（constants.ts, index.ts）",
-        "删除房源报表页面（/report/housing）",
-        "移除 housing 路由条目",
-        "vue-tsc 编译通过"
+        "IRentalRecordService 接口新增 ConfirmAnJuCodeAsync(int id) 方法",
+        "RentalRecordService 实现 ConfirmAnJuCodeAsync（含 [UnitOfWork]、幂等处理、完整导航属性查询）",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "删除 TDesign 示例组件",
-          "file": "Hans/src/pages/dashboard/base/components/",
-          "code_hint": "删除 TopPanel.vue, MiddleChart.vue, RankList.vue, OutputOverview.vue, constants.ts, index.ts"
+          "action": "在 IRentalRecordService 接口中新增 ConfirmAnJuCodeAsync 方法",
+          "file": "Gentle/Gentle.Application/Services/IRentalRecordService.cs",
+          "code_hint": "在 DeleteAsync 之后添加: Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id);"
         },
         {
           "step": 2,
-          "action": "删除房源报表页面",
-          "file": "Hans/src/pages/report/housing/",
-          "code_hint": "rm -rf Hans/src/pages/report/housing"
+          "action": "在 RentalRecordService 中实现 ConfirmAnJuCodeAsync",
+          "file": "Gentle/Gentle.Application/Services/RentalRecordService.cs",
+          "code_hint": "[UnitOfWork] 方法，查询租赁记录（Include Renter/Room/Community），幂等检查，更新 IsAnJuCodeSubmitted = true，重新查询返回完整 DTO"
         },
         {
           "step": 3,
-          "action": "移除 housing 路由",
-          "file": "Hans/src/router/modules/report.ts",
-          "code_hint": "删除 housing 路由条目，保留 income 和 profit 路由"
+          "action": "验证后端构建通过",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-098-confirm-anju-code-service.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-099",
+      "category": "后端",
+      "module": "安居码提交状态",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "后端 API 层 — 新增确认接口端点",
+      "acceptance_criteria": [
+        "RentalAppService 新增 ConfirmAnJuCode API 端点",
+        "路由: POST /api/rental/confirm-anju-code/{id}",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 RentalAppService 中新增 ConfirmAnJuCode API 端点",
+          "file": "Gentle/Gentle.Application/Apps/RentalAppService.cs",
+          "code_hint": "[HttpPost(\"confirm-anju-code/{id}\")] public async Task<RentalRecordDto> ConfirmAnJuCode(int id) => await _rentalRecordService.ConfirmAnJuCodeAsync(id);"
+        },
+        {
+          "step": 2,
+          "action": "验证后端构建通过",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-099-confirm-anju-code-api.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/rental",
+          "endpoints": ["confirm-anju-code/{id}"]
+        }
+      }
+    },
+    {
+      "id": "FEAT-100",
+      "category": "后端",
+      "module": "安居码提交状态",
+      "priority": "high",
+      "test_type": "static",
+      "description": "数据库迁移",
+      "acceptance_criteria": [
+        "生成 EF Core 迁移 AddAnJuCodeSubmittedToRentalRecord",
+        "迁移文件包含 AddColumn 操作（is_an_ju_code_submitted, boolean, 默认 false）",
+        "迁移成功应用到数据库"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "生成 EF Core 迁移",
+          "file": "Gentle/Gentle.Database.Migrations/",
+          "verify_command": "cd Gentle && dotnet ef migrations add AddAnJuCodeSubmittedToRentalRecord --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
+        },
+        {
+          "step": 2,
+          "action": "验证迁移文件包含 is_an_ju_code_submitted 列",
+          "file": "Gentle/Gentle.Database.Migrations/"
+        },
+        {
+          "step": 3,
+          "action": "应用迁移到数据库",
+          "verify_command": "cd Gentle && dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
+        }
+      ],
+      "test_file": "tests/e2e/feat-100-anju-code-migration.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-101",
+      "category": "前端",
+      "module": "安居码提交状态",
+      "priority": "high",
+      "test_type": "static",
+      "description": "前端类型与 API — 新增 confirmAnjuCode",
+      "acceptance_criteria": [
+        "RentalRecordDto 接口新增 isAnJuCodeSubmitted: boolean 字段",
+        "Api 常量新增 ConfirmAnJuCode 路径",
+        "新增 confirmAnjuCode(id) API 函数",
+        "vue-tsc 类型检查通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 rentalModel.ts 中新增 isAnJuCodeSubmitted 字段",
+          "file": "Hans/src/api/model/rentalModel.ts",
+          "code_hint": "在 RentalRecordDto 接口的 createdTime 和 utilityBills 之间添加: isAnJuCodeSubmitted: boolean;"
+        },
+        {
+          "step": 2,
+          "action": "在 rental.ts 中新增 Api 常量和 confirmAnjuCode 函数",
+          "file": "Hans/src/api/rental.ts",
+          "code_hint": "Api 常量新增 ConfirmAnJuCode: '/rental/confirm-anju-code'，文件末尾新增 confirmAnjuCode(id: number) 函数"
+        },
+        {
+          "step": 3,
+          "action": "验证前端类型检查通过",
+          "verify_command": "cd Hans && npm run build:type"
+        }
+      ],
+      "test_file": "tests/e2e/feat-101-anju-code-frontend-api.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-102",
+      "category": "前端",
+      "module": "安居码提交状态",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "前端 UI — 表格新增安居码列及确认交互",
+      "acceptance_criteria": [
+        "租赁记录表格新增'安居码'列（位于'租客姓名'列之后）",
+        "未提交记录显示红色'未提交'链接",
+        "已提交记录显示 ✅ 图标",
+        "点击'未提交'弹出确认弹窗（含租客姓名和房间信息）",
+        "确认后更新为 ✅，刷新列表",
+        "npm run build 构建通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "导入 DialogPlugin",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "将 import { MessagePlugin } 改为 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'"
+        },
+        {
+          "step": 2,
+          "action": "导入 confirmAnjuCode API",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "将 import { getRentalPage } 改为 import { confirmAnjuCode, getRentalPage } from '@/api/rental'"
+        },
+        {
+          "step": 3,
+          "action": "在 columns 数组中插入安居码列",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "在 tenantName 列之后插入: { colKey: 'isAnJuCodeSubmitted', title: '安居码', width: 100 }"
         },
         {
           "step": 4,
-          "action": "验证编译",
-          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
+          "action": "在 template 中添加安居码列渲染模板",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "#tenantName 之后添加 #isAnJuCodeSubmitted 模板：v-if 已提交显示 ✅，v-else 显示 t-link 未提交"
+        },
+        {
+          "step": 5,
+          "action": "添加 handleConfirmAnjuCode 函数",
+          "file": "Hans/src/pages/housing/rental/index.vue",
+          "code_hint": "DialogPlugin.confirm 弹窗，onConfirm 调用 confirmAnjuCode(row.id)，成功后 fetchData() 刷新"
+        },
+        {
+          "step": 6,
+          "action": "验证前端构建通过",
+          "verify_command": "cd Hans && npm run build"
         }
       ],
-      "test_file": "tests/e2e/feat-094-cleanup-old-files.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-30T17:10:00Z",
+      "test_file": "tests/e2e/feat-102-anju-code-table-column.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T17:10:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T17:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "filePath.split('/').pop() 在 Windows 可能无法正确提取文件名（仅影响显示名）",
-          "execSync 失败依赖异常传播而非显式断言，可接受但建议添加注释"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-095",
+      "id": "FEAT-103",
       "category": "集成",
-      "module": "Dashboard 页面重构",
+      "module": "安居码提交状态",
       "priority": "high",
       "test_type": "e2e",
-      "description": "E2E 测试",
+      "description": "端到端验证",
       "acceptance_criteria": [
-        "统计卡片可见性测试",
-        "收支摘要和出租率测试",
-        "待办事项面板测试",
-        "小区统计表格测试",
-        "空置房源列表测试",
-        "旧 TDesign 示例内容不存在测试"
+        "后端服务启动成功",
+        "前端开发服务器启动成功",
+        "租赁记录页面正常显示安居码列",
+        "未提交记录显示红色'未提交'链接",
+        "点击确认后弹窗显示正确信息",
+        "确认后记录更新为 ✅"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "编写 E2E 测试",
-          "file": "tests/e2e/feat-095-dashboard-redesign.spec.ts",
-          "code_hint": "测试统计卡片、收支摘要、待办面板、小区统计、空置房源、旧内容不存在"
+          "action": "启动后端服务验证",
+          "verify_command": "cd Gentle && dotnet run --project Gentle.Web.Entry"
         },
         {
           "step": 2,
-          "action": "运行测试",
-          "verify_command": "cd tests && npx playwright test e2e/feat-095-dashboard-redesign.spec.ts"
-        }
-      ],
-      "test_file": "tests/e2e/feat-095-dashboard-redesign.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-30T18:10:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "required_tests": ["stats_cards", "finance_summary", "todo_panel", "community_stats", "vacant_rooms", "old_content_removed"],
-        "verified_at": "2026-03-30T18:10:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T18:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 2,
-          "minor": 3
-        },
-        "important_issues": [
-          "第6节旧内容不存在测试与 FEAT-094 重叠，建议只保留 index.vue 不引用旧组件的断言",
-          "vue-tsc 测试模式与 FEAT-094 不一致（not.toThrow vs toBeDefined）"
-        ],
-        "minor_issues": [
-          "未验证组件在 layout 容器中的位置关系",
-          "TodoPanel 测试覆盖略少于其他组件（设计正确，缺少 data-testid）",
-          "existsSync 与 beforeAll 异步读取模式混用"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-096",
-      "category": "集成",
-      "module": "Dashboard 页面重构",
-      "priority": "high",
-      "test_type": "static",
-      "description": "最终验证",
-      "acceptance_criteria": [
-        "vue-tsc 类型检查通过",
-        "ESLint 检查通过",
-        "开发服务器启动成功",
-        "Dashboard 页面正常显示",
-        "/report/housing 路由已不存在"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "运行完整类型检查",
-          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
+          "action": "启动前端开发服务器验证",
+          "verify_command": "cd Hans && npm run dev"
         },
         {
-          "step": 2,
-          "action": "运行 ESLint",
-          "verify_command": "cd Hans && npx eslint src/pages/dashboard/base --ext .vue,.ts"
+          "step": 3,
+          "action": "编写 E2E 测试验证完整流程",
+          "file": "tests/e2e/feat-103-anju-code-e2e.spec.ts",
+          "code_hint": "访问 /housing/rental，验证安居码列、未提交链接、确认弹窗、提交后更新"
         }
       ],
-      "test_file": "tests/e2e/feat-096-final-verification.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-30T20:30:00Z",
+      "test_file": "tests/e2e/feat-103-anju-code-e2e.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-30T20:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-03-30T20:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixed_from_first_review": [
-          "ESLint 错误已通过 --fix 修复（34 个自动修复）",
-          "运行时验收标准已文档化说明（dev server + page display）",
-          "路由断言补充完整（房源概览 + Housing Report）",
-          "测试数量更新为 21"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false,
+        "required_tests": ["page_load", "column_visible", "confirm_dialog", "submit_success", "idempotent"]
       }
     }
   ]
