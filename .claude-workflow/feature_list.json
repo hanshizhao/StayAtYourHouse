@@ -1,1558 +1,329 @@
 {
-  "module": "待办事项卡片增强",
+  "module": "Dashboard 页面重构",
   "version": "1.0.0",
-  "created_at": "2026-03-29",
+  "created_at": "2026-03-30",
   "source_docs": [
-    "docs/superpowers/plans/2026-03-29-todo-panel-enhancement.md"
+    "docs/superpowers/plans/2026-03-30-dashboard-redesign.md"
   ],
   "features": [
     {
-      "id": "FEAT-058",
-      "category": "后端",
-      "module": "待办事项卡片增强",
+      "id": "FEAT-088",
+      "category": "前端",
+      "module": "Dashboard 页面重构",
       "priority": "high",
-      "test_type": "static",
-      "description": "创建 RentalReminderStatus 枚举",
+      "test_type": "e2e",
+      "description": "HousingStatsCards 组件",
       "acceptance_criteria": [
-        "创建 RentalReminderStatus 枚举，包含 Pending = 0, Deferred = 1, Completed = 2",
-        "dotnet build 构建成功"
+        "创建 HousingStatsCards.vue 组件",
+        "显示 4 个统计卡片：总房源、已出租、空置、装修中",
+        "使用 data-testid 标记核心元素",
+        "vue-tsc 编译通过"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 RentalReminderStatus 枚举",
-          "file": "Gentle/Gentle.Core/Enums/RentalReminderStatus.cs",
-          "code_hint": "enum RentalReminderStatus { Pending = 0, Deferred = 1, Completed = 2 }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-058-rental-reminder-status-enum.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T17:15:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T17:00:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T17:15:00Z"
-      }
-    },
-    {
-      "id": "FEAT-059",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 RentalReminder 实体",
-      "acceptance_criteria": [
-        "创建 RentalReminder 实体类，继承 Entity<int>",
-        "包含 RentalRecordId, ReminderDate, Status 属性",
-        "包含 RentalRecord 和 Deferrals 导航属性",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RentalReminder 实体类",
-          "file": "Gentle/Gentle.Core/Entities/RentalReminder.cs",
-          "code_hint": "public class RentalReminder : Entity<int> { public int RentalRecordId { get; set; } public DateTime ReminderDate { get; set; } public RentalReminderStatus Status { get; set; } public RentalRecord RentalRecord { get; set; } public ICollection<RentalDeferral> Deferrals { get; set; } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-059-rental-reminder-entity.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T19:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T20:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
+          "action": "创建 HousingStatsCards.vue",
+          "file": "Hans/src/pages/dashboard/base/components/HousingStatsCards.vue",
+          "code_hint": "4 个统计卡片组件，纯 props 驱动：totalRooms, rentedCount, vacantCount, renovatingCount"
         },
-        "fixes_applied": [
-          "移除注释代码上的 XML 注释，改用 TODO 格式",
-          "Room 导航属性改用 [NotMapped] 计算属性",
-          "修正文档注释错别字：租记录 → 租赁记录"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T19:30:00Z"
-      }
-    },
-    {
-      "id": "FEAT-060",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 RentalDeferral 实体",
-      "acceptance_criteria": [
-        "创建 RentalDeferral 实体类，继承 Entity<int>",
-        "包含 RentalReminderId, OriginalReminderDate, DeferredToDate, Remark 属性",
-        "包含 RentalReminder 导航属性",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
         {
-          "step": 1,
-          "action": "创建 RentalDeferral 实体类",
-          "file": "Gentle/Gentle.Core/Entities/RentalDeferral.cs",
-          "code_hint": "public class RentalDeferral : Entity<int> { public int RentalReminderId { get; set; } public DateTime OriginalReminderDate { get; set; } public DateTime DeferredToDate { get; set; } public string? Remark { get; set; } public RentalReminder RentalReminder { get; set; } }"
+          "step": 2,
+          "action": "验证编译",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
         }
       ],
-      "test_file": "tests/e2e/feat-060-rental-deferral-entity.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T22:00:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T21:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T22:00:00Z"
-      }
-    },
-    {
-      "id": "FEAT-061",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建数据库迁移",
-      "acceptance_criteria": [
-        "生成迁移文件 AddRentalReminderAndDeferral",
-        "迁移 Up 方法包含 RentalReminder 和 RentalDeferral 表创建",
-        "迁移文件生成成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "生成数据库迁移",
-          "file": "Gentle/Gentle.Database.Migrations/Migrations/",
-          "code_hint": "dotnet ef migrations add AddRentalReminderAndDeferral --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry",
-          "verify_command": "cd Gentle && dotnet ef migrations add AddRentalReminderAndDeferral --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
-        }
-      ],
-      "test_file": "tests/e2e/feat-061-rental-reminder-migration.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T23:00:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T10:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "fixes_applied": [
-          "移除迁移文件中无关的 User 表密码哈希更新"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-03-29T23:00:00Z"
-      }
-    },
-    {
-      "id": "FEAT-062",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "执行数据库迁移",
-      "acceptance_criteria": [
-        "迁移应用成功",
-        "数据库表 rental_reminder 和 rental_deferral 创建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "执行数据库迁移",
-          "file": "Gentle/Gentle.Database.Migrations/",
-          "code_hint": "dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry",
-          "verify_command": "cd Gentle && dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
-        }
-      ],
-      "test_file": "tests/e2e/feat-062-apply-rental-reminder-migration.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T18:29:15Z",
-      "review": {
-        "last_review_at": "2026-03-29T18:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
-      },
-      "verification": {
-        "build_passed": true,
-        "migration_applied": "20260329094816_AddRentalReminderAndDeferral",
-        "tables_created": [
-          "rental_reminder",
-          "rental_deferral"
-        ],
-        "verified_at": "2026-03-29T18:35:00Z"
-      }
-    },
-    {
-      "id": "FEAT-063",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建待办类型枚举 TodoType",
-      "acceptance_criteria": [
-        "创建 TodoType 枚举，包含 Utility = 0, Rental = 1",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 TodoType 枚举",
-          "file": "Gentle/Gentle.Core/Enums/TodoType.cs",
-          "code_hint": "enum TodoType { Utility = 0, Rental = 1 }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-063-todo-type-enum.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T23:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T23:40:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixes_applied": [
-          "将 TodoType.cs 从 Gentle.Application/Dtos/Todo/ 移动到 Gentle.Core/Enums/ 以保持项目一致性"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "verified_at": "2026-03-29T23:45:00Z"
-      }
-    },
-    {
-      "id": "FEAT-064",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 TodoItemDto",
-      "acceptance_criteria": [
-        "创建 TodoItemDto 类，包含水电费和催收房租两种类型的字段",
-        "包含 Type, Id, RoomInfo 等公共字段",
-        "包含水电费专用字段 Amount, Period, UtilityBill",
-        "包含催收房租专用字段 TenantName, MonthlyRent, RentalReminder 等",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 TodoItemDto 类",
-          "file": "Gentle/Gentle.Application/Dtos/Todo/TodoItemDto.cs",
-          "code_hint": "public class TodoItemDto { public TodoType Type { get; set; } public int Id { get; set; } public string RoomInfo { get; set; } public decimal? Amount { get; set; } public string? Period { get; set; } public string? TenantName { get; set; } public decimal? MonthlyRent { get; set; } public int DeferralCount { get; set; } public UtilityBillDto? UtilityBill { get; set; } public RentalReminderDto? RentalReminder { get; set; } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-064-todo-item-dto.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T19:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T19:35:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 1,
-          "minor": 2
-        },
-        "important_issues": [
-          "RentalReminder 使用 object? 类型，FEAT-066 完成后需更新为 RentalReminderDto?"
-        ],
-        "minor_issues": [
-          "Id 属性注释位置风格可优化",
-          "缺少验证特性（可选，DTO 为只读输出）"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "verified_at": "2026-03-29T19:40:00Z"
-      }
-    },
-    {
-      "id": "FEAT-065",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 TodoListResult",
-      "acceptance_criteria": [
-        "创建 TodoListResult 类",
-        "包含 Items, Total, UtilityCount, RentalCount 属性",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 TodoListResult 类",
-          "file": "Gentle/Gentle.Application/Dtos/Todo/TodoListResult.cs",
-          "code_hint": "public class TodoListResult { public List<TodoItemDto> Items { get; set; } public int Total { get; set; } public int UtilityCount { get; set; } public int RentalCount { get; set; } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-065-todo-list-result.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T23:50:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T16:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
-      },
-      "verification": {
-        "build_passed": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 3,
-        "tests_total": 3,
-        "verified_at": "2026-03-29T16:05:00Z"
-      }
-    },
-    {
-      "id": "FEAT-066",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 RentalReminderDto",
-      "acceptance_criteria": [
-        "创建 RentalReminderDto 类",
-        "包含 Id, RentalRecordId, RoomInfo, TenantName, MonthlyRent 等属性",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RentalReminderDto 类",
-          "file": "Gentle/Gentle.Application/Dtos/Rental/RentalReminderDto.cs",
-          "code_hint": "public class RentalReminderDto { public int Id { get; set; } public int RentalRecordId { get; set; } public string RoomInfo { get; set; } public string TenantName { get; set; } public decimal MonthlyRent { get; set; } public DateTime ContractEndDate { get; set; } public int DeferralCount { get; set; } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-066-rental-reminder-dto.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T17:00:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T16:45:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixes_applied": [
-          "添加 CreatedTime 属性以保持与其他 DTO 一致性"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "build_passed": true,
-        "tests_passed": 3,
-        "tests_total": 3,
-        "verified_at": "2026-03-29T17:00:00Z"
-      }
-    },
-    {
-      "id": "FEAT-067",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 DeferReminderInput",
-      "acceptance_criteria": [
-        "创建 DeferReminderInput 类",
-        "包含 DeferredToDate（必填）和 Remark 属性",
-        "使用 [Required] 特性验证",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DeferReminderInput 类",
-          "file": "Gentle/Gentle.Application/Dtos/Rental/DeferReminderInput.cs",
-          "code_hint": "public class DeferReminderInput { [Required] public DateTime DeferredToDate { get; set; } public string? Remark { get; set; } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-067-defer-reminder-input.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T17:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T17:35:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "考虑在未来添加 [FutureDate] 验证逻辑",
-          "考虑为 Remark 字段添加 [MaxLength] 限制"
-        ]
-      },
+      "test_file": "tests/e2e/feat-088-housing-stats-cards.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-068",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 RenewRentalInput",
-      "acceptance_criteria": [
-        "创建 RenewRentalInput 类",
-        "包含 LeaseType, MonthlyRent, ContractEndDate（必填）和 ContractImage, Remark 属性",
-        "使用 [Required] 和 [Range] 特性验证",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RenewRentalInput 类",
-          "file": "Gentle/Gentle.Application/Dtos/Rental/RenewRentalInput.cs",
-          "code_hint": "public class RenewRentalInput { [Required] public LeaseType LeaseType { get; set; } [Required, Range(0.01, double.MaxValue)] public decimal MonthlyRent { get; set; } [Required] public DateTime ContractEndDate { get; set; } public string? ContractImage { get; set; } public string? Remark { get; set; } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-068-renew-rental-input.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T17:45:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T17:50:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "good_points": [
-          "完整的 XML 文档注释",
-          "合理的验证规则 - MonthlyRent 使用 Range(0.01, double.MaxValue)",
-          "与项目现有 DTO 代码风格一致"
-        ]
-      },
-      "verification": {
-        "build_passed": true,
-        "tests_passed": true,
-        "tests_total": 3,
-        "verified_at": "2026-03-29T17:55:00Z"
-      }
-    },
-    {
-      "id": "FEAT-069",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 DeferralRecordDto",
-      "acceptance_criteria": [
-        "创建 DeferralRecordDto 和 DeferralListResult 类",
-        "包含宽限记录的所有属性",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DeferralRecordDto 和 DeferralListResult 类",
-          "file": "Gentle/Gentle.Application/Dtos/Rental/DeferralRecordDto.cs",
-          "code_hint": "public class DeferralRecordDto { public int Id { get; set; } public DateTime OriginalReminderDate { get; set; } public DateTime DeferredToDate { get; set; } public string? Remark { get; set; } public DateTime CreatedTime { get; set; } } public class DeferralListResult { public List<DeferralRecordDto> Items { get; set; } public int Total { get; set; } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-069-deferral-record-dto.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T18:10:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T18:05:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "minor_issues": [
-          "DeferralDays 计算属性未考虑边界情况（业务逻辑保证不会出现负值，可忽略）"
-        ],
-        "good_points": [
-          "计算属性 DeferralDays 为前端提供便利",
-          "使用 C# 12 集合表达式 [] 初始化",
-          "XML 文档注释完整清晰",
-          "风格与 RentalReminderDto 保持一致"
-        ]
-      },
-      "verification": {
-        "build_passed": true,
-        "tests_passed": 4,
-        "tests_total": 4,
-        "verified_at": "2026-03-29T18:12:00Z"
-      }
-    },
-    {
-      "id": "FEAT-070",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 ITodoService 接口",
-      "acceptance_criteria": [
-        "创建 ITodoService 接口",
-        "包含 GetTodoListAsync 方法",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 ITodoService 接口",
-          "file": "Gentle/Gentle.Application/Services/ITodoService.cs",
-          "code_hint": "public interface ITodoService { Task<TodoListResult> GetTodoListAsync(string? type, int page, int pageSize); }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-070-todo-service-interface.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T19:00:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T19:05:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 1,
-          "minor": 0
-        },
-        "important_issues": [
-          "type 参数建议使用 TodoType? 枚举替代 string?，提供编译时类型检查"
-        ],
-        "good_points": [
-          "Furion 框架规范遵循正确（继承 ITransient）",
-          "XML 文档注释完整清晰",
-          "方法签名符合分页查询模式"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 3,
-        "tests_total": 3,
-        "verified_at": "2026-03-29T19:10:00Z"
-      }
-    },
-    {
-      "id": "FEAT-071",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "创建 TodoService 实现",
-      "acceptance_criteria": [
-        "创建 TodoService 类，实现 ITodoService 和 ITransient",
-        "注入 IRepository<UtilityBill>, IRepository<RentalReminder>, IRepository<RentalRecord>",
-        "实现 GetTodoListAsync 方法，聚合水电费和催收房租待办",
-        "dotnet build 构建成功，应用启动成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 TodoService 类",
-          "file": "Gentle/Gentle.Application/Services/TodoService.cs",
-          "code_hint": "public class TodoService : ITodoService, ITransient { public async Task<TodoListResult> GetTodoListAsync(string? type, int page, int pageSize) { /* 聚合水电费和催收房租 */ } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-071-todo-service.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-03-29T20:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T20:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixes_applied": [
-          "添加 IRepository<RentalRecord> 依赖注入（与计划保持一致）",
-          "在 TodoItemDto 添加统一 CreatedTime 属性简化排序逻辑",
-          "添加 type 参数验证，对无效值抛出异常",
-          "重命名 MapToTodoItemDto 为 MapFromUtilityBill/MapFromRentalReminder 提高可读性"
-        ],
-        "good_points": [
-          "遵循 Furion 最佳实践",
-          "分页参数边界保护完整",
-          "大小写不敏感的类型筛选",
-          "合理的 Include 策略避免 N+1",
-          "完整的 XML 文档注释",
-          "空值安全处理"
-        ]
-      },
-      "verification": {
-        "api_routes_checked": true,
-        "di_configured": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 5,
-        "tests_total": 5,
-        "app_started": true,
-        "verified_at": "2026-03-29T20:30:00Z"
-      }
-    },
-    {
-      "id": "FEAT-072",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 IRentalReminderService 接口",
-      "acceptance_criteria": [
-        "创建 IRentalReminderService 接口",
-        "包含 DeferAsync, RenewAsync, GetDeferralsAsync 方法",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 IRentalReminderService 接口",
-          "file": "Gentle/Gentle.Application/Services/IRentalReminderService.cs",
-          "code_hint": "public interface IRentalReminderService { Task DeferAsync(int reminderId, DeferReminderInput input); Task<int> RenewAsync(int reminderId, RenewRentalInput input); Task<DeferralListResult> GetDeferralsAsync(int reminderId); }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-072-rental-reminder-service-interface.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T21:00:00Z",
-      "completed_at": "2026-03-29T21:05:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T21:10:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 1,
-          "minor": 0
-        },
-        "important_issues": [
-          "DeferAsync 缺少返回值语义 - 评估后保持现状（前端不需要返回值）"
-        ],
-        "good_points": [
-          "正确继承 ITransient 生命周期接口",
-          "XML 文档注释完整",
-          "方法签名设计合理",
-          "命名与项目风格一致"
-        ]
-      },
-      "verification": {
-        "build_passed": true,
-        "tests_passed": true,
-        "verified_at": "2026-03-29T21:15:00Z"
-      }
-    },
-    {
-      "id": "FEAT-073",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "创建 RentalReminderService 实现",
-      "acceptance_criteria": [
-        "创建 RentalReminderService 类，实现 IRentalReminderService 和 ITransient",
-        "注入 IRepository<RentalReminder>, IRepository<RentalDeferral>, IRepository<RentalRecord>",
-        "实现 DeferAsync（宽限处理）、RenewAsync（续租处理）、GetDeferralsAsync（获取宽限记录）",
-        "使用 throw Oops.Oh() 异常处理",
-        "dotnet build 构建成功，应用启动成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RentalReminderService 类",
-          "file": "Gentle/Gentle.Application/Services/RentalReminderService.cs",
-          "code_hint": "public class RentalReminderService : IRentalReminderService, ITransient { public async Task DeferAsync(int reminderId, DeferReminderInput input) { /* 宽限处理：创建宽限记录、更新状态、创建新提醒 */ } public async Task<int> RenewAsync(int reminderId, RenewRentalInput input) { /* 续租处理：创建新租赁记录、更新原记录状态 */ } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-073-rental-reminder-service.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T22:00:00Z",
-      "completed_at": "2026-03-29T22:15:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T22:20:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "ITransient 接口已通过 IRentalReminderService 间接继承，保持现状",
-          "宽限日期验证可考虑添加未来日期检查（可选改进）",
-          "ContractImage 字段暂未使用，后续功能待完善"
-        ],
-        "good_points": [
-          "正确使用 IRepository<T> 构造函数注入",
-          "正确使用 throw Oops.Oh() 异常处理",
-          "XML 文档注释完整规范",
-          "业务逻辑清晰，数据一致性处理得当",
-          "查询优化：GetDeferralsAsync 使用 AsQueryable(false)"
-        ],
-        "fixes_applied": [
-          "添加续租日期验证：新合同结束日期必须晚于原合同结束日期"
-        ]
-      },
-      "verification": {
-        "api_routes_checked": false,
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false,
-        "build_passed": true,
-        "app_started": true,
-        "di_configured": true,
-        "verified_at": "2026-03-29T20:52:00Z"
-      }
-    },
-    {
-      "id": "FEAT-074",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "创建 TodoAppService API 控制器",
-      "acceptance_criteria": [
-        "创建 TodoAppService 类，实现 IDynamicApiController",
-        "使用 [Route(\"api/todo\")] 和 [Authorize] 特性",
-        "包含 GetList, Defer, Renew, GetDeferrals 端点",
-        "dotnet build 构建成功，Swagger 显示 API"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 TodoAppService 控制器",
-          "file": "Gentle/Gentle.Application/Apps/TodoAppService.cs",
-          "code_hint": "[Route(\"api/todo\")][Authorize] public class TodoAppService : IDynamicApiController { [HttpGet(\"list\")] public async Task<TodoListResult> GetList(...) { } [HttpPost(\"rental-reminder/{id}/defer\")] public async Task Defer(...) { } [HttpPost(\"rental-reminder/{id}/renew\")] public async Task<RenewResult> Renew(...) { } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-074-todo-app-service.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T23:00:00Z",
-      "completed_at": "2026-03-29T23:15:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T23:20:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "type 参数可考虑添加验证或使用枚举增强类型安全",
-          "id 参数可考虑添加 [Range] 验证",
-          "POST 方法可考虑 CSRF 防护（与项目风格一致，可忽略）"
-        ],
-        "good_points": [
-          "正确使用 Furion 框架最佳实践（IDynamicApiController, 依赖注入）",
-          "代码风格与项目现有代码一致",
-          "分页参数边界保护完整",
-          "XML 文档注释规范完整",
-          "RESTful API 设计合理"
-        ]
-      },
-      "verification": {
-        "api_routes_checked": true,
-        "build_passed": true,
-        "app_started": true,
-        "di_configured": true,
-        "api_endpoints_accessible": true,
-        "verified_at": "2026-03-29T21:20:00Z",
-        "api_routes": {
-          "base": "/api/todo",
-          "endpoints": [
-            "list",
-            "rental-reminder/{id}/defer",
-            "rental-reminder/{id}/renew",
-            "rental-reminder/{id}/deferrals"
-          ]
-        }
-      }
-    },
-    {
-      "id": "FEAT-075",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "medium",
-      "test_type": "static",
-      "description": "创建催收提醒后台服务",
-      "acceptance_criteria": [
-        "创建 RentalReminderBackgroundService 类，继承 BackgroundService",
-        "每日日凌晨扫描即将到期的租赁记录并创建提醒",
-        "提前 3 天创建提醒",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RentalReminderBackgroundService 类",
-          "file": "Gentle/Gentle.Application/BackgroundServices/RentalReminderBackgroundService.cs",
-          "code_hint": "public class RentalReminderBackgroundService : BackgroundService { protected override async Task ExecuteAsync(CancellationToken stoppingToken) { /* 每日扫描，创建提醒 */ } }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-075-rental-reminder-background-service.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T12:00:00Z",
-      "completed_at": "2026-03-29T12:15:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T12:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 2,
-          "minor": 3
-        },
-        "important_issues": [
-          "ISSUE-1: 查询逻辑可能导致重复提醒 - 评估后保持现状（业务逻辑合理）",
-          "ISSUE-2: 缺少批量保存 - 小规模数据可接受，后续优化"
-        ],
-        "minor_issues": [
-          "考虑使用 UTC 时间（本地时间调度也可接受）",
-          "配置外部化（ReminderDaysBeforeExpiry, DailyExecutionHour）",
-          "添加服务健康检查"
-        ],
-        "good_points": [
-          "正确使用 BackgroundService 模式和 IServiceScopeFactory",
-          "日志记录完整（启动/停止/执行/错误）",
-          "错误处理合理（区分取消和异常）",
-          "避免重复创建（Pending 状态检查）",
-          "XML 文档注释完整"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 4,
-        "tests_total": 4,
-        "build_passed": true,
-        "verified_at": "2026-03-29T12:30:00Z"
-      }
-    },
-    {
-      "id": "FEAT-076",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "medium",
-      "test_type": "api_runtime",
-      "description": "注册后台服务",
-      "acceptance_criteria": [
-        "在 Program.cs 中注册 RentalReminderBackgroundService",
-        "应用启动成功，无报错"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "注册后台服务到 Startup.cs",
-          "file": "Gentle/Gentle.Web.Core/Startup.cs",
-          "code_hint": "services.AddHostedService<RentalReminderBackgroundService>();"
-        }
-      ],
-      "test_file": "tests/e2e/feat-076-register-background-service.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T13:00:00Z",
-      "completed_at": "2026-03-29T13:05:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T21:40:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "good_points": [
-          "正确使用 AddHostedService 注册后台服务",
-          "遵循 Furion 框架规范",
-          "代码简洁，改动最小化"
-        ]
-      },
-      "verification": {
-        "api_routes_checked": true,
-        "build_passed": true,
-        "app_started": true,
-        "di_configured": true,
-        "background_service_started": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 3,
-        "tests_total": 3,
-        "verified_at": "2026-03-29T21:45:00Z"
-      }
-    },
-    {
-      "id": "FEAT-077",
+      "id": "FEAT-089",
       "category": "前端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 todoModel.ts 类型定义",
-      "acceptance_criteria": [
-        "创建 todoModel.ts 文件",
-        "定义 TodoType 枚举、TodoItem 接口、TodoListResult 接口",
-        "定义 RentalReminderItem、DeferReminderInput、RenewRentalInput、DeferralRecord 接口",
-        "npm run build:type 构建通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 todoModel.ts",
-          "file": "Hans/src/api/model/todoModel.ts",
-          "code_hint": "export enum TodoType { Utility = 0, Rental = 1 } export interface TodoItem { type: TodoType; id: number; roomInfo: string; amount?: number; tenantName?: string; ... }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-077-todo-model.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T14:00:00Z",
-      "completed_at": "2026-03-29T14:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T14:45:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixes_applied": [
-          "LeaseType 枚举改为从 rentalModel.ts 导入，避免重复定义",
-          "UtilityBillSimple 改为复用 meterModel.ts 的 UtilityBillItem 类型"
-        ],
-        "good_points": [
-          "枚举值与后端完全一致",
-          "完整的 JSDoc 注释",
-          "提供文本映射方便 UI 显示",
-          "日期字段正确使用 string 类型",
-          "可选属性正确标记",
-          "命名风格与项目一致",
-          "接口结构清晰，使用注释块分隔字段",
-          "复用现有类型定义，避免代码冗余"
-        ]
-      },
-      "verification": {
-        "build_passed": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 5,
-        "tests_total": 5,
-        "verified_at": "2026-03-29T15:00:00Z"
-      }
-    },
-    {
-      "id": "FEAT-078",
-      "category": "前端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "创建 todo.ts API 封装",
-      "acceptance_criteria": [
-        "创建 todo.ts 文件",
-        "定义 getTodoList, deferReminder, renewRental, getDeferrals 函数",
-        "npm run build:type 构建通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 todo.ts API 文件",
-          "file": "Hans/src/api/todo.ts",
-          "code_hint": "export function getTodoList(type?: string, pageSize = 10) { return request.get<TodoListResult>('/api/todo/list', { params: { type, page: 1, pageSize } }); }"
-        }
-      ],
-      "test_file": "tests/e2e/feat-078-todo-api.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T15:30:00Z",
-      "completed_at": "2026-03-29T16:00:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T16:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "fixes_applied": [
-          "修复 renewRental 返回类型：从 RenewResult 改为 number（与后端一致）",
-          "优化 getTodoList 的 type 参数类型：从 TodoType | string 改为 TodoType?，并添加枚举到字符串的转换"
-        ],
-        "good_points": [
-          "代码风格与项目现有 API 文件完全一致",
-          "类型安全，所有函数都有正确的泛型类型参数",
-          "URL 路径与后端 API 路由完全匹配",
-          "API 常量复用，避免重复字符串"
-        ],
-        "minor_issues": [
-          "getTodoList 的 type 参数类型 TodoType | string 较宽松，建议后续优化为枚举转换"
-        ]
-      },
-      "verification": {
-        "build_passed": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 4,
-        "tests_total": 4,
-        "verified_at": "2026-03-29T16:15:00Z"
-      }
-    },
-    {
-      "id": "FEAT-079",
-      "category": "前端",
-      "module": "待办事项卡片增强",
+      "module": "Dashboard 页面重构",
       "priority": "high",
       "test_type": "e2e",
-      "description": "改造 TodoPanel 组件",
+      "description": "FinanceSummary 组件",
       "acceptance_criteria": [
-        "添加类型筛选下拉框",
-        "支持水电费和催收房租两种待办类型渲染",
-        "点击待办触发对应弹窗",
-        "页面正常渲染，筛选功能正常"
+        "创建 FinanceSummary.vue 组件",
+        "显示本月收支摘要：租金收入、水电收入、支出、净利润",
+        "显示出租率进度条",
+        "vue-tsc 编译通过"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "改造 TodoPanel 组件",
-          "file": "Hans/src/pages/dashboard/base/components/TodoPanel.vue",
-          "code_hint": "添加 filterType 状态、typeOptions 选项、渲染两种类型待办、添加弹窗组件引用"
-        }
-      ],
-      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T16:30:00Z",
-      "completed_at": "2026-03-29T17:00:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T17:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "phase_review": "Phase 7 (FEAT-079~084) 代码审查已完成"
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 6,
-        "tests_total": 6,
-        "build_passed": true,
-        "verified_at": "2026-03-29T18:00:00Z"
-      }
-    },
-    {
-      "id": "FEAT-080",
-      "category": "前端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "创建 PayUtilityDialog 组件",
-      "acceptance_criteria": [
-        "从 utility/bill/index.vue 抽取收款弹窗逻辑为独立组件",
-        "支持 visible 和 bill props",
-        "支持 update:visible 和 success events",
-        "弹窗正常显示，收款功能正常"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 PayUtilityDialog 组件",
-          "file": "Hans/src/pages/dashboard/base/components/PayUtilityDialog.vue",
-          "code_hint": "defineProps<{ visible: boolean; bill: UtilityBillItem | null }>() defineEmits<{ 'update:visible': [value: boolean]; 'success': [] }>()"
-        }
-      ],
-      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T17:00:00Z",
-      "completed_at": "2026-03-29T17:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-30T10:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "缺少 data-testid 属性便于 E2E 测试定位",
-          "组件位置可考虑移到更通用的目录（当前位置也可接受）"
-        ],
-        "fixes_applied": [
-          "添加 data-testid=\"pay-utility-dialog\" 属性"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 6,
-        "tests_total": 6,
-        "build_passed": true,
-        "verified_at": "2026-03-30T10:15:00Z",
-        "fix_verified": true,
-        "data_testid_added": true
-      }
-    },
-    {
-      "id": "FEAT-081",
-      "category": "前端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "创建 RentalReminderDialog 组件",
-      "acceptance_criteria": [
-        "显示租客、房间、入住信息",
-        "显示宽限次数（可点击查看记录）",
-        "宽限/续租/取消按钮",
-        "弹窗正常显示，信息正确"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RentalReminderDialog 组件",
-          "file": "Hans/src/pages/dashboard/base/components/RentalReminderDialog.vue",
-          "code_hint": "显示租客信息、宽限次数、三个操作按钮"
-        }
-      ],
-      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T17:00:00Z",
-      "completed_at": "2026-03-29T17:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-30T11:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 2,
-          "minor": 4
-        },
-        "important_issues": [
-          "类型不一致：使用 reminder?.id 而非 reminder?.rentalReminder?.id",
-          "API 调用失败场景未处理：reminderId 为 0 时没有前置校验"
-        ],
-        "minor_issues": [
-          "魔法数字 4（默认宽限天数）",
-          "空 CSS 块",
-          "缺少 data-testid 属性",
-          "表单重置时机"
-        ],
-        "fixes_applied": [
-          "RentalReminderDialog: reminder?.id -> reminder?.rentalReminder?.id（2处）",
-          "DeferDialog: 添加 reminderId 前置校验 + data-testid",
-          "RenewRentalDialog: 添加 rentalReminder.id 前置校验 + data-testid",
-          "RentalReminderDialog: 添加 data-testid 属性"
-        ],
-        "all_issues_fixed": true
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 6,
-        "tests_total": 6,
-        "build_passed": true,
-        "review_fixes_verified": true,
-        "data_testid_added": true,
-        "type_consistency_fixed": true,
-        "defensive_checks_added": true,
-        "verified_at": "2026-03-30T11:30:00Z"
-      }
-    },
-    {
-      "id": "FEAT-082",
-      "category": "前端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "创建 DeferDialog 组件",
-      "acceptance_criteria": [
-        "日期选择器（最小明天，默认+3天）",
-        "备注输入",
-        "确认/取消按钮",
-        "宽限功能正常，数据正确提交"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DeferDialog 组件",
-          "file": "Hans/src/pages/dashboard/base/components/DeferDialog.vue",
-          "code_hint": "t-date-picker with min-date, t-textarea, 提交调用 deferReminder API"
-        }
-      ],
-      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T17:00:00Z",
-      "completed_at": "2026-03-29T17:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-30T12:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 1,
-          "minor": 2
-        },
-        "important_issues": [
-          "日期类型不一致：tomorrowDate 返回 Date，defaultDate 返回 string"
-        ],
-        "minor_issues": [
-          "空样式块",
-          "错误类型断言不够精确"
-        ],
-        "fixes_applied": [
-          "统一日期类型：tomorrowDate 和 defaultDate 都返回 Date 对象",
-          "watch 中将 Date 转换为 string 格式赋值给 formData",
-          "错误处理改用 instanceof Error",
-          "移除空的 style 块"
-        ],
-        "all_issues_fixed": true
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 6,
-        "tests_total": 6,
-        "build_passed": true,
-        "review_fixes_verified": true,
-        "verified_at": "2026-03-30T12:30:00Z"
-      }
-    },
-    {
-      "id": "FEAT-083",
-      "category": "前端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "创建 RenewRentalDialog 组件",
-      "acceptance_criteria": [
-        "显示租客、房间（只读）",
-        "显示上个租期",
-        "新租期类型选择、新月租金输入、新合同到期日",
-        "合同图片上传、备注输入、押金继承提示",
-        "续租功能正常，新租赁记录创建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RenewRentalDialog 组件",
-          "file": "Hans/src/pages/dashboard/base/components/RenewRentalDialog.vue",
-          "code_hint": "t-select for leaseType, t-input-number for monthlyRent, t-date-picker for contractEndDate, t-upload for contractImage"
-        }
-      ],
-      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T17:00:00Z",
-      "completed_at": "2026-03-29T17:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-29T17:30:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 6,
-        "tests_total": 6,
-        "build_passed": true,
-        "verified_at": "2026-03-29T18:00:00Z"
-      }
-    },
-    {
-      "id": "FEAT-084",
-      "category": "前端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "创建 DeferralRecordsDialog 组件",
-      "acceptance_criteria": [
-        "表格显示宽限记录",
-        "按时间倒序排列",
-        "空状态提示",
-        "宽限记录正常显示"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DeferralRecordsDialog 组件",
-          "file": "Hans/src/pages/dashboard/base/components/DeferralRecordsDialog.vue",
-          "code_hint": "t-table with columns, t-empty for empty state"
-        }
-      ],
-      "test_file": "tests/e2e/feat-079-084-todo-panel-components.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-29T17:00:00Z",
-      "completed_at": "2026-03-29T17:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-30T14:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 2,
-          "minor": 2
-        },
-        "important_issues": [
-          "缺少 data-testid 属性用于 E2E 测试",
-          "未使用的 success emit 定义"
-        ],
-        "minor_issues": [
-          "空的 .records-table CSS 规则块",
-          "导入顺序可能需要 lint 修复"
-        ],
-        "fixes_applied": [
-          "添加 data-testid=\"deferral-records-dialog\" 属性",
-          "移除未使用的 success emit 定义",
-          "移除空的 CSS 规则块"
-        ]
-      },
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed": 6,
-        "tests_total": 6,
-        "build_passed": true,
-        "verified_at": "2026-03-30T14:30:00Z",
-        "review_fixes_verified": true,
-        "required_tests": [
-          "组件文件验证",
-          "API集成验证",
-          "前端服务运行",
-          "仪表盘路由",
-          "待办面板组件存在"
-        ],
-        "required_tests_passed": true
-      }
-    },
-    {
-      "id": "FEAT-085",
-      "category": "后端",
-      "module": "待办事项卡片增强",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端单元测试",
-      "acceptance_criteria": [
-        "创建 TodoServiceTests.cs 测试类",
-        "测试 GetTodoListAsync 返回水电费和催收房租待办",
-        "测试 DeferAsync 验证宽限日期",
-        "测试 RenewAsync 创建新租赁记录",
-        "dotnet test 通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 Gentle.Tests 测试项目",
-          "file": "Gentle/Gentle.Tests/Gentle.Tests.csproj",
-          "code_hint": "dotnet new xunit -n Gentle.Tests"
+          "action": "创建 FinanceSummary.vue",
+          "file": "Hans/src/pages/dashboard/base/components/FinanceSummary.vue",
+          "code_hint": "收支摘要组件，props: rentIncome, utilityIncome, expense, netProfit, occupancyRate"
         },
         {
           "step": 2,
-          "action": "创建 TodoServiceTests 测试类",
-          "file": "Gentle/Gentle.Tests/Services/TodoServiceTests.cs",
-          "code_hint": "参数验证、边界保护、DTO 验证、枚举值验证"
-        },
-        {
-          "step": 3,
-          "action": "创建 RentalReminderServiceTests 测试类",
-          "file": "Gentle/Gentle.Tests/Services/RentalReminderServiceTests.cs",
-          "code_hint": "异常验证、业务逻辑验证、DTO 验证、枚举值验证"
+          "action": "验证编译",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
         }
       ],
-      "test_file": "Gentle/Gentle.Tests/Services/",
-      "status": "passed",
-      "completed_at": "2026-03-29T23:30:00Z",
-      "review": {
-        "last_review_at": "2026-03-30T15:50:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "important_issues": [],
-        "minor_issues_fixed": [
-          "Assert.ThrowsAnyAsync 过于宽泛 - 已添加注释说明 Mock 环境限制",
-          "跳过的测试未提供替代方案 - 已添加注释指向 FEAT-086 集成测试",
-          "缺少文件头注释 - 已为两个测试文件添加文件头注释"
-        ],
-        "fixes_applied": [
-          "添加 TodoItemDto.CreatedTime 三个测试用例（Utility/Rental/Null）",
-          "添加文件头注释到 TodoServiceTests.cs 和 RentalReminderServiceTests.cs",
-          "为跳过的测试添加 FEAT-086 集成测试引用"
-        ]
-      },
+      "test_file": "tests/e2e/feat-089-finance-summary.spec.ts",
+      "status": "pending",
       "verification": {
-        "tests_created": true,
-        "tests_passed": true,
-        "tests_count": 48,
-        "tests_passed_count": 48,
-        "tests_skipped_count": 1,
-        "build_passed": true,
-        "verified_at": "2026-03-30T15:50:00Z"
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-086",
-      "category": "集成",
-      "module": "待办事项卡片增强",
+      "id": "FEAT-090",
+      "category": "前端",
+      "module": "Dashboard 页面重构",
       "priority": "high",
       "test_type": "e2e",
-      "description": "集成测试",
+      "description": "CommunityStatsTable 组件",
       "acceptance_criteria": [
-        "创建即将到期的租赁记录",
-        "运行定时任务",
-        "验证待办列表显示催收房租",
-        "测试宽限流程",
-        "测试续租流程",
-        "验证原租赁记录状态变更"
+        "创建 CommunityStatsTable.vue 组件",
+        "显示小区统计表格：小区名称、总房源、已出租、空置、出租率",
+        "使用 TDesign t-table 组件",
+        "vue-tsc 编译通过"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建集成测试",
-          "file": "tests/e2e/feat-086-integration-test.spec.ts",
-          "code_hint": "测试完整流程：创建租赁 -> 触发提醒 -> 宽限/续租 -> 验证状态"
+          "action": "创建 CommunityStatsTable.vue",
+          "file": "Hans/src/pages/dashboard/base/components/CommunityStatsTable.vue",
+          "code_hint": "小区统计表格，props: communityStats (CommunityStat[])"
+        },
+        {
+          "step": 2,
+          "action": "验证编译",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
         }
       ],
-      "test_file": "tests/e2e/feat-086-integration-test.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-30T16:00:00Z",
-      "completed_at": "2026-03-29T22:53:56.532Z",
-      "review": {
-        "last_review_at": "2026-03-30T16:45:00Z",
-        "reviewer": "workflow-review",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 4
-        },
-        "important_issues_fixed": [
-          "cleanupTestData 添加详细注释和隔离策略说明",
-          "createTestReminder 改为从待办列表获取已存在的提醒（而非调用不存在的 API）"
-        ],
-        "minor_issues": [
-          "测试用例编号不连续（1-15, 99）",
-          "前端测试硬编码 localhost:3002",
-          "测试10缺少实际验证逻辑",
-          "测试13缺少实际验证逻辑"
-        ],
-        "good_points": [
-          "测试结构清晰，分组明确",
-          "TypeScript 类型定义完整",
-          "环境变量控制集成测试运行",
-          "文件头注释完整",
-          "使用 TEST_PREFIX 隔离测试数据"
-        ]
-      },
+      "test_file": "tests/e2e/feat-090-community-stats-table.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed_count": 12,
-        "tests_total_count": 16,
-        "tests_skipped_count": 4,
-        "fixes_applied": [
-          "测试 6: 修正 Furion 框架统一响应格式断言逻辑",
-          "测试 13: 修正 API 路径 /api/rental-record/list -> /api/rental/list"
-        ],
-        "verified_at": "2026-03-29T22:53:56.533Z"
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-087",
+      "id": "FEAT-091",
+      "category": "前端",
+      "module": "Dashboard 页面重构",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "VacantRoomsList 组件",
+      "acceptance_criteria": [
+        "创建 VacantRoomsList.vue 组件",
+        "显示空置房源列表：房间信息、空置天数、月租金",
+        "使用 TDesign t-table 组件",
+        "vue-tsc 编译通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 VacantRoomsList.vue",
+          "file": "Hans/src/pages/dashboard/base/components/VacantRoomsList.vue",
+          "code_hint": "空置房源列表，props: vacantRooms (VacantRoomInfo[])"
+        },
+        {
+          "step": 2,
+          "action": "验证编译",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
+        }
+      ],
+      "test_file": "tests/e2e/feat-091-vacant-rooms-list.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-092",
+      "category": "前端",
+      "module": "Dashboard 页面重构",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "重写 index.vue",
+      "acceptance_criteria": [
+        "重写 index.vue 页面入口",
+        "使用 Promise.all 并行调用 getHousingOverview() 和 getIncomeReport()",
+        "分发数据到各子组件",
+        "加载中/错误/重试状态处理",
+        "vue-tsc 编译通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "重写 index.vue",
+          "file": "Hans/src/pages/dashboard/base/index.vue",
+          "code_hint": "导入子组件，Promise.all 并行获取数据，分发 props，loading/error/retry 状态"
+        },
+        {
+          "step": 2,
+          "action": "验证编译",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
+        }
+      ],
+      "test_file": "tests/e2e/feat-092-dashboard-index-rewrite.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-093",
+      "category": "前端",
+      "module": "Dashboard 页面重构",
+      "priority": "medium",
+      "test_type": "static",
+      "description": "更新 i18n 文件",
+      "acceptance_criteria": [
+        "替换中文 i18n 文件内容",
+        "替换英文 i18n 文件内容",
+        "包含 stats/finance/occupancy/community/vacant/error 所有命名空间",
+        "vue-tsc 编译通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "替换中文 i18n",
+          "file": "Hans/src/locales/lang/zh_CN/pages/dashboard-base.ts",
+          "code_hint": "替换为新的 i18n 结构：stats/finance/occupancy/community/vacant/error"
+        },
+        {
+          "step": 2,
+          "action": "替换英文 i18n",
+          "file": "Hans/src/locales/lang/en_US/pages/dashboard-base.ts",
+          "code_hint": "替换为对应的英文翻译"
+        },
+        {
+          "step": 3,
+          "action": "验证编译",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
+        }
+      ],
+      "test_file": "tests/e2e/feat-093-dashboard-i18n.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-094",
+      "category": "前端",
+      "module": "Dashboard 页面重构",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "清理旧文件和路由",
+      "acceptance_criteria": [
+        "删除 TDesign 示例组件（TopPanel, MiddleChart, RankList, OutputOverview）",
+        "删除示例数据文件（constants.ts, index.ts）",
+        "删除房源报表页面（/report/housing）",
+        "移除 housing 路由条目",
+        "vue-tsc 编译通过"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "删除 TDesign 示例组件",
+          "file": "Hans/src/pages/dashboard/base/components/",
+          "code_hint": "删除 TopPanel.vue, MiddleChart.vue, RankList.vue, OutputOverview.vue, constants.ts, index.ts"
+        },
+        {
+          "step": 2,
+          "action": "删除房源报表页面",
+          "file": "Hans/src/pages/report/housing/",
+          "code_hint": "rm -rf Hans/src/pages/report/housing"
+        },
+        {
+          "step": 3,
+          "action": "移除 housing 路由",
+          "file": "Hans/src/router/modules/report.ts",
+          "code_hint": "删除 housing 路由条目，保留 income 和 profit 路由"
+        },
+        {
+          "step": 4,
+          "action": "验证编译",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
+        }
+      ],
+      "test_file": "tests/e2e/feat-094-cleanup-old-files.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-095",
       "category": "集成",
-      "module": "待办事项卡片增强",
+      "module": "Dashboard 页面重构",
       "priority": "high",
       "test_type": "e2e",
       "description": "E2E 测试",
       "acceptance_criteria": [
-        "待办列表显示两种类型",
-        "筛选功能正常",
-        "水电费收款弹窗正常",
-        "催收房租弹窗正常",
-        "宽限功能正常",
-        "续租功能正常",
-        "宽限记录弹窗正常"
+        "统计卡片可见性测试",
+        "收支摘要和出租率测试",
+        "待办事项面板测试",
+        "小区统计表格测试",
+        "空置房源列表测试",
+        "旧 TDesign 示例内容不存在测试"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 E2E 测试文件",
-          "file": "tests/e2e/feat-087-todo-panel-enhancement.spec.ts",
-          "code_hint": "test('待办列表显示两种类型', async ({ page }) => { }); test('筛选功能正常', async ({ page }) => { });"
+          "action": "编写 E2E 测试",
+          "file": "tests/e2e/feat-095-dashboard-redesign.spec.ts",
+          "code_hint": "测试统计卡片、收支摘要、待办面板、小区统计、空置房源、旧内容不存在"
+        },
+        {
+          "step": 2,
+          "action": "运行测试",
+          "verify_command": "cd tests && npx playwright test e2e/feat-095-dashboard-redesign.spec.ts"
         }
       ],
-      "test_file": "tests/e2e/feat-087-todo-panel-enhancement.spec.ts",
-      "status": "passed",
-      "started_at": "2026-03-30T17:00:00Z",
-      "completed_at": "2026-03-29T23:08:52.236Z",
+      "test_file": "tests/e2e/feat-095-dashboard-redesign.spec.ts",
+      "status": "pending",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "tests_passed_count": 9,
-        "tests_skipped_count": 11,
-        "required_tests": [
-          "page_load",
-          "filter",
-          "utility_dialog",
-          "rental_dialog",
-          "defer",
-          "renew",
-          "deferral_records"
-        ],
-        "verified_at": "2026-03-29T23:08:52.236Z",
-        "fixes_applied": [
-          "修复 CSS 选择器语法错误：使用 .or() 替代混合选择器"
-        ]
+        "e2e_tests_passed": false,
+        "required_tests": ["stats_cards", "finance_summary", "todo_panel", "community_stats", "vacant_rooms", "old_content_removed"]
+      }
+    },
+    {
+      "id": "FEAT-096",
+      "category": "集成",
+      "module": "Dashboard 页面重构",
+      "priority": "high",
+      "test_type": "static",
+      "description": "最终验证",
+      "acceptance_criteria": [
+        "vue-tsc 类型检查通过",
+        "ESLint 检查通过",
+        "开发服务器启动成功",
+        "Dashboard 页面正常显示",
+        "/report/housing 路由已不存在"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "运行完整类型检查",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit --pretty"
+        },
+        {
+          "step": 2,
+          "action": "运行 ESLint",
+          "verify_command": "cd Hans && npx eslint src/pages/dashboard/base --ext .vue,.ts"
+        }
+      ],
+      "test_file": "tests/e2e/feat-096-final-verification.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false
       }
     }
   ]
