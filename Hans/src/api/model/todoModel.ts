@@ -1,6 +1,3 @@
-// 从 rentalModel 复用 LeaseType 枚举（避免重复定义）
-import type { LeaseType } from './rentalModel';
-
 // 从 meterModel 复用 UtilityBillItem 接口（避免重复定义）
 export type { UtilityBillItem } from './meterModel';
 
@@ -42,8 +39,6 @@ export const RentalReminderStatusText: Record<RentalReminderStatus, string> = {
   [RentalReminderStatus.Deferred]: '已宽限',
   [RentalReminderStatus.Completed]: '已完成',
 };
-
-export { LeaseType, LeaseTypeText } from './rentalModel';
 
 /**
  * 水电账单简略 DTO（用于 TodoItem）
@@ -129,8 +124,8 @@ export interface DeferReminderInput {
  * 续租输入(与后端 RenewRentalInput 保持一致)
  */
 export interface RenewRentalInput {
-  /** 租期类型 */
-  leaseType: LeaseType;
+  /** 租期月数 */
+  leaseMonths: number;
   /** 月租金 */
   monthlyRent: number;
   /** 合同到期日 */

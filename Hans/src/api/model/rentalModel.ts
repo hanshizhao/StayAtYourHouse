@@ -1,27 +1,6 @@
 import type { UtilityBillItem } from '@/api/model/meterModel';
 
 /**
- * 租期类型枚举
- */
-export enum LeaseType {
-  /** 月租 */
-  Monthly = 0,
-  /** 半年租 */
-  HalfYear = 1,
-  /** 年租 */
-  Yearly = 2,
-}
-
-/**
- * 租期类型文本映射
- */
-export const LeaseTypeText: Record<LeaseType, string> = {
-  [LeaseType.Monthly]: '月租',
-  [LeaseType.HalfYear]: '半年租',
-  [LeaseType.Yearly]: '年租',
-};
-
-/**
  * 租住状态枚举
  */
 export enum RentalStatus {
@@ -53,8 +32,8 @@ export interface CheckInInput {
   roomId: number;
   /** 入住日期 */
   checkInDate: string;
-  /** 租期类型 */
-  leaseType: LeaseType;
+  /** 租期月数 */
+  leaseMonths: number;
   /** 月租金 */
   monthlyRent: number;
   /** 押金 */
@@ -91,8 +70,8 @@ export interface RentalRecordDto {
   roomId: number;
   roomInfo: string;
   checkInDate: string;
-  leaseType: LeaseType;
-  leaseTypeText: string;
+  leaseMonths: number;
+  leaseMonthsText: string;
   contractEndDate: string;
   checkOutDate?: string;
   monthlyRent: number;

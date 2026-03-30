@@ -1,9 +1,6 @@
 // 获取常用时间
 import dayjs from 'dayjs';
 
-// 重新导出 LeaseType 供其他模块使用
-export { LeaseType } from '@/api/model/rentalModel';
-
 export const LAST_7_DAYS = [
   dayjs().subtract(7, 'day').format('YYYY-MM-DD'),
   dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
@@ -39,41 +36,21 @@ export function formatDate(dateStr?: string | Date | null): string {
   }
 }
 
-import { LeaseType } from '@/api/model/rentalModel';
-
 /**
  * 计算合同到期日期
  * @param checkInDate 入住日期（YYYY-MM-DD 格式）
- * @param leaseType 租期类型
+ * @param leaseMonths 租期月数
  * @returns 合同到期日期（YYYY-MM-DD 格式）或 null
  */
 export function calculateContractEndDate(
   checkInDate: string | null | undefined,
-  leaseType: LeaseType | null | undefined,
+  leaseMonths: number | null | undefined,
 ): string | null {
-  if (!checkInDate || leaseType === null || leaseType === undefined) {
+  if (!checkInDate || !leaseMonths) {
     return null;
   }
 
-  const checkIn = dayjs(checkInDate);
-  let endDate: dayjs.Dayjs;
-
-  switch (leaseType) {
-    case LeaseType.Monthly:
-      endDate = checkIn.add(1, 'month');
-      break;
-    case LeaseType.HalfYear:
-      endDate = checkIn.add(6, 'month');
-      break;
-    case LeaseType.Yearly:
-      endDate = checkIn.add(1, 'year');
-      break;
-    default:
-      endDate = checkIn.add(1, 'month');
-  }
-
-  // 减一天得到到期日（如 1月1日入住，月租，到期日为 1月31日）
-  return endDate.subtract(1, 'day').format('YYYY-MM-DD');
+  return dayjs(checkInDate).add(leaseMonths, 'month').subtract(1, 'day').format('YYYY-MM-DD');
 }
 
 /**
