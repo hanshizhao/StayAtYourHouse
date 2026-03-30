@@ -220,7 +220,7 @@ public class RentalReminderServiceTests
         var input = new RenewRentalInput();
 
         // Assert
-        Assert.Equal(default, input.LeaseType);
+        Assert.Equal(1, input.LeaseMonths);
         Assert.Equal(default, input.MonthlyRent);
         Assert.Equal(default, input.ContractEndDate);
         Assert.Null(input.ContractImage);
@@ -273,18 +273,6 @@ public class RentalReminderServiceTests
         Assert.Equal(0, (int)RentalReminderStatus.Pending);
         Assert.Equal(1, (int)RentalReminderStatus.Deferred);
         Assert.Equal(2, (int)RentalReminderStatus.Completed);
-    }
-
-    /// <summary>
-    /// 测试：LeaseType 枚举值正确
-    /// </summary>
-    [Fact]
-    public void LeaseType_EnumValues_AreCorrect()
-    {
-        // Assert
-        Assert.Equal(0, (int)LeaseType.Monthly);
-        Assert.Equal(1, (int)LeaseType.HalfYear);
-        Assert.Equal(2, (int)LeaseType.Yearly);
     }
 
     /// <summary>
@@ -375,7 +363,7 @@ public class RentalReminderServiceTests
 
         var input = new RenewRentalInput
         {
-            LeaseType = LeaseType.Monthly,
+            LeaseMonths = 1,
             MonthlyRent = 1000m,
             ContractEndDate = contractEndDate // 与原合同结束日期相等
         };
@@ -403,7 +391,7 @@ public class RentalReminderServiceTests
 
         var input = new RenewRentalInput
         {
-            LeaseType = LeaseType.Monthly,
+            LeaseMonths = 1,
             MonthlyRent = 1000m,
             ContractEndDate = DateTime.Today.AddMonths(3) // 早于原合同结束日期
         };
@@ -434,7 +422,7 @@ public class RentalReminderServiceTests
     {
         return new RenewRentalInput
         {
-            LeaseType = LeaseType.Monthly,
+            LeaseMonths = 1,
             MonthlyRent = 1000m,
             ContractEndDate = DateTime.Today.AddMonths(12)
         };

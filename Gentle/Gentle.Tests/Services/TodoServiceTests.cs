@@ -202,7 +202,7 @@ public class TodoServiceTests
         var input = new RenewRentalInput();
 
         // Assert
-        Assert.Equal(default, input.LeaseType);
+        Assert.Equal(1, input.LeaseMonths);
         Assert.Equal(default, input.MonthlyRent);
         Assert.Equal(default, input.ContractEndDate);
         Assert.Null(input.ContractImage);
