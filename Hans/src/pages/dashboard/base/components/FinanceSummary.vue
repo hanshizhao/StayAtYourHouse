@@ -41,6 +41,8 @@
 <script setup lang="ts">
 import { formatMoney } from '@/utils/format';
 
+import { getProgressStatus } from '../utils/progressUtils';
+
 defineOptions({
   name: 'FinanceSummary',
 });
@@ -52,14 +54,6 @@ defineProps<{
   netProfit: number;
   occupancyRate: number;
 }>();
-
-const PROGRESS_THRESHOLD = { SUCCESS: 80, WARNING: 50 } as const;
-
-function getProgressStatus(rate: number): 'success' | 'warning' | 'error' {
-  if (rate >= PROGRESS_THRESHOLD.SUCCESS) return 'success';
-  if (rate >= PROGRESS_THRESHOLD.WARNING) return 'warning';
-  return 'error';
-}
 </script>
 
 <style lang="less" scoped>

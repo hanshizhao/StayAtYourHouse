@@ -167,10 +167,30 @@
         }
       ],
       "test_file": "tests/e2e/feat-091-vacant-rooms-list.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-30T15:10:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-30T15:10:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-03-30T15:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "minor_issues": [
+          "硬编码中文字符串需在 FEAT-093 i18n 中处理",
+          "no-data-tip 样式与 CommunityStatsTable 重复，可后续提取共享样式"
+        ],
+        "fixed_issues": [
+          "formatPrice 改为使用 @/utils/format 共享函数",
+          "getVacantDaysTheme 阈值提取为 VACANT_DAYS_THRESHOLD 常量"
+        ]
       }
     },
     {
