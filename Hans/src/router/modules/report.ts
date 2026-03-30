@@ -15,12 +15,6 @@ export default [
         meta: { title: { zh_CN: '收支统计', en_US: 'Income Report' } },
       },
       {
-        path: 'housing',
-        name: 'HousingReport',
-        component: () => import('@/pages/report/housing/index.vue'),
-        meta: { title: { zh_CN: '房源概览', en_US: 'Housing Report' } },
-      },
-      {
         path: 'profit',
         name: 'ProfitReport',
         component: () => import('@/pages/report/profit/index.vue'),
