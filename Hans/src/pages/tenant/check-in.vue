@@ -132,12 +132,16 @@
                 </t-form-item>
               </t-col>
               <t-col :span="4">
-                <t-form-item label="租期类型" name="leaseType">
-                  <t-radio-group v-model="formData.leaseType" data-testid="lease-type">
-                    <t-radio v-for="(text, value) in LeaseTypeText" :key="value" :value="Number(value)">
-                      {{ text }}
-                    </t-radio>
-                  </t-radio-group>
+                <t-form-item label="租期" name="leaseMonths">
+                  <t-input-number
+                    v-model="formData.leaseMonths"
+                    :min="1"
+                    :max="36"
+                    :step="1"
+                    theme="normal"
+                    suffix="个月"
+                    data-testid="lease-months"
+                  />
                 </t-form-item>
               </t-col>
             </t-row>
@@ -276,14 +280,13 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { LeaseTypeText } from '@/api/model/rentalModel';
 import type { RoomItem } from '@/api/model/roomModel';
 import { RoomStatus } from '@/api/model/roomModel';
 import type { TenantItem } from '@/api/model/tenantModel';
 import { checkIn } from '@/api/rental';
 import { getRoomList } from '@/api/room';
 import { getTenantList } from '@/api/tenant';
-import { calculateContractEndDate, formatDate, getLocalDateString, LeaseType } from '@/utils/date';
+import { calculateContractEndDate, formatDate, getLocalDateString } from '@/utils/date';
 
 defineOptions({
   name: 'CheckIn',
@@ -297,7 +300,7 @@ interface CheckInFormData {
   tenantId: number | undefined;
   roomId: number | undefined;
   checkInDate: string;
-  leaseType: LeaseType;
+  leaseMonths: number;
   monthlyRent: number | undefined;
   deposit: number | undefined;
   remark: string;
@@ -328,7 +331,7 @@ const formData = ref<CheckInFormData>({
   tenantId: undefined,
   roomId: undefined,
   checkInDate: getLocalDateString(),
-  leaseType: LeaseType.Monthly,
+  leaseMonths: 1,
   monthlyRent: undefined,
   deposit: undefined,
   remark: '',
@@ -352,6 +355,10 @@ const formRules: Record<string, FormRule[]> = {
   tenantId: [{ required: true, message: '请选择租客', trigger: 'change' }],
   roomId: [{ required: true, message: '请选择房间', trigger: 'change' }],
   checkInDate: [{ required: true, message: '请选择入住日期', trigger: 'change' }],
+  leaseMonths: [
+    { required: true, message: '请输入租期', trigger: 'blur' },
+    { validator: (val) => val >= 1 && val <= 36, message: '租期范围为1-36个月', trigger: 'blur' },
+  ],
   monthlyRent: [
     { required: true, message: '请输入月租金', trigger: 'blur' },
     { validator: (val) => val >= 0, message: '月租金不能为负数', trigger: 'blur' },
@@ -364,7 +371,7 @@ const formRules: Record<string, FormRule[]> = {
 
 // 计算合同到期日期（使用工具函数，与后端逻辑保持一致）
 const contractEndDate = computed(() => {
-  const endDate = calculateContractEndDate(formData.value.checkInDate, formData.value.leaseType);
+  const endDate = calculateContractEndDate(formData.value.checkInDate, formData.value.leaseMonths);
   return endDate ? formatDate(endDate) : null;
 });
 
@@ -491,7 +498,7 @@ async function handleSubmit() {
       tenantId,
       roomId,
       checkInDate: formData.value.checkInDate,
-      leaseType: formData.value.leaseType,
+      leaseMonths: formData.value.leaseMonths,
       monthlyRent,
       deposit,
       remark: formData.value.remark || undefined,

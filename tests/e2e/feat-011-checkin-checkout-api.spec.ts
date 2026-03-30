@@ -168,7 +168,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId: 1,
         roomId: 1,
         checkInDate: '2026-03-23',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -184,7 +184,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId: 1,
         roomId: 1,
         checkInDate: '2026-03-23',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -208,7 +208,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
       tenantId,
       roomId,
       checkInDate: '2026-03-23',
-      leaseType: 0, // 月租
+      leaseMonths: 1, // 1个月
       monthlyRent: 2000,
       deposit: 2000
     };
@@ -257,7 +257,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId: 99999999, // 不存在的租客
         roomId: 1,
         checkInDate: '2026-03-23',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -276,7 +276,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId: 1,
         roomId: 99999999, // 不存在的房间
         checkInDate: '2026-03-23',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -288,7 +288,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
     expect(result.succeeded).toBe(false);
   });
 
-  test('7. 入住接口 - 租期类型验证', async ({ request }) => {
+  test('7. 入住接口 - 租期月数验证（Range 1-36）', async ({ request }) => {
     const { roomId, tenantId } = await prepareTestData(request, authToken);
 
     const response = await request.post(`${API_BASE}/api/rental/check-in`, {
@@ -297,7 +297,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId,
         roomId,
         checkInDate: '2026-03-23',
-        leaseType: 99, // 无效的租期类型
+        leaseMonths: 0, // 无效的租期月数（最小值应为1）
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -312,7 +312,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
     }
   });
 
-  test('8. 入住接口 - 合同到期日自动计算（月租）', async ({ request }) => {
+  test('8. 入住接口 - 合同到期日自动计算（1个月）', async ({ request }) => {
     const { roomId, tenantId } = await prepareTestData(request, authToken);
 
     const response = await request.post(`${API_BASE}/api/rental/check-in`, {
@@ -321,7 +321,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId,
         roomId,
         checkInDate: '2026-03-23',
-        leaseType: 0, // 月租
+        leaseMonths: 1, // 1个月
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -347,7 +347,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId,
         roomId,
         checkInDate: '2026-03-23',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -364,7 +364,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
           tenantId,
           roomId, // 同一房间
           checkInDate: '2026-03-24',
-          leaseType: 0,
+          leaseMonths: 1,
           monthlyRent: 2000,
           deposit: 2000
         }
@@ -398,7 +398,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId,
         roomId,
         checkInDate: '2026-03-01',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -471,7 +471,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId,
         roomId,
         checkInDate: '2026-03-01',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -521,7 +521,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId,
         roomId,
         checkInDate: '2026-03-01',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }
@@ -588,7 +588,7 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         tenantId,
         roomId,
         checkInDate: '2026-03-23',
-        leaseType: 0,
+        leaseMonths: 1,
         monthlyRent: 2000,
         deposit: 2000
       }

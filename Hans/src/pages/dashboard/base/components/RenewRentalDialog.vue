@@ -32,8 +32,17 @@
       <div class="info-section">
         <div class="section-title">新租期信息</div>
         <t-form ref="formRef" :data="formData" :rules="formRules" label-align="right" label-width="100px">
-          <t-form-item label="租期类型" name="leaseType">
-            <t-select v-model="formData.leaseType" :options="leaseTypeOptions" placeholder="请选择租期类型" />
+          <t-form-item label="租期月数" name="leaseMonths">
+            <t-input-number
+              v-model="formData.leaseMonths"
+              :min="1"
+              :max="36"
+              :step="1"
+              theme="normal"
+              suffix="个月"
+              placeholder="请输入租期月数"
+              data-testid="lease-months"
+            />
           </t-form-item>
           <t-form-item label="新月租金" name="monthlyRent">
             <t-input-number
@@ -96,7 +105,6 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, ref, watch } from 'vue';
 
 import type { RenewRentalInput, TodoItem } from '@/api/model/todoModel';
-import { LeaseType } from '@/api/model/todoModel';
 import { renewRental } from '@/api/todo';
 import { formatMoney } from '@/utils/format';
 
@@ -121,7 +129,7 @@ const formRef = ref<FormInstanceFunctions>();
 const contractFiles = ref<UploadFile[]>([]);
 
 const formData = ref<RenewRentalInput>({
-  leaseType: LeaseType.Monthly,
+  leaseMonths: 1,
   monthlyRent: undefined as number | undefined,
   contractEndDate: '',
   contractImage: '',
@@ -129,7 +137,20 @@ const formData = ref<RenewRentalInput>({
 });
 
 const formRules: Record<string, FormRule[]> = {
-  leaseType: [{ required: true, message: '请选择租期类型' }],
+  leaseMonths: [
+    { required: true, message: '请输入租期月数' },
+    {
+      validator: (val: number) => {
+        if (val === undefined || val === null) {
+          return { result: false, message: '请输入租期月数' };
+        }
+        if (val < 1 || val > 36) {
+          return { result: false, message: '租期月数必须在 1-36 之间' };
+        }
+        return true;
+      },
+    },
+  ],
   monthlyRent: [
     { required: true, message: '请输入新月租金' },
     {
@@ -146,13 +167,6 @@ const formRules: Record<string, FormRule[]> = {
   ],
   contractEndDate: [{ required: true, message: '请选择合同到期日' }],
 };
-
-// 租期类型选项
-const leaseTypeOptions = computed(() => [
-  { label: '月租', value: LeaseType.Monthly },
-  { label: '半年租', value: LeaseType.HalfYear },
-  { label: '年租', value: LeaseType.Yearly },
-]);
 
 // 计算属性：双向绑定 visible
 const dialogVisible = computed({
@@ -174,7 +188,7 @@ watch(
   (visible) => {
     if (visible && props.reminder) {
       formData.value = {
-        leaseType: LeaseType.Monthly,
+        leaseMonths: 1,
         monthlyRent: props.reminder.monthlyRent,
         contractEndDate: '',
         contractImage: '',

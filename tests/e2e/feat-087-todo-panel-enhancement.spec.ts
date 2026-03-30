@@ -393,9 +393,9 @@ test.describe('FEAT-087: 待办事项卡片增强 E2E 测试', () => {
         const renewDialog = page.locator('[data-testid="renew-rental-dialog"]');
         await expect(renewDialog).toBeVisible({ timeout: TIMEOUT.dialog });
 
-        // 验证租期类型选择器存在
-        const leaseTypeSelect = renewDialog.locator('.t-select');
-        expect(await leaseTypeSelect.count()).toBeGreaterThan(0);
+        // 验证租期月数输入框存在
+        const leaseMonthsInput = renewDialog.locator('.t-input-number');
+        expect(await leaseMonthsInput.count()).toBeGreaterThan(0);
       } else {
         test.skip(true, '没有续租按钮');
       }

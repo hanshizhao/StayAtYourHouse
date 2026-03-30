@@ -5,7 +5,7 @@
  *
  * 测试覆盖：
  * 1. 实体文件存在性
- * 2. 枚举文件存在性（LeaseType, RentalStatus, DepositStatus）
+ * 2. 枚举文件存在性（RentalStatus, DepositStatus）— LeaseType 已删除，改为 LeaseMonths int
  * 3. 实体属性完整性
  * 4. 外键关系配置（Tenant, Room）
  * 5. DbContext 配置
@@ -31,8 +31,8 @@ test.describe('FEAT-009: RentalRecord 实体', () => {
     expect(fs.existsSync(entityPath)).toBeTruthy();
   });
 
-  test('2. 检查 LeaseType 枚举文件存在', async () => {
-    expect(fs.existsSync(leaseTypeEnumPath)).toBeTruthy();
+  test('2. 验证 LeaseType 枚举文件已删除（已迁移为 LeaseMonths int）', async () => {
+    expect(fs.existsSync(leaseTypeEnumPath)).toBeFalsy();
   });
 
   test('3. 检查 RentalStatus 枚举文件存在', async () => {
@@ -49,18 +49,19 @@ test.describe('FEAT-009: RentalRecord 实体', () => {
 
   // ==================== 枚举测试 ====================
 
-  test('6. 验证 LeaseType 枚举定义', async () => {
-    if (!fs.existsSync(leaseTypeEnumPath)) {
-      test.skip('枚举文件不存在');
+  test('6. 验证 LeaseType 已移除，实体使用 LeaseMonths int', async () => {
+    // LeaseType 枚举已删除，改为 int LeaseMonths 属性
+    if (!fs.existsSync(entityPath)) {
+      test.skip('实体文件不存在');
       return;
     }
 
-    const content = fs.readFileSync(leaseTypeEnumPath, 'utf-8');
+    const content = fs.readFileSync(entityPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+enum\s+LeaseType/);
-    expect(content).toMatch(/Monthly\s*=\s*0/);
-    expect(content).toMatch(/HalfYear|Quarterly/); // 半年或季度
-    expect(content).toMatch(/Yearly/);
+    // 验证 LeaseMonths int 属性存在
+    expect(content).toMatch(/public\s+int\s+LeaseMonths\s*\{\s*get;\s*set;\s*\}/);
+    // 验证不再有 LeaseType 枚举引用
+    expect(content).not.toMatch(/public\s+LeaseType\s+LeaseType/);
   });
 
   test('7. 验证 RentalStatus 枚举定义', async () => {
@@ -143,7 +144,7 @@ test.describe('FEAT-009: RentalRecord 实体', () => {
     expect(content).toMatch(/public\s+decimal\??\s+DepositDeduction\s*\{\s*get;\s*set;\s*\}/);
   });
 
-  test('13. 验证枚举属性 - LeaseType, Status, DepositStatus', async () => {
+  test('13. 验证租期属性 - LeaseMonths int（替代原 LeaseType 枚举）', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -151,7 +152,7 @@ test.describe('FEAT-009: RentalRecord 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+LeaseType\s+LeaseType\s*\{\s*get;\s*set;\s*\}/);
+    expect(content).toMatch(/public\s+int\s+LeaseMonths\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+RentalStatus\s+Status\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+DepositStatus\s+DepositStatus\s*\{\s*get;\s*set;\s*\}/);
   });

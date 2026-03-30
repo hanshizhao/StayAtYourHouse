@@ -14,9 +14,9 @@ test.describe('FEAT-083: 创建 RenewRentalDialog 组件', () => {
     expect(fs.existsSync(componentPath)).toBeTruthy();
   });
 
-  test('2. 验证租期类型选择', async () => {
+  test('2. 验证租期月数输入', async () => {
     const content = fs.readFileSync(componentPath, 'utf-8');
-    expect(content.includes('leaseType') || content.includes('LeaseType')).toBeTruthy();
+    expect(content.includes('leaseMonths') || content.includes('LeaseMonths')).toBeTruthy();
   });
 
   test('3. 验证月租金输入', async () => {

@@ -543,6 +543,8 @@
       "priority": "high",
       "test_type": "e2e",
       "description": "更新 E2E 测试",
+      "status": "completed",
+      "completed_at": "2026-03-31T23:45:00Z",
       "acceptance_criteria": [
         "feat-009: 删除 LeaseType 断言，改为 LeaseMonths",
         "feat-011: leaseType:X → leaseMonths:Y",
@@ -596,10 +598,27 @@
         }
       ],
       "test_file": "tests/e2e/feat-113-update-e2e-tests.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-31T23:55:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-31T23:55:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-03-31T23:50:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_issues": [
+          "feat-011 测试 7 无效租期测试缺少 createdRentalRecordIds.push（继承自原始代码，非本次引入）",
+          "feat-009 leaseTypeEnumPath 常量可重命名为 deletedLeaseTypeEnumPath 提升可读性",
+          "feat-011 测试 7 状态断言过于宽松（接受 200 和 400，继承自原始代码）"
+        ]
       }
     },
     {

@@ -16,7 +16,7 @@ test.describe('FEAT-068: 创建 RenewRentalInput', () => {
 
   test('2. 验证属性', async () => {
     const content = fs.readFileSync(dtoPath, 'utf-8');
-    expect(content).toContain('LeaseType');
+    expect(content).toContain('LeaseMonths');
     expect(content).toContain('MonthlyRent');
     expect(content).toContain('ContractEndDate');
     expect(content).toContain('ContractImage');

@@ -93,7 +93,7 @@ test.describe('FEAT-086: 集成测试', () => {
               roomId: testData.roomId,
               renterId: testData.tenantId,
               checkInDate: checkInDate.toISOString().split('T')[0],
-              leaseType: 0, // 短租
+              leaseMonths: 1, // 1个月
               contractEndDate: contractEndDate.toISOString().split('T')[0],
               monthlyRent: 1500,
               deposit: 1500,
@@ -408,7 +408,7 @@ test.describe('FEAT-086: 集成测试', () => {
       {
         headers: authHeaders(token),
         data: {
-          leaseType: 1, // 长租
+          leaseMonths: 6, // 6个月
           monthlyRent: 1600,
           contractEndDate: newContractEndDate.toISOString().split('T')[0],
           remark: '集成测试 - 续租操作',
