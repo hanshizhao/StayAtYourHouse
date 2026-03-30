@@ -110,6 +110,15 @@ public class RentalAppService : IDynamicApiController
     }
 
     /// <summary>
+    /// 确认安居码提交
+    /// </summary>
+    [HttpPost("confirm-anju-code/{id}")]
+    public async Task<RentalRecordDto> ConfirmAnJuCode(int id)
+    {
+        return await _rentalRecordService.ConfirmAnJuCodeAsync(id);
+    }
+
+    /// <summary>
     /// 删除租住记录
     /// </summary>
     [HttpDelete("remove/{id}")]
