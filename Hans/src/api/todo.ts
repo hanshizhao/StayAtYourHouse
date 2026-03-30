@@ -9,10 +9,10 @@ import { TodoType as TodoTypeEnum } from '@/api/model/todoModel';
 import { request } from '@/utils/request';
 
 const Api = {
-  List: '/api/todo/list',
-  Defer: '/api/todo/rental-reminder',
-  Renew: '/api/todo/rental-reminder',
-  Deferrals: '/api/todo/rental-reminder',
+  List: '/todo/list',
+  Defer: '/todo/rental-reminder',
+  Renew: '/todo/rental-reminder',
+  Deferrals: '/todo/rental-reminder',
 };
 
 /**
