@@ -117,10 +117,27 @@
         }
       ],
       "test_file": "tests/e2e/feat-090-community-stats-table.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-03-30T14:30:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-03-30T14:30:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-03-30T14:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_issues": [
+          "Prop 默认值已添加 withDefaults",
+          "t-progress 缺少 data-testid（不影响当前测试）",
+          "execSync 超时在慢 CI 环境可能不稳定"
+        ]
       }
     },
     {
