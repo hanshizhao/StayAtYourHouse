@@ -663,10 +663,42 @@
         }
       ],
       "test_file": "tests/e2e/feat-114-e2e-verification.spec.ts",
-      "status": "pending",
+      "status": "blocked",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": false,
+        "partial_results": {
+          "dotnet_build": "passed",
+          "npm_build": "passed",
+          "dotnet_test": "passed",
+          "npm_lint": "passed",
+          "e2e_api_test": "blocked_needs_backend"
+        },
+        "verified_at": "2026-03-31T23:59:00Z"
+      },
+      "blocked_reason": "E2E 入住 API 测试需要后端服务运行 (http://localhost:5000)",
+      "review": {
+        "last_review_at": "2026-03-31T23:58:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 5,
+          "minor": 4
+        },
+        "important_issues": [
+          "后端构建断言绑定中文 locale → 已修复为双语言兼容（Build succeeded || 已成功生成）",
+          "前端构建断言 not.toContain('error') 过于宽泛 → 已修复为 toContain('built in')",
+          "后端测试断言过于宽松 → 已修复为双语言兼容 + \\d+ failed 精确匹配",
+          "前端 lint 断言 expect(result).toBeDefined() 无意义 → 已移除装饰性断言",
+          "E2E API 测试断言可能匹配部分输出 → 已修复为 /\\d+ passed/ 和 /\\d+ failed/ 精确匹配"
+        ],
+        "minor_issues": [
+          "execSync 缺少 timeout 参数 → 已添加（120s/180s/60s）",
+          "测试函数非 async → 保持同步（仅使用 execSync，无需 async）",
+          "shell: true 非必要 → 保持不变（硬编码输入，风险极低）",
+          "缺少文件级文档注释 → 已添加 JSDoc 文档头"
+        ]
       }
     }
   ]

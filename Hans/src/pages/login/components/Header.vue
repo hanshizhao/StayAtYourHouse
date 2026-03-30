@@ -5,7 +5,7 @@
       <t-button theme="default" shape="square" variant="text" @click="navToGitHub">
         <t-icon name="logo-github" class="icon" />
       </t-button>
-      <!-- <t-button theme="default" shape="square" variant="text" @click="navToHelper">
+      <!-- <t-button theme="default" shape="square" variant="text" @click="_navToHelper">
         <t-icon name="help-circle" class="icon" />
       </t-button> -->
       <t-button theme="default" shape="square" variant="text" @click="toggleSettingPanel">
@@ -29,7 +29,7 @@ const navToGitHub = () => {
   window.open('https://github.com/hanshizhao/StayAtYourHouse');
 };
 
-const navToHelper = () => {
+const _navToHelper = () => {
   window.open('http://tdesign.tencent.com/starter/docs/get-started');
 };
 </script>

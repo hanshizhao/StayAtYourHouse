@@ -280,7 +280,6 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import type { RoomItem } from '@/api/model/roomModel';
 import { RoomStatus } from '@/api/model/roomModel';
 import type { TenantItem } from '@/api/model/tenantModel';
 import { checkIn } from '@/api/rental';

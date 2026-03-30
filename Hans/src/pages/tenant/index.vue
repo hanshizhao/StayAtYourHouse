@@ -261,7 +261,7 @@ const formData = ref<TenantFormData>({
 // 手机号验证正则
 const phoneRegex = /^1[3-9]\d{9}$/;
 // 身份证号验证正则（15位纯数字 或 18位纯数字 或 17位数字+X/x）
-const idCardRegex = /^(\d{15}|\d{18}|\d{17}[\dX])$/i;
+const idCardRegex = /^(\d{15}|\d{17}[\dX])$/i;
 
 const formRules: Record<string, FormRule[]> = {
   name: [{ required: true, message: '请输入租客姓名', trigger: 'blur' }],

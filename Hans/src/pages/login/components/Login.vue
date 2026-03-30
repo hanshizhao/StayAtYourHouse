@@ -87,10 +87,13 @@ const onSubmit = async (ctx: SubmitContext) => {
 
       // 记住/清除账号和密码
       if (formData.value.remember) {
-        localStorage.setItem(REMEMBER_KEY, JSON.stringify({
-          account: formData.value.account,
-          password: formData.value.password,
-        }));
+        localStorage.setItem(
+          REMEMBER_KEY,
+          JSON.stringify({
+            account: formData.value.account,
+            password: formData.value.password,
+          }),
+        );
       } else {
         localStorage.removeItem(REMEMBER_KEY);
       }

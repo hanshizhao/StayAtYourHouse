@@ -175,10 +175,6 @@ const handleLogout = () => {
 const navToGitHub = () => {
   window.open('https://github.com/hanshizhao/StayAtYourHouse');
 };
-
-const navToHelper = () => {
-  window.open('http://tdesign.tencent.com/starter/docs/get-started');
-};
 </script>
 <style lang="less" scoped>
 .@{starter-prefix}-header {

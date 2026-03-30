@@ -54,7 +54,7 @@ defineOptions({
 
 withDefaults(
   defineProps<{
-    communityStats: CommunityStat[];
+    communityStats?: CommunityStat[];
   }>(),
   {
     communityStats: () => [],

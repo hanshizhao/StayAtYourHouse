@@ -20,7 +20,6 @@
 import { ref } from 'vue';
 
 import TdesignSetting from '@/layouts/setting.vue';
-import { t } from '@/locales';
 
 import LoginHeader from './components/Header.vue';
 import Login from './components/Login.vue';

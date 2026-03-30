@@ -41,7 +41,7 @@ defineOptions({
 
 withDefaults(
   defineProps<{
-    vacantRooms: VacantRoomInfo[];
+    vacantRooms?: VacantRoomInfo[];
   }>(),
   {
     vacantRooms: () => [],
