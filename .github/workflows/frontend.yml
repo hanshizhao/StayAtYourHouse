@@ -5,8 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "Hans/**"
-      - ".github/workflows/frontend.yml"
+      - 'Hans/**'
 
 jobs:
   build-frontend:
@@ -14,24 +13,40 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+          cache-dependency-path: 'Hans/package-lock.json'
+
+      - name: Install dependencies
+        run: |
+          cd Hans
+          npm ci
+
+      - name: Build frontend
+        run: |
+          cd Hans
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          npm run build
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to Aliyun Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
           registry: crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com
           username: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
           password: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v4
         with:
           context: ./Hans
           file: ./Hans/Dockerfile
           push: true
-          tags: |
-            crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/stay_at_your_house_vue/sayh_vue:latest
-            crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/stay_at_your_house_vue/sayh_vue:${{ github.sha }}
+          tags: crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/stay_at_your_house_vue/sayh_vue:latest
