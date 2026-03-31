@@ -97,15 +97,17 @@
     <t-dialog
       v-model:visible="dialogVisible"
       :header="dialogType === 'create' ? '新建房间' : '编辑房间'"
-      width="640px"
+      width="680px"
       :confirm-btn="{ content: '确定', loading: submitLoading }"
       data-testid="room-form-dialog"
       :on-confirm="handleSubmit"
       :on-close="handleDialogClose"
     >
-      <t-form ref="formRef" :data="formData" :rules="formRules" label-align="right" label-width="100px">
-        <t-row :gutter="24">
-          <t-col :span="12">
+      <t-form ref="formRef" :data="formData" :rules="formRules" label-align="right" label-width="90px">
+        <!-- 基本信息 -->
+        <div class="form-section-title">基本信息</div>
+        <t-row :gutter="[24, 12]">
+          <t-col :span="6">
             <t-form-item label="所属小区" name="communityId">
               <t-select
                 v-model="formData.communityId"
@@ -115,7 +117,7 @@
               />
             </t-form-item>
           </t-col>
-          <t-col :span="12">
+          <t-col :span="6">
             <t-form-item label="房间状态" name="status">
               <t-select
                 v-model="formData.status"
@@ -125,9 +127,8 @@
               />
             </t-form-item>
           </t-col>
-        </t-row>
-        <t-row :gutter="24">
-          <t-col :span="12">
+
+          <t-col :span="6">
             <t-form-item label="楼栋号" name="building">
               <t-input
                 v-model="formData.building"
@@ -137,7 +138,7 @@
               />
             </t-form-item>
           </t-col>
-          <t-col :span="12">
+          <t-col :span="6">
             <t-form-item label="房间号" name="roomNumber">
               <t-input
                 v-model="formData.roomNumber"
@@ -147,20 +148,21 @@
               />
             </t-form-item>
           </t-col>
-        </t-row>
-        <t-row :gutter="24">
-          <t-col :span="12">
-            <t-form-item label="面积(㎡)" name="area">
+
+          <t-col :span="6">
+            <t-form-item label="面积" name="area">
               <t-input-number
                 v-model="formData.area"
+                theme="normal"
                 placeholder="请输入面积"
                 :min="0"
                 :decimal-places="2"
+                suffix="㎡"
                 data-testid="room-area-input"
               />
             </t-form-item>
           </t-col>
-          <t-col :span="12">
+          <t-col :span="6">
             <t-form-item label="房间类型" name="roomType">
               <t-input
                 v-model="formData.roomType"
@@ -171,72 +173,87 @@
             </t-form-item>
           </t-col>
         </t-row>
-        <t-row :gutter="24">
-          <t-col :span="12">
-            <t-form-item label="成本价(元)" name="costPrice">
+
+        <!-- 价格信息 -->
+        <t-divider />
+        <div class="form-section-title">价格信息</div>
+        <t-row :gutter="[24, 12]">
+          <t-col :span="6">
+            <t-form-item label="成本价" name="costPrice">
               <t-input-number
                 v-model="formData.costPrice"
+                theme="normal"
                 placeholder="请输入成本价"
                 :min="0"
                 :decimal-places="2"
+                suffix="元"
                 data-testid="room-cost-price-input"
               />
             </t-form-item>
           </t-col>
-          <t-col :span="12">
-            <t-form-item label="出租价(元)" name="rentPrice">
+          <t-col :span="6">
+            <t-form-item label="出租价" name="rentPrice">
               <t-input-number
                 v-model="formData.rentPrice"
+                theme="normal"
                 placeholder="请输入出租价"
                 :min="0"
                 :decimal-places="2"
+                suffix="元"
                 data-testid="room-rent-price-input"
               />
             </t-form-item>
           </t-col>
-        </t-row>
-        <t-row :gutter="24">
-          <t-col :span="12">
-            <t-form-item label="押金(元)" name="deposit">
+
+          <t-col :span="6">
+            <t-form-item label="押金" name="deposit">
               <t-input-number
                 v-model="formData.deposit"
+                theme="normal"
                 placeholder="请输入押金"
                 :min="0"
                 :decimal-places="2"
+                suffix="元"
                 data-testid="room-deposit-input"
               />
             </t-form-item>
           </t-col>
-          <t-col :span="12">
-            <t-form-item label=" " name="placeholder">
-              <!-- 占位，保持布局对齐 -->
-            </t-form-item>
-          </t-col>
         </t-row>
+
+        <!-- 费用设置 -->
+        <t-divider />
+        <div class="form-section-title">费用设置</div>
         <t-row :gutter="24">
-          <t-col :span="12">
-            <t-form-item label="水费(元/吨)" name="waterPrice">
+          <t-col :span="6">
+            <t-form-item label="水费" name="waterPrice">
               <t-input-number
                 v-model="formData.waterPrice"
-                placeholder="请输入水费单价"
+                theme="normal"
+                placeholder="水费单价"
                 :min="0"
                 :decimal-places="2"
+                suffix="元/吨"
                 data-testid="room-water-price-input"
               />
             </t-form-item>
           </t-col>
-          <t-col :span="12">
-            <t-form-item label="电费(元/度)" name="electricPrice">
+          <t-col :span="6">
+            <t-form-item label="电费" name="electricPrice">
               <t-input-number
                 v-model="formData.electricPrice"
-                placeholder="请输入电费单价"
+                theme="normal"
+                placeholder="电费单价"
                 :min="0"
                 :decimal-places="2"
+                suffix="元/度"
                 data-testid="room-electric-price-input"
               />
             </t-form-item>
           </t-col>
         </t-row>
+
+        <!-- 备注 -->
+        <t-divider />
         <t-form-item label="备注" name="remark">
           <t-textarea
             v-model="formData.remark"
@@ -659,6 +676,17 @@ onMounted(() => {
   .profit-negative {
     color: var(--td-error-color);
     font-weight: 500;
+  }
+
+  .form-section-title {
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--td-text-color-primary);
+  }
+
+  :deep(.t-divider) {
+    margin: 8px 0 20px;
   }
 }
 </style>
