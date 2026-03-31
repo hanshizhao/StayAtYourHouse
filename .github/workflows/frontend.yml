@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'Hans/**'
-      - '.github/workflows/frontend.yml'
+      - "Hans/**"
+      - ".github/workflows/frontend.yml"
 
 jobs:
   build-frontend:
@@ -19,9 +19,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
-          cache: 'npm'
-          cache-dependency-path: 'Hans/package-lock.json'
+          node-version: "20.x"
+          cache: "npm"
+          cache-dependency-path: "Hans/package-lock.json"
 
       - name: Install dependencies
         run: |
@@ -50,4 +50,4 @@ jobs:
           context: ./Hans
           file: ./Hans/Dockerfile
           push: true
-          tags: crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/stay_at_your_house_vue/sayh_vue:latest
+          tags: crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/gentle8023/stay_at_your_house_vue/sayh_vue:latest
