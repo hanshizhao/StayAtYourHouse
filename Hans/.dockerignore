@@ -3,7 +3,10 @@ dist
 .git
 .gitignore
 *.md
-.env
-.env.*
+.env.development
+.env.test
+.env.site
+.env.local
+.env.*.local
 .vscode
 .idea
