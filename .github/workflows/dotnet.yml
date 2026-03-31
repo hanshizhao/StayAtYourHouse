@@ -32,4 +32,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/gentle8023/stay_at_your_house_api/sayh_api:latest
+          tags: crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/gentle8023/stay_at_your_house_api:latest
