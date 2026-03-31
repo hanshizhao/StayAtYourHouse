@@ -119,8 +119,8 @@
               <file-icon class="section-icon" />
               <span>合同信息</span>
             </div>
-            <t-row :gutter="24">
-              <t-col :span="4">
+            <t-row :gutter="[24, 12]">
+              <t-col :span="6">
                 <t-form-item label="入住日期" name="checkInDate">
                   <t-date-picker
                     v-model="formData.checkInDate"
@@ -131,7 +131,7 @@
                   />
                 </t-form-item>
               </t-col>
-              <t-col :span="4">
+              <t-col :span="6">
                 <t-form-item label="租期" name="leaseMonths">
                   <t-input-number
                     v-model="formData.leaseMonths"
@@ -144,18 +144,15 @@
                   />
                 </t-form-item>
               </t-col>
-            </t-row>
 
-            <!-- 费用信息 -->
-            <t-row :gutter="24">
-              <t-col :span="4">
+              <t-col :span="6">
                 <t-form-item label="月租金" name="monthlyRent">
                   <t-input-number
                     v-model="formData.monthlyRent"
+                    theme="normal"
                     placeholder="请输入月租金"
                     :min="0"
                     :decimal-places="2"
-                    theme="column"
                     data-testid="monthly-rent"
                   >
                     <template #suffix>
@@ -164,14 +161,14 @@
                   </t-input-number>
                 </t-form-item>
               </t-col>
-              <t-col :span="4">
+              <t-col :span="6">
                 <t-form-item label="押金" name="deposit">
                   <t-input-number
                     v-model="formData.deposit"
+                    theme="normal"
                     placeholder="请输入押金"
                     :min="0"
                     :decimal-places="2"
-                    theme="column"
                     data-testid="deposit"
                   >
                     <template #suffix>
@@ -180,15 +177,17 @@
                   </t-input-number>
                 </t-form-item>
               </t-col>
-            </t-row>
 
-            <!-- 合同到期日期提示 -->
-            <div v-if="contractEndDate" class="contract-end-tip">
-              <info-circle-icon class="tip-icon" />
-              <span
-                >合同将于 <strong>{{ contractEndDate }}</strong> 到期</span
-              >
-            </div>
+              <t-col :span="12">
+                <!-- 合同到期日期提示 -->
+                <div v-if="contractEndDate" class="contract-end-tip">
+                  <info-circle-icon class="tip-icon" />
+                  <span
+                    >合同将于 <strong>{{ contractEndDate }}</strong> 到期</span
+                  >
+                </div>
+              </t-col>
+            </t-row>
           </div>
 
           <!-- 备注 -->
