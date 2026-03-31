@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# CI/CD
+.github
+
+# IDE
+.vs
+.vscode
+.idea
+*.suo
+*.user
+
+# .NET build artifacts
+**/bin
+**/obj
+**/TestResults
+
+# Node
+**/node_modules
+Hans/dist
+
+# Tests
+tests
+
+# Docker
+Dockerfile
+Hans/Dockerfile
+.dockerignore
+
+# Docs
+*.md
+LICENSE
+
+# Environment files (should not be in image)
+.env
+.env.*
