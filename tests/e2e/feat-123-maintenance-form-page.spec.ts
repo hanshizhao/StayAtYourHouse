@@ -258,15 +258,30 @@ test.describe('FEAT-123: 前端报修表单页', () => {
   // ==================== 预选房间测试 ====================
 
   test('20. 预选房间 - query 参数 roomId 预选', async ({ page }) => {
-    // 带 roomId 参数访问新增页面
-    await loginAndNavigate(page, '/maintenance/add?roomId=1');
+    // 带 roomId 参数访问新增页面（使用 API 获取有效的房间 ID）
+    const apiContext = await page.context().request;
+    const loginRes = await apiContext.post('http://localhost:5000/api/auth/login', {
+      data: { account: 'zhs', password: 'gentle8023' },
+    });
+    const loginData = await loginRes.json();
+    const token = loginData.data.token;
 
+    const roomsRes = await apiContext.get('http://localhost:5000/api/room/list', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const roomsData = await roomsRes.json();
+    const validRoomId = roomsData.data[0].id;
+    const validRoomLabel = `${roomsData.data[0].communityName} ${roomsData.data[0].building} ${roomsData.data[0].roomNumber}`;
+
+    await loginAndNavigate(page, `/maintenance/add?roomId=${validRoomId}`);
+
+    // 等待房间列表加载完成且选择器渲染选中值
     const roomSelect = page.locator('[data-testid="room-select"]');
     await expect(roomSelect).toBeVisible({ timeout: 5000 });
 
-    // 验证房间选择器有选中值（不是 placeholder 状态）
-    const selectedValue = await roomSelect.innerText();
-    expect(selectedValue.length).toBeGreaterThan(0);
+    // TDesign select 将选中值渲染在 <input value="..."> 中，需要通过 inputValue 检查
+    const roomInput = page.locator('[data-testid="room-select"] input');
+    await expect(roomInput).toHaveValue(validRoomLabel, { timeout: 5000 });
   });
 
   // ==================== 表单分区标题测试 ====================

@@ -613,12 +613,13 @@
         }
       ],
       "test_file": "tests/e2e/feat-123-maintenance-form-page.spec.ts",
-      "status": "blocked",
+      "status": "passed",
+      "completed_at": "2026-04-08T00:00:00Z",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-08T00:00:00Z"
       },
-      "blocked_reason": "E2E 测试需要前后端服务运行（后端 http://localhost:5000、前端 http://localhost:3002 均未启动）",
       "review": {
         "last_review_at": "2026-04-07T15:00:00Z",
         "reviewer": "superpowers:code-reviewer",
