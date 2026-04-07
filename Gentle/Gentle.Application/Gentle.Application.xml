@@ -557,6 +557,211 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Maintenance.CompleteMaintenanceInput">
+            <summary>
+            完成维修输入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.CompleteMaintenanceInput.ActualCost">
+            <summary>
+            实际费用（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.CompleteMaintenanceInput.Remark">
+            <summary>
+            完成备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput">
+            <summary>
+            新增维修记录输入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.Description">
+            <summary>
+            维修描述
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.Priority">
+            <summary>
+            优先级
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.ReportDate">
+            <summary>
+            报修日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.Cost">
+            <summary>
+            预估费用（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.RepairPerson">
+            <summary>
+            维修人员姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.RepairPhone">
+            <summary>
+            维修人员电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.Images">
+            <summary>
+            图片（JSON数组）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceAddInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto">
+            <summary>
+            维修记录详情 DTO
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.Id">
+            <summary>
+            维修记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.RoomInfo">
+            <summary>
+            房间信息（小区+楼栋+房间号）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.Description">
+            <summary>
+            维修描述
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.Priority">
+            <summary>
+            优先级
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.PriorityText">
+            <summary>
+            优先级文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.Status">
+            <summary>
+            维修状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.StatusText">
+            <summary>
+            维修状态文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.ReportDate">
+            <summary>
+            报修日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.CompletedDate">
+            <summary>
+            完成日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.Cost">
+            <summary>
+            预估费用（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.RepairPerson">
+            <summary>
+            维修人员姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.RepairPhone">
+            <summary>
+            维修人员电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.Images">
+            <summary>
+            图片（JSON数组）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput">
+            <summary>
+            更新维修记录输入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.Id">
+            <summary>
+            维修记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.Description">
+            <summary>
+            维修描述
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.Priority">
+            <summary>
+            优先级
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.ReportDate">
+            <summary>
+            报修日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.Cost">
+            <summary>
+            预估费用（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.RepairPerson">
+            <summary>
+            维修人员姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.RepairPhone">
+            <summary>
+            维修人员电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.Images">
+            <summary>
+            图片（JSON数组）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput.Status">
+            <summary>
+            维修状态
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Meter.MeterListResult">
             <summary>
             抄表记录列表结果
@@ -2257,6 +2462,58 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Services.IMaintenanceService">
+            <summary>
+            维修管理服务接口
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IMaintenanceService.GetListAsync(System.Nullable{Gentle.Core.Enums.MaintenanceStatus},System.Nullable{Gentle.Core.Enums.MaintenancePriority},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            获取维修记录列表
+            </summary>
+            <param name="status">状态筛选</param>
+            <param name="priority">优先级筛选</param>
+            <param name="roomId">房间ID筛选</param>
+            <param name="communityId">小区ID筛选</param>
+            <param name="page">页码</param>
+            <param name="pageSize">每页数量</param>
+            <returns>维修记录列表和总数</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMaintenanceService.GetByIdAsync(System.Int32)">
+            <summary>
+            根据ID获取维修记录详情
+            </summary>
+            <param name="id">维修记录ID</param>
+            <returns>维修记录详情</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMaintenanceService.AddAsync(Gentle.Application.Dtos.Maintenance.MaintenanceAddInput)">
+            <summary>
+            新增维修记录
+            </summary>
+            <param name="input">新增输入</param>
+            <returns>新增后的维修记录</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMaintenanceService.UpdateAsync(Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput)">
+            <summary>
+            更新维修记录
+            </summary>
+            <param name="input">更新输入</param>
+            <returns>更新后的维修记录</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMaintenanceService.CompleteAsync(System.Int32,Gentle.Application.Dtos.Maintenance.CompleteMaintenanceInput)">
+            <summary>
+            完成维修
+            </summary>
+            <param name="id">维修记录ID</param>
+            <param name="input">完成输入</param>
+            <returns>完成后的维修记录</returns>
+        </member>
+        <member name="M:Gentle.Application.Services.IMaintenanceService.DeleteAsync(System.Int32)">
+            <summary>
+            删除维修记录
+            </summary>
+            <param name="id">维修记录ID</param>
+        </member>
         <member name="T:Gentle.Application.Services.IMeterService">
             <summary>
             水电抄表服务接口
@@ -2516,6 +2773,34 @@
             <param name="page">页码（从1开始）</param>
             <param name="pageSize">每页数量</param>
             <returns>待办事项列表结果</returns>
+        </member>
+        <member name="T:Gentle.Application.Services.MaintenanceService">
+            <summary>
+            维修管理服务实现
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.MaintenanceService.GetListAsync(System.Nullable{Gentle.Core.Enums.MaintenanceStatus},System.Nullable{Gentle.Core.Enums.MaintenancePriority},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MaintenanceService.GetByIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MaintenanceService.AddAsync(Gentle.Application.Dtos.Maintenance.MaintenanceAddInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MaintenanceService.UpdateAsync(Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MaintenanceService.CompleteAsync(System.Int32,Gentle.Application.Dtos.Maintenance.CompleteMaintenanceInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MaintenanceService.DeleteAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.MaintenanceService.MapToDto(Gentle.Core.Entities.MaintenanceRecord)">
+            <summary>
+            映射到 MaintenanceDetailDto
+            </summary>
         </member>
         <member name="T:Gentle.Application.Services.MeterService">
             <summary>
