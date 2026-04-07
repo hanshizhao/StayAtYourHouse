@@ -1,22 +1,22 @@
 namespace Gentle.Core.Enums;
 
 /// <summary>
-/// 待办事项类型
+/// 维修状态
 /// </summary>
-public enum TodoType
+public enum MaintenanceStatus
 {
     /// <summary>
-    /// 水电费待办
+    /// 待处理
     /// </summary>
-    Utility = 0,
+    Pending = 0,
 
     /// <summary>
-    /// 催收房租待办
+    /// 进行中
     /// </summary>
-    Rental = 1,
+    InProgress = 1,
 
     /// <summary>
-    /// 维修待办
+    /// 已完成
     /// </summary>
-    Maintenance = 2
+    Completed = 2
 }

@@ -29,6 +29,71 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.MaintenanceRecord">
+            <summary>
+            维修记录实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.Room">
+            <summary>
+            房间导航属性
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.Description">
+            <summary>
+            维修描述
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.Priority">
+            <summary>
+            优先级
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.Status">
+            <summary>
+            维修状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.ReportDate">
+            <summary>
+            报修日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.CompletedDate">
+            <summary>
+            完成日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.Cost">
+            <summary>
+            维修费用（元）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.RepairPerson">
+            <summary>
+            维修人员姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.RepairPhone">
+            <summary>
+            维修人员电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.Images">
+            <summary>
+            维修图片（JSON数组，格式：["url1", "url2"]）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MaintenanceRecord.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.MeterRecordValidationAttribute">
             <summary>
             抄表记录实体验证特性
@@ -365,6 +430,11 @@
             水电账单集合
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.Room.MaintenanceRecords">
+            <summary>
+            维修记录集合
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.Tenant">
             <summary>
             租客实体
@@ -585,6 +655,46 @@
             女
             </summary>
         </member>
+        <member name="T:Gentle.Core.Enums.MaintenancePriority">
+            <summary>
+            维修优先级
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.MaintenancePriority.Urgent">
+            <summary>
+            紧急
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.MaintenancePriority.Normal">
+            <summary>
+            普通
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.MaintenancePriority.Low">
+            <summary>
+            低优先级
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.MaintenanceStatus">
+            <summary>
+            维修状态
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.MaintenanceStatus.Pending">
+            <summary>
+            待处理
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.MaintenanceStatus.InProgress">
+            <summary>
+            进行中
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.MaintenanceStatus.Completed">
+            <summary>
+            已完成
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.RentalReminderStatus">
             <summary>
             催收提醒状态
@@ -668,6 +778,11 @@
         <member name="F:Gentle.Core.Enums.TodoType.Rental">
             <summary>
             催收房租待办
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.TodoType.Maintenance">
+            <summary>
+            维修待办
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.UtilityBillStatus">

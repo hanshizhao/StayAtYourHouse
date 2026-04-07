@@ -1,22 +1,22 @@
 namespace Gentle.Core.Enums;
 
 /// <summary>
-/// 待办事项类型
+/// 维修优先级
 /// </summary>
-public enum TodoType
+public enum MaintenancePriority
 {
     /// <summary>
-    /// 水电费待办
+    /// 紧急
     /// </summary>
-    Utility = 0,
+    Urgent = 0,
 
     /// <summary>
-    /// 催收房租待办
+    /// 普通
     /// </summary>
-    Rental = 1,
+    Normal = 1,
 
     /// <summary>
-    /// 维修待办
+    /// 低优先级
     /// </summary>
-    Maintenance = 2
+    Low = 2
 }

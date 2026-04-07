@@ -88,4 +88,9 @@ public class Room : Entity<int>
     /// 水电账单集合
     /// </summary>
     public ICollection<UtilityBill> UtilityBills { get; set; } = new List<UtilityBill>();
+
+    /// <summary>
+    /// 维修记录集合
+    /// </summary>
+    public ICollection<MaintenanceRecord> MaintenanceRecords { get; set; } = new List<MaintenanceRecord>();
 }
