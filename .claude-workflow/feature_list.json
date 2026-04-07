@@ -506,11 +506,33 @@
         }
       ],
       "test_file": "tests/e2e/feat-135-room-lease-drawer.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-08T22:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false,
-        "required_tests": ["drawer_open", "empty_state", "add_lease", "view_lease", "edit_lease", "delete_lease"]
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "required_tests": ["drawer_open", "empty_state", "add_lease", "view_lease", "edit_lease", "delete_lease"],
+        "verified_at": "2026-04-08T22:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-08T21:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_issues": [
+          "handleSaveLease 保存成功后重新获取数据时若失败会显示空状态（边界场景，实际影响低）",
+          "取消按钮仅设置 leaseEditMode = false 未重置表单数据（添加模式下有残留风险，但关闭抽屉时会 reset）",
+          "E2E 测试中硬编码 waitForTimeout（Playwright 反模式，后续优化）"
+        ],
+        "fixes": [
+          "handleOpenLease 空 catch 块添加 MessagePlugin.error 用户提示",
+          "抽屉 @close 事件改为调用 handleLeaseDrawerClose 同时重置 leaseEditMode 和 leaseFormRef",
+          "handleSaveLease 新增/更新判断从 leaseData.value 改为 leaseData.value?.id 更稳健"
+        ]
       }
     },
     {
