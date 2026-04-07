@@ -28,6 +28,7 @@ public class RoomService : IRoomService
         var query = _repository
             .AsQueryable(false)
             .Include(r => r.Community)
+            .Include(r => r.LandlordLease)
             .AsQueryable();
 
         // 按小区筛选
@@ -58,6 +59,7 @@ public class RoomService : IRoomService
         var room = await _repository
             .AsQueryable(false)
             .Include(r => r.Community)
+            .Include(r => r.LandlordLease)
             .FirstOrDefaultAsync(r => r.Id == id);
 
         if (room == null)
