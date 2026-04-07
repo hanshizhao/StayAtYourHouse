@@ -801,12 +801,16 @@
         }
       ],
       "test_file": "tests/e2e/feat-126-dashboard-todo-maintenance.spec.ts",
-      "status": "blocked",
+      "status": "passed",
+      "completed_at": "2026-04-08T00:30:00Z",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "required_tests": ["page_load", "filter_option", "item_display", "dialog_open", "dialog_content", "navigation", "dialog_close"],
+        "required_tests_passed": true,
+        "e2e_validated": true,
+        "verified_at": "2026-04-08T00:30:00Z"
       },
-      "blocked_reason": "E2E 测试需要前后端服务运行（后端 http://localhost:5000、前端 http://localhost:3002 均未启动）",
       "review": {
         "last_review_at": "2026-04-07T18:00:00Z",
         "reviewer": "superpowers:code-reviewer",
