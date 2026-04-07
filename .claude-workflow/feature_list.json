@@ -42,12 +42,13 @@
         }
       ],
       "test_file": "tests/e2e/feat-114-e2e-verification.spec.ts",
-      "status": "blocked",
+      "status": "passed",
+      "completed_at": "2026-04-07T21:00:00Z",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
-      },
-      "blocked_reason": "E2E 入住 API 测试需要后端服务运行 (http://localhost:5000)"
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-07T21:00:00Z"
+      }
     },
     {
       "id": "FEAT-115",
@@ -557,12 +558,13 @@
         }
       ],
       "test_file": "tests/e2e/feat-122-maintenance-list-page.spec.ts",
-      "status": "blocked",
+      "status": "passed",
+      "completed_at": "2026-04-07T22:00:00Z",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-07T22:00:00Z"
       },
-      "blocked_reason": "E2E 测试需要前后端服务运行（后端 http://localhost:5000、前端 http://localhost:3002 均未启动）",
       "review": {
         "last_review_at": "2026-04-07T14:00:00Z",
         "reviewer": "superpowers:code-reviewer",
