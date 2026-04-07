@@ -56,30 +56,62 @@
 
 - 新增导航属性 `LandlordLease`（一对一）
 - `CostPrice`、`WaterPrice`、`ElectricPrice` 标记废弃，不删除（避免迁移复杂）
-- `Profit` 计算逻辑改为 `RentPrice - (LandlordLease?.MonthlyRent ?? 0)`
+- `Profit` 计算逻辑统一为 `RentPrice - (LandlordLease?.MonthlyRent ?? 0)`，无租约时成本按 0 计算
+
+### EF Core 关系配置
+
+在 `DefaultDbContext.OnModelCreating` 中配置一对一关系和唯一约束：
+
+```csharp
+modelBuilder.Entity<Room>()
+    .HasOne(r => r.LandlordLease)
+    .WithOne(l => l.Room)
+    .HasForeignKey<LandlordLease>(l => l.RoomId)
+    .OnDelete(DeleteBehavior.Cascade);
+```
+
+删除房间时级联删除关联的 `LandlordLease`。
 
 ### 利润计算影响范围
 
-以下位置均需从 `CostPrice` 切换为 `LandlordLease.MonthlyRent`：
+利润统一为 `RentPrice - (LandlordLease?.MonthlyRent ?? 0)`，无租约时成本为 0。以下位置需更新：
 
-- **`Mapper.cs`** Room -> RoomDto 映射：`Profit` 改为 `src.LandlordLease != null ? src.LandlordLease.MonthlyRent : 0`
-- **`ReportService.cs`** 月度支出计算：`rental.Room.CostPrice` 改为读取 `LandlordLease.MonthlyRent`
-- **`RoomProfitRankingDto.cs`**：`MonthlyProfit` 计算逻辑更新
-- **`ReportService.cs`** 利润排名查询：`CostPrice` 改为从 `LandlordLease` 读取
-- **`VacantRoomDto`** 中 `CostPrice` 字段改为从 `LandlordLease` 映射
+- **`Mapper.cs`** Room -> RoomDto 映射：`Profit` 改为 `src.RentPrice - (src.LandlordLease != null ? src.LandlordLease.MonthlyRent : 0)`
+- **`ReportService.cs`** 月度支出计算：`rental.Room.CostPrice` 改为 `rental.Room.LandlordLease?.MonthlyRent ?? 0`，查询需新增 `.Include(r => r.Room.LandlordLease)`
+- **`RoomProfitRankingDto.cs`**：`MonthlyProfit` 从计算属性改为普通属性，在映射时赋值 `RentPrice - (LandlordLeaseMonthlyRent ?? 0)`
+- **`ReportService.cs`** 利润排名查询：从 `LandlordLease` 读取成本，需 `.Include(r => r.LandlordLease)`
+- **`VacantRoomDto`** 中 `CostPrice` 字段改为 `LandlordLeaseMonthlyRent`（可空，从 LandlordLease 映射）
 
 ### 废弃字段过渡策略
 
 Room 上的 `CostPrice`、`WaterPrice`、`ElectricPrice` 过渡方案：
 
-1. **后端**：`CreateRoomInput` 和 `UpdateRoomInput` 中这些字段改为可选（去掉 `[Required]`），默认值 0
-2. **前端**：房间新建/编辑表单中隐藏这三个字段，改由 LandlordLease 管理
-3. **已有数据**：无需迁移，旧数据保留在 Room 表中，新逻辑从 LandlordLease 读取
-4. **列表利润**：`GetList` 查询中 LEFT JOIN `LandlordLease`，在 SQL 层面计算 `Profit = RentPrice - ISNULL(LandlordLease.MonthlyRent, Room.CostPrice)`，优先取 LandlordLease 的值，回退到 CostPrice
+1. **后端**：`CreateRoomInput` 和 `UpdateRoomInput` 中 `CostPrice` 去掉 `[Required]`，改为可选，默认值 0。`WaterPrice`、`ElectricPrice` 已是可选，无需改动
+2. **前端**：房间新建/编辑表单中隐藏 `CostPrice`、`WaterPrice`、`ElectricPrice` 三个字段，改由 LandlordLease 管理
+3. **已有数据**：无需迁移，旧数据保留在 Room 表中，新逻辑统一从 LandlordLease 读取
+4. **RoomDto**：保留 `CostPrice` 字段（不破坏现有 DTO 契约），但前端不再展示
 
-## 后端 API
+### 数据库迁移
 
-### 新增 `LandlordLeaseAppService`
+```bash
+dotnet ef migrations add AddLandlordLease --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry
+```
+
+## 后端架构
+
+### 分层设计
+
+遵循项目现有分层模式（AppService 控制器层 + Service 业务层）：
+
+- **`ILandlordLeaseService`** / **`LandlordLeaseService`** — 业务逻辑层，注入 `IRepository<LandlordLease>`、`IRepository<Room>`
+- **`LandlordLeaseAppService`** — 控制器层，注入 `ILandlordLeaseService`，实现 `IDynamicApiController`
+
+服务文件位置：
+- `Gentle.Application/Services/ILandlordLeaseService.cs`
+- `Gentle.Application/Services/LandlordLeaseService.cs`
+- `Gentle.Application/Apps/LandlordLeaseAppService.cs`
+
+### `LandlordLeaseAppService` API
 
 路由前缀：`api/landlord-lease`，API 分组 `"Housing"`，需 `[Authorize]`。
 
@@ -90,9 +122,9 @@ Room 上的 `CostPrice`、`WaterPrice`、`ElectricPrice` 过渡方案：
 | PUT | `edit` | `Edit(UpdateLandlordLeaseInput input)` | 更新房东租约 |
 | DELETE | `remove/{id}` | `Remove(int id)` | 删除房东租约 |
 
-### 新增 DTO
+### DTO
 
-- **`LandlordLeaseDto`**（输出）— 包含所有字段 + `RoomInfo`（string 类型，格式为 "X栋XXX"，在 Mapper.cs 中映射为 `src.Room.Building + "栋" + src.Room.RoomNumber`）
+- **`LandlordLeaseDto`**（输出）— 包含所有实体字段 + `RoomInfo`（string，格式：`"{CommunityName} {Building}栋 {RoomNumber}号"`，与 RentalRecord 格式一致，Mapper.cs 中需 `.Include(l => l.Room).ThenInclude(r => r.Community)` 后映射）
 - **`CreateLandlordLeaseInput`**（创建输入）— 必填：`RoomId`、`LandlordName`（最大 50 字符）、`StartDate`、`MonthlyRent`（> 0）、`PaymentMethod`
 - **`UpdateLandlordLeaseInput`**（更新输入）— 必填：`Id` + 同创建的必填字段
 
@@ -106,21 +138,37 @@ Room 上的 `CostPrice`、`WaterPrice`、`ElectricPrice` 过渡方案：
 ### 业务规则
 
 1. 创建时校验 `RoomId` 对应的房间存在
-2. 创建时校验该房间尚未关联房东租约（一对一约束）
+2. 创建时校验该房间尚未关联房东租约（一对一约束，数据库 `RoomId` 唯一索引保证）
 3. 更新/删除时校验租约存在
-4. 房间处于"已出租"状态时，允许删除房东租约（删除后利润按成本 0 计算，用户自行负责）
+4. 房间处于任何状态时均允许删除房东租约（删除后利润按成本 0 计算，用户自行负责）
 5. `EndDate` 如填写，必须 >= `StartDate`
 
-### RoomAppService 变更
+### RoomAppService / RoomService 变更
 
 - `RoomDto` 新增 `LandlordLease` 属性（类型 `LandlordLeaseDto?`）
-- `GetById` 查询新增 `.Include(r => r.LandlordLease)`，Mapster 映射 LandlordLease 到 DTO
-- `GetList` 查询新增 `.Include(r => r.LandlordLease)`，Profit 字段映射改为优先取 `LandlordLease.MonthlyRent`，回退到 `CostPrice`
-- `Mapper.cs` 中 Room 相关映射需更新，包括 Profit 计算和 LandlordLease 子映射
+- `RoomService.GetListAsync` 查询新增 `.Include(r => r.LandlordLease)`
+- `RoomService.GetByIdAsync` 查询新增 `.Include(r => r.LandlordLease)`
+- `Mapper.cs` Room 相关映射更新：Profit 计算改为从 LandlordLease 读取，新增 LandlordLease 子映射配置
+
+### Mapster 映射新增
+
+```csharp
+// LandlordLease -> LandlordLeaseDto
+config.NewConfig<LandlordLease, LandlordLeaseDto>()
+    .Map(dest => dest.RoomInfo, src => src.Room != null && src.Room.Community != null
+        ? $"{src.Room.Community.Name} {src.Room.Building}栋 {src.Room.RoomNumber}号"
+        : string.Empty);
+
+// CreateLandlordLeaseInput -> LandlordLease
+config.NewConfig<CreateLandlordLeaseInput, LandlordLease>();
+
+// UpdateLandlordLeaseInput -> LandlordLease
+config.NewConfig<UpdateLandlordLeaseInput, LandlordLease>();
+```
 
 ## 前端交互
 
-### 房间列表页变更
+### 房间列表页变更（`src/pages/housing/room/index.vue`）
 
 在操作列新增"房东租约"按钮（图标按钮），点击后打开右侧 Drawer。
 
@@ -128,6 +176,7 @@ Room 上的 `CostPrice`、`WaterPrice`、`ElectricPrice` 过渡方案：
 
 - **无租约**：显示空状态 + "添加房东租约"按钮，点击后展示表单
 - **有租约**：展示模式显示租约信息卡片，右上角有"编辑"和"删除"按钮；点击编辑切换为表单模式
+- **删除确认**：点击删除时弹出确认对话框（与现有删除房间交互一致）
 
 ### 表单字段
 
@@ -160,24 +209,26 @@ Room 上的 `CostPrice`、`WaterPrice`、`ElectricPrice` 过渡方案：
 | 文件 | 操作 | 说明 |
 |------|------|------|
 | `src/api/model/landlordLeaseModel.ts` | 新增 | TS 类型定义（PaymentMethod 枚举、LandlordLeaseItem 接口） |
-| `src/api/landlordLease.ts` | 新增 | API 调用函数（getByRoomId、create、update、remove） |
-| `src/pages/housing/room/index.vue` | 修改 | 新增"房东租约"按钮 + Drawer（展示/编辑/新建） |
-| `src/pages/housing/room/detail.vue` | 修改 | 价格信息卡片重构：保留出租价和押金，移除成本价/水费/电费，新增"房东租约"独立卡片 |
+| `src/api/landlordLease.ts` | 新增 | API 调用函数（getByRoomId、create、update、remove），路径前缀 `/landlord-lease/` |
+| `src/pages/housing/room/index.vue` | 修改 | 新增"房东租约"按钮 + Drawer（展示/编辑/新建/删除确认） |
+| `src/pages/housing/room/detail.vue` | 修改 | 价格信息卡片重构，新增房东租约卡片 |
 
 ### detail.vue 改造方案
 
-价格信息卡片保留 Room 自身字段：
+价格信息卡片精简为 Room 自身字段：
 - 出租价（RentPrice）、押金（Deposit）
 
-新增"房东租约"卡片（从 `roomDetail.landlordLease` 读取），分三组：
+移除字段：成本价（CostPrice）、水费单价、电费单价、利润（移至房东租约卡片）
+
+新增"房东租约"独立卡片（从 `roomDetail.landlordLease` 读取），分三组：
+- **房东信息**：姓名、联系电话
 - **租约信息**：月租金、起租日期、到期日期、付款方式、押金月数
 - **费用信息**：水费单价、电费单价、电梯费、物业费、网络费
-- **房东信息**：姓名、联系电话
+
+利润显示在房东租约卡片中：`出租价 - 月租金 = 利润`
 
 如无房东租约，显示空状态提示。
 
-成本价（CostPrice）字段从价格信息卡片中移除，不再展示。
-
 ### 列表利润列处理
 
-`GetList` 查询新增 `.Include(r => r.LandlordLease)`，Profit 计算优先取 `LandlordLease.MonthlyRent`，无租约时回退到 `CostPrice`。"成本价"列暂时保留显示。
+`GetList` 查询新增 `.Include(r => r.LandlordLease)`，Profit 统一为 `RentPrice - (LandlordLease.MonthlyRent ?? 0)`。"成本价"列暂时保留显示 Room.CostPrice（仅作参考），利润列从后端计算好的 Profit 字段读取。
