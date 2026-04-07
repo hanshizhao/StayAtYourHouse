@@ -59,29 +59,89 @@
       </t-card>
 
       <!-- 价格信息卡片 -->
-      <t-card class="info-card" title="价格信息" :bordered="false">
+      <t-card class="info-card" title="价格信息" :bordered="false" data-testid="price-info-card">
         <t-descriptions :column="3" bordered>
-          <t-descriptions-item label="成本价">
-            <span class="price">¥{{ roomDetail.costPrice?.toFixed(2) ?? '-' }}</span>
-          </t-descriptions-item>
           <t-descriptions-item label="出租价">
             <span class="price">¥{{ roomDetail.rentPrice?.toFixed(2) ?? '-' }}</span>
-          </t-descriptions-item>
-          <t-descriptions-item label="利润">
-            <span class="price" :class="[(roomDetail.profit ?? 0) >= 0 ? 'profit-positive' : 'profit-negative']">
-              ¥{{ roomDetail.profit?.toFixed(2) ?? '-' }}
-            </span>
           </t-descriptions-item>
           <t-descriptions-item label="押金">
             {{ roomDetail.deposit ? `¥${roomDetail.deposit.toFixed(2)}` : '-' }}
           </t-descriptions-item>
-          <t-descriptions-item label="水费单价">
-            {{ roomDetail.waterPrice ? `¥${roomDetail.waterPrice.toFixed(2)}/吨` : '-' }}
+        </t-descriptions>
+      </t-card>
+
+      <!-- 房东租约卡片 -->
+      <t-card v-if="roomDetail.landlordLease" class="info-card" title="房东租约" :bordered="false" data-testid="landlord-lease-card">
+        <template #subtitle>
+          <t-tag theme="success" variant="light">已签约</t-tag>
+        </template>
+
+        <!-- 房东信息 -->
+        <t-descriptions title="房东信息" :column="3" bordered class="lease-section">
+          <t-descriptions-item label="房东姓名" data-testid="lease-landlord-name">
+            {{ roomDetail.landlordLease.landlordName }}
           </t-descriptions-item>
-          <t-descriptions-item label="电费单价">
-            {{ roomDetail.electricPrice ? `¥${roomDetail.electricPrice.toFixed(2)}/度` : '-' }}
+          <t-descriptions-item label="联系电话" data-testid="lease-landlord-phone">
+            {{ roomDetail.landlordLease.landlordPhone || '-' }}
+          </t-descriptions-item>
+          <t-descriptions-item label="付款方式" data-testid="lease-payment-method">
+            {{ roomDetail.landlordLease.paymentMethodText || PaymentMethodText[roomDetail.landlordLease.paymentMethod] || '-' }}
+          </t-descriptions-item>
+          <t-descriptions-item label="月租金" data-testid="lease-monthly-rent">
+            <span class="price">¥{{ roomDetail.landlordLease.monthlyRent?.toFixed(2) }}</span>
+          </t-descriptions-item>
+          <t-descriptions-item label="押金月数" data-testid="lease-deposit-months">
+            {{ roomDetail.landlordLease.depositMonths ? `${roomDetail.landlordLease.depositMonths}个月` : '-' }}
+          </t-descriptions-item>
+          <t-descriptions-item label="租约期限" data-testid="lease-date-range">
+            {{ roomDetail.landlordLease.startDate && roomDetail.landlordLease.endDate
+              ? `${roomDetail.landlordLease.startDate} ~ ${roomDetail.landlordLease.endDate}`
+              : '-' }}
           </t-descriptions-item>
         </t-descriptions>
+
+        <!-- 费用信息 -->
+        <t-descriptions title="费用信息" :column="3" bordered class="lease-section">
+          <t-descriptions-item label="水费单价" data-testid="lease-water-price">
+            {{ roomDetail.landlordLease.waterPrice ? `¥${roomDetail.landlordLease.waterPrice.toFixed(2)}/吨` : '-' }}
+          </t-descriptions-item>
+          <t-descriptions-item label="电费单价" data-testid="lease-electric-price">
+            {{ roomDetail.landlordLease.electricPrice ? `¥${roomDetail.landlordLease.electricPrice.toFixed(2)}/度` : '-' }}
+          </t-descriptions-item>
+          <t-descriptions-item label="电梯费" data-testid="lease-elevator-fee">
+            {{ roomDetail.landlordLease.elevatorFee ? `¥${roomDetail.landlordLease.elevatorFee.toFixed(2)}` : '-' }}
+          </t-descriptions-item>
+          <t-descriptions-item label="物业费" data-testid="lease-property-fee">
+            {{ roomDetail.landlordLease.propertyFee ? `¥${roomDetail.landlordLease.propertyFee.toFixed(2)}` : '-' }}
+          </t-descriptions-item>
+          <t-descriptions-item label="网费" data-testid="lease-internet-fee">
+            {{ roomDetail.landlordLease.internetFee ? `¥${roomDetail.landlordLease.internetFee.toFixed(2)}` : '-' }}
+          </t-descriptions-item>
+          <t-descriptions-item label="其他费用" data-testid="lease-other-fees">
+            {{ roomDetail.landlordLease.otherFees ? `¥${roomDetail.landlordLease.otherFees.toFixed(2)}` : '-' }}
+          </t-descriptions-item>
+        </t-descriptions>
+
+        <!-- 利润信息 -->
+        <t-descriptions title="利润" :column="3" bordered class="lease-section">
+          <t-descriptions-item label="月利润" data-testid="lease-profit">
+            <span class="price" :class="[monthlyProfit >= 0 ? 'profit-positive' : 'profit-negative']">
+              ¥{{ monthlyProfit.toFixed(2) }}
+            </span>
+          </t-descriptions-item>
+        </t-descriptions>
+
+        <!-- 租约备注 -->
+        <t-descriptions v-if="roomDetail.landlordLease.remark" title="备注" :column="1" bordered class="lease-section">
+          <t-descriptions-item label="租约备注" data-testid="lease-remark">
+            {{ roomDetail.landlordLease.remark }}
+          </t-descriptions-item>
+        </t-descriptions>
+      </t-card>
+
+      <!-- 无房东租约时的空状态 -->
+      <t-card v-else class="info-card" title="房东租约" :bordered="false" data-testid="landlord-lease-card">
+        <t-empty data-testid="lease-empty-state" description="暂无房东租约信息" />
       </t-card>
 
       <!-- 备注信息卡片 -->
@@ -110,9 +170,10 @@
 <script setup lang="ts">
 import { ChevronLeftIcon, EditIcon } from 'tdesign-icons-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import { PaymentMethodText } from '@/api/model/landlordLeaseModel';
 import type { RoomItem } from '@/api/model/roomModel';
 import { RoomStatus, RoomStatusText } from '@/api/model/roomModel';
 import { getRoomById } from '@/api/room';
@@ -129,6 +190,13 @@ const router = useRouter();
 const loading = ref(true);
 const error = ref<string | null>(null);
 const roomDetail = ref<RoomItem | null>(null);
+
+/** 月利润 = 出租价 - 房东月租金 */
+const monthlyProfit = computed(() => {
+  const rent = roomDetail.value?.rentPrice ?? 0;
+  const cost = roomDetail.value?.landlordLease?.monthlyRent ?? 0;
+  return rent - cost;
+});
 
 // ==================== 方法 ====================
 
@@ -255,6 +323,18 @@ onMounted(() => {
     color: var(--td-text-color-secondary);
     line-height: 1.6;
     white-space: pre-wrap;
+  }
+
+  .lease-section {
+    margin-bottom: var(--td-comp-margin-l);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    :deep(.t-descriptions__header) {
+      margin-bottom: var(--td-comp-margin-s);
+    }
   }
 }
 </style>
