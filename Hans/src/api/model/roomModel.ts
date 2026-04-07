@@ -1,3 +1,5 @@
+import type { LandlordLeaseDetail } from './landlordLeaseModel';
+
 /**
  * 房间状态枚举
  */
@@ -43,6 +45,7 @@ export interface RoomItem {
   contractImage?: string;
   remark?: string;
   createdTime: string;
+  landlordLease?: LandlordLeaseDetail;
 }
 
 /**
