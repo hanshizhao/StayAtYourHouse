@@ -160,7 +160,7 @@ MaintenanceRecord : Entity<int>
 | `Hans/src/api/model/maintenanceModel.ts` | 维修类型定义 |
 | `Hans/src/pages/maintenance/list.vue` | 维修记录列表页 |
 | `Hans/src/pages/maintenance/add.vue` | 新增报修页 |
-| `Hans/src/pages/maintenance/edit.vue` | 编辑报修页（复用 add.vue） |
+| ~~`Hans/src/pages/maintenance/edit.vue`~~ | ~~编辑报修页（不创建独立文件，路由直接指向 add.vue，通过路径参数 `id` 判断新增/编辑模式）~~ |
 | `Hans/src/pages/dashboard/base/components/MaintenanceDetailDialog.vue` | 维修详情对话框 |
 | `Hans/src/router/modules/maintenance.ts` | 维修路由模块 |
 
