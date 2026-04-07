@@ -47,6 +47,7 @@ public class ReportService : IReportService
         var relevantRentals = await _rentalRecordRepository
             .AsQueryable(false)
             .Include(r => r.Room)
+                .ThenInclude(r => r.LandlordLease)
             .Where(r => r.CheckInDate <= yearEnd && (r.CheckOutDate == null || r.CheckOutDate >= yearStart))
             .ToListAsync();
 
@@ -62,7 +63,7 @@ public class ReportService : IReportService
 
             for (var m = startMonth; m <= endMonth; m++)
             {
-                monthlyExpenses[m - 1] += rental.Room.CostPrice;
+                monthlyExpenses[m - 1] += rental.Room.LandlordLease?.MonthlyRent ?? 0;
             }
         }
 
@@ -133,6 +134,7 @@ public class ReportService : IReportService
         var rooms = await _roomRepository
             .AsQueryable(false)
             .Include(r => r.Community)
+            .Include(r => r.LandlordLease)
             .Where(r => r.Status != RoomStatus.Reclaimed)
             .ToListAsync();
 
@@ -184,7 +186,7 @@ public class ReportService : IReportService
                     Building = r.Building,
                     RoomNumber = r.RoomNumber,
                     RentPrice = r.RentPrice,
-                    CostPrice = r.CostPrice,
+                    LandlordLeaseMonthlyRent = r.LandlordLease?.MonthlyRent,
                     Area = r.Area,
                     RoomType = r.RoomType,
                     VacantDays = vacantDays
@@ -216,6 +218,7 @@ public class ReportService : IReportService
         var rooms = await _roomRepository
             .AsQueryable(false)
             .Include(r => r.Community)
+            .Include(r => r.LandlordLease)
             .Where(r => r.Status != RoomStatus.Reclaimed)
             .ToListAsync();
 
@@ -237,8 +240,9 @@ public class ReportService : IReportService
                 Building = room.Building,
                 RoomNumber = room.RoomNumber,
                 Status = room.Status.ToText(),
-                CostPrice = room.CostPrice,
+                LandlordLeaseMonthlyRent = room.LandlordLease?.MonthlyRent,
                 RentPrice = room.RentPrice,
+                MonthlyProfit = room.RentPrice - (room.LandlordLease?.MonthlyRent ?? 0),
                 CurrentTenantName = activeRental?.Renter.Name,
                 Area = room.Area,
                 RoomType = room.RoomType

@@ -39,9 +39,9 @@ public class RoomProfitRankingDto
     public string Status { get; set; } = string.Empty;
 
     /// <summary>
-    /// 成本价（月租金成本）
+    /// 房东租约月租金（成本）
     /// </summary>
-    public decimal CostPrice { get; set; }
+    public decimal? LandlordLeaseMonthlyRent { get; set; }
 
     /// <summary>
     /// 出租价（月租金）
@@ -49,9 +49,9 @@ public class RoomProfitRankingDto
     public decimal RentPrice { get; set; }
 
     /// <summary>
-    /// 月利润（出租价 - 成本价）
+    /// 月利润（出租价 - 房东月租金）
     /// </summary>
-    public decimal MonthlyProfit => RentPrice - CostPrice;
+    public decimal MonthlyProfit { get; set; }
 
     /// <summary>
     /// 利润率（百分比）

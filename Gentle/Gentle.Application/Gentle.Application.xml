@@ -1968,9 +1968,9 @@
             出租价
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.CostPrice">
+        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.LandlordLeaseMonthlyRent">
             <summary>
-            成本价
+            房东租约月租金（成本）
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.Area">
@@ -2113,9 +2113,9 @@
             房间状态
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.CostPrice">
+        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.LandlordLeaseMonthlyRent">
             <summary>
-            成本价（月租金成本）
+            房东租约月租金（成本）
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.RentPrice">
@@ -2125,7 +2125,7 @@
         </member>
         <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.MonthlyProfit">
             <summary>
-            月利润（出租价 - 成本价）
+            月利润（出租价 - 房东月租金）
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.ProfitRate">

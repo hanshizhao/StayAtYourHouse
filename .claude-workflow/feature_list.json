@@ -316,10 +316,29 @@
         }
       ],
       "test_file": "tests/e2e/feat-132-report-landlord-lease.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-08T18:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-08T18:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-08T17:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 1,
+          "minor": 2
+        },
+        "important_issues": [
+          "GetIncomeReportAsync 成本计算基于 RentalRecord 而非 LandlordLease 租期，空置期间不产生成本（业务逻辑问题，超出 FEAT-132 范围，后续优化）"
+        ],
+        "minor_issues": [
+          "Gentle.Application.xml 文档已同步更新（正面）",
+          "RoomDto 仍保留 CostPrice 和 Profit 字段（与 FEAT-134/136 前端改造相关，不在本 FEAT 范围内）"
+        ]
       }
     },
     {

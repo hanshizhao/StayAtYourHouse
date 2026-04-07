@@ -124,9 +124,9 @@ public class VacantRoomDto
     public decimal RentPrice { get; set; }
 
     /// <summary>
-    /// 成本价
+    /// 房东租约月租金（成本）
     /// </summary>
-    public decimal CostPrice { get; set; }
+    public decimal? LandlordLeaseMonthlyRent { get; set; }
 
     /// <summary>
     /// 面积（平方米）
