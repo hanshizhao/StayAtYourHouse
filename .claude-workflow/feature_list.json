@@ -557,10 +557,30 @@
         }
       ],
       "test_file": "tests/e2e/feat-122-maintenance-list-page.spec.ts",
-      "status": "pending",
+      "status": "blocked",
       "verification": {
-        "e2e_tests_created": false,
+        "e2e_tests_created": true,
         "e2e_tests_passed": false
+      },
+      "blocked_reason": "E2E 测试需要前后端服务运行（后端 http://localhost:5000、前端 http://localhost:3002 均未启动）",
+      "review": {
+        "last_review_at": "2026-04-07T14:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 2,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "fixed_in_review": [
+          "I-1: 删除空的 watchEffect 块和多余 import",
+          "I-2: 删除多余的 tableData computed，模板直接绑定 data"
+        ],
+        "suggestions": [
+          "S-1: catch(e: any) 可改为 catch(e: unknown)（项目级技术债）",
+          "S-2: 后端分页筛选与前端筛选的差异是合理的设计选择"
+        ]
       }
     },
     {
@@ -591,10 +611,35 @@
         }
       ],
       "test_file": "tests/e2e/feat-123-maintenance-form-page.spec.ts",
-      "status": "pending",
+      "status": "blocked",
       "verification": {
-        "e2e_tests_created": false,
+        "e2e_tests_created": true,
         "e2e_tests_passed": false
+      },
+      "blocked_reason": "E2E 测试需要前后端服务运行（后端 http://localhost:5000、前端 http://localhost:3002 均未启动）",
+      "review": {
+        "last_review_at": "2026-04-07T15:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 3,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "fixed_in_review": [
+          "C2: editingId computed 添加 Number.isNaN() 防御",
+          "I2: 编辑模式新增 detailLoading ref + t-loading 包裹",
+          "I3: 非空断言 editingId.value! 替换为显式 null 检查",
+          "I4: E2E 测试 7 处 waitForTimeout 替换为 waitForSelector/waitForURL",
+          "I5: loadMaintenanceDetail 详情为空时添加错误提示和页面跳转"
+        ],
+        "highlights": [
+          "组件结构与 check-in.vue 等已有页面模式高度一致",
+          "类型安全修复（NaN 防御、非空断言消除）提升了代码健壮性",
+          "E2E 测试 21 个用例覆盖新增/编辑/预选房间等全部场景",
+          "表单分区设计（房间/维修/人员费用/备注）清晰合理"
+        ]
       }
     },
     {
@@ -623,10 +668,32 @@
         }
       ],
       "test_file": "tests/e2e/feat-124-room-maintenance-button.spec.ts",
-      "status": "pending",
+      "status": "blocked",
       "verification": {
-        "e2e_tests_created": false,
+        "e2e_tests_created": true,
         "e2e_tests_passed": false
+      },
+      "blocked_reason": "E2E 测试需要前后端服务运行（后端 http://localhost:5000、前端 http://localhost:3002 均未启动）",
+      "review": {
+        "last_review_at": "2026-04-07T16:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 1,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "suggestions": [
+          "S-1: 空表格时测试静默通过，建议 rowCount === 0 时 skip 或断言",
+          "S-2: 硬编码登录凭据为项目级技术债，不针对本 FEAT"
+        ],
+        "highlights": [
+          "改动范围精准（6处改动，零冗余）",
+          "与已有编辑/删除按钮模式完全一致",
+          "类型安全，路由目标已在 maintenance.ts 中定义",
+          "E2E 测试 4 个用例覆盖完整"
+        ]
       }
     },
     {
@@ -636,6 +703,8 @@
       "priority": "high",
       "test_type": "static",
       "description": "前端待办模型和 API 修改",
+      "status": "passed",
+      "completed_at": "2026-04-07T17:30:00Z",
       "acceptance_criteria": [
         "todoModel.ts: TodoType 新增 Maintenance = 2",
         "todoModel.ts: TodoItem 接口新增维修字段",
@@ -663,10 +732,31 @@
         }
       ],
       "test_file": "tests/e2e/feat-125-frontend-todo-model.spec.ts",
-      "status": "pending",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-07T17:30:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-07T17:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 1,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "highlights": [
+          "所有验收标准已满足，2个文件改动精准且完整",
+          "前后端类型定义 100% 对齐（TodoItem 7个维修字段 + TodoListResult maintenanceCount）",
+          "todoTypeToString 从三元升级为 switch 提升可读性和可扩展性",
+          "代码风格与项目既有模式完全一致（分组注释、可选属性、JSDoc 注释）"
+        ],
+        "suggestions": [
+          "S-1: TodoItem 接口内联 import() 类型与顶部 re-export 风格不完全统一，但与 UtilityBillSimple 既有模式一致，无需调整",
+          "S-2: renewRental 函数重复 JSDoc 为 pre-existing 问题，不针对本 FEAT"
+        ]
       }
     },
     {

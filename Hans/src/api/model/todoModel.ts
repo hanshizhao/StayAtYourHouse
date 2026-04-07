@@ -1,5 +1,9 @@
 // 从 meterModel 复用 UtilityBillItem 接口（避免重复定义）
 export type { UtilityBillItem } from './meterModel';
+// 从 maintenanceModel 复用 MaintenanceDetail 接口（避免重复定义）
+export type { MaintenanceDetail } from './maintenanceModel';
+// 从 maintenanceModel 复用枚举类型（维修待办字段使用）
+export type { MaintenancePriority, MaintenanceStatus } from './maintenanceModel';
 
 /**
  * 待办类型枚举（与后端 Gentle.Core.Enums.TodoType 保持一致)
@@ -9,6 +13,8 @@ export enum TodoType {
   Utility = 0,
   /** 催收房租待办 */
   Rental = 1,
+  /** 维修待办 */
+  Maintenance = 2,
 }
 
 /**
@@ -17,6 +23,7 @@ export enum TodoType {
 export const TodoTypeText: Record<TodoType, string> = {
   [TodoType.Utility]: '水电费',
   [TodoType.Rental]: '催收房租',
+  [TodoType.Maintenance]: '维修',
 };
 
 /**
@@ -70,7 +77,7 @@ export interface RentalReminderItem {
 export interface TodoItem {
   /** 待办类型 */
   type: TodoType;
-  /** 待办ID（水电费为账单ID，催收房租为提醒ID） */
+  /** 待办ID（水电费为账单ID，催收房租为提醒ID，维修为维修记录ID） */
   id: number;
   /** 房间信息 */
   roomInfo: string;
@@ -94,6 +101,22 @@ export interface TodoItem {
   deferralCount: number;
   /** 催收提醒详情 */
   rentalReminder?: RentalReminderItem;
+
+  // ===== 维修待办专用字段 =====
+  /** 维修描述（维修专用） */
+  description?: string;
+  /** 优先级（维修专用） */
+  priority?: import('./maintenanceModel').MaintenancePriority;
+  /** 优先级文本（维修专用） */
+  priorityText?: string;
+  /** 维修费用（维修专用） */
+  maintenanceCost?: number;
+  /** 维修状态（维修专用） */
+  maintenanceStatus?: import('./maintenanceModel').MaintenanceStatus;
+  /** 维修状态文本（维修专用） */
+  maintenanceStatusText?: string;
+  /** 维修记录详情（维修专用） */
+  maintenanceDetail?: import('./maintenanceModel').MaintenanceDetail;
 }
 
 /**
@@ -108,6 +131,8 @@ export interface TodoListResult {
   utilityCount: number;
   /** 催收房租待办数量 */
   rentalCount: number;
+  /** 维修待办数量 */
+  maintenanceCount: number;
 }
 
 /**
