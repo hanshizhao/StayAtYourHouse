@@ -78,9 +78,10 @@ modelBuilder.Entity<Room>()
 
 - **`Mapper.cs`** Room -> RoomDto 映射：`Profit` 改为 `src.RentPrice - (src.LandlordLease != null ? src.LandlordLease.MonthlyRent : 0)`
 - **`ReportService.cs`** 月度支出计算：`rental.Room.CostPrice` 改为 `rental.Room.LandlordLease?.MonthlyRent ?? 0`，查询需新增 `.Include(r => r.Room.LandlordLease)`
-- **`RoomProfitRankingDto.cs`**：`MonthlyProfit` 从计算属性改为普通属性，在映射时赋值 `RentPrice - (LandlordLeaseMonthlyRent ?? 0)`
+- **`RoomProfitRankingDto.cs`**：`MonthlyProfit` 从计算属性改为普通属性，在映射时赋值 `RentPrice - (LandlordLeaseMonthlyRent ?? 0)`；`CostPrice` 字段替换为 `LandlordLeaseMonthlyRent`（decimal?）
 - **`ReportService.cs`** 利润排名查询：从 `LandlordLease` 读取成本，需 `.Include(r => r.LandlordLease)`
 - **`VacantRoomDto`** 中 `CostPrice` 字段改为 `LandlordLeaseMonthlyRent`（可空，从 LandlordLease 映射）
+- **`ReportService.GetHousingOverviewAsync`**：构造 `VacantRoomDto` 时需新增 `.Include(r => r.LandlordLease)`，`CostPrice` 赋值改为 `r.LandlordLease?.MonthlyRent`
 
 ### 废弃字段过渡策略
 
@@ -89,7 +90,7 @@ Room 上的 `CostPrice`、`WaterPrice`、`ElectricPrice` 过渡方案：
 1. **后端**：`CreateRoomInput` 和 `UpdateRoomInput` 中 `CostPrice` 去掉 `[Required]`，改为可选，默认值 0。`WaterPrice`、`ElectricPrice` 已是可选，无需改动
 2. **前端**：房间新建/编辑表单中隐藏 `CostPrice`、`WaterPrice`、`ElectricPrice` 三个字段，改由 LandlordLease 管理
 3. **已有数据**：无需迁移，旧数据保留在 Room 表中，新逻辑统一从 LandlordLease 读取
-4. **RoomDto**：保留 `CostPrice` 字段（不破坏现有 DTO 契约），但前端不再展示
+4. **RoomDto**：保留 `CostPrice` 字段（不破坏现有 DTO 契约），但映射值改为从 `LandlordLease.MonthlyRent` 读取（无租约时为 0），前端不再展示该字段
 
 ### 数据库迁移
 
@@ -106,14 +107,19 @@ dotnet ef migrations add AddLandlordLease --project Gentle.Database.Migrations -
 - **`ILandlordLeaseService`** / **`LandlordLeaseService`** — 业务逻辑层，注入 `IRepository<LandlordLease>`、`IRepository<Room>`
 - **`LandlordLeaseAppService`** — 控制器层，注入 `ILandlordLeaseService`，实现 `IDynamicApiController`
 
-服务文件位置：
-- `Gentle.Application/Services/ILandlordLeaseService.cs`
-- `Gentle.Application/Services/LandlordLeaseService.cs`
-- `Gentle.Application/Apps/LandlordLeaseAppService.cs`
+后端文件位置：
+- `Gentle.Core/Entities/LandlordLease.cs` — 实体
+- `Gentle.Core/Enums/PaymentMethod.cs` — 枚举
+- `Gentle.Application/Dtos/LandlordLease/LandlordLeaseDto.cs` — 输出 DTO
+- `Gentle.Application/Dtos/LandlordLease/CreateLandlordLeaseInput.cs` — 创建输入
+- `Gentle.Application/Dtos/LandlordLease/UpdateLandlordLeaseInput.cs` — 更新输入
+- `Gentle.Application/Services/ILandlordLeaseService.cs` — 服务接口
+- `Gentle.Application/Services/LandlordLeaseService.cs` — 服务实现
+- `Gentle.Application/Apps/LandlordLeaseAppService.cs` — API 控制器
 
 ### `LandlordLeaseAppService` API
 
-路由前缀：`api/landlord-lease`，API 分组 `"Housing"`，需 `[Authorize]`。
+路由前缀：`api/landlord-lease`，标注 `[ApiDescriptionSettings("Housing", Name = "LandlordLease", Order = 3)]`，需 `[Authorize]`。
 
 | HTTP 方法 | 路由 | 方法 | 说明 |
 |---|---|---|---|
@@ -208,8 +214,8 @@ config.NewConfig<UpdateLandlordLeaseInput, LandlordLease>();
 
 | 文件 | 操作 | 说明 |
 |------|------|------|
-| `src/api/model/landlordLeaseModel.ts` | 新增 | TS 类型定义（PaymentMethod 枚举、LandlordLeaseItem 接口） |
-| `src/api/landlordLease.ts` | 新增 | API 调用函数（getByRoomId、create、update、remove），路径前缀 `/landlord-lease/` |
+| `src/api/model/landlordLeaseModel.ts` | 新增 | TS 类型定义（PaymentMethod 枚举、LandlordLeaseDetail 接口、CreateLandlordLeaseParams、UpdateLandlordLeaseParams） |
+| `src/api/landlordLease.ts` | 新增 | API 调用函数（getLandlordLeaseByRoomId、addLandlordLease、updateLandlordLease、removeLandlordLease），路径前缀 `/landlord-lease/` |
 | `src/pages/housing/room/index.vue` | 修改 | 新增"房东租约"按钮 + Drawer（展示/编辑/新建/删除确认） |
 | `src/pages/housing/room/detail.vue` | 修改 | 价格信息卡片重构，新增房东租约卡片 |
 
