@@ -54,6 +54,61 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.MaintenanceAppService">
+            <summary>
+            维修管理应用服务
+            </summary>
+            <remarks>
+            提供维修记录的增删改查、完成维修等操作。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Apps.MaintenanceAppService.GetList(System.Nullable{Gentle.Core.Enums.MaintenanceStatus},System.Nullable{Gentle.Core.Enums.MaintenancePriority},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
+            <summary>
+            获取维修记录列表
+            </summary>
+            <param name="status">状态筛选（Pending/InProgress/Completed）</param>
+            <param name="priority">优先级筛选（Urgent/Normal/Low）</param>
+            <param name="roomId">房间ID筛选</param>
+            <param name="communityId">小区ID筛选</param>
+            <param name="page">页码（从1开始）</param>
+            <param name="pageSize">每页数量（默认20）</param>
+            <returns>维修记录列表和总数</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.MaintenanceAppService.GetById(System.Int32)">
+            <summary>
+            根据ID获取维修记录详情
+            </summary>
+            <param name="id">维修记录ID</param>
+            <returns>维修记录详情</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.MaintenanceAppService.Add(Gentle.Application.Dtos.Maintenance.MaintenanceAddInput)">
+            <summary>
+            新增维修记录
+            </summary>
+            <param name="input">新增输入</param>
+            <returns>新增后的维修记录</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.MaintenanceAppService.Edit(Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput)">
+            <summary>
+            更新维修记录
+            </summary>
+            <param name="input">更新输入</param>
+            <returns>更新后的维修记录</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.MaintenanceAppService.Complete(System.Int32,Gentle.Application.Dtos.Maintenance.CompleteMaintenanceInput)">
+            <summary>
+            完成维修
+            </summary>
+            <param name="id">维修记录ID</param>
+            <param name="input">完成输入</param>
+            <returns>完成后的维修记录</returns>
+        </member>
+        <member name="M:Gentle.Application.Apps.MaintenanceAppService.Remove(System.Int32)">
+            <summary>
+            删除维修记录
+            </summary>
+            <param name="id">维修记录ID</param>
+        </member>
         <member name="T:Gentle.Application.Apps.MeterAppService">
             <summary>
             水电抄表管理应用服务
@@ -284,7 +339,7 @@
             <summary>
             获取待办事项列表
             </summary>
-            <param name="type">待办类型筛选（utility=水电费, rental=催收房租, null=全部）</param>
+            <param name="type">待办类型筛选（utility=水电费, rental=催收房租, maintenance=维修, null=全部）</param>
             <param name="page">页码（从1开始）</param>
             <param name="pageSize">每页数量（默认20）</param>
             <returns>待办事项列表结果</returns>
@@ -705,6 +760,31 @@
         <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceDetailDto.CreatedTime">
             <summary>
             创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Maintenance.MaintenanceListResult">
+            <summary>
+            维修记录列表结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceListResult.Items">
+            <summary>
+            维修记录列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceListResult.Total">
+            <summary>
+            总数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceListResult.Page">
+            <summary>
+            当前页码
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Maintenance.MaintenanceListResult.PageSize">
+            <summary>
+            每页数量
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.Maintenance.MaintenanceUpdateInput">
@@ -2238,9 +2318,10 @@
             待办事项 DTO
             </summary>
             <remarks>
-            统一的水电费和催收房租待办数据结构。
+            统一的水电费、催收房租和维修待办数据结构。
             水电费待办使用 Amount, Period, UtilityBill 字段。
             催收房租待办使用 TenantName, MonthlyRent, DeferralCount, RentalReminder 字段。
+            维修待办使用 Description, Priority, MaintenanceCost, MaintenanceStatus, MaintenanceDetail 字段。
             </remarks>
         </member>
         <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.Type">
@@ -2253,7 +2334,7 @@
             待办ID
             </summary>
             <remarks>
-            水电费待办为 UtilityBill.Id，催收房租待办为 RentalReminder.Id
+            水电费待办为 UtilityBill.Id，催收房租待办为 RentalReminder.Id，维修待办为 MaintenanceRecord.Id
             </remarks>
         </member>
         <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.RoomInfo">
@@ -2296,12 +2377,48 @@
             催收提醒详情（催收房租专用）
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.Description">
+            <summary>
+            维修描述（维修专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.Priority">
+            <summary>
+            优先级（维修专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.PriorityText">
+            <summary>
+            优先级文本（维修专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.MaintenanceCost">
+            <summary>
+            维修费用（维修专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.MaintenanceStatus">
+            <summary>
+            维修状态（维修专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.MaintenanceStatusText">
+            <summary>
+            维修状态文本（维修专用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.MaintenanceDetail">
+            <summary>
+            维修记录详情（维修专用）
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.CreatedTime">
             <summary>
             统一的创建时间（用于排序）
             </summary>
             <remarks>
-            水电费待办返回 UtilityBill.CreatedTime，催收房租待办返回 RentalReminder.CreatedTime。
+            水电费待办返回 UtilityBill.CreatedTime，催收房租待办返回 RentalReminder.CreatedTime，
+            维修待办返回 MaintenanceDetail.CreatedTime。
             </remarks>
         </member>
         <member name="T:Gentle.Application.Dtos.Todo.TodoListResult">
@@ -2309,7 +2426,7 @@
             待办事项列表结果
             </summary>
             <remarks>
-            包含水电费和催收房租待办的聚合列表结果。
+            包含水电费、催收房租和维修待办的聚合列表结果。
             </remarks>
         </member>
         <member name="P:Gentle.Application.Dtos.Todo.TodoListResult.Items">
@@ -2330,6 +2447,11 @@
         <member name="P:Gentle.Application.Dtos.Todo.TodoListResult.RentalCount">
             <summary>
             催收房租待办数量
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoListResult.MaintenanceCount">
+            <summary>
+            维修待办数量
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.User.CreateUserInput">
@@ -2762,14 +2884,14 @@
             待办事项服务接口
             </summary>
             <remarks>
-            聚合水电费和催收房租待办事项的服务接口。
+            聚合水电费、催收房租和维修待办事项的服务接口。
             </remarks>
         </member>
         <member name="M:Gentle.Application.Services.ITodoService.GetTodoListAsync(System.String,System.Int32,System.Int32)">
             <summary>
             获取待办事项列表
             </summary>
-            <param name="type">待办类型筛选：null=全部, "utility"=水电费, "rental"=催收房租</param>
+            <param name="type">待办类型筛选：null=全部, "utility"=水电费, "rental"=催收房租, "maintenance"=维修</param>
             <param name="page">页码（从1开始）</param>
             <param name="pageSize">每页数量</param>
             <returns>待办事项列表结果</returns>
@@ -2998,10 +3120,10 @@
             待办事项服务实现
             </summary>
             <remarks>
-            聚合水电费和催收房租待办事项的服务实现。
+            聚合水电费、催收房租和维修待办事项的服务实现。
             </remarks>
         </member>
-        <member name="M:Gentle.Application.Services.TodoService.#ctor(Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.UtilityBill},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalReminder},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalRecord})">
+        <member name="M:Gentle.Application.Services.TodoService.#ctor(Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.UtilityBill},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalReminder},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalRecord},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.MaintenanceRecord})">
             <summary>
             初始化待办事项服务
             </summary>
@@ -3027,6 +3149,16 @@
         <member name="M:Gentle.Application.Services.TodoService.MapFromRentalReminder(Gentle.Core.Entities.RentalReminder)">
             <summary>
             将催收提醒映射为待办项 DTO
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.TodoService.GetMaintenanceTodosAsync">
+            <summary>
+            获取维修待办列表（非已完成状态）
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.TodoService.MapFromMaintenanceRecord(Gentle.Core.Entities.MaintenanceRecord)">
+            <summary>
+            将维修记录映射为待办项 DTO
             </summary>
         </member>
     </members>

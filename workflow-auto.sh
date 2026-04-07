@@ -36,6 +36,78 @@ log() {
   echo "[$timestamp] [$level] $message" | tee -a "$log_file"
 }
 
+# 从 feature_list.json 解析当前工作流状态
+# 输出格式: COMMAND|FEAT_ID|DESCRIPTION
+get_workflow_status() {
+  PYTHONIOENCODING=utf-8 python -c "
+import json, sys, io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+try:
+    data = json.load(open('$FEATURE_LIST', encoding='utf-8'))
+except Exception as e:
+    print(f'ERROR|_|解析失败: {e}')
+    sys.exit(0)
+
+features = data.get('features', [])
+in_progress = [f for f in features if f.get('status') == 'in_progress']
+pending = [f for f in features if f.get('status') == 'pending']
+completed_count = len([f for f in features if f.get('status') in ('completed', 'passed')])
+total_count = len(features)
+
+if not in_progress and not pending:
+    print(f'ALL_DONE|_|全部完成 ({completed_count}/{total_count})')
+elif in_progress:
+    feat = in_progress[0]
+    fid = feat['id']
+    desc = feat.get('description', '')
+    review = feat.get('review', {}).get('status')
+    if review == 'passed':
+        cmd = 'workflow-verify'
+    else:
+        cmd = 'workflow-review'
+    print(f'{cmd}|{fid}|{desc}')
+elif pending:
+    feat = pending[0]
+    fid = feat['id']
+    desc = feat.get('description', '')
+    print(f'workflow-next|{fid}|{desc}')
+" 2>&1
+}
+
+# 显示当前工作流状态（带格式）
+show_status() {
+  local status_line
+  status_line=$(get_workflow_status)
+  local cmd=$(echo "$status_line" | cut -d'|' -f1)
+  local feat_id=$(echo "$status_line" | cut -d'|' -f2)
+  local feat_desc=$(echo "$status_line" | cut -d'|' -f3)
+
+  # 获取进度统计
+  local stats
+  stats=$(PYTHONIOENCODING=utf-8 python -c "
+import json, io, sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+data = json.load(open('$FEATURE_LIST', encoding='utf-8'))
+features = data.get('features', [])
+done = len([f for f in features if f.get('status') in ('completed', 'passed')])
+print(f'{done}/{len(features)}')
+" 2>/dev/null || echo "?/?")
+
+  echo "" | tee -a "$log_file"
+  echo "┌─────────────────────────────────────────────" | tee -a "$log_file"
+  if [ "$cmd" = "ALL_DONE" ]; then
+    echo "│  状态: ALL DONE" | tee -a "$log_file"
+    echo "│  进度: $stats" | tee -a "$log_file"
+  else
+    echo "│  命令: /$cmd" | tee -a "$log_file"
+    echo "│  FEAT: $feat_id" | tee -a "$log_file"
+    echo "│  内容: $feat_desc" | tee -a "$log_file"
+    echo "│  进度: $stats" | tee -a "$log_file"
+  fi
+  echo "└─────────────────────────────────────────────" | tee -a "$log_file"
+  echo "" | tee -a "$log_file"
+}
+
 echo ""
 echo "========================================"
 echo "  Workflow Auto Runner"
@@ -45,17 +117,30 @@ echo "========================================"
 echo ""
 
 log "INFO" "开始自动执行 workflow"
+show_status
 
 step=0
 fail_count=0
 
 while true; do
+  # 解析当前状态
+  status_line=$(get_workflow_status)
+  current_cmd=$(echo "$status_line" | cut -d'|' -f1)
+  current_feat=$(echo "$status_line" | cut -d'|' -f2)
+  current_desc=$(echo "$status_line" | cut -d'|' -f3)
+
+  if [ "$current_cmd" = "ALL_DONE" ]; then
+    show_status
+    log "SUCCESS" "所有 FEAT 已完成！"
+    exit 0
+  fi
+
   step=$((step + 1))
-  log "INFO" "=== 步骤 #$step ==="
+  log "INFO" "=== 步骤 #$step: /$current_cmd ($current_feat) ==="
 
   retry=0
   ok=false
-  step_log="$LOG_DIR/step-${step}-$(date '+%Y%m%d-%H%M%S').log"
+  step_log="$LOG_DIR/step-${step}-${current_feat}-$(date '+%Y%m%d-%H%M%S').log"
 
   while [ $retry -le $MAX_RETRY ]; do
     if [ $retry -gt 0 ]; then
@@ -79,7 +164,8 @@ while true; do
 PROMPT_EOF
 
     RUN_START=$(date +%s)
-    log "INFO" "开始执行... (预计 5-15 分钟，期间无输出是正常的)"
+    show_status
+    log "INFO" "开始执行 /$current_cmd ($current_feat)... (预计 5-15 分钟，期间无输出是正常的)"
 
     if claude -p \
       --dangerously-skip-permissions \
@@ -100,7 +186,7 @@ PROMPT_EOF
         exit 0
       fi
 
-      log "SUCCESS" "步骤 #$step 完成 (耗时 ${MINUTES}分${SECONDS}秒)"
+      log "SUCCESS" "/$current_cmd ($current_feat) 完成 (耗时 ${MINUTES}分${SECONDS}秒)"
       ok=true
       fail_count=0
     else
@@ -109,7 +195,7 @@ PROMPT_EOF
       MINUTES=$((RUN_DURATION / 60))
       SECONDS=$((RUN_DURATION % 60))
       retry=$((retry + 1))
-      log "ERROR" "执行失败 (耗时 ${MINUTES}分${SECONDS}秒)"
+      log "ERROR" "/$current_cmd ($current_feat) 失败 (耗时 ${MINUTES}分${SECONDS}秒)"
     fi
 
     rm -f "$PROMPT_FILE"
@@ -117,7 +203,7 @@ PROMPT_EOF
 
   if [ "$ok" = false ]; then
     fail_count=$((fail_count + 1))
-    log "ERROR" "步骤 #$step 失败 (连续失败: $fail_count/$MAX_CONSECUTIVE_FAILURES)"
+    log "ERROR" "/$current_cmd ($current_feat) 失败 (连续失败: $fail_count/$MAX_CONSECUTIVE_FAILURES)"
 
     if [ $fail_count -ge $MAX_CONSECUTIVE_FAILURES ]; then
       log "ERROR" "连续 $MAX_CONSECUTIVE_FAILURES 次步骤失败，停止执行。请手动检查。"

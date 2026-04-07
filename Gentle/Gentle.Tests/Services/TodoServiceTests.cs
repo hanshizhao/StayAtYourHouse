@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------------
 
 using Furion.DatabaseAccessor;
+using Gentle.Application.Dtos.Maintenance;
 using Gentle.Application.Dtos.Meter;
 using Gentle.Application.Dtos.Rental;
 using Gentle.Application.Dtos.Todo;
@@ -30,6 +31,7 @@ public class TodoServiceTests
     private readonly Mock<IRepository<UtilityBill>> _mockUtilityBillRepo;
     private readonly Mock<IRepository<RentalReminder>> _mockReminderRepo;
     private readonly Mock<IRepository<RentalRecord>> _mockRentalRecordRepo;
+    private readonly Mock<IRepository<MaintenanceRecord>> _mockMaintenanceRepo;
     private readonly TodoService _service;
 
     public TodoServiceTests()
@@ -37,11 +39,13 @@ public class TodoServiceTests
         _mockUtilityBillRepo = new Mock<IRepository<UtilityBill>>();
         _mockReminderRepo = new Mock<IRepository<RentalReminder>>();
         _mockRentalRecordRepo = new Mock<IRepository<RentalRecord>>();
+        _mockMaintenanceRepo = new Mock<IRepository<MaintenanceRecord>>();
 
         _service = new TodoService(
             _mockUtilityBillRepo.Object,
             _mockReminderRepo.Object,
-            _mockRentalRecordRepo.Object
+            _mockRentalRecordRepo.Object,
+            _mockMaintenanceRepo.Object
         );
     }
 
@@ -72,10 +76,13 @@ public class TodoServiceTests
     [InlineData(null)]
     [InlineData("utility")]
     [InlineData("rental")]
+    [InlineData("maintenance")]
     [InlineData("UTILITY")]
     [InlineData("RENTAL")]
+    [InlineData("MAINTENANCE")]
     [InlineData("Utility")]
     [InlineData("Rental")]
+    [InlineData("Maintenance")]
     public async Task GetTodoListAsync_ValidType_DoesNotThrowValidationException(string? type)
     {
         // Arrange - 设置空的 Queryable 以避免异步操作
@@ -229,6 +236,13 @@ public class TodoServiceTests
         Assert.Equal(0, dto.DeferralCount);
         Assert.Null(dto.UtilityBill);
         Assert.Null(dto.RentalReminder);
+        Assert.Null(dto.Description);
+        Assert.Null(dto.Priority);
+        Assert.Null(dto.PriorityText);
+        Assert.Null(dto.MaintenanceCost);
+        Assert.Null(dto.MaintenanceStatus);
+        Assert.Null(dto.MaintenanceStatusText);
+        Assert.Null(dto.MaintenanceDetail);
     }
 
     /// <summary>
@@ -246,6 +260,7 @@ public class TodoServiceTests
         Assert.Equal(0, result.Total);
         Assert.Equal(0, result.UtilityCount);
         Assert.Equal(0, result.RentalCount);
+        Assert.Equal(0, result.MaintenanceCount);
     }
 
     /// <summary>
@@ -297,6 +312,24 @@ public class TodoServiceTests
         Assert.Equal(DateTimeOffset.MinValue, dto.CreatedTime);
     }
 
+    /// <summary>
+    /// 测试：TodoItemDto.CreatedTime - 维修类型返回 MaintenanceDetail.CreatedTime
+    /// </summary>
+    [Fact]
+    public void TodoItemDto_CreatedTime_ReturnsMaintenanceDetailCreatedTime_WhenTypeIsMaintenance()
+    {
+        // Arrange
+        var expectedTime = new DateTimeOffset(2026, 4, 7, 12, 0, 0, TimeSpan.Zero);
+        var dto = new TodoItemDto
+        {
+            Type = TodoType.Maintenance,
+            MaintenanceDetail = new MaintenanceDetailDto { CreatedTime = expectedTime }
+        };
+
+        // Act & Assert
+        Assert.Equal(expectedTime, dto.CreatedTime);
+    }
+
     #endregion
 
     #region 枚举值测试
@@ -310,6 +343,7 @@ public class TodoServiceTests
         // Assert
         Assert.Equal(0, (int)TodoType.Utility);
         Assert.Equal(1, (int)TodoType.Rental);
+        Assert.Equal(2, (int)TodoType.Maintenance);
     }
 
     /// <summary>
@@ -348,6 +382,10 @@ public class TodoServiceTests
         _mockReminderRepo
             .Setup(r => r.AsQueryable(It.IsAny<bool>()))
             .Returns(new List<RentalReminder>().AsQueryable());
+
+        _mockMaintenanceRepo
+            .Setup(r => r.AsQueryable(It.IsAny<bool>()))
+            .Returns(new List<MaintenanceRecord>().AsQueryable());
     }
 
     #endregion

@@ -32,7 +32,7 @@ public class TodoAppService : IDynamicApiController
     /// <summary>
     /// 获取待办事项列表
     /// </summary>
-    /// <param name="type">待办类型筛选（utility=水电费, rental=催收房租, null=全部）</param>
+    /// <param name="type">待办类型筛选（utility=水电费, rental=催收房租, maintenance=维修, null=全部）</param>
     /// <param name="page">页码（从1开始）</param>
     /// <param name="pageSize">每页数量（默认20）</param>
     /// <returns>待办事项列表结果</returns>
@@ -40,9 +40,9 @@ public class TodoAppService : IDynamicApiController
     public async Task<TodoListResult> GetList(string? type = null, int page = 1, int pageSize = 20)
     {
         // 参数验证
-        if (type is not null and not ("utility" or "rental"))
+        if (type is not null and not ("utility" or "rental" or "maintenance"))
         {
-            throw Oops.Oh("待办类型参数无效，仅支持 utility 或 rental");
+            throw Oops.Oh("待办类型参数无效，仅支持 utility、rental 或 maintenance");
         }
 
         // 分页参数边界保护
