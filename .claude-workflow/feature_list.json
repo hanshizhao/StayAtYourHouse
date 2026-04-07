@@ -291,15 +291,37 @@
         }
       ],
       "test_file": "tests/e2e/feat-118-maintenance-api-controller.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-07T00:00:00Z",
       "verification": {
-        "api_routes_checked": false,
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false,
+        "api_routes_checked": true,
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-07T00:00:00Z",
         "api_routes": {
           "base": "/api/maintenance",
           "endpoints": ["list", "{id}", "add", "edit", "{id}/complete", "remove/{id}"]
         }
+      },
+      "review": {
+        "last_review_at": "2026-04-07T00:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 2,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "fixed_in_review": [
+          "I-1: GetList 返回匿名对象改为强类型 MaintenanceListResult，新增 MaintenanceListResult.cs DTO"
+        ],
+        "highlights": [
+          "所有验收标准已满足，API 控制器实现完整",
+          "6 个端点路由、HTTP 方法、参数验证均符合计划要求",
+          "分页边界保护比部分已有 AppService 更完善",
+          "新增 MaintenanceListResult 与项目已有 ListResult DTO 模式完全一致"
+        ]
       }
     },
     {
