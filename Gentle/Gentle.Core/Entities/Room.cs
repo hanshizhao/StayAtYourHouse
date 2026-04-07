@@ -93,4 +93,9 @@ public class Room : Entity<int>
     /// 维修记录集合
     /// </summary>
     public ICollection<MaintenanceRecord> MaintenanceRecords { get; set; } = new List<MaintenanceRecord>();
+
+    /// <summary>
+    /// 房东租约（一对一）
+    /// </summary>
+    public LandlordLease? LandlordLease { get; set; }
 }

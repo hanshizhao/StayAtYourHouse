@@ -1,4 +1,5 @@
 using Gentle.Application.Dtos.Community;
+using Gentle.Application.Dtos.LandlordLease;
 using Gentle.Application.Dtos.Maintenance;
 using Gentle.Application.Dtos.Meter;
 using Gentle.Application.Dtos.RentalRecord;
@@ -31,7 +32,7 @@ public class Mapper : IRegister
         // Room -> RoomDto 映射配置
         config.NewConfig<Room, RoomDto>()
             .Map(dest => dest.CommunityName, src => src.Community != null ? src.Community.Name : string.Empty)
-            .Map(dest => dest.Profit, src => src.RentPrice - src.CostPrice);
+            .Map(dest => dest.Profit, src => src.RentPrice - (src.LandlordLease != null ? src.LandlordLease.MonthlyRent : 0));
 
         // CreateRoomInput -> Room 映射配置
         config.NewConfig<CreateRoomInput, Room>();
@@ -54,7 +55,6 @@ public class Mapper : IRegister
 
         // MeterRecord -> MeterRecordDto 映射配置
         config.NewConfig<MeterRecord, MeterRecordDto>();
-        config.NewConfig<MeterRecord, MeterRecordDto>();
 
         // UtilityBill -> UtilityBillDto 映射配置
         config.NewConfig<UtilityBill, UtilityBillDto>()
@@ -65,5 +65,17 @@ public class Mapper : IRegister
 
         // MaintenanceRecord -> MaintenanceDetailDto 映射配置
         config.NewConfig<MaintenanceRecord, MaintenanceDetailDto>();
+
+        // LandlordLease -> LandlordLeaseDto 映射配置
+        config.NewConfig<LandlordLease, LandlordLeaseDto>()
+            .Map(dest => dest.RoomInfo, src => src.Room != null && src.Room.Community != null
+                ? $"{src.Room.Community.Name} {src.Room.Building}栋 {src.Room.RoomNumber}号"
+                : string.Empty);
+
+        // CreateLandlordLeaseInput -> LandlordLease 映射配置
+        config.NewConfig<CreateLandlordLeaseInput, LandlordLease>();
+
+        // UpdateLandlordLeaseInput -> LandlordLease 映射配置
+        config.NewConfig<UpdateLandlordLeaseInput, LandlordLease>();
     }
 }

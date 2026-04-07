@@ -29,6 +29,91 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.LandlordLease">
+            <summary>
+            房东租约实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.RoomId">
+            <summary>
+            房间 ID（唯一，一对一关系）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.Room">
+            <summary>
+            所属房间
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.LandlordName">
+            <summary>
+            房东姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.LandlordPhone">
+            <summary>
+            房东电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.StartDate">
+            <summary>
+            租约开始日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.EndDate">
+            <summary>
+            租约结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.MonthlyRent">
+            <summary>
+            月租金（支付给房东的金额）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.PaymentMethod">
+            <summary>
+            付款方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.DepositMonths">
+            <summary>
+            押金月数
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.ElevatorFee">
+            <summary>
+            电梯费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.PropertyFee">
+            <summary>
+            物业费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.InternetFee">
+            <summary>
+            网络费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.OtherFees">
+            <summary>
+            其他费用（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.MaintenanceRecord">
             <summary>
             维修记录实体
@@ -435,6 +520,11 @@
             维修记录集合
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.Room.LandlordLease">
+            <summary>
+            房东租约（一对一）
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.Tenant">
             <summary>
             租客实体
@@ -693,6 +783,36 @@
         <member name="F:Gentle.Core.Enums.MaintenanceStatus.Completed">
             <summary>
             已完成
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.PaymentMethod">
+            <summary>
+            付款方式枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentMethod.Monthly">
+            <summary>
+            月付
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentMethod.Quarterly">
+            <summary>
+            季付
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentMethod.SemiAnnual">
+            <summary>
+            半年付
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentMethod.Annual">
+            <summary>
+            年付
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentMethod.Custom">
+            <summary>
+            自定义
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.RentalReminderStatus">

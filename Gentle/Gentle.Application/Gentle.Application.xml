@@ -612,6 +612,266 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput">
+            <summary>
+            创建房东租约请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.LandlordName">
+            <summary>
+            房东姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.LandlordPhone">
+            <summary>
+            房东电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.StartDate">
+            <summary>
+            租约开始日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.EndDate">
+            <summary>
+            租约结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.MonthlyRent">
+            <summary>
+            月租金（支付给房东的金额）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.PaymentMethod">
+            <summary>
+            付款方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.DepositMonths">
+            <summary>
+            押金月数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.ElevatorFee">
+            <summary>
+            电梯费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.PropertyFee">
+            <summary>
+            物业费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.InternetFee">
+            <summary>
+            网络费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.OtherFees">
+            <summary>
+            其他费用（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto">
+            <summary>
+            房东租约输出 DTO
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.Id">
+            <summary>
+            租约ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.RoomId">
+            <summary>
+            房间ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.LandlordName">
+            <summary>
+            房东姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.LandlordPhone">
+            <summary>
+            房东电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.StartDate">
+            <summary>
+            租约开始日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.EndDate">
+            <summary>
+            租约结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.MonthlyRent">
+            <summary>
+            月租金（支付给房东的金额）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.PaymentMethod">
+            <summary>
+            付款方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.PaymentMethodText">
+            <summary>
+            付款方式文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.DepositMonths">
+            <summary>
+            押金月数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.ElevatorFee">
+            <summary>
+            电梯费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.PropertyFee">
+            <summary>
+            物业费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.InternetFee">
+            <summary>
+            网络费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.OtherFees">
+            <summary>
+            其他费用（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.RoomInfo">
+            <summary>
+            所属房间信息
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput">
+            <summary>
+            更新房东租约请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.Id">
+            <summary>
+            租约ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.LandlordName">
+            <summary>
+            房东姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.LandlordPhone">
+            <summary>
+            房东电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.StartDate">
+            <summary>
+            租约开始日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.EndDate">
+            <summary>
+            租约结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.MonthlyRent">
+            <summary>
+            月租金（支付给房东的金额）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.PaymentMethod">
+            <summary>
+            付款方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.DepositMonths">
+            <summary>
+            押金月数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.WaterPrice">
+            <summary>
+            水费单价（元/吨）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.ElectricPrice">
+            <summary>
+            电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.ElevatorFee">
+            <summary>
+            电梯费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.PropertyFee">
+            <summary>
+            物业费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.InternetFee">
+            <summary>
+            网络费（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.OtherFees">
+            <summary>
+            其他费用（月）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Maintenance.CompleteMaintenanceInput">
             <summary>
             完成维修输入
@@ -1990,7 +2250,7 @@
         </member>
         <member name="P:Gentle.Application.Dtos.Room.RoomDto.Profit">
             <summary>
-            利润（出租价 - 成本价）
+            利润（出租价 - 房东月租金）
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Room.RoomDto.Deposit">
@@ -2026,6 +2286,11 @@
         <member name="P:Gentle.Application.Dtos.Room.RoomDto.CreatedTime">
             <summary>
             创建时间
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.LandlordLease">
+            <summary>
+            房东租约信息
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.Room.UpdateRoomInput">

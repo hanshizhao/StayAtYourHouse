@@ -1,3 +1,4 @@
+using Gentle.Application.Dtos.LandlordLease;
 using Gentle.Core.Enums;
 
 namespace Gentle.Application.Dtos.Room;
@@ -53,7 +54,7 @@ public class RoomDto
     public decimal RentPrice { get; set; }
 
     /// <summary>
-    /// 利润（出租价 - 成本价）
+    /// 利润（出租价 - 房东月租金）
     /// </summary>
     public decimal Profit { get; set; }
 
@@ -91,4 +92,9 @@ public class RoomDto
     /// 创建时间
     /// </summary>
     public DateTimeOffset CreatedTime { get; set; }
+
+    /// <summary>
+    /// 房东租约信息
+    /// </summary>
+    public LandlordLeaseDto? LandlordLease { get; set; }
 }

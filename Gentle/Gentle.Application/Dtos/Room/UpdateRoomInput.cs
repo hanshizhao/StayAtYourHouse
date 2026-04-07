@@ -48,7 +48,6 @@ public class UpdateRoomInput
     /// <summary>
     /// 成本价（月租金成本）
     /// </summary>
-    [Required(ErrorMessage = "成本价不能为空")]
     [Range(0, double.MaxValue, ErrorMessage = "成本价必须大于等于0")]
     public decimal CostPrice { get; set; }
 

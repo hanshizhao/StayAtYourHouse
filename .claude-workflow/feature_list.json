@@ -128,10 +128,28 @@
         }
       ],
       "test_file": "tests/e2e/feat-129-landlord-lease-dto-mapper.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-08T10:40:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-08T10:40:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-08T10:30:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "fixes": [
+          "RoomDto Profit 注释更新为'出租价 - 房东月租金'",
+          "移除 Mapper.cs 重复的 MeterRecord 映射配置",
+          "LandlordPhone 添加 [Phone] 验证特性",
+          "LandlordLeaseDto 添加 PaymentMethodText 计算属性"
+        ]
       }
     },
     {
