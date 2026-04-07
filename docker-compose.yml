@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  mysql_r64F:
+    image: mysql:${VERSION}
+    #    container_name: ${CONTAINER_NAME}
+    deploy:
+      resources:
+        limits:
+          cpus: ${CPUS}
+          memory: ${MEMORY_LIMIT}
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${HOST_IP}:${MYSQL_PORT}:3306
+    volumes:
+      - ${APP_PATH}/data/:/var/lib/mysql
+      - ${APP_PATH}/my.cnf:/etc/my.cnf
+      - ${APP_PATH}/log:/var/log/mysql
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ${APP_PATH}/mysql-conf-d:/etc/mysql/mysql.conf.d:ro
+      - ${APP_PATH}/mysql-files:/var/lib/mysql-files
+    labels:
+      createdBy: "bt_apps"
+    command: ${COMMAND}
+    networks:
+      - baota_net
+
+  sayh_api:
+    image: crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/gentle8023/stay_at_your_house_api:latest
+    container_name: sayh_api
+    restart: unless-stopped
+    depends_on:
+      - mysql_r64F
+    environment:
+      - ConnectionStrings__Gentle=Server=mysql_r64F;Port=3306;Database=sayh_db;User=sayh_db_user;Password=rSARAGP6bNChActa;Allow User Variables=True;SslMode=Disabled;
+    networks:
+      - baota_net
+
+  sayh_vue:
+    image: crpi-0fzpbl56o7ikr62c.cn-hangzhou.personal.cr.aliyuncs.com/gentle8023/stay_at_your_house_vue:latest
+    container_name: sayh_vue
+    restart: unless-stopped
+    ports:
+      - "8023:80"
+    depends_on:
+      - sayh_api
+    networks:
+      - baota_net
+
+networks:
+  baota_net:
+    external: true
