@@ -47,10 +47,17 @@
               <span class="todo-type-tag todo-type-tag--utility">水电费</span>
               待收款 ¥{{ formatMoney(item.amount ?? 0) }}
             </template>
-            <template v-else>
+            <template v-else-if="item.type === TodoType.Rental">
               <span class="todo-type-tag todo-type-tag--rental">催收房租</span>
               {{ item.tenantName }} · ¥{{ formatMoney(item.monthlyRent ?? 0) }}/月
               <span v-if="item.deferralCount > 0" class="deferral-badge"> 宽限{{ item.deferralCount }}次 </span>
+            </template>
+            <template v-else>
+              <span class="todo-type-tag todo-type-tag--maintenance">维修</span>
+              <t-tag :theme="getPriorityTheme(item.priority)" variant="light" size="small">
+                {{ item.priorityText }}
+              </t-tag>
+              {{ item.description }}
             </template>
           </div>
         </div>
@@ -79,18 +86,28 @@
       :reminder="selectedRentalReminder"
       @success="handleRentalSuccess"
     />
+
+    <!-- 维修详情弹窗 -->
+    <maintenance-detail-dialog
+      v-model:visible="maintenanceDetailDialogVisible"
+      :record="selectedMaintenanceRecord"
+      @success="handleMaintenanceSuccess"
+    />
   </div>
 </template>
 <script setup lang="ts">
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref } from 'vue';
 
+import type { MaintenanceDetail } from '@/api/model/maintenanceModel';
+import { MaintenancePriority } from '@/api/model/maintenanceModel';
 import type { UtilityBillItem } from '@/api/model/meterModel';
 import type { TodoItem, TodoListResult } from '@/api/model/todoModel';
 import { TodoType } from '@/api/model/todoModel';
 import { getTodoList } from '@/api/todo';
 import { formatMoney } from '@/utils/format';
 
+import MaintenanceDetailDialog from './MaintenanceDetailDialog.vue';
 import PayUtilityDialog from './PayUtilityDialog.vue';
 import RentalReminderDialog from './RentalReminderDialog.vue';
 
@@ -116,6 +133,7 @@ const typeOptions = [
   { label: '全部类型', value: undefined },
   { label: '水电费', value: TodoType.Utility },
   { label: '催收房租', value: TodoType.Rental },
+  { label: '维修', value: TodoType.Maintenance },
 ];
 
 // 弹窗状态
@@ -124,6 +142,9 @@ const selectedUtilityBill = ref<UtilityBillItem | null>(null);
 
 const rentalReminderDialogVisible = ref(false);
 const selectedRentalReminder = ref<TodoItem | null>(null);
+
+const maintenanceDetailDialogVisible = ref(false);
+const selectedMaintenanceRecord = ref<MaintenanceDetail | null>(null);
 
 // ==================== 计算属性 ====================
 
@@ -174,10 +195,14 @@ function handleTodoClick(item: TodoItem) {
     // 水电费待办 - 打开收款弹窗
     selectedUtilityBill.value = item.utilityBill ?? null;
     payUtilityDialogVisible.value = true;
-  } else {
+  } else if (item.type === TodoType.Rental) {
     // 催收房租待办 - 打开催收弹窗
     selectedRentalReminder.value = item;
     rentalReminderDialogVisible.value = true;
+  } else {
+    // 维修待办 - 打开维修详情弹窗
+    selectedMaintenanceRecord.value = item.maintenanceDetail ?? null;
+    maintenanceDetailDialogVisible.value = true;
   }
 }
 
@@ -195,16 +220,34 @@ function handleRentalSuccess() {
   fetchTodos();
 }
 
+// 维修操作成功（标记完成）
+function handleMaintenanceSuccess() {
+  maintenanceDetailDialogVisible.value = false;
+  selectedMaintenanceRecord.value = null;
+  fetchTodos();
+}
+
 // ==================== 辅助函数 ====================
 
 // 获取待办类型图标
 function getTodoIcon(type: TodoType): string {
-  return type === TodoType.Utility ? 'money-circle' : 'home';
+  if (type === TodoType.Utility) return 'money-circle';
+  if (type === TodoType.Rental) return 'home';
+  return 'tool';
 }
 
 // 获取待办类型样式类名
 function getTodoTypeClass(type: TodoType): string {
-  return type === TodoType.Utility ? 'utility' : 'rental';
+  if (type === TodoType.Utility) return 'utility';
+  if (type === TodoType.Rental) return 'rental';
+  return 'maintenance';
+}
+
+// 获取优先级标签主题
+function getPriorityTheme(priority?: number): 'danger' | 'warning' | 'default' {
+  if (priority === MaintenancePriority.Urgent) return 'danger';
+  if (priority === MaintenancePriority.Normal) return 'warning';
+  return 'default';
 }
 
 // ==================== 生命周期 ====================
@@ -298,6 +341,12 @@ onMounted(() => {
     --todo-hover-shadow: 0 2px 8px rgba(237, 125, 43, 0.1);
     border-left-color: var(--td-warning-color);
   }
+
+  // 维修样式
+  &--maintenance {
+    --todo-hover-shadow: 0 2px 8px rgba(0, 180, 42, 0.1);
+    border-left-color: var(--td-success-color);
+  }
 }
 
 .todo-icon {
@@ -320,6 +369,12 @@ onMounted(() => {
   &--rental {
     background: rgba(237, 125, 43, 0.1);
     color: var(--td-warning-color);
+  }
+
+  // 维修图标
+  &--maintenance {
+    background: rgba(0, 180, 42, 0.1);
+    color: var(--td-success-color);
   }
 }
 
@@ -363,6 +418,11 @@ onMounted(() => {
   &--rental {
     background: rgba(237, 125, 43, 0.1);
     color: var(--td-warning-color);
+  }
+
+  &--maintenance {
+    background: rgba(0, 180, 42, 0.1);
+    color: var(--td-success-color);
   }
 }
 

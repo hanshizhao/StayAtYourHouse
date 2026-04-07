@@ -794,10 +794,32 @@
         }
       ],
       "test_file": "tests/e2e/feat-126-dashboard-todo-maintenance.spec.ts",
-      "status": "pending",
+      "status": "blocked",
       "verification": {
-        "e2e_tests_created": false,
+        "e2e_tests_created": true,
         "e2e_tests_passed": false
+      },
+      "blocked_reason": "E2E 测试需要前后端服务运行（后端 http://localhost:5000、前端 http://localhost:3002 均未启动）",
+      "review": {
+        "last_review_at": "2026-04-07T18:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 2,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "fixed_in_review": [
+          "I-1: getPriorityTheme 魔法数字替换为 MaintenancePriority 枚举值",
+          "I-2: 导入 MaintenancePriority 枚举，与 MaintenanceDetailDialog 保持一致"
+        ],
+        "highlights": [
+          "所有验收标准已满足，6项检查全部通过",
+          "维修待办与水电费/催收房租三种类型的处理逻辑结构一致",
+          "MaintenanceDetailDialog 组件 Props/Emits 类型安全，v-model 双向绑定实现正确",
+          "E2E 测试覆盖完整的用户交互流程（7个用例）"
+        ]
       }
     },
     {
@@ -830,10 +852,32 @@
         }
       ],
       "test_file": "tests/e2e/feat-127-e2e-verification.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-07T20:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-07T20:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-07T19:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 1,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "highlights": [
+          "3 个测试用例与 3 项验收标准一一对应，零偏差",
+          "与 FEAT-114 验证测试模式完全一致（describe.serial、中英文兼容、超时配置）",
+          "按需裁剪（无 TESTS_ROOT 常量、无 dotnet test 用例），合理简化"
+        ],
+        "suggestions": [
+          "S-1: 可选添加 TESTS_ROOT 常量以备后续扩展",
+          "S-2: lint 测试可添加显式断言使意图更明确（风格偏好）"
+        ]
       }
     }
   ]

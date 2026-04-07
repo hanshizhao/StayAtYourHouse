@@ -87,6 +87,7 @@
         <template #op="{ row }">
           <t-space>
             <t-link theme="primary" data-testid="edit-button" @click="handleEdit(row)">编辑</t-link>
+            <t-link theme="warning" data-testid="maintenance-button" @click="handleMaintenance(row)">维修</t-link>
             <t-link theme="danger" data-testid="delete-button" @click="handleDelete(row)">删除</t-link>
           </t-space>
         </template>
@@ -284,6 +285,7 @@ import { AddIcon } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SelectOption } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref, watchEffect } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { getCommunityList } from '@/api/community';
 import type { CommunityItem } from '@/api/model/communityModel';
@@ -326,6 +328,7 @@ interface HeaderAffixedTopConfig {
 // ==================== 状态 ====================
 
 const settingStore = useSettingStore();
+const router = useRouter();
 
 // 表格列配置
 const columns: PrimaryTableCol[] = [
@@ -340,7 +343,7 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'status', title: '状态', width: 90 },
   { colKey: 'remark', title: '备注', width: 150, ellipsis: true },
   { colKey: 'createdTime', title: '创建时间', width: 160 },
-  { colKey: 'op', title: '操作', width: 120, fixed: 'right' },
+  { colKey: 'op', title: '操作', width: 160, fixed: 'right' },
 ];
 
 // 状态
@@ -594,6 +597,11 @@ function handleDialogClose() {
 function handleDelete(row: RoomItem) {
   deletingRoom.value = row;
   deleteConfirmVisible.value = true;
+}
+
+/** 报修 - 跳转维修表单页 */
+function handleMaintenance(row: RoomItem) {
+  router.push(`/maintenance/add?roomId=${row.id}`);
 }
 
 /** 确认删除 */

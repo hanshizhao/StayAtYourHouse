@@ -1,9 +1,9 @@
-// 从 meterModel 复用 UtilityBillItem 接口（避免重复定义）
-export type { UtilityBillItem } from './meterModel';
 // 从 maintenanceModel 复用 MaintenanceDetail 接口（避免重复定义）
 export type { MaintenanceDetail } from './maintenanceModel';
 // 从 maintenanceModel 复用枚举类型（维修待办字段使用）
 export type { MaintenancePriority, MaintenanceStatus } from './maintenanceModel';
+// 从 meterModel 复用 UtilityBillItem 接口（避免重复定义）
+export type { UtilityBillItem } from './meterModel';
 
 /**
  * 待办类型枚举（与后端 Gentle.Core.Enums.TodoType 保持一致)

@@ -21,9 +21,12 @@ const Api = {
 function todoTypeToString(type?: TodoType): string | undefined {
   if (type === undefined) return undefined;
   switch (type) {
-    case TodoTypeEnum.Utility: return 'utility';
-    case TodoTypeEnum.Rental: return 'rental';
-    case TodoTypeEnum.Maintenance: return 'maintenance';
+    case TodoTypeEnum.Utility:
+      return 'utility';
+    case TodoTypeEnum.Rental:
+      return 'rental';
+    case TodoTypeEnum.Maintenance:
+      return 'maintenance';
   }
 }
 
