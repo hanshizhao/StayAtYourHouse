@@ -40,10 +40,26 @@
         }
       ],
       "test_file": "tests/e2e/feat-128-landlord-lease-entity.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-08T10:05:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-08T10:05:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-08T10:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "minor_issues": [
+          "LandlordLease 可考虑添加 [Table(\"landlord_lease\")] 特性以保持风格一致",
+          "StartDate/EndDate 可考虑添加跨日期验证"
+        ]
       }
     },
     {
