@@ -54,6 +54,31 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.LandlordLeaseAppService">
+            <summary>
+            房东租约管理应用服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.LandlordLeaseAppService.GetByRoomId(System.Int32)">
+            <summary>
+            根据房间ID获取房东租约
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.LandlordLeaseAppService.Add(Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput)">
+            <summary>
+            新增房东租约
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.LandlordLeaseAppService.Edit(Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput)">
+            <summary>
+            编辑房东租约
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.LandlordLeaseAppService.Remove(System.Int32)">
+            <summary>
+            删除房东租约
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Apps.MaintenanceAppService">
             <summary>
             维修管理应用服务
@@ -2849,6 +2874,31 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Services.ILandlordLeaseService">
+            <summary>
+            房东租约服务接口
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ILandlordLeaseService.GetByRoomIdAsync(System.Int32)">
+            <summary>
+            根据房间ID获取房东租约
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ILandlordLeaseService.AddAsync(Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput)">
+            <summary>
+            新增房东租约
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ILandlordLeaseService.EditAsync(Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput)">
+            <summary>
+            编辑房东租约
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.ILandlordLeaseService.RemoveAsync(System.Int32)">
+            <summary>
+            删除房东租约
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Services.IMaintenanceService">
             <summary>
             维修管理服务接口
@@ -3160,6 +3210,23 @@
             <param name="page">页码（从1开始）</param>
             <param name="pageSize">每页数量</param>
             <returns>待办事项列表结果</returns>
+        </member>
+        <member name="T:Gentle.Application.Services.LandlordLeaseService">
+            <summary>
+            房东租约服务实现
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.LandlordLeaseService.GetByRoomIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.LandlordLeaseService.AddAsync(Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.LandlordLeaseService.EditAsync(Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.LandlordLeaseService.RemoveAsync(System.Int32)">
+            <inheritdoc />
         </member>
         <member name="T:Gentle.Application.Services.MaintenanceService">
             <summary>
