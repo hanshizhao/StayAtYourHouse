@@ -47,6 +47,10 @@ public class RentalReminderBackgroundService : BackgroundService
         {
             try
             {
+                // 先执行扫描（启动时立即执行一次）
+                await ScanAndCreateRemindersAsync(stoppingToken);
+
+                // 然后计算下次执行时间
                 var now = DateTime.Now;
                 var nextRun = now.Date.AddDays(1).AddHours(DailyExecutionHour);
                 var delay = nextRun - now;
@@ -55,8 +59,6 @@ public class RentalReminderBackgroundService : BackgroundService
                     nextRun, delay);
 
                 await Task.Delay(delay, stoppingToken);
-
-                await ScanAndCreateRemindersAsync(stoppingToken);
             }
             catch (OperationCanceledException)
             {

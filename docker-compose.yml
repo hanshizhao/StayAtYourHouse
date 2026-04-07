@@ -36,6 +36,9 @@ services:
       - mysql_r64F
     environment:
       - ConnectionStrings__Gentle=Server=mysql_r64F;Port=3306;Database=sayh_db;User=sayh_db_user;Password=rSARAGP6bNChActa;Allow User Variables=True;SslMode=Disabled;
+      - TZ=Asia/Shanghai
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - baota_net
 
