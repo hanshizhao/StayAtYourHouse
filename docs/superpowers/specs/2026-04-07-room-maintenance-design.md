@@ -24,19 +24,20 @@
 ### 实体 `MaintenanceRecord`
 
 ```
+[Table("maintenance_record")]
 MaintenanceRecord : Entity<int>
-├── RoomId            int              关联房间（必填）
+├── RoomId            int              关联房间（必填），[Index]
 ├── Room              Room             导航属性
-├── Description       string           维修描述（必填）
+├── Description       string           维修描述（必填），[Required, MaxLength(500)]
 ├── Priority          enum             优先级：Urgent=0, Normal=1, Low=2
 ├── Status            enum             状态：Pending=0, InProgress=1, Completed=2
-├── ReportDate        DateTime         报修日期
+├── ReportDate        DateTime         报修日期，[Column(TypeName = "date")]
 ├── CompletedDate     DateTime?        完成日期（可空）
-├── Cost              decimal?         维修费用（可空）
-├── RepairPerson      string?          维修人员姓名（可空）
-├── RepairPhone       string?          维修人员电话（可空）
+├── Cost              decimal?         维修费用（可空），[Range(0, double.MaxValue), Column(TypeName = "decimal(10,2)")]
+├── RepairPerson      string?          维修人员姓名（可空），[MaxLength(50)]
+├── RepairPhone       string?          维修人员电话（可空），[MaxLength(20)]
 ├── Images            string?          照片路径 JSON 数组（可空）
-├── Remark            string?          备注（可空）
+├── Remark            string?          备注（可空），[MaxLength(500)]
 ```
 
 ### 新增枚举
@@ -70,13 +71,21 @@ MaintenanceRecord : Entity<int>
 - `MaintenanceAddInput`: RoomId, Description, Priority, ReportDate, Cost?, RepairPerson?, RepairPhone?, Images?, Remark?
 - `MaintenanceUpdateInput`: Id, Description, Priority, ReportDate, Cost?, RepairPerson?, RepairPhone?, Images?, Remark?
 - `MaintenanceListFilter`: Status?, RoomId?, Priority?, Page, PageSize
-- `MaintenanceDetailDto`: 全部字段 + RoomInfo（CommunityName + Building + RoomNumber）
+- `MaintenanceDetailDto`: 全部字段 + StatusText（状态文本）+ PriorityText（优先级文本）+ RoomInfo（格式：`"{CommunityName} {Building}栋 {RoomNumber}号"`）+ CreatedTime
+
+### 图片上传（一期范围）
+
+一期 Images 字段仅支持手动输入图片路径（JSON 数组格式），不实现文件上传 API。后续迭代中再添加图片上传功能。
 
 ### 待办系统改动
 
+- `TodoType` 枚举新增 `Maintenance=2`
+- `TodoAppService.GetList` 的 type 参数验证扩展，新增 `"maintenance"` 合法值
+- `TodoService.GetTodoListAsync` 的 type 参数验证扩展，新增 `"maintenance"` 合法值
 - `TodoService.GetTodoListAsync` 新增第三种数据源：查询 `Status != Completed` 的 MaintenanceRecord
 - 新增私有方法 `MapFromMaintenanceRecord` 映射为 `TodoItemDto`
 - `TodoItemDto` 新增维修相关字段：`RoomName`, `Priority`, `MaintenanceCost`
+- `TodoItemDto.CreatedTime` 从三元表达式改为 switch 表达式，覆盖 Utility/Rental/Maintenance 三种类型
 - `TodoListResult` 新增 `MaintenanceCount`
 
 ## 前端设计
@@ -89,7 +98,7 @@ MaintenanceRecord : Entity<int>
 |-----------------------|-------------|--------------------------------------------------------|
 | `/maintenance/list`   | 维修记录列表 | 表格展示，支持筛选（状态/优先级/房间/日期），操作列：查看/编辑/完成/删除 |
 | `/maintenance/add`    | 新增报修页   | 独立表单页，房间通过下拉选择                             |
-| `/maintenance/edit/:id` | 编辑报修页 | 复用新增页表单                                         |
+| `/maintenance/edit/:id` | 编辑报修页 | 复用 add.vue 组件，通过路由参数 `id` 判断是新增还是编辑模式 |
 
 ### 房间管理页改动
 
@@ -109,6 +118,7 @@ MaintenanceRecord : Entity<int>
 - 筛选下拉新增"维修"选项
 - 维修待办项显示：房间名 + 维修描述 + 优先级标签
 - 统计卡片新增维修待办数量
+- 维修待办视觉样式：使用 `--maintenance` CSS 主题，图标选择 wrench/tool，Pending 和 InProgress 状态均展示（不区分）
 - 点击维修待办项 → 弹出 `MaintenanceDetailDialog` 对话框：
   - 展示：房间信息、维修描述、优先级、报修日期、费用、维修人员、照片
   - 底部按钮："标记完成"（弹出二次确认）+ "前往维修管理"（跳转列表页）
@@ -159,6 +169,15 @@ MaintenanceRecord : Entity<int>
 | 文件 | 说明 |
 |------|------|
 | `Hans/src/pages/housing/room/index.vue` | 行内新增"维修"按钮 |
-| `Hans/src/pages/dashboard/base/components/TodoPanel.vue` | 集成维修待办 |
-| `Hans/src/api/model/todoModel.ts` | TodoType 新增 Maintenance |
-| `Hans/src/api/todo.ts` | 无需修改（复用现有接口） |
+| `Hans/src/pages/dashboard/base/components/TodoPanel.vue` | 集成维修待办类型、样式、图标 |
+| `Hans/src/api/model/todoModel.ts` | TodoType 新增 Maintenance=2 |
+| `Hans/src/api/todo.ts` | `todoTypeToString` 函数扩展支持 Maintenance |
+
+## 数据库迁移
+
+新增 `MaintenanceRecord` 实体后需执行 EF Core 迁移：
+
+```bash
+dotnet ef migrations add AddMaintenanceRecord --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry
+dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry
+```
