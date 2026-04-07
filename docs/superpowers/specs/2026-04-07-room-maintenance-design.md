@@ -70,7 +70,7 @@ MaintenanceRecord : Entity<int>
 
 - `MaintenanceAddInput`: RoomId, Description, Priority, ReportDate, Cost?, RepairPerson?, RepairPhone?, Images?, Remark?
 - `MaintenanceUpdateInput`: Id, Description, Priority, ReportDate, Cost?, RepairPerson?, RepairPhone?, Images?, Remark?
-- `MaintenanceListFilter`: Status?, RoomId?, Priority?, Page, PageSize
+- ~~`MaintenanceListFilter`~~: ~~Status?, RoomId?, Priority?, Page, PageSize~~ （不创建独立 DTO，AppService 使用独立参数）
 - `MaintenanceDetailDto`: 全部字段 + StatusText（状态文本）+ PriorityText（优先级文本）+ RoomInfo（格式：`"{CommunityName} {Building}栋 {RoomNumber}号"`）+ CreatedTime
 
 ### 图片上传（一期范围）
@@ -135,7 +135,7 @@ MaintenanceRecord : Entity<int>
 | `Gentle/Gentle.Core/Enums/MaintenanceStatus.cs` | 状态枚举 |
 | `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceAddInput.cs` | 新增 DTO |
 | `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceUpdateInput.cs` | 更新 DTO |
-| `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceListFilter.cs` | 列表筛选 DTO |
+| ~~`Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceListFilter.cs`~~ | ~~列表筛选 DTO（不创建，AppService 使用独立参数）~~ |
 | `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceDetailDto.cs` | 详情 DTO |
 | `Gentle/Gentle.Application/Services/IMaintenanceService.cs` | 服务接口 |
 | `Gentle/Gentle.Application/Services/MaintenanceService.cs` | 服务实现 |

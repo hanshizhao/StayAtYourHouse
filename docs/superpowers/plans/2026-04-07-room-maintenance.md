@@ -181,7 +181,7 @@ git commit -m "feat: 新增维修记录实体和枚举"
 **Files:**
 - Create: `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceAddInput.cs`
 - Create: `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceUpdateInput.cs`
-- Create: `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceListFilter.cs`
+- ~~Create: `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceListFilter.cs`~~ （不创建，AppService 使用独立参数）
 - Create: `Gentle/Gentle.Application/Dtos/Maintenance/MaintenanceDetailDto.cs`
 - Create: `Gentle/Gentle.Application/Dtos/Maintenance/CompleteMaintenanceInput.cs`
 
