@@ -68,7 +68,6 @@
       "priority": "high",
       "test_type": "static",
       "description": "后端 Service + Report DTO 删除 Area/RoomType",
-      "status": "in_progress",
       "acceptance_criteria": [
         "RoomService.UpdateAsync 删除 Area/RoomType 赋值",
         "ReportService 删除 4 处 Area/RoomType 赋值",
@@ -134,7 +133,6 @@
       "priority": "high",
       "test_type": "static",
       "description": "数据库迁移",
-      "status": "in_progress",
       "acceptance_criteria": [
         "EF Core 迁移文件成功创建",
         "迁移包含删除 Area 和 RoomType 两列",
@@ -355,10 +353,29 @@
         }
       ],
       "test_file": "tests/e2e/feat-143-final-verification-remove-area-roomtype.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-08T17:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "test_results": "37 passed (40.5s)",
+        "verified_at": "2026-04-08T17:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-08T16:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_issues": [
+          "构建测试与 FEAT-002/138 重复执行 dotnet build，增加测试时间",
+          "Room.cs 属性级正则与 DTO 词边界正则策略不一致",
+          "迁移文件 Down 方法含 Area/RoomType，需注意正则排除"
+        ],
+        "rounds": 1
       }
     }
   ]
