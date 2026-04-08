@@ -32,6 +32,14 @@
 | `src/pages/housing/room/detail.vue` | 删除面积和类型展示 |
 | `src/pages/tenant/check-in.vue` | 删除面积/类型展示、接口定义、数据赋值 |
 
+### E2E 测试修改（3 文件）
+
+| 文件 | 操作 |
+|------|------|
+| `tests/e2e/feat-002-room-entity.spec.ts` | 删除 Area/RoomType 属性断言的测试用例 |
+| `tests/e2e/feat-004-room-api.spec.ts` | 从创建 payload 和响应断言中删除 area/roomType |
+| `tests/e2e/feat-011-checkin-checkout-api.spec.ts` | 从房间创建 payload 中删除 area |
+
 ### 无需修改
 
 - `Mapper.cs` — Mapster 按约定映射，属性删除后自动失效
