@@ -108,7 +108,7 @@ test.describe('FEAT-002: Room 实体', () => {
     expect(content).toMatch(/public\s+decimal\??\s+ElectricPrice\s*\{\s*get;\s*set;\s*\}/);
   });
 
-  test('9. 验证可选属性 - Area, RoomType, ContractImage, Remark', async () => {
+  test('9. 验证可选属性 - ContractImage, Remark', async () => {
     if (!fs.existsSync(entityPath)) {
       test.skip('实体文件不存在');
       return;
@@ -116,8 +116,6 @@ test.describe('FEAT-002: Room 实体', () => {
 
     const content = fs.readFileSync(entityPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+decimal\??\s+Area\s*\{\s*get;\s*set;\s*\}/);
-    expect(content).toMatch(/public\s+string\??\s+RoomType\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+string\??\s+ContractImage\s*\{\s*get;\s*set;\s*\}/);
     expect(content).toMatch(/public\s+string\??\s+Remark\s*\{\s*get;\s*set;\s*\}/);
   });

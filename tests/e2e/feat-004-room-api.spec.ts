@@ -447,8 +447,6 @@ test.describe('FEAT-004: Room API', () => {
       communityId: testCommunityId,
       building: '5栋',
       roomNumber: `50${Date.now().toString().slice(-2)}`,
-      area: 85.5,
-      roomType: '两室一厅',
       costPrice: 1500,
       rentPrice: 2200,
       deposit: 4400,
@@ -470,8 +468,6 @@ test.describe('FEAT-004: Room API', () => {
     createdRoomIds.push(result.data.id);
 
     // 验证所有属性
-    expect(result.data.area).toBe(testData.area);
-    expect(result.data.roomType).toBe(testData.roomType);
     expect(result.data.deposit).toBe(testData.deposit);
     expect(result.data.waterPrice).toBe(testData.waterPrice);
     expect(result.data.electricPrice).toBe(testData.electricPrice);

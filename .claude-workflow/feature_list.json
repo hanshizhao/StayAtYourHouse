@@ -244,19 +244,25 @@
         "verified_at": "2026-04-08T23:30:00Z"
       },
       "review": {
-        "last_review_at": "2026-04-08T22:00:00Z",
+        "last_review_at": "2026-04-08T23:59:00Z",
         "reviewer": "superpowers:code-reviewer",
         "status": "passed",
         "issues": {
           "critical": 0,
           "important": 0,
-          "minor": 2
+          "minor": 3
         },
         "minor_issues": [
           "E2E 测试硬编码登录凭证，建议迁移到环境变量",
-          "roomCount 链接选择器较脆弱，建议使用 data-testid"
+          "check-in.vue 网格列数可从 repeat(6,1fr) 改为 repeat(4,1fr)",
+          "detail.vue 4项在3列布局中第二行仅1项，视觉略不均衡"
         ],
-        "rounds": 1
+        "rounds": 3,
+        "fixes_applied": [
+          "测试用例4：重写为直接URL导航，避免选择器不匹配导致的假通过",
+          "测试用例4：waitForTimeout 替换为 waitFor({ state: 'visible' })",
+          "测试用例5：删除未使用的 roomCountLink 变量"
+        ]
       }
     },
     {
@@ -299,10 +305,24 @@
         }
       ],
       "test_file": "tests/e2e/feat-142-update-e2e-tests-area-roomtype.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-08T23:45:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-08T23:45:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-09T00:30:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "rounds": 1,
+        "fixes_applied": ["修复 FEAT-142 测试文件中的正则表达式错误：\\{.*get.*set → \\bArea\\b/\\bRoomType\\b，['\"]> → ['\"]"]
       }
     },
     {

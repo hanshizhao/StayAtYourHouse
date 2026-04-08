@@ -76,7 +76,6 @@ test.describe('FEAT-011: 入住/退租 API', () => {
         communityId,
         building: '1',
         roomNumber: `Room_${ts}`,
-        area: 50,
         costPrice: 1000,
         rentPrice: 2000,
         status: 0  // Vacant
