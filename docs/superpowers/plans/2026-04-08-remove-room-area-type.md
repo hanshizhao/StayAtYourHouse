@@ -88,14 +88,9 @@
     public string? RoomType { get; set; }
 ```
 
-- [ ] **Step 5: 验证后端构建**
+- [ ] **Step 5: Commit（构建验证移至 Task 2 完成后）**
 
-Run: `cd Gentle && dotnet build`
-Expected: 构建成功，无错误（ReportService 等尚未修改，可能有引用错误，此时需要一起修改）
-
-> 注意：如果构建失败，检查是否有遗漏的引用。ReportService 的修改在 Task 2 中进行，需要在此步骤前或同时完成。
-
-- [ ] **Step 6: Commit**
+> 注意：Task 1 和 Task 2 必须一起完成后再验证构建，因为 ReportService 仍引用已删除的 Area/RoomType，单独验证 Task 1 会构建失败。
 
 ```bash
 git add Gentle/Gentle.Core/Entities/Room.cs Gentle/Gentle.Application/Dtos/Room/RoomDto.cs Gentle/Gentle.Application/Dtos/Room/CreateRoomInput.cs Gentle/Gentle.Application/Dtos/Room/UpdateRoomInput.cs
@@ -224,6 +219,7 @@ git commit -m "chore: 数据库迁移 - 删除 Room 表的 Area 和 RoomType 列
 - Modify: `Hans/src/api/model/roomModel.ts:36-37,66-67,86-87` — 删除 3 个接口中的 area/roomType
 - Modify: `Hans/src/pages/housing/room/index.vue` — 删除表格列、模板、表单字段、类型定义、数据
 - Modify: `Hans/src/pages/housing/room/detail.vue:47-52` — 删除面积/类型展示
+- Modify: `Hans/src/pages/housing/community/index.vue:248` — 删除小区房间弹窗表格的 roomType 列
 - Modify: `Hans/src/pages/tenant/check-in.vue` — 删除面积/类型展示和数据
 
 - [ ] **Step 1: 删除 roomModel.ts 中的 area/roomType**
@@ -299,7 +295,15 @@ roomType: formData.value.roomType || undefined,
 </t-descriptions-item>
 ```
 
-- [ ] **Step 4: 删除入住登记页 check-in.vue 中的 area/roomType**
+- [ ] **Step 4: 删除小区房间弹窗中的 roomType 列**
+
+在 `Hans/src/pages/housing/community/index.vue` 约第 248 行删除：
+
+```typescript
+{ colKey: 'roomType', title: '类型', width: 120 },
+```
+
+- [ ] **Step 5: 删除入住登记页 check-in.vue 中的 area/roomType**
 
 在 `Hans/src/pages/tenant/check-in.vue` 中删除：
 
@@ -317,15 +321,15 @@ area: room.area,
 roomType: room.roomType,
 ```
 
-- [ ] **Step 5: 验证前端构建**
+- [ ] **Step 6: 验证前端构建**
 
 Run: `cd Hans && npm run build`
 Expected: 构建成功，无 TypeScript 错误
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
-git add Hans/src/api/model/roomModel.ts Hans/src/pages/housing/room/index.vue Hans/src/pages/housing/room/detail.vue Hans/src/pages/tenant/check-in.vue
+git add Hans/src/api/model/roomModel.ts Hans/src/pages/housing/room/index.vue Hans/src/pages/housing/room/detail.vue Hans/src/pages/housing/community/index.vue Hans/src/pages/tenant/check-in.vue
 git commit -m "refactor: 前端删除 Room 的 area、roomType 属性"
 ```
 
@@ -337,6 +341,7 @@ git commit -m "refactor: 前端删除 Room 的 area、roomType 属性"
 - Modify: `tests/e2e/feat-002-room-entity.spec.ts:111-123` — 修改测试用例
 - Modify: `tests/e2e/feat-004-room-api.spec.ts:450-451,473-474` — 删除测试数据中的 area/roomType
 - Modify: `tests/e2e/feat-011-checkin-checkout-api.spec.ts:79` — 删除测试数据中的 area
+- Modify: `tests/e2e/feat-022-meter-api.spec.ts:76` — 删除测试数据中的 area
 
 - [ ] **Step 1: 修改 feat-002-room-entity.spec.ts**
 
@@ -380,10 +385,18 @@ expect(result.data.roomType).toBe(testData.roomType);
 area: 50,
 ```
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 4: 修改 feat-022-meter-api.spec.ts**
+
+在房间创建数据中删除（约第 76 行）：
+```typescript
+// 删除：
+area: 50,
+```
+
+- [ ] **Step 5: Commit**
 
 ```bash
-git add tests/e2e/feat-002-room-entity.spec.ts tests/e2e/feat-004-room-api.spec.ts tests/e2e/feat-011-checkin-checkout-api.spec.ts
+git add tests/e2e/feat-002-room-entity.spec.ts tests/e2e/feat-004-room-api.spec.ts tests/e2e/feat-011-checkin-checkout-api.spec.ts tests/e2e/feat-022-meter-api.spec.ts
 git commit -m "test: 更新 E2E 测试，删除 Room 的 Area/RoomType 引用"
 ```
 
