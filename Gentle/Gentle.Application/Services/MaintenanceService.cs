@@ -106,6 +106,7 @@ public class MaintenanceService : IMaintenanceService
         }
 
         var entity = input.Adapt<MaintenanceRecord>();
+        entity.CreatedTime = DateTimeOffset.Now;
 
         await _repository.InsertAsync(entity);
         await _repository.SaveNowAsync();

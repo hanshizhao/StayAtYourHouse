@@ -157,7 +157,7 @@
 import { AddIcon } from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol, SelectOption } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onActivated, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { completeMaintenance, deleteMaintenance, getMaintenanceList } from '@/api/maintenance';
@@ -405,6 +405,10 @@ async function onConfirmDelete() {
 }
 
 onMounted(() => {
+  fetchData();
+});
+
+onActivated(() => {
   fetchData();
 });
 </script>

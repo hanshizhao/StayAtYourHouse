@@ -58,14 +58,8 @@
         <template #roomType="{ row }">
           <span>{{ row.roomType || '-' }}</span>
         </template>
-        <template #costPrice="{ row }">
-          <span>¥{{ row.costPrice.toFixed(2) }}</span>
-        </template>
         <template #rentPrice="{ row }">
           <span>¥{{ row.rentPrice.toFixed(2) }}</span>
-        </template>
-        <template #profit="{ row }">
-          <span :class="row.profit >= 0 ? 'profit-positive' : 'profit-negative'"> ¥{{ row.profit.toFixed(2) }} </span>
         </template>
         <template #deposit="{ row }">
           <span>{{ row.deposit ? `¥${row.deposit.toFixed(2)}` : '-' }}</span>
@@ -549,7 +543,9 @@
         <!-- 空状态 -->
         <template v-else>
           <t-empty description="暂无租约信息" data-testid="lease-empty-state">
-            <t-button theme="primary" data-testid="lease-add-button" @click="handleAddLease">添加租约</t-button>
+            <template #action>
+              <t-button theme="primary" data-testid="lease-add-button" @click="handleAddLease">添加租约</t-button>
+            </template>
           </t-empty>
         </template>
       </div>
@@ -630,9 +626,7 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'roomInfo', title: '房间', width: 140 },
   { colKey: 'area', title: '面积', width: 90 },
   { colKey: 'roomType', title: '类型', width: 100 },
-  { colKey: 'costPrice', title: '成本价', width: 100 },
   { colKey: 'rentPrice', title: '出租价', width: 100 },
-  { colKey: 'profit', title: '利润', width: 100 },
   { colKey: 'deposit', title: '押金', width: 100 },
   { colKey: 'status', title: '状态', width: 90 },
   { colKey: 'remark', title: '备注', width: 150, ellipsis: true },

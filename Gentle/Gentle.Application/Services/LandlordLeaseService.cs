@@ -62,11 +62,12 @@ public class LandlordLeaseService : ILandlordLeaseService
 
         var lease = input.Adapt<LandlordLease>();
         lease.CreatedTime = DateTimeOffset.Now;
-        lease.Room = room;
 
         var entry = await _repository.InsertAsync(lease);
         await _repository.SaveNowAsync();
 
+        // 保存后手动设置导航属性，仅用于 DTO 映射（避免 EF Core 尝试重新插入 Room 实体）
+        entry.Entity.Room = room;
         return entry.Entity.Adapt<LandlordLeaseDto>();
     }
 

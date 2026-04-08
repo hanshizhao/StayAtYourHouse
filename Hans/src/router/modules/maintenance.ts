@@ -6,7 +6,7 @@ export default [
     name: 'maintenance',
     component: Layout,
     redirect: '/maintenance/list',
-    meta: { title: { zh_CN: '维修管理', en_US: 'Maintenance' }, icon: 'tool', orderNo: 5 },
+    meta: { title: { zh_CN: '维修管理', en_US: 'Maintenance' }, icon: 'tools', orderNo: 5 },
     children: [
       {
         path: 'list',
