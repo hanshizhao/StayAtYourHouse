@@ -35,17 +35,6 @@ public class UpdateRoomInput
     public string RoomNumber { get; set; } = string.Empty;
 
     /// <summary>
-    /// 面积（平方米）
-    /// </summary>
-    public decimal? Area { get; set; }
-
-    /// <summary>
-    /// 房间类型
-    /// </summary>
-    [MaxLength(50, ErrorMessage = "房间类型长度不能超过50个字符")]
-    public string? RoomType { get; set; }
-
-    /// <summary>
     /// 成本价（月租金成本）
     /// </summary>
     [Range(0, double.MaxValue, ErrorMessage = "成本价必须大于等于0")]

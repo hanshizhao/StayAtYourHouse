@@ -30,16 +30,6 @@ public class Room : Entity<int>
     public string RoomNumber { get; set; } = string.Empty;
 
     /// <summary>
-    /// 面积（平方米）
-    /// </summary>
-    public decimal? Area { get; set; }
-
-    /// <summary>
-    /// 房间类型（如：一室一厅、两室一厅）
-    /// </summary>
-    public string? RoomType { get; set; }
-
-    /// <summary>
     /// 成本价（月租金成本）
     /// </summary>
     public decimal CostPrice { get; set; }

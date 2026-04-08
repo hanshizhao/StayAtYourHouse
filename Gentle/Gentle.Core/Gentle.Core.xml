@@ -455,16 +455,6 @@
             房间号
             </summary>
         </member>
-        <member name="P:Gentle.Core.Entities.Room.Area">
-            <summary>
-            面积（平方米）
-            </summary>
-        </member>
-        <member name="P:Gentle.Core.Entities.Room.RoomType">
-            <summary>
-            房间类型（如：一室一厅、两室一厅）
-            </summary>
-        </member>
         <member name="P:Gentle.Core.Entities.Room.CostPrice">
             <summary>
             成本价（月租金成本）
