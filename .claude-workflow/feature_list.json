@@ -134,6 +134,7 @@
       "priority": "high",
       "test_type": "static",
       "description": "数据库迁移",
+      "status": "in_progress",
       "acceptance_criteria": [
         "EF Core 迁移文件成功创建",
         "迁移包含删除 Area 和 RoomType 两列",
@@ -157,10 +158,28 @@
         }
       ],
       "test_file": "tests/e2e/feat-140-remove-area-roomtype-migration.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-08T21:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-08T21:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-08T20:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "minor_issues": [
+          "测试文件中重复的文件查找逻辑，建议提取为 beforeAll",
+          "User 种子数据 BCrypt 非确定性哈希根因未根治，建议后续固化"
+        ],
+        "rounds": 2,
+        "fixes_applied": ["移除迁移文件中非预期的 UpdateData（User PasswordHash 变更）"]
       }
     },
     {
