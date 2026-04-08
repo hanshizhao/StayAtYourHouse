@@ -129,16 +129,6 @@ public class VacantRoomDto
     public decimal? LandlordLeaseMonthlyRent { get; set; }
 
     /// <summary>
-    /// 面积（平方米）
-    /// </summary>
-    public decimal? Area { get; set; }
-
-    /// <summary>
-    /// 房间类型
-    /// </summary>
-    public string? RoomType { get; set; }
-
-    /// <summary>
     /// 空置天数
     /// </summary>
     public int? VacantDays { get; set; }

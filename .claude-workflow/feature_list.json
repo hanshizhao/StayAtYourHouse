@@ -68,6 +68,7 @@
       "priority": "high",
       "test_type": "static",
       "description": "后端 Service + Report DTO 删除 Area/RoomType",
+      "status": "in_progress",
       "acceptance_criteria": [
         "RoomService.UpdateAsync 删除 Area/RoomType 赋值",
         "ReportService 删除 4 处 Area/RoomType 赋值",
@@ -107,10 +108,23 @@
         }
       ],
       "test_file": "tests/e2e/feat-139-remove-area-roomtype-service-report.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-08T19:30:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-08T19:30:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-08T19:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "rounds": 1
       }
     },
     {

@@ -66,16 +66,6 @@ public class RoomProfitRankingDto
     public string? CurrentTenantName { get; set; }
 
     /// <summary>
-    /// 面积（平方米）
-    /// </summary>
-    public decimal? Area { get; set; }
-
-    /// <summary>
-    /// 房间类型
-    /// </summary>
-    public string? RoomType { get; set; }
-
-    /// <summary>
     /// 是否亏损
     /// </summary>
     public bool IsLoss => MonthlyProfit < 0;

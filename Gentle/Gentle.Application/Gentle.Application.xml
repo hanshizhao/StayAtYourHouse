@@ -1973,16 +1973,6 @@
             房东租约月租金（成本）
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.Area">
-            <summary>
-            面积（平方米）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.RoomType">
-            <summary>
-            房间类型
-            </summary>
-        </member>
         <member name="P:Gentle.Application.Dtos.Report.VacantRoomDto.VacantDays">
             <summary>
             空置天数
@@ -2138,16 +2128,6 @@
             当前租客姓名（如有）
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.Area">
-            <summary>
-            面积（平方米）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.RoomType">
-            <summary>
-            房间类型
-            </summary>
-        </member>
         <member name="P:Gentle.Application.Dtos.Report.RoomProfitRankingDto.IsLoss">
             <summary>
             是否亏损
@@ -2171,16 +2151,6 @@
         <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.RoomNumber">
             <summary>
             房间号
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.Area">
-            <summary>
-            面积（平方米）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.RoomType">
-            <summary>
-            房间类型
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.CostPrice">
@@ -2251,16 +2221,6 @@
         <member name="P:Gentle.Application.Dtos.Room.RoomDto.RoomNumber">
             <summary>
             房间号
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Room.RoomDto.Area">
-            <summary>
-            面积（平方米）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Room.RoomDto.RoomType">
-            <summary>
-            房间类型
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Room.RoomDto.CostPrice">
@@ -2341,16 +2301,6 @@
         <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.RoomNumber">
             <summary>
             房间号
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.Area">
-            <summary>
-            面积（平方米）
-            </summary>
-        </member>
-        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.RoomType">
-            <summary>
-            房间类型
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.CostPrice">

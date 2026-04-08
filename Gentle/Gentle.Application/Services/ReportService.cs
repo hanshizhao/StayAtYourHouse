@@ -187,8 +187,6 @@ public class ReportService : IReportService
                     RoomNumber = r.RoomNumber,
                     RentPrice = r.RentPrice,
                     LandlordLeaseMonthlyRent = r.LandlordLease?.MonthlyRent,
-                    Area = r.Area,
-                    RoomType = r.RoomType,
                     VacantDays = vacantDays
                 };
             })
@@ -243,9 +241,7 @@ public class ReportService : IReportService
                 LandlordLeaseMonthlyRent = room.LandlordLease?.MonthlyRent,
                 RentPrice = room.RentPrice,
                 MonthlyProfit = room.RentPrice - (room.LandlordLease?.MonthlyRent ?? 0),
-                CurrentTenantName = activeRental?.Renter.Name,
-                Area = room.Area,
-                RoomType = room.RoomType
+                CurrentTenantName = activeRental?.Renter.Name
             };
         });
 
