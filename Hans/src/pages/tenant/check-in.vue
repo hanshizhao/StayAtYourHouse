@@ -97,14 +97,6 @@
                 <span class="info-value">{{ selectedRoom.roomNumber }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">面积</span>
-                <span class="info-value">{{ selectedRoom.area ? `${selectedRoom.area}㎡` : '-' }}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">房型</span>
-                <span class="info-value">{{ selectedRoom.roomType || '-' }}</span>
-              </div>
-              <div class="info-item">
                 <span class="info-label">水电单价</span>
                 <span class="info-value">
                   水 {{ selectedRoom.waterPrice || '-' }} 元/吨 / 电 {{ selectedRoom.electricPrice || '-' }} 元/度
@@ -311,8 +303,6 @@ interface RoomOption {
   communityName: string;
   building: string;
   roomNumber: string;
-  area?: number;
-  roomType?: string;
   rentPrice: number;
   deposit?: number;
   waterPrice?: number;
@@ -401,8 +391,6 @@ async function loadVacantRooms() {
       communityName: room.communityName,
       building: room.building,
       roomNumber: room.roomNumber,
-      area: room.area,
-      roomType: room.roomType,
       rentPrice: room.rentPrice,
       deposit: room.deposit,
       waterPrice: room.waterPrice,

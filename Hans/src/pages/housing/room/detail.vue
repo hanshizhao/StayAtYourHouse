@@ -44,12 +44,6 @@
           <t-descriptions-item label="房间号">
             {{ roomDetail.roomNumber }}
           </t-descriptions-item>
-          <t-descriptions-item label="面积">
-            {{ roomDetail.area ? `${roomDetail.area}㎡` : '-' }}
-          </t-descriptions-item>
-          <t-descriptions-item label="房型">
-            {{ roomDetail.roomType || '-' }}
-          </t-descriptions-item>
           <t-descriptions-item label="状态">
             <t-tag :theme="getStatusTheme(roomDetail.status)" variant="light">
               {{ getStatusText(roomDetail.status) }}

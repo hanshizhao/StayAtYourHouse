@@ -245,7 +245,6 @@ const roomList = ref<RoomItem[]>([]);
 const roomColumns: PrimaryTableCol[] = [
   { colKey: 'building', title: '楼栋', width: 100 },
   { colKey: 'roomNumber', title: '房间号', width: 100 },
-  { colKey: 'roomType', title: '类型', width: 120 },
   { colKey: 'rentPrice', title: '租金', width: 100 },
   {
     colKey: 'status',

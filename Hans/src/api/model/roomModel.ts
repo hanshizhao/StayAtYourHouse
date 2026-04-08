@@ -33,8 +33,6 @@ export interface RoomItem {
   communityName: string;
   building: string;
   roomNumber: string;
-  area?: number;
-  roomType?: string;
   costPrice: number;
   rentPrice: number;
   profit: number;
@@ -63,8 +61,6 @@ export interface CreateRoomParams {
   communityId: number;
   building: string;
   roomNumber: string;
-  area?: number;
-  roomType?: string;
   costPrice: number;
   rentPrice: number;
   deposit?: number;
@@ -83,8 +79,6 @@ export interface UpdateRoomParams {
   communityId: number;
   building: string;
   roomNumber: string;
-  area?: number;
-  roomType?: string;
   costPrice: number;
   rentPrice: number;
   deposit?: number;

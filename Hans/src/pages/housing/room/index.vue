@@ -52,12 +52,6 @@
         <template #roomInfo="{ row }">
           <span>{{ row.building }}栋 {{ row.roomNumber }}</span>
         </template>
-        <template #area="{ row }">
-          <span>{{ row.area ? `${row.area}㎡` : '-' }}</span>
-        </template>
-        <template #roomType="{ row }">
-          <span>{{ row.roomType || '-' }}</span>
-        </template>
         <template #rentPrice="{ row }">
           <span>¥{{ row.rentPrice.toFixed(2) }}</span>
         </template>
@@ -145,29 +139,6 @@
             </t-form-item>
           </t-col>
 
-          <t-col :span="6">
-            <t-form-item label="面积" name="area">
-              <t-input-number
-                v-model="formData.area"
-                theme="normal"
-                placeholder="请输入面积"
-                :min="0"
-                :decimal-places="2"
-                suffix="㎡"
-                data-testid="room-area-input"
-              />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="房间类型" name="roomType">
-              <t-input
-                v-model="formData.roomType"
-                placeholder="如：一室一厅"
-                :maxlength="50"
-                data-testid="room-type-input"
-              />
-            </t-form-item>
-          </t-col>
         </t-row>
 
         <!-- 价格信息 -->
@@ -598,8 +569,6 @@ interface RoomFormData {
   communityId?: number;
   building: string;
   roomNumber: string;
-  area?: number;
-  roomType?: string;
   costPrice?: number;
   rentPrice?: number;
   deposit?: number;
@@ -624,8 +593,6 @@ const router = useRouter();
 const columns: PrimaryTableCol[] = [
   { colKey: 'communityName', title: '小区', width: 140 },
   { colKey: 'roomInfo', title: '房间', width: 140 },
-  { colKey: 'area', title: '面积', width: 90 },
-  { colKey: 'roomType', title: '类型', width: 100 },
   { colKey: 'rentPrice', title: '出租价', width: 100 },
   { colKey: 'deposit', title: '押金', width: 100 },
   { colKey: 'status', title: '状态', width: 90 },
@@ -671,8 +638,6 @@ const formData = ref<RoomFormData>({
   communityId: undefined,
   building: '',
   roomNumber: '',
-  area: undefined,
-  roomType: '',
   costPrice: undefined,
   rentPrice: undefined,
   deposit: undefined,
@@ -831,8 +796,6 @@ function handleCreate() {
     communityId: undefined,
     building: '',
     roomNumber: '',
-    area: undefined,
-    roomType: '',
     costPrice: undefined,
     rentPrice: undefined,
     deposit: undefined,
@@ -853,8 +816,6 @@ function handleEdit(row: RoomItem) {
     communityId: row.communityId,
     building: row.building,
     roomNumber: row.roomNumber,
-    area: row.area,
-    roomType: row.roomType,
     costPrice: row.costPrice,
     rentPrice: row.rentPrice,
     deposit: row.deposit,
@@ -878,8 +839,6 @@ async function handleSubmit() {
         communityId: formData.value.communityId!,
         building: formData.value.building,
         roomNumber: formData.value.roomNumber,
-        area: formData.value.area,
-        roomType: formData.value.roomType || undefined,
         costPrice: formData.value.costPrice!,
         rentPrice: formData.value.rentPrice!,
         deposit: formData.value.deposit,
@@ -895,8 +854,6 @@ async function handleSubmit() {
         communityId: formData.value.communityId!,
         building: formData.value.building,
         roomNumber: formData.value.roomNumber,
-        area: formData.value.area,
-        roomType: formData.value.roomType || undefined,
         costPrice: formData.value.costPrice!,
         rentPrice: formData.value.rentPrice!,
         deposit: formData.value.deposit,
