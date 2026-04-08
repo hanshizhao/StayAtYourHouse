@@ -1,4 +1,8 @@
-import type { CreateLandlordLeaseParams, LandlordLeaseDetail, UpdateLandlordLeaseParams } from '@/api/model/landlordLeaseModel';
+import type {
+  CreateLandlordLeaseParams,
+  LandlordLeaseDetail,
+  UpdateLandlordLeaseParams,
+} from '@/api/model/landlordLeaseModel';
 import { request } from '@/utils/request';
 
 const Api = {

@@ -71,7 +71,13 @@
       </t-card>
 
       <!-- 房东租约卡片 -->
-      <t-card v-if="roomDetail.landlordLease" class="info-card" title="房东租约" :bordered="false" data-testid="landlord-lease-card">
+      <t-card
+        v-if="roomDetail.landlordLease"
+        class="info-card"
+        title="房东租约"
+        :bordered="false"
+        data-testid="landlord-lease-card"
+      >
         <template #subtitle>
           <t-tag theme="success" variant="light">已签约</t-tag>
         </template>
@@ -85,7 +91,11 @@
             {{ roomDetail.landlordLease.landlordPhone || '-' }}
           </t-descriptions-item>
           <t-descriptions-item label="付款方式" data-testid="lease-payment-method">
-            {{ roomDetail.landlordLease.paymentMethodText || PaymentMethodText[roomDetail.landlordLease.paymentMethod] || '-' }}
+            {{
+              roomDetail.landlordLease.paymentMethodText ||
+              PaymentMethodText[roomDetail.landlordLease.paymentMethod] ||
+              '-'
+            }}
           </t-descriptions-item>
           <t-descriptions-item label="月租金" data-testid="lease-monthly-rent">
             <span class="price">¥{{ roomDetail.landlordLease.monthlyRent?.toFixed(2) }}</span>
@@ -94,9 +104,11 @@
             {{ roomDetail.landlordLease.depositMonths ? `${roomDetail.landlordLease.depositMonths}个月` : '-' }}
           </t-descriptions-item>
           <t-descriptions-item label="租约期限" data-testid="lease-date-range">
-            {{ roomDetail.landlordLease.startDate && roomDetail.landlordLease.endDate
-              ? `${roomDetail.landlordLease.startDate} ~ ${roomDetail.landlordLease.endDate}`
-              : '-' }}
+            {{
+              roomDetail.landlordLease.startDate && roomDetail.landlordLease.endDate
+                ? `${roomDetail.landlordLease.startDate} ~ ${roomDetail.landlordLease.endDate}`
+                : '-'
+            }}
           </t-descriptions-item>
         </t-descriptions>
 
@@ -106,7 +118,9 @@
             {{ roomDetail.landlordLease.waterPrice ? `¥${roomDetail.landlordLease.waterPrice.toFixed(2)}/吨` : '-' }}
           </t-descriptions-item>
           <t-descriptions-item label="电费单价" data-testid="lease-electric-price">
-            {{ roomDetail.landlordLease.electricPrice ? `¥${roomDetail.landlordLease.electricPrice.toFixed(2)}/度` : '-' }}
+            {{
+              roomDetail.landlordLease.electricPrice ? `¥${roomDetail.landlordLease.electricPrice.toFixed(2)}/度` : '-'
+            }}
           </t-descriptions-item>
           <t-descriptions-item label="电梯费" data-testid="lease-elevator-fee">
             {{ roomDetail.landlordLease.elevatorFee ? `¥${roomDetail.landlordLease.elevatorFee.toFixed(2)}` : '-' }}

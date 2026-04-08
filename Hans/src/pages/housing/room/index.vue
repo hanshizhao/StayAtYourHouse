@@ -283,7 +283,9 @@
     <!-- 房东租约抽屉 -->
     <t-drawer
       v-model:visible="leaseDrawerVisible"
-      :header="currentLeaseRoom ? `${currentLeaseRoom.building}栋 ${currentLeaseRoom.roomNumber} - 房东租约` : '房东租约'"
+      :header="
+        currentLeaseRoom ? `${currentLeaseRoom.building}栋 ${currentLeaseRoom.roomNumber} - 房东租约` : '房东租约'
+      "
       size="500px"
       data-testid="lease-drawer"
       :footer="false"
@@ -302,12 +304,20 @@
             <t-row :gutter="[16, 0]">
               <t-col :span="6">
                 <t-form-item label="房东姓名" name="landlordName">
-                  <t-input v-model="leaseForm.landlordName" placeholder="请输入房东姓名" data-testid="lease-landlord-name" />
+                  <t-input
+                    v-model="leaseForm.landlordName"
+                    placeholder="请输入房东姓名"
+                    data-testid="lease-landlord-name"
+                  />
                 </t-form-item>
               </t-col>
               <t-col :span="6">
                 <t-form-item label="联系电话" name="landlordPhone">
-                  <t-input v-model="leaseForm.landlordPhone" placeholder="请输入联系电话" data-testid="lease-landlord-phone" />
+                  <t-input
+                    v-model="leaseForm.landlordPhone"
+                    placeholder="请输入联系电话"
+                    data-testid="lease-landlord-phone"
+                  />
                 </t-form-item>
               </t-col>
             </t-row>
@@ -484,7 +494,13 @@
               <t-button variant="outline" size="small" data-testid="lease-edit-button" @click="handleEditLease">
                 编辑
               </t-button>
-              <t-button variant="outline" theme="danger" size="small" data-testid="lease-delete-button" @click="handleDeleteLeaseConfirm">
+              <t-button
+                variant="outline"
+                theme="danger"
+                size="small"
+                data-testid="lease-delete-button"
+                @click="handleDeleteLeaseConfirm"
+              >
                 删除
               </t-button>
             </t-space>
@@ -493,20 +509,40 @@
           <t-descriptions :column="2" bordered>
             <t-descriptions-item label="房东姓名">{{ leaseData.landlordName }}</t-descriptions-item>
             <t-descriptions-item label="联系电话">{{ leaseData.landlordPhone || '-' }}</t-descriptions-item>
-            <t-descriptions-item label="开始日期">{{ leaseData.startDate ? leaseData.startDate.split('T')[0] : '-' }}</t-descriptions-item>
-            <t-descriptions-item label="结束日期">{{ leaseData.endDate ? leaseData.endDate.split('T')[0] : '-' }}</t-descriptions-item>
+            <t-descriptions-item label="开始日期">{{
+              leaseData.startDate ? leaseData.startDate.split('T')[0] : '-'
+            }}</t-descriptions-item>
+            <t-descriptions-item label="结束日期">{{
+              leaseData.endDate ? leaseData.endDate.split('T')[0] : '-'
+            }}</t-descriptions-item>
             <t-descriptions-item label="月租金">
               <span class="lease-price">¥{{ leaseData.monthlyRent.toFixed(2) }}</span>
             </t-descriptions-item>
             <t-descriptions-item label="付款方式">{{ leaseData.paymentMethodText }}</t-descriptions-item>
-            <t-descriptions-item label="押金月数">{{ leaseData.depositMonths ? `${leaseData.depositMonths}个月` : '-' }}</t-descriptions-item>
-            <t-descriptions-item label="水费">{{ leaseData.waterPrice != null ? `¥${leaseData.waterPrice.toFixed(2)}/吨` : '-' }}</t-descriptions-item>
-            <t-descriptions-item label="电费">{{ leaseData.electricPrice != null ? `¥${leaseData.electricPrice.toFixed(2)}/度` : '-' }}</t-descriptions-item>
-            <t-descriptions-item label="电梯费">{{ leaseData.elevatorFee != null ? `¥${leaseData.elevatorFee.toFixed(2)}` : '-' }}</t-descriptions-item>
-            <t-descriptions-item label="物业费">{{ leaseData.propertyFee != null ? `¥${leaseData.propertyFee.toFixed(2)}` : '-' }}</t-descriptions-item>
-            <t-descriptions-item label="网络费">{{ leaseData.internetFee != null ? `¥${leaseData.internetFee.toFixed(2)}` : '-' }}</t-descriptions-item>
-            <t-descriptions-item label="其他费用">{{ leaseData.otherFees != null ? `¥${leaseData.otherFees.toFixed(2)}` : '-' }}</t-descriptions-item>
-            <t-descriptions-item v-if="leaseData.remark" label="备注" :span="2">{{ leaseData.remark }}</t-descriptions-item>
+            <t-descriptions-item label="押金月数">{{
+              leaseData.depositMonths ? `${leaseData.depositMonths}个月` : '-'
+            }}</t-descriptions-item>
+            <t-descriptions-item label="水费">{{
+              leaseData.waterPrice != null ? `¥${leaseData.waterPrice.toFixed(2)}/吨` : '-'
+            }}</t-descriptions-item>
+            <t-descriptions-item label="电费">{{
+              leaseData.electricPrice != null ? `¥${leaseData.electricPrice.toFixed(2)}/度` : '-'
+            }}</t-descriptions-item>
+            <t-descriptions-item label="电梯费">{{
+              leaseData.elevatorFee != null ? `¥${leaseData.elevatorFee.toFixed(2)}` : '-'
+            }}</t-descriptions-item>
+            <t-descriptions-item label="物业费">{{
+              leaseData.propertyFee != null ? `¥${leaseData.propertyFee.toFixed(2)}` : '-'
+            }}</t-descriptions-item>
+            <t-descriptions-item label="网络费">{{
+              leaseData.internetFee != null ? `¥${leaseData.internetFee.toFixed(2)}` : '-'
+            }}</t-descriptions-item>
+            <t-descriptions-item label="其他费用">{{
+              leaseData.otherFees != null ? `¥${leaseData.otherFees.toFixed(2)}` : '-'
+            }}</t-descriptions-item>
+            <t-descriptions-item v-if="leaseData.remark" label="备注" :span="2">{{
+              leaseData.remark
+            }}</t-descriptions-item>
           </t-descriptions>
         </template>
 
@@ -538,7 +574,12 @@ import { computed, onMounted, ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { getCommunityList } from '@/api/community';
-import { addLandlordLease, getLandlordLeaseByRoomId, removeLandlordLease, updateLandlordLease } from '@/api/landlordLease';
+import {
+  addLandlordLease,
+  getLandlordLeaseByRoomId,
+  removeLandlordLease,
+  updateLandlordLease,
+} from '@/api/landlordLease';
 import type { CommunityItem } from '@/api/model/communityModel';
 import type { LandlordLeaseDetail } from '@/api/model/landlordLeaseModel';
 import { PaymentMethod, PaymentMethodText } from '@/api/model/landlordLeaseModel';
