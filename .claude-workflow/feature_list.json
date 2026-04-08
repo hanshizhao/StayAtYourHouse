@@ -1,671 +1,279 @@
 {
-  "module": "landlord-lease",
+  "module": "remove-room-area-type",
   "features": [
     {
-      "id": "FEAT-128",
+      "id": "FEAT-138",
       "category": "后端",
-      "module": "房东租约管理",
+      "module": "删除Room的Area和RoomType",
       "priority": "high",
       "test_type": "static",
-      "description": "后端枚举和实体",
+      "description": "后端实体 + DTO 删除 Area/RoomType",
       "acceptance_criteria": [
-        "创建 PaymentMethod 枚举（Monthly/Quarterly/SemiAnnual/Annual/Custom）",
-        "创建 LandlordLease 实体（继承 Entity<int>）",
-        "Room 实体新增 LandlordLease 导航属性",
-        "dotnet build 编译成功"
+        "Room 实体删除 Area 和 RoomType 属性",
+        "RoomDto 删除 Area 和 RoomType 属性",
+        "CreateRoomInput 删除 Area 和 RoomType 属性（含 MaxLength 验证）",
+        "UpdateRoomInput 删除 Area 和 RoomType 属性（含 MaxLength 验证）"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 PaymentMethod 枚举",
-          "file": "Gentle/Gentle.Core/Enums/PaymentMethod.cs",
-          "code_hint": "public enum PaymentMethod { Monthly = 0, Quarterly = 1, SemiAnnual = 2, Annual = 3, Custom = 4 }"
+          "action": "删除 Room 实体中的 Area 和 RoomType",
+          "file": "Gentle/Gentle.Core/Entities/Room.cs",
+          "code_hint": "删除 RoomNumber 属性后、CostPrice 属性前的 Area 和 RoomType 属性"
         },
         {
           "step": 2,
-          "action": "创建 LandlordLease 实体",
-          "file": "Gentle/Gentle.Core/Entities/LandlordLease.cs",
-          "code_hint": "public class LandlordLease : Entity<int> — RoomId, LandlordName, LandlordPhone, StartDate, EndDate, MonthlyRent, PaymentMethod, DepositMonths, WaterPrice, ElectricPrice, ElevatorFee, PropertyFee, InternetFee, OtherFees, Remark"
+          "action": "删除 RoomDto 中的 Area 和 RoomType",
+          "file": "Gentle/Gentle.Application/Dtos/Room/RoomDto.cs",
+          "code_hint": "删除 Area 和 RoomType 属性"
         },
         {
           "step": 3,
-          "action": "修改 Room 实体，添加导航属性",
-          "file": "Gentle/Gentle.Core/Entities/Room.cs",
-          "code_hint": "在 MaintenanceRecords 导航属性之后新增: public LandlordLease? LandlordLease { get; set; }"
+          "action": "删除 CreateRoomInput 中的 Area 和 RoomType",
+          "file": "Gentle/Gentle.Application/Dtos/Room/CreateRoomInput.cs",
+          "code_hint": "删除 Area 和 RoomType 属性（含 RoomType 的 MaxLength 验证）"
         },
         {
           "step": 4,
-          "action": "构建验证",
-          "verify_command": "cd Gentle && dotnet build"
+          "action": "删除 UpdateRoomInput 中的 Area 和 RoomType",
+          "file": "Gentle/Gentle.Application/Dtos/Room/UpdateRoomInput.cs",
+          "code_hint": "删除 Area 和 RoomType 属性（含 RoomType 的 MaxLength 验证）"
         }
       ],
-      "test_file": "tests/e2e/feat-128-landlord-lease-entity.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T10:05:00Z",
+      "test_file": "tests/e2e/feat-138-remove-area-roomtype-entity-dto.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-08T10:05:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T10:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "LandlordLease 可考虑添加 [Table(\"landlord_lease\")] 特性以保持风格一致",
-          "StartDate/EndDate 可考虑添加跨日期验证"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-129",
+      "id": "FEAT-139",
       "category": "后端",
-      "module": "房东租约管理",
+      "module": "删除Room的Area和RoomType",
       "priority": "high",
       "test_type": "static",
-      "description": "后端 DTO 和 Mapster 映射",
+      "description": "后端 Service + Report DTO 删除 Area/RoomType",
       "acceptance_criteria": [
-        "创建 LandlordLeaseDto 输出 DTO",
-        "创建 CreateLandlordLeaseInput 输入 DTO（含验证特性）",
-        "创建 UpdateLandlordLeaseInput 输入 DTO（含验证特性）",
-        "RoomDto 新增 LandlordLease 属性",
-        "CreateRoomInput/UpdateRoomInput 的 CostPrice 去掉 [Required]",
-        "Mapper.cs 更新 Profit 计算 + 新增 LandlordLease 映射",
-        "dotnet build 编译成功"
+        "RoomService.UpdateAsync 删除 Area/RoomType 赋值",
+        "ReportService 删除 4 处 Area/RoomType 赋值",
+        "HousingOverviewDto.VacantRoomDto 删除 Area/RoomType",
+        "RoomProfitRankingDto 删除 Area/RoomType",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 LandlordLeaseDto",
-          "file": "Gentle/Gentle.Application/Dtos/LandlordLease/LandlordLeaseDto.cs",
-          "code_hint": "Id, RoomId, LandlordName, LandlordPhone, StartDate, EndDate, MonthlyRent, PaymentMethod, DepositMonths, WaterPrice, ElectricPrice, ElevatorFee, PropertyFee, InternetFee, OtherFees, Remark, CreatedTime, RoomInfo"
+          "action": "删除 RoomService.UpdateAsync 中的赋值",
+          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
+          "code_hint": "删除 existing.Area = input.Area; existing.RoomType = input.RoomType;"
         },
         {
           "step": 2,
-          "action": "创建 CreateLandlordLeaseInput",
-          "file": "Gentle/Gentle.Application/Dtos/LandlordLease/CreateLandlordLeaseInput.cs",
-          "code_hint": "RoomId [Required], LandlordName [Required MaxLength 50], MonthlyRent [Required Range], PaymentMethod [Required], 其他可选字段含 Range 验证"
+          "action": "删除 ReportService 中的赋值",
+          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
+          "code_hint": "删除 4 处 Area/RoomType 赋值（VacantRoomDto 构建和 RoomProfitRankingDto 构建）"
         },
         {
           "step": 3,
-          "action": "创建 UpdateLandlordLeaseInput",
-          "file": "Gentle/Gentle.Application/Dtos/LandlordLease/UpdateLandlordLeaseInput.cs",
-          "code_hint": "Id [Required], LandlordName [Required], MonthlyRent [Required Range], PaymentMethod [Required], 其他与 Create 类似但无 RoomId"
+          "action": "删除 HousingOverviewDto.VacantRoomDto 中的属性",
+          "file": "Gentle/Gentle.Application/Dtos/Report/HousingOverviewDto.cs",
+          "code_hint": "删除 VacantRoomDto 中的 Area 和 RoomType 属性"
         },
         {
           "step": 4,
-          "action": "修改 RoomDto，新增 LandlordLease 属性",
-          "file": "Gentle/Gentle.Application/Dtos/Room/RoomDto.cs",
-          "code_hint": "新增 using Gentle.Application.Dtos.LandlordLease; 新增属性: public LandlordLeaseDto? LandlordLease { get; set; }"
+          "action": "删除 RoomProfitRankingDto 中的属性",
+          "file": "Gentle/Gentle.Application/Dtos/Report/RoomProfitRankingDto.cs",
+          "code_hint": "删除 Area 和 RoomType 属性"
         },
         {
           "step": 5,
-          "action": "修改 CreateRoomInput，CostPrice 去掉 Required",
-          "file": "Gentle/Gentle.Application/Dtos/Room/CreateRoomInput.cs",
-          "code_hint": "去掉 CostPrice 的 [Required]，添加默认值 = 0"
-        },
-        {
-          "step": 6,
-          "action": "修改 UpdateRoomInput，CostPrice 去掉 Required",
-          "file": "Gentle/Gentle.Application/Dtos/Room/UpdateRoomInput.cs",
-          "code_hint": "同 CreateRoomInput 处理"
-        },
-        {
-          "step": 7,
-          "action": "更新 Mapper.cs",
-          "file": "Gentle/Gentle.Application/Mapper.cs",
-          "code_hint": "Profit 计算改为 src.RentPrice - (src.LandlordLease != null ? src.LandlordLease.MonthlyRent : 0)；新增 LandlordLease → LandlordLeaseDto 映射（含 RoomInfo）+ CreateInput/UpdateInput 映射"
-        },
-        {
-          "step": 8,
-          "action": "构建验证",
+          "action": "验证后端构建",
           "verify_command": "cd Gentle && dotnet build"
         }
       ],
-      "test_file": "tests/e2e/feat-129-landlord-lease-dto-mapper.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T10:40:00Z",
+      "test_file": "tests/e2e/feat-139-remove-area-roomtype-service-report.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-08T10:40:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T10:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixes": [
-          "RoomDto Profit 注释更新为'出租价 - 房东月租金'",
-          "移除 Mapper.cs 重复的 MeterRecord 映射配置",
-          "LandlordPhone 添加 [Phone] 验证特性",
-          "LandlordLeaseDto 添加 PaymentMethodText 计算属性"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-130",
+      "id": "FEAT-140",
       "category": "后端",
-      "module": "房东租约管理",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端服务层和 API",
-      "acceptance_criteria": [
-        "创建 ILandlordLeaseService 接口（ITransient）",
-        "实现 LandlordLeaseService（GetByRoomId/Add/Edit/Remove）",
-        "创建 LandlordLeaseAppService（IDynamicApiController）",
-        "API 路由：/api/landlord-lease/*",
-        "端点：room/{roomId}(GET)、add(POST)、edit(PUT)、remove/{id}(DELETE)",
-        "dotnet build 编译成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 ILandlordLeaseService 接口",
-          "file": "Gentle/Gentle.Application/Services/ILandlordLeaseService.cs",
-          "code_hint": "interface ILandlordLeaseService : ITransient — Task<LandlordLeaseDto?> GetByRoomIdAsync(int roomId), Task<LandlordLeaseDto> AddAsync(CreateLandlordLeaseInput), Task<LandlordLeaseDto> EditAsync(UpdateLandlordLeaseInput), Task RemoveAsync(int id)"
-        },
-        {
-          "step": 2,
-          "action": "创建 LandlordLeaseService 实现",
-          "file": "Gentle/Gentle.Application/Services/LandlordLeaseService.cs",
-          "code_hint": "注入 IRepository<LandlordLease> + IRepository<Room>；GetByRoomId 含 Include.Room.Community；AddAsync 含房间存在+一对一约束+日期校验；EditAsync 含日期校验+逐字段更新；RemoveAsync 含存在校验"
-        },
-        {
-          "step": 3,
-          "action": "创建 LandlordLeaseAppService",
-          "file": "Gentle/Gentle.Application/Apps/LandlordLeaseAppService.cs",
-          "code_hint": "[Route(\"api/landlord-lease\")] [Authorize] public class LandlordLeaseAppService : IDynamicApiController — GetByRoomId(GET room/{roomId}), Add(POST add), Edit(PUT edit), Remove(DELETE remove/{id})"
-        },
-        {
-          "step": 4,
-          "action": "构建验证",
-          "verify_command": "cd Gentle && dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-130-landlord-lease-service-api.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T11:30:00Z",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-08T11:30:00Z",
-        "api_routes": {
-          "base": "/api/landlord-lease",
-          "endpoints": ["room/{roomId}", "add", "edit", "remove/{id}"]
-        }
-      },
-      "review": {
-        "last_review_at": "2026-04-08T11:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "EditAsync 逐字段更新可读性可提升（但与 RoomService/TenantService 模式一致）",
-          "测试构建验证依赖中文输出文本（全局性问题）",
-          "ILandlordLeaseService 接口缺少 param/returns 标签（全局性问题）"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-131",
-      "category": "后端",
-      "module": "房东租约管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端 RoomService 和 DbContext 变更",
-      "acceptance_criteria": [
-        "DefaultDbContext 配置 Room 与 LandlordLease 一对一关系",
-        "RoomService.GetListAsync 新增 Include LandlordLease",
-        "RoomService.GetByIdAsync 新增 Include LandlordLease",
-        "dotnet build 编译成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "修改 DefaultDbContext，配置一对一关系",
-          "file": "Gentle/Gentle.EntityFramework.Core/DbContexts/DefaultDbContext.cs",
-          "code_hint": "OnModelCreating 中新增: modelBuilder.Entity<Room>().HasOne(r => r.LandlordLease).WithOne(l => l.Room).HasForeignKey<LandlordLease>(l => l.RoomId).OnDelete(DeleteBehavior.Cascade)"
-        },
-        {
-          "step": 2,
-          "action": "修改 RoomService，Include LandlordLease",
-          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "GetListAsync 和 GetByIdAsync 的 .Include(r => r.Community) 后新增 .Include(r => r.LandlordLease)"
-        },
-        {
-          "step": 3,
-          "action": "构建验证",
-          "verify_command": "cd Gentle && dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-131-room-service-dbcontext.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T16:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-08T16:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T12:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "UpdateAsync 未 Include LandlordLease，Profit 计算可能不准（超出 FEAT-131 范围）",
-          "测试文件中 fs.existsSync 多次重复调用（风格问题）"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-132",
-      "category": "后端",
-      "module": "房东租约管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端报表模块更新",
-      "acceptance_criteria": [
-        "RoomProfitRankingDto 的 CostPrice 改为 LandlordLeaseMonthlyRent",
-        "RoomProfitRankingDto 的 MonthlyProfit 改为普通属性",
-        "HousingOverviewDto.VacantRoomDto 的 CostPrice 改为 LandlordLeaseMonthlyRent",
-        "ReportService 成本改为从 LandlordLease 读取",
-        "dotnet build 编译成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "修改 RoomProfitRankingDto",
-          "file": "Gentle/Gentle.Application/Dtos/Report/RoomProfitRankingDto.cs",
-          "code_hint": "CostPrice → LandlordLeaseMonthlyRent (decimal?); MonthlyProfit 改为普通属性 decimal"
-        },
-        {
-          "step": 2,
-          "action": "修改 HousingOverviewDto 中的 VacantRoomDto",
-          "file": "Gentle/Gentle.Application/Dtos/Report/HousingOverviewDto.cs",
-          "code_hint": "VacantRoomDto.CostPrice → LandlordLeaseMonthlyRent (decimal?)"
-        },
-        {
-          "step": 3,
-          "action": "修改 ReportService",
-          "file": "Gentle/Gentle.Application/Services/ReportService.cs",
-          "code_hint": "GetIncomeReportAsync: 新增 Include LandlordLease, CostPrice → LandlordLease?.MonthlyRent；GetHousingOverviewAsync: 新增 Include LandlordLease, CostPrice → LandlordLeaseMonthlyRent；GetRoomProfitRankingAsync: 新增 Include LandlordLease, 显式赋值 MonthlyProfit"
-        },
-        {
-          "step": 4,
-          "action": "构建验证",
-          "verify_command": "cd Gentle && dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-132-report-landlord-lease.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T18:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-08T18:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T17:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 1,
-          "minor": 2
-        },
-        "important_issues": [
-          "GetIncomeReportAsync 成本计算基于 RentalRecord 而非 LandlordLease 租期，空置期间不产生成本（业务逻辑问题，超出 FEAT-132 范围，后续优化）"
-        ],
-        "minor_issues": [
-          "Gentle.Application.xml 文档已同步更新（正面）",
-          "RoomDto 仍保留 CostPrice 和 Profit 字段（与 FEAT-134/136 前端改造相关，不在本 FEAT 范围内）"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-133",
-      "category": "后端",
-      "module": "房东租约管理",
+      "module": "删除Room的Area和RoomType",
       "priority": "high",
       "test_type": "static",
       "description": "数据库迁移",
       "acceptance_criteria": [
         "EF Core 迁移文件成功创建",
-        "迁移包含创建 LandlordLease 表",
-        "RoomId 列有唯一索引",
-        "RoomId 外键指向 Room 表，级联删除",
-        "dotnet build 编译成功"
+        "迁移包含删除 Area 和 RoomType 两列",
+        "迁移成功应用到数据库"
       ],
       "implementation_steps": [
         {
           "step": 1,
           "action": "生成迁移",
-          "verify_command": "cd Gentle && dotnet ef migrations add AddLandlordLease --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
+          "verify_command": "cd Gentle && dotnet ef migrations add RemoveRoomAreaAndRoomType --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
         },
         {
           "step": 2,
-          "action": "检查生成的迁移文件",
-          "code_hint": "确认包含: 创建 LandlordLease 表、RoomId 唯一索引、外键关联 rooms 表、级联删除"
+          "action": "检查迁移文件包含 DropColumn",
+          "code_hint": "确认 Up 方法包含 DropColumn(\"Area\", \"Rooms\") 和 DropColumn(\"RoomType\", \"Rooms\")"
         },
         {
           "step": 3,
-          "action": "验证编译",
-          "verify_command": "cd Gentle && dotnet build"
+          "action": "应用迁移",
+          "verify_command": "cd Gentle && dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
         }
       ],
-      "test_file": "tests/e2e/feat-133-db-migration-landlord-lease.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T19:05:00Z",
+      "test_file": "tests/e2e/feat-140-remove-area-roomtype-migration.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-08T19:05:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T19:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-134",
+      "id": "FEAT-141",
       "category": "前端",
-      "module": "房东租约管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "前端类型定义和 API",
-      "acceptance_criteria": [
-        "创建 landlordLeaseModel.ts（PaymentMethod 枚举 + 类型接口）",
-        "创建 landlordLease.ts（API 服务函数）",
-        "roomModel.ts 的 RoomItem 新增 landlordLease 字段",
-        "npm run build:type 类型检查通过"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 landlordLeaseModel.ts 类型定义",
-          "file": "Hans/src/api/model/landlordLeaseModel.ts",
-          "code_hint": "PaymentMethod 枚举 + PaymentMethodText 映射；LandlordLeaseDetail/CreateLandlordLeaseParams/UpdateLandlordLeaseParams 接口"
-        },
-        {
-          "step": 2,
-          "action": "创建 landlordLease.ts API 服务",
-          "file": "Hans/src/api/landlordLease.ts",
-          "code_hint": "getLandlordLeaseByRoomId, addLandlordLease, updateLandlordLease, removeLandlordLease — 路由 /landlord-lease/*"
-        },
-        {
-          "step": 3,
-          "action": "修改 roomModel.ts，RoomItem 新增字段",
-          "file": "Hans/src/api/model/roomModel.ts",
-          "code_hint": "import LandlordLeaseDetail; RoomItem 新增 landlordLease?: LandlordLeaseDetail"
-        },
-        {
-          "step": 4,
-          "action": "构建验证",
-          "verify_command": "cd Hans && npm run build:type"
-        }
-      ],
-      "test_file": "tests/e2e/feat-134-frontend-landlord-lease-api.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T20:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-08T20:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T20:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "fixes": [
-          "roomModel.ts 内联 import() 改为顶层 import type",
-          "测试用例 11 正则同步更新匹配新导入方式"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-135",
-      "category": "前端",
-      "module": "房东租约管理",
+      "module": "删除Room的Area和RoomType",
       "priority": "high",
       "test_type": "e2e",
-      "description": "前端房间列表页 - 房东租约抽屉",
+      "description": "前端类型定义和页面删除 area/roomType",
       "acceptance_criteria": [
-        "操作列新增\"房东租约\"按钮",
-        "点击打开右侧抽屉（展示模式/表单模式/空状态）",
-        "无租约时显示空状态+\"添加\"按钮",
-        "表单模式支持填写房东信息、租金、付款方式、费用等",
-        "展示模式显示 t-descriptions 租约详情",
-        "支持编辑和删除操作",
+        "roomModel.ts 删除 3 个接口中的 area/roomType",
+        "room/index.vue 删除表格列、模板、表单字段等所有 area/roomType 引用",
+        "room/detail.vue 删除面积/类型展示",
+        "community/index.vue 删除 roomType 列",
+        "tenant/check-in.vue 删除 area/roomType 展示和数据",
         "npm run build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "新增 import 和响应式状态",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "导入 landlordLease API + 类型；新增 leaseDrawerVisible/leaseLoading/leaseData/leaseEditMode/leaseSaving/leaseForm 等状态"
+          "action": "删除 roomModel.ts 中的 area/roomType",
+          "file": "Hans/src/api/model/roomModel.ts",
+          "code_hint": "删除 RoomItem/CreateRoomParams/UpdateRoomParams 中的 area 和 roomType"
         },
         {
           "step": 2,
-          "action": "新增方法",
+          "action": "删除房间列表页 index.vue 中的 area/roomType",
           "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "handleOpenLease/handleAddLease/handleEditLease/handleSaveLease/handleDeleteLeaseConfirm/handleDeleteLease"
+          "code_hint": "删除模板插槽、表单字段、表格列配置、类型定义、表单数据初始化、编辑回填、请求参数中的 area/roomType"
         },
         {
           "step": 3,
-          "action": "操作列新增\"房东租约\"按钮",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "t-button(variant=\"text\" size=\"small\" @click=\"handleOpenLease(row)\")"
+          "action": "删除详情页 detail.vue 中的面积/类型展示",
+          "file": "Hans/src/pages/housing/room/detail.vue",
+          "code_hint": "删除面积和房型两个 t-descriptions-item"
         },
         {
           "step": 4,
-          "action": "新增抽屉模板",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "t-drawer(size=\"500px\") 含三种状态: leaseLoading/leaseEditMode(表单)/leaseData(展示)/无租约(空状态)；t-form 表单 + t-descriptions 展示 + t-dialog 删除确认"
+          "action": "删除小区房间弹窗中的 roomType 列",
+          "file": "Hans/src/pages/housing/community/index.vue",
+          "code_hint": "删除 { colKey: 'roomType', title: '类型', width: 120 } 列配置"
         },
         {
           "step": 5,
-          "action": "新增抽屉样式",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": ".lease-drawer-footer / .lease-detail-header / .price 样式"
+          "action": "删除入住登记页 check-in.vue 中的 area/roomType",
+          "file": "Hans/src/pages/tenant/check-in.vue",
+          "code_hint": "删除模板展示、接口类型、数据赋值中的 area/roomType"
         },
         {
           "step": 6,
-          "action": "构建验证",
+          "action": "验证前端构建",
           "verify_command": "cd Hans && npm run build"
         }
       ],
-      "test_file": "tests/e2e/feat-135-room-lease-drawer.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T22:00:00Z",
+      "test_file": "tests/e2e/feat-141-frontend-remove-area-roomtype.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "required_tests": ["drawer_open", "empty_state", "add_lease", "view_lease", "edit_lease", "delete_lease"],
-        "verified_at": "2026-04-08T22:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T21:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "handleSaveLease 保存成功后重新获取数据时若失败会显示空状态（边界场景，实际影响低）",
-          "取消按钮仅设置 leaseEditMode = false 未重置表单数据（添加模式下有残留风险，但关闭抽屉时会 reset）",
-          "E2E 测试中硬编码 waitForTimeout（Playwright 反模式，后续优化）"
-        ],
-        "fixes": [
-          "handleOpenLease 空 catch 块添加 MessagePlugin.error 用户提示",
-          "抽屉 @close 事件改为调用 handleLeaseDrawerClose 同时重置 leaseEditMode 和 leaseFormRef",
-          "handleSaveLease 新增/更新判断从 leaseData.value 改为 leaseData.value?.id 更稳健"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-136",
-      "category": "前端",
-      "module": "房东租约管理",
+      "id": "FEAT-142",
+      "category": "集成",
+      "module": "删除Room的Area和RoomType",
       "priority": "high",
       "test_type": "e2e",
-      "description": "前端房间详情页改造",
+      "description": "E2E 测试更新",
       "acceptance_criteria": [
-        "价格信息卡片重构（只保留出租价和押金）",
-        "新增房东租约卡片（t-descriptions 展示租约+费用信息）",
-        "利润计算改为从 LandlordLease.MonthlyRent 读取",
-        "无租约时显示空状态提示",
-        "npm run build 构建成功"
+        "feat-002-room-entity.spec.ts 更新测试标题和删除 Area/RoomType 断言",
+        "feat-004-room-api.spec.ts 删除测试数据和响应断言中的 area/roomType",
+        "feat-011-checkin-checkout-api.spec.ts 删除测试数据中的 area",
+        "feat-022-meter-api.spec.ts 删除测试数据中的 area"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "新增 import",
-          "file": "Hans/src/pages/housing/room/detail.vue",
-          "code_hint": "import { PaymentMethodText } from '@/api/model/landlordLeaseModel'"
+          "action": "修改 feat-002-room-entity.spec.ts",
+          "file": "tests/e2e/feat-002-room-entity.spec.ts",
+          "code_hint": "测试标题改为'验证可选属性 - ContractImage, Remark'，删除 Area/RoomType 断言"
         },
         {
           "step": 2,
-          "action": "重构价格信息卡片",
-          "file": "Hans/src/pages/housing/room/detail.vue",
-          "code_hint": "只保留出租价(rentPrice)和押金(deposit)，移除成本价/水费/电费/利润字段"
+          "action": "修改 feat-004-room-api.spec.ts",
+          "file": "tests/e2e/feat-004-room-api.spec.ts",
+          "code_hint": "删除测试数据中的 area/roomType 和响应断言中的 area/roomType 断言"
         },
         {
           "step": 3,
-          "action": "新增房东租约卡片",
-          "file": "Hans/src/pages/housing/room/detail.vue",
-          "code_hint": "t-card(title=\"房东租约\" data-testid=\"landlord-lease-card\") 含 t-descriptions 展示房东信息+费用信息+备注；v-else t-empty 无租约提示；利润 = rentPrice - monthlyRent"
+          "action": "修改 feat-011-checkin-checkout-api.spec.ts",
+          "file": "tests/e2e/feat-011-checkin-checkout-api.spec.ts",
+          "code_hint": "删除房间创建数据中的 area: 50"
         },
         {
           "step": 4,
-          "action": "构建验证",
-          "verify_command": "cd Hans && npm run build"
+          "action": "修改 feat-022-meter-api.spec.ts",
+          "file": "tests/e2e/feat-022-meter-api.spec.ts",
+          "code_hint": "删除房间创建数据中的 area: 50"
         }
       ],
-      "test_file": "tests/e2e/feat-136-room-detail-lease-card.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-08T23:30:00Z",
+      "test_file": "tests/e2e/feat-142-update-e2e-tests-area-roomtype.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "required_tests": ["page_access", "price_card", "lease_card_visible", "lease_detail", "empty_state"],
-        "verified_at": "2026-04-08T23:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T23:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 4
-        },
-        "fixes": [
-          "利润计算提取为 computed 属性 monthlyProfit，添加 ?? 0 空值保护防止 NaN",
-          "PaymentMethodText 查找链末尾添加 || '-' 最终回退"
-        ],
-        "minor_issues": [
-          "E2E 测试导航逻辑重复5次（可提取 helper，不影响功能）",
-          "测试5空状态断言为重言式（数据集非确定性，设计妥协）",
-          "RoomItem 类型仍包含 costPrice/profit/waterPrice/electricPrice 字段（超出 FEAT-136 范围）",
-          "模板区域较长，未来可考虑提取 LandlordLeaseCard 子组件"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-137",
+      "id": "FEAT-143",
       "category": "集成",
-      "module": "房东租约管理",
+      "module": "删除Room的Area和RoomType",
       "priority": "high",
-      "test_type": "e2e",
-      "description": "端到端验证",
+      "test_type": "static",
+      "description": "最终验证",
       "acceptance_criteria": [
-        "后端 dotnet build 编译成功",
+        "后端 dotnet build 构建成功",
         "前端 npm run build 构建成功",
-        "前端 npm run lint 无错误"
+        "E2E 测试全部通过"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "后端完整编译验证",
+          "action": "后端构建验证",
           "verify_command": "cd Gentle && dotnet build"
         },
         {
           "step": 2,
-          "action": "前端完整构建验证",
+          "action": "前端构建验证",
           "verify_command": "cd Hans && npm run build"
         },
         {
           "step": 3,
-          "action": "前端 lint 检查",
-          "verify_command": "cd Hans && npm run lint"
+          "action": "运行 E2E 测试",
+          "verify_command": "cd tests && npm run test"
         }
       ],
-      "test_file": "tests/e2e/feat-137-e2e-verification.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-09T00:15:00Z",
-      "lint_fixed": {
-        "files_fixed": [
-          "Hans/src/api/landlordLease.ts",
-          "Hans/src/pages/housing/room/detail.vue",
-          "Hans/src/pages/housing/room/index.vue"
-        ],
-        "errors_fixed": 22,
-        "type": "prettier/prettier"
-      },
+      "test_file": "tests/e2e/feat-143-final-verification-remove-area-roomtype.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-09T00:15:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-08T23:45:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixes": [
-          "lint 测试断言改为依赖 execSync 退出码，移除输出文本匹配",
-          "后端编译测试移除中文输出字符串断言，依赖退出码",
-          "Playwright describe 超时增至 300s，确保 execSync 180s 余量",
-          "迁移目录检查从 IIFE 内联改为显式三步模式",
-          "文件存在性检查新增 FEAT-131/132 关键文件"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     }
   ]

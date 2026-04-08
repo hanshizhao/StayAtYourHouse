@@ -10,37 +10,33 @@
 
 | 模块 | 优先级 | 功能数 | 状态 |
 |------|--------|--------|------|
-| 房东租约管理 | P0 | 10 | ⏳ 待开始 |
+| 删除Room的Area和RoomType | P0 | 6 | ⏳ 待开始 |
 
 ## 功能进度
 
-### 房东租约管理 (FEAT-128 ~ FEAT-137)
+### 删除Room的Area和RoomType (FEAT-138 ~ FEAT-143)
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-128 | 后端枚举和实体 | ⏳ 待开始 | - |
-| FEAT-129 | 后端 DTO 和 Mapster 映射 | ⏳ 待开始 | - |
-| FEAT-130 | 后端服务层和 API | ⏳ 待开始 | - |
-| FEAT-131 | 后端 RoomService 和 DbContext 变更 | ⏳ 待开始 | - |
-| FEAT-132 | 后端报表模块更新 | ⏳ 待开始 | - |
-| FEAT-133 | 数据库迁移 | ⏳ 待开始 | - |
-| FEAT-134 | 前端类型定义和 API | ⏳ 待开始 | - |
-| FEAT-135 | 前端房间列表页 - 房东租约抽屉 | ⏳ 待开始 | - |
-| FEAT-136 | 前端房间详情页改造 | ⏳ 待开始 | - |
-| FEAT-137 | 端到端验证 | ⏳ 待开始 | - |
+| FEAT-138 | 后端实体 + DTO 删除 Area/RoomType | ⏳ 待开始 | - |
+| FEAT-139 | 后端 Service + Report DTO 删除 Area/RoomType | ⏳ 待开始 | - |
+| FEAT-140 | 数据库迁移 | ⏳ 待开始 | - |
+| FEAT-141 | 前端类型定义和页面删除 area/roomType | ⏳ 待开始 | - |
+| FEAT-142 | E2E 测试更新 | ⏳ 待开始 | - |
+| FEAT-143 | 最终验证 | ⏳ 待开始 | - |
 
 ## 统计
 
 - **已完成**: 0
 - **进行中**: 0
-- **待处理**: 10
+- **待处理**: 6
 
 ## 更新日志
 
 ### 2026-04-08
 
-- 初始化「房东租约管理」功能模块（FEAT-128~137），来源：docs/superpowers/plans/2026-04-08-landlord-lease.md
-- 清理已完成任务（FEAT-114~127 passed，已删除）
+- 初始化「删除Room的Area和RoomType」功能模块（FEAT-138~143），来源：docs/superpowers/plans/2026-04-08-remove-room-area-type.md
+- 清理已完成任务（FEAT-128~137 passed，已删除）
 
 ## 状态说明
 
