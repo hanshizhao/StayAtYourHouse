@@ -63,6 +63,21 @@
             {{ getStatusText(row.status) }}
           </t-tag>
         </template>
+        <template #anjuCodeSubmitted="{ row }">
+          <t-tag v-if="row.anjuCodeSubmitted === true" theme="success" variant="light">已提交</t-tag>
+          <t-tag v-else-if="row.anjuCodeSubmitted === false" theme="danger" variant="light">未提交</t-tag>
+          <span v-else class="text-secondary">-</span>
+        </template>
+        <template #leaseDuration="{ row }">
+          <span v-if="row.leaseDuration">{{ row.leaseDuration }}</span>
+          <span v-else class="text-secondary">-</span>
+        </template>
+        <template #daysUntilExpiry="{ row }">
+          <span v-if="row.daysUntilExpiry != null" :class="getExpiryClass(row.daysUntilExpiry)">{{
+            row.daysUntilExpiry >= 0 ? `${row.daysUntilExpiry}天` : `已过期${Math.abs(row.daysUntilExpiry)}天`
+          }}</span>
+          <span v-else class="text-secondary">-</span>
+        </template>
         <template #remark="{ row }">
           <t-tooltip v-if="row.remark" :content="row.remark" placement="top">
             <span class="remark-text">{{ row.remark }}</span>
@@ -378,6 +393,19 @@
                 </t-form-item>
               </t-col>
               <t-col :span="6">
+                <t-form-item label="押金金额" name="deposit">
+                  <t-input-number
+                    v-model="leaseForm.deposit"
+                    theme="normal"
+                    placeholder="押金金额"
+                    :min="0"
+                    :decimal-places="2"
+                    prefix="¥"
+                    data-testid="lease-deposit"
+                  />
+                </t-form-item>
+              </t-col>
+              <t-col :span="6">
                 <t-form-item label="押金月数" name="depositMonths">
                   <t-input-number
                     v-model="leaseForm.depositMonths"
@@ -527,6 +555,9 @@
               <span class="lease-price">¥{{ leaseData.monthlyRent.toFixed(2) }}</span>
             </t-descriptions-item>
             <t-descriptions-item label="付款方式">{{ leaseData.paymentMethodText }}</t-descriptions-item>
+            <t-descriptions-item label="押金金额">{{
+              leaseData.deposit != null ? `¥${leaseData.deposit.toFixed(2)}` : '-'
+            }}</t-descriptions-item>
             <t-descriptions-item label="押金月数">{{
               leaseData.depositMonths ? `${leaseData.depositMonths}个月` : '-'
             }}</t-descriptions-item>
@@ -642,6 +673,9 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'rentPrice', title: '出租价', width: 100 },
   { colKey: 'deposit', title: '押金', width: 100 },
   { colKey: 'status', title: '状态', width: 90 },
+  { colKey: 'anjuCodeSubmitted', title: '安居码', width: 80 },
+  { colKey: 'leaseDuration', title: '已租时长', width: 110 },
+  { colKey: 'daysUntilExpiry', title: '到期天数', width: 100 },
   { colKey: 'remark', title: '备注', width: 150, ellipsis: true },
   { colKey: 'createdTime', title: '创建时间', width: 160 },
   { colKey: 'op', title: '操作', width: 220, fixed: 'right' },
@@ -732,6 +766,7 @@ const leaseForm = ref({
   endDate: '',
   monthlyRent: undefined as number | undefined,
   paymentMethod: PaymentMethod.Monthly as PaymentMethod,
+  deposit: undefined as number | undefined,
   depositMonths: undefined as number | undefined,
   waterPrice: undefined as number | undefined,
   electricPrice: undefined as number | undefined,
@@ -801,6 +836,13 @@ function getStatusTheme(status: RoomStatus): 'success' | 'warning' | 'primary' |
 /** 获取状态文本 */
 function getStatusText(status: RoomStatus): string {
   return RoomStatusText[status];
+}
+
+/** 获取到期天数样式 */
+function getExpiryClass(days: number): string {
+  if (days > 0) return 'expiry-positive';
+  if (days === 0) return 'expiry-zero';
+  return 'expiry-negative';
 }
 
 /** 获取小区列表 */
@@ -980,6 +1022,7 @@ function resetLeaseForm() {
     endDate: '',
     monthlyRent: undefined,
     paymentMethod: PaymentMethod.Monthly,
+    deposit: undefined,
     depositMonths: undefined,
     waterPrice: undefined,
     electricPrice: undefined,
@@ -1042,6 +1085,7 @@ function handleEditLease() {
     endDate: leaseData.value.endDate?.split('T')[0] ?? '',
     monthlyRent: leaseData.value.monthlyRent,
     paymentMethod: leaseData.value.paymentMethod,
+    deposit: leaseData.value.deposit,
     depositMonths: leaseData.value.depositMonths,
     waterPrice: leaseData.value.waterPrice,
     electricPrice: leaseData.value.electricPrice,
@@ -1069,6 +1113,7 @@ async function handleSaveLease() {
         endDate: leaseForm.value.endDate || undefined,
         monthlyRent: leaseForm.value.monthlyRent!,
         paymentMethod: leaseForm.value.paymentMethod,
+        deposit: leaseForm.value.deposit,
         depositMonths: leaseForm.value.depositMonths,
         waterPrice: leaseForm.value.waterPrice,
         electricPrice: leaseForm.value.electricPrice,
@@ -1088,6 +1133,7 @@ async function handleSaveLease() {
         endDate: leaseForm.value.endDate || undefined,
         monthlyRent: leaseForm.value.monthlyRent!,
         paymentMethod: leaseForm.value.paymentMethod,
+        deposit: leaseForm.value.deposit,
         depositMonths: leaseForm.value.depositMonths,
         waterPrice: leaseForm.value.waterPrice,
         electricPrice: leaseForm.value.electricPrice,
@@ -1195,6 +1241,21 @@ onMounted(() => {
   }
 
   .profit-negative {
+    color: var(--td-error-color);
+    font-weight: 500;
+  }
+
+  .expiry-positive {
+    color: var(--td-success-color);
+    font-weight: 500;
+  }
+
+  .expiry-zero {
+    color: var(--td-warning-color);
+    font-weight: 500;
+  }
+
+  .expiry-negative {
     color: var(--td-error-color);
     font-weight: 500;
   }
