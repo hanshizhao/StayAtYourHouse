@@ -30,11 +30,6 @@ public class Room : Entity<int>
     public string RoomNumber { get; set; } = string.Empty;
 
     /// <summary>
-    /// 成本价（月租金成本）
-    /// </summary>
-    public decimal CostPrice { get; set; }
-
-    /// <summary>
     /// 出租价（月租金）
     /// </summary>
     public decimal RentPrice { get; set; }
@@ -53,6 +48,26 @@ public class Room : Entity<int>
     /// 电费单价（元/度）
     /// </summary>
     public decimal? ElectricPrice { get; set; }
+
+    /// <summary>
+    /// 电梯费（月固定费用）
+    /// </summary>
+    public decimal? ElevatorFee { get; set; }
+
+    /// <summary>
+    /// 物业费（月固定费用）
+    /// </summary>
+    public decimal? PropertyFee { get; set; }
+
+    /// <summary>
+    /// 网络费（月固定费用）
+    /// </summary>
+    public decimal? InternetFee { get; set; }
+
+    /// <summary>
+    /// 其他费用（月固定费用）
+    /// </summary>
+    public decimal? OtherFees { get; set; }
 
     /// <summary>
     /// 房间状态

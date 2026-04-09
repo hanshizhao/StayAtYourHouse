@@ -162,11 +162,14 @@ public class RoomService : IRoomService
         existing.CommunityId = input.CommunityId;
         existing.Building = input.Building;
         existing.RoomNumber = input.RoomNumber;
-        existing.CostPrice = input.CostPrice;
         existing.RentPrice = input.RentPrice;
         existing.Deposit = input.Deposit;
         existing.WaterPrice = input.WaterPrice;
         existing.ElectricPrice = input.ElectricPrice;
+        existing.ElevatorFee = input.ElevatorFee;
+        existing.PropertyFee = input.PropertyFee;
+        existing.InternetFee = input.InternetFee;
+        existing.OtherFees = input.OtherFees;
         existing.Status = input.Status;
         existing.ContractImage = input.ContractImage;
         existing.Remark = input.Remark;

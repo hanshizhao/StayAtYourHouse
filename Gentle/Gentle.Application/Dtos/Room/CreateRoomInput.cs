@@ -29,12 +29,6 @@ public class CreateRoomInput
     public string RoomNumber { get; set; } = string.Empty;
 
     /// <summary>
-    /// 成本价（月租金成本）
-    /// </summary>
-    [Range(0, double.MaxValue, ErrorMessage = "成本价必须大于等于0")]
-    public decimal CostPrice { get; set; }
-
-    /// <summary>
     /// 出租价（月租金）
     /// </summary>
     [Required(ErrorMessage = "出租价不能为空")]
@@ -58,6 +52,30 @@ public class CreateRoomInput
     /// </summary>
     [Range(0, double.MaxValue, ErrorMessage = "电费单价必须大于等于0")]
     public decimal? ElectricPrice { get; set; }
+
+    /// <summary>
+    /// 电梯费（月固定费用）
+    /// </summary>
+    [Range(0, double.MaxValue, ErrorMessage = "电梯费必须大于等于0")]
+    public decimal? ElevatorFee { get; set; }
+
+    /// <summary>
+    /// 物业费（月固定费用）
+    /// </summary>
+    [Range(0, double.MaxValue, ErrorMessage = "物业费必须大于等于0")]
+    public decimal? PropertyFee { get; set; }
+
+    /// <summary>
+    /// 网络费（月固定费用）
+    /// </summary>
+    [Range(0, double.MaxValue, ErrorMessage = "网络费必须大于等于0")]
+    public decimal? InternetFee { get; set; }
+
+    /// <summary>
+    /// 其他费用（月固定费用）
+    /// </summary>
+    [Range(0, double.MaxValue, ErrorMessage = "其他费用必须大于等于0")]
+    public decimal? OtherFees { get; set; }
 
     /// <summary>
     /// 房间状态
