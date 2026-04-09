@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Furion.DatabaseAccessor;
 using Gentle.Core.Enums;
 
@@ -52,21 +53,25 @@ public class Room : Entity<int>
     /// <summary>
     /// 电梯费（月固定费用）
     /// </summary>
+    [Column(TypeName = "decimal(10,2)")]
     public decimal? ElevatorFee { get; set; }
 
     /// <summary>
     /// 物业费（月固定费用）
     /// </summary>
+    [Column(TypeName = "decimal(10,2)")]
     public decimal? PropertyFee { get; set; }
 
     /// <summary>
     /// 网络费（月固定费用）
     /// </summary>
+    [Column(TypeName = "decimal(10,2)")]
     public decimal? InternetFee { get; set; }
 
     /// <summary>
     /// 其他费用（月固定费用）
     /// </summary>
+    [Column(TypeName = "decimal(10,2)")]
     public decimal? OtherFees { get; set; }
 
     /// <summary>

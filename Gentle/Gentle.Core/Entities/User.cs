@@ -46,8 +46,8 @@ public class User : Entity<int>, IEntitySeedData<User>
             {
                 Id = 1,
                 Username = "zhs",
-                // gentle8023 的 BCrypt 哈希
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("gentle8023"),
+                // gentle8023 的 BCrypt 哈希（预计算，避免每次生成迁移时产生不同的哈希值）
+                PasswordHash = "$2a$11$/LfcCjOJiEtzF5elCbESquhP./mus7TVB1Fmfw0SRQUEei/xL4zHO",
                 DisplayName = "管理员",
                 IsEnabled = true,
                 CreatedTime = DateTime.Parse("2024-01-01")
