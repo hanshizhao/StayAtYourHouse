@@ -146,19 +146,6 @@
         <div class="form-section-title">价格信息</div>
         <t-row :gutter="[24, 12]">
           <t-col :span="6">
-            <t-form-item label="成本价" name="costPrice">
-              <t-input-number
-                v-model="formData.costPrice"
-                theme="normal"
-                placeholder="请输入成本价"
-                :min="0"
-                :decimal-places="2"
-                suffix="元"
-                data-testid="room-cost-price-input"
-              />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
             <t-form-item label="出租价" name="rentPrice">
               <t-input-number
                 v-model="formData.rentPrice"
@@ -214,6 +201,62 @@
                 :decimal-places="2"
                 suffix="元/度"
                 data-testid="room-electric-price-input"
+              />
+            </t-form-item>
+          </t-col>
+        </t-row>
+        <t-row :gutter="24">
+          <t-col :span="6">
+            <t-form-item label="电梯费" name="elevatorFee">
+              <t-input-number
+                v-model="formData.elevatorFee"
+                theme="normal"
+                placeholder="电梯费"
+                :min="0"
+                :decimal-places="2"
+                suffix="元"
+                data-testid="room-elevator-fee-input"
+              />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="物业费" name="propertyFee">
+              <t-input-number
+                v-model="formData.propertyFee"
+                theme="normal"
+                placeholder="物业费"
+                :min="0"
+                :decimal-places="2"
+                suffix="元"
+                data-testid="room-property-fee-input"
+              />
+            </t-form-item>
+          </t-col>
+        </t-row>
+        <t-row :gutter="24">
+          <t-col :span="6">
+            <t-form-item label="网络费" name="internetFee">
+              <t-input-number
+                v-model="formData.internetFee"
+                theme="normal"
+                placeholder="网络费"
+                :min="0"
+                :decimal-places="2"
+                suffix="元"
+                data-testid="room-internet-fee-input"
+              />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="其他费用" name="otherFees">
+              <t-input-number
+                v-model="formData.otherFees"
+                theme="normal"
+                placeholder="其他费用"
+                :min="0"
+                :decimal-places="2"
+                suffix="元"
+                data-testid="room-other-fees-input"
               />
             </t-form-item>
           </t-col>
@@ -569,11 +612,14 @@ interface RoomFormData {
   communityId?: number;
   building: string;
   roomNumber: string;
-  costPrice?: number;
   rentPrice?: number;
   deposit?: number;
   waterPrice?: number;
   electricPrice?: number;
+  elevatorFee?: number;
+  propertyFee?: number;
+  internetFee?: number;
+  otherFees?: number;
   status: RoomStatus;
   remark?: string;
 }
@@ -638,11 +684,14 @@ const formData = ref<RoomFormData>({
   communityId: undefined,
   building: '',
   roomNumber: '',
-  costPrice: undefined,
   rentPrice: undefined,
   deposit: undefined,
   waterPrice: undefined,
   electricPrice: undefined,
+  elevatorFee: undefined,
+  propertyFee: undefined,
+  internetFee: undefined,
+  otherFees: undefined,
   status: RoomStatus.Vacant,
   remark: '',
 });
@@ -651,7 +700,6 @@ const formRules: Record<string, FormRule[]> = {
   communityId: [{ required: true, message: '请选择小区', trigger: 'change' }],
   building: [{ required: true, message: '请输入楼栋号', trigger: 'blur' }],
   roomNumber: [{ required: true, message: '请输入房间号', trigger: 'blur' }],
-  costPrice: [{ required: true, message: '请输入成本价', trigger: 'blur' }],
   rentPrice: [{ required: true, message: '请输入出租价', trigger: 'blur' }],
 };
 
@@ -796,11 +844,14 @@ function handleCreate() {
     communityId: undefined,
     building: '',
     roomNumber: '',
-    costPrice: undefined,
     rentPrice: undefined,
     deposit: undefined,
     waterPrice: undefined,
     electricPrice: undefined,
+    elevatorFee: undefined,
+    propertyFee: undefined,
+    internetFee: undefined,
+    otherFees: undefined,
     status: RoomStatus.Vacant,
     remark: '',
   };
@@ -816,11 +867,14 @@ function handleEdit(row: RoomItem) {
     communityId: row.communityId,
     building: row.building,
     roomNumber: row.roomNumber,
-    costPrice: row.costPrice,
     rentPrice: row.rentPrice,
     deposit: row.deposit,
     waterPrice: row.waterPrice,
     electricPrice: row.electricPrice,
+    elevatorFee: row.elevatorFee,
+    propertyFee: row.propertyFee,
+    internetFee: row.internetFee,
+    otherFees: row.otherFees,
     status: row.status,
     remark: row.remark,
   };
@@ -839,11 +893,14 @@ async function handleSubmit() {
         communityId: formData.value.communityId!,
         building: formData.value.building,
         roomNumber: formData.value.roomNumber,
-        costPrice: formData.value.costPrice!,
         rentPrice: formData.value.rentPrice!,
         deposit: formData.value.deposit,
         waterPrice: formData.value.waterPrice,
         electricPrice: formData.value.electricPrice,
+        elevatorFee: formData.value.elevatorFee,
+        propertyFee: formData.value.propertyFee,
+        internetFee: formData.value.internetFee,
+        otherFees: formData.value.otherFees,
         status: formData.value.status,
         remark: formData.value.remark || undefined,
       });
@@ -854,11 +911,14 @@ async function handleSubmit() {
         communityId: formData.value.communityId!,
         building: formData.value.building,
         roomNumber: formData.value.roomNumber,
-        costPrice: formData.value.costPrice!,
         rentPrice: formData.value.rentPrice!,
         deposit: formData.value.deposit,
         waterPrice: formData.value.waterPrice,
         electricPrice: formData.value.electricPrice,
+        elevatorFee: formData.value.elevatorFee,
+        propertyFee: formData.value.propertyFee,
+        internetFee: formData.value.internetFee,
+        otherFees: formData.value.otherFees,
         status: formData.value.status,
         remark: formData.value.remark || undefined,
       });
@@ -964,6 +1024,10 @@ function handleAddLease() {
   if (currentLeaseRoom.value) {
     leaseForm.value.waterPrice = currentLeaseRoom.value.waterPrice;
     leaseForm.value.electricPrice = currentLeaseRoom.value.electricPrice;
+    leaseForm.value.elevatorFee = currentLeaseRoom.value.elevatorFee;
+    leaseForm.value.propertyFee = currentLeaseRoom.value.propertyFee;
+    leaseForm.value.internetFee = currentLeaseRoom.value.internetFee;
+    leaseForm.value.otherFees = currentLeaseRoom.value.otherFees;
   }
 }
 

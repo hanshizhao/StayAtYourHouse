@@ -164,10 +164,11 @@
         }
       ],
       "test_file": "tests/e2e/feat-146-room-fixed-fees-model.spec.ts",
-      "status": "reviewed",
+      "status": "passed",
       "verification": {
         "e2e_tests_created": true,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-09T22:40:00Z"
       },
       "review": {
         "last_review_at": "2026-04-09T22:30:00Z",
@@ -190,6 +191,7 @@
       "priority": "high",
       "test_type": "e2e",
       "description": "前端房间编辑抽屉 UI",
+      "status": "in_progress",
       "acceptance_criteria": [
         "RoomFormData 接口新增 4 个固定费用属性",
         "formData 初始值包含 4 个固定费用字段",
@@ -249,10 +251,28 @@
         }
       ],
       "test_file": "tests/e2e/feat-147-room-fixed-fees-drawer.spec.ts",
-      "status": "pending",
+      "status": "passed",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-09T23:15:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-09T23:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "resolved_issues": [
+          "I1: handleAddLease 新增 4 个固定费用字段预填充，与水电费预填保持一致"
+        ],
+        "minor_issues": [
+          "测试硬编码凭据（项目现有模式，41个文件，不在本 FEAT 范围）",
+          "otherFees 复数命名与其他单数命名略有不同（设计意图，FEAT-144 审查已确认可接受）"
+        ]
       }
     },
     {
