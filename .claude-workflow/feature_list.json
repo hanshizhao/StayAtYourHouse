@@ -1,384 +1,186 @@
 {
-  "module": "room-fixed-fees",
+  "module": "room-list-rental-info",
   "features": [
     {
-      "id": "FEAT-144",
+      "id": "FEAT-150",
       "category": "后端",
-      "module": "Room固定费用",
+      "module": "房间列表租约信息",
       "priority": "high",
       "test_type": "static",
-      "description": "后端实体与 DTO 变更",
+      "description": "后端 RoomDto 新增 3 个租约字段",
       "acceptance_criteria": [
-        "Room 实体新增 ElevatorFee、PropertyFee、InternetFee、OtherFees 4 个 nullable decimal 属性",
-        "RoomDto 新增对应 4 个属性",
-        "CreateRoomInput 新增对应 4 个属性（含 Range 验证）",
-        "UpdateRoomInput 新增对应 4 个属性（含 Range 验证）",
-        "RoomService.UpdateAsync 新增 4 个属性赋值映射",
+        "RoomDto 新增 AnjuCodeSubmitted (bool?)",
+        "RoomDto 新增 LeaseDuration (string?)",
+        "RoomDto 新增 DaysUntilExpiry (int?)",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "修改 Room 实体：在 ElectricPrice 之后添加 4 个固定费用属性",
-          "file": "Gentle/Gentle.Core/Entities/Room.cs",
-          "code_hint": "添加 ElevatorFee、PropertyFee、InternetFee、OtherFees（decimal?，Range(0, double.MaxValue)，Column decimal(10,2)）"
+          "action": "在 RoomDto 的 Status 属性之后添加 3 个新字段",
+          "file": "Gentle/Gentle.Application/Dtos/Room/RoomDto.cs",
+          "code_hint": "添加 AnjuCodeSubmitted (bool?), LeaseDuration (string?), DaysUntilExpiry (int?)"
         },
         {
           "step": 2,
-          "action": "修改 RoomDto：添加 4 个固定费用属性",
-          "file": "Gentle/Gentle.Application/Dtos/Room/RoomDto.cs",
-          "code_hint": "在 ElectricPrice 之后添加 ElevatorFee、PropertyFee、InternetFee、OtherFees（decimal?）"
-        },
-        {
-          "step": 3,
-          "action": "修改 CreateRoomInput：添加 4 个固定费用属性（含 Range 验证）",
-          "file": "Gentle/Gentle.Application/Dtos/Room/CreateRoomInput.cs",
-          "code_hint": "在 ElectricPrice 之后添加 4 个属性（decimal?，Range 验证）"
-        },
-        {
-          "step": 4,
-          "action": "修改 UpdateRoomInput：添加 4 个固定费用属性（含 Range 验证）",
-          "file": "Gentle/Gentle.Application/Dtos/Room/UpdateRoomInput.cs",
-          "code_hint": "在 ElectricPrice 之后添加 4 个属性（decimal?，Range 验证）"
-        },
-        {
-          "step": 5,
-          "action": "修改 RoomService.UpdateAsync 映射：添加 4 个属性赋值",
-          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "在 existing.ElectricPrice = input.ElectricPrice 之后添加 4 个赋值"
-        },
-        {
-          "step": 6,
-          "action": "构建验证",
+          "action": "验证构建",
           "verify_command": "cd Gentle && dotnet build"
         }
       ],
-      "test_file": "tests/e2e/feat-144-room-fixed-fees-entity-dto.spec.ts",
-      "status": "passed",
+      "test_file": "tests/e2e/feat-150-room-dto-rental-fields.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-09T22:10:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-09T22:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 1,
-          "minor": 2
-        },
-        "resolved_issues": [
-          "I1: 测试文件未使用变量 camelField 已移除"
-        ],
-        "minor_issues": [
-          "OtherFees 复数命名与其他单数命名略有不同（设计意图，可接受）",
-          "迁移名称 RemoveRoomCostPrice 未完全描述范围（FEAT-145 会生成新迁移）"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-145",
+      "id": "FEAT-151",
       "category": "后端",
-      "module": "Room固定费用",
+      "module": "房间列表租约信息",
       "priority": "high",
-      "test_type": "static",
-      "description": "数据库迁移",
+      "test_type": "api_runtime",
+      "description": "后端 RoomService 增加租约查询和计算逻辑",
       "acceptance_criteria": [
-        "EF Core 迁移文件成功创建",
-        "迁移包含 AddColumn ElevatorFee、PropertyFee、InternetFee、OtherFees",
-        "所有列类型为 decimal(10,2) 且 nullable"
+        "GetListAsync 查询活跃 RentalRecord 并按 RoomId 分组",
+        "填充 AnjuCodeSubmitted、LeaseDuration、DaysUntilExpiry",
+        "CalculateLeaseDuration 方法正确计算租期格式",
+        "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "生成迁移 AddRoomFixedFees",
-          "verify_command": "cd Gentle && dotnet ef migrations add AddRoomFixedFees --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
+          "action": "修改 GetListAsync，查询活跃租约并填充字段",
+          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
+          "code_hint": "查询 RentalStatus.Active 记录，Include LandlordLease，GroupBy RoomId，填充 DTO 三个字段"
         },
         {
           "step": 2,
-          "action": "验证迁移文件包含 4 个 AddColumn 操作",
-          "code_hint": "检查 Up 方法包含 AddColumn(\"Rooms\", \"ElevatorFee\"/\"PropertyFee\"/\"InternetFee\"/\"OtherFees\", ...)，类型 decimal(10,2)，nullable"
-        }
-      ],
-      "test_file": "tests/e2e/feat-145-room-fixed-fees-migration.spec.ts",
-      "status": "passed",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-09T17:58:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-09T17:55:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "resolved_issues": [
-          "C1: User 种子数据改为静态 BCrypt 哈希，消除迁移中非预期 UpdateData",
-          "C2: 删除旧迁移，重新生成干净的 RemoveRoomCostPrice 迁移",
-          "I1: Room 实体 4 个新属性添加 [Column(TypeName = \"decimal(10,2)\")] 特性",
-          "I2: 测试新增 UpdateData 排除检测"
-        ],
-        "minor_issues": [
-          "Room 现有金额属性缺少 Column 特性（技术债务，非本 FEAT 范围）",
-          "测试正则依赖缩进（可接受）"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-146",
-      "category": "前端",
-      "module": "Room固定费用",
-      "priority": "high",
-      "test_type": "static",
-      "description": "前端 TypeScript Model 变更",
-      "acceptance_criteria": [
-        "RoomItem 接口新增 elevatorFee、propertyFee、internetFee、otherFees",
-        "CreateRoomParams 接口新增对应 4 个属性",
-        "UpdateRoomParams 接口新增对应 4 个属性",
-        "npm run build:type 无类型错误"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "更新 RoomItem 接口：添加 4 个固定费用属性",
-          "file": "Hans/src/api/model/roomModel.ts",
-          "code_hint": "在 electricPrice 之后添加 elevatorFee?: number; propertyFee?: number; internetFee?: number; otherFees?: number;"
-        },
-        {
-          "step": 2,
-          "action": "更新 CreateRoomParams 接口：添加 4 个固定费用属性",
-          "file": "Hans/src/api/model/roomModel.ts",
-          "code_hint": "在 electricPrice 之后添加相同 4 个可选属性"
+          "action": "添加 CalculateLeaseDuration 私有方法",
+          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
+          "code_hint": "使用 AddYears/AddMonths 迭代计算年月日，返回格式化字符串如'1年2月16天'"
         },
         {
           "step": 3,
-          "action": "更新 UpdateRoomParams 接口：添加 4 个固定费用属性",
-          "file": "Hans/src/api/model/roomModel.ts",
-          "code_hint": "在 electricPrice 之后添加相同 4 个可选属性"
-        }
-      ],
-      "test_file": "tests/e2e/feat-146-room-fixed-fees-model.spec.ts",
-      "status": "passed",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-09T22:40:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-09T22:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "minor_issues": [
-          "extractInterfaceBlock 正则对深层嵌套花括号不健壮（当前接口为扁平属性，无风险）"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-147",
-      "category": "前端",
-      "module": "Room固定费用",
-      "priority": "high",
-      "test_type": "e2e",
-      "description": "前端房间编辑抽屉 UI",
-      "status": "passed",
-      "acceptance_criteria": [
-        "RoomFormData 接口新增 4 个固定费用属性",
-        "formData 初始值包含 4 个固定费用字段",
-        "编辑抽屉模板添加电梯费、物业费、网络费、其他费用输入框",
-        "handleCreate 方法重置 4 个固定费用字段",
-        "handleEdit 方法赋值 4 个固定费用字段",
-        "handleSubmit 创建/更新 payload 包含 4 个固定费用字段",
-        "npm run build:type 无类型错误"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "更新 RoomFormData 接口：添加 4 个固定费用属性",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "在 electricPrice 之后添加 elevatorFee?: number 等 4 个属性"
-        },
-        {
-          "step": 2,
-          "action": "更新 formData 初始值：添加 4 个固定费用字段",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "在 electricPrice 之后添加 elevatorFee: undefined 等"
-        },
-        {
-          "step": 3,
-          "action": "更新编辑抽屉模板：添加固定费用输入框（2行x2列布局）",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "在费用设置区域 </t-row> 后添加 2 个 <t-row>，每行 2 个 <t-col :span=\"6\">，使用 t-input-number 组件，data-testid: room-elevator-fee-input 等"
+          "action": "确保引用了 RentalStatus 枚举",
+          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
+          "code_hint": "检查 using Gentle.Core.Enums; 是否包含 RentalStatus"
         },
         {
           "step": 4,
-          "action": "更新 handleCreate 方法：重置固定费用字段",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "在 electricPrice 之后添加 4 个 undefined 字段"
-        },
-        {
-          "step": 5,
-          "action": "更新 handleEdit 方法：赋值固定费用字段",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "在 electricPrice 之后添加 elevatorFee: row.elevatorFee 等"
-        },
-        {
-          "step": 6,
-          "action": "更新 handleSubmit 方法 — 创建 payload",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "在 createRoom 调用的 electricPrice 之后添加 4 个字段"
-        },
-        {
-          "step": 7,
-          "action": "更新 handleSubmit 方法 — 更新 payload",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "在 updateRoom 调用的 electricPrice 之后添加 4 个字段"
-        },
-        {
-          "step": 8,
-          "action": "构建验证",
-          "verify_command": "cd Hans && npm run build:type"
+          "action": "验证构建",
+          "verify_command": "cd Gentle && dotnet build"
         }
       ],
-      "test_file": "tests/e2e/feat-147-room-fixed-fees-drawer.spec.ts",
+      "test_file": "tests/e2e/feat-151-room-service-rental-query.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-09T23:15:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-09T23:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "resolved_issues": [
-          "I1: handleAddLease 新增 4 个固定费用字段预填充，与水电费预填保持一致"
-        ],
-        "minor_issues": [
-          "测试硬编码凭据（项目现有模式，41个文件，不在本 FEAT 范围）",
-          "otherFees 复数命名与其他单数命名略有不同（设计意图，FEAT-144 审查已确认可接受）"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-148",
-      "category": "集成",
-      "module": "Room固定费用",
+      "id": "FEAT-152",
+      "category": "前端",
+      "module": "房间列表租约信息",
       "priority": "high",
-      "test_type": "e2e",
-      "description": "E2E 测试更新",
+      "test_type": "static",
+      "description": "前端 TypeScript 类型新增字段",
       "acceptance_criteria": [
-        "feat-004-room-api.spec.ts 新增固定费用字段的创建和更新测试数据",
-        "feat-004-room-api.spec.ts 新增固定费用字段的断言验证",
-        "feat-006-room-page.spec.ts 新增固定费用输入框的交互测试",
-        "所有相关 E2E 测试通过"
+        "RoomItem 接口新增 anjuCodeSubmitted、leaseDuration、daysUntilExpiry",
+        "npm run build:type 无类型错误"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "更新 Room API 测试：添加固定费用字段数据和断言",
-          "file": "tests/e2e/feat-004-room-api.spec.ts",
-          "code_hint": "在创建/更新测试数据中添加 elevatorFee/propertyFee/internetFee/otherFees，添加对应断言"
+          "action": "在 RoomItem 接口添加 3 个字段",
+          "file": "Hans/src/api/model/roomModel.ts",
+          "code_hint": "anjuCodeSubmitted?: boolean | null; leaseDuration?: string | null; daysUntilExpiry?: number | null;"
         },
         {
           "step": 2,
-          "action": "更新 Room 页面测试：添加固定费用输入框交互",
-          "file": "tests/e2e/feat-006-room-page.spec.ts",
-          "code_hint": "使用 data-testid 选择器填写固定费用输入框，验证编辑回显"
-        },
-        {
-          "step": 3,
-          "action": "运行测试验证",
-          "verify_command": "cd tests && npx playwright test e2e/feat-004-room-api.spec.ts e2e/feat-006-room-page.spec.ts"
+          "action": "验证类型检查",
+          "verify_command": "cd Hans && npm run build:type"
         }
       ],
-      "test_file": "tests/e2e/feat-148-room-fixed-fees-tests.spec.ts",
-      "status": "passed",
+      "test_file": "tests/e2e/feat-152-room-model-rental-fields.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-09T23:35:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-09T23:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "resolved_issues": [
-          "I1: 编辑测试添加 inputValue() 回显值验证，不再仅检查可见性",
-          "I2: 统一使用 [data-testid] input 选择器，与 TDesign 组件结构一致"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-149",
-      "category": "集成",
-      "module": "Room固定费用",
+      "id": "FEAT-153",
+      "category": "前端",
+      "module": "房间列表租约信息",
       "priority": "high",
       "test_type": "e2e",
-      "description": "最终验证",
+      "description": "前端列表页新增 3 列",
       "acceptance_criteria": [
-        "全部 Room 相关 E2E 测试通过",
+        "columns 数组新增安居码、已租时长、到期天数 3 列",
+        "template 新增 3 个 slot 渲染租约信息",
+        "npm run build:type 无类型错误"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 columns 数组中插入 3 个新列",
+          "file": "Hans/src/pages/housing/room/index.vue",
+          "code_hint": "anjuCodeSubmitted(安居码,80), leaseDuration(已租时长,110), daysUntilExpiry(到期天数,100)"
+        },
+        {
+          "step": 2,
+          "action": "在 template 中添加 3 个 slot",
+          "file": "Hans/src/pages/housing/room/index.vue",
+          "code_hint": "安居码用 t-tag(success/danger)，已租时长用 span，到期天数用条件样式（正/零/负）"
+        },
+        {
+          "step": 3,
+          "action": "验证类型检查",
+          "verify_command": "cd Hans && npm run build:type"
+        }
+      ],
+      "test_file": "tests/e2e/feat-153-room-list-rental-columns.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-154",
+      "category": "集成",
+      "module": "房间列表租约信息",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "E2E 测试",
+      "acceptance_criteria": [
+        "RoomDto 包含 3 个租约字段",
+        "RoomService 包含租约查询和计算逻辑",
+        "roomModel.ts 包含 3 个租约字段",
+        "room/index.vue 包含 3 列和 slot",
         "后端 dotnet build 成功",
         "前端 npm run build:type 无类型错误"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "运行全部 Room 相关 E2E 测试",
-          "verify_command": "cd tests && npx playwright test e2e/feat-002-room-entity.spec.ts e2e/feat-004-room-api.spec.ts e2e/feat-006-room-page.spec.ts"
+          "action": "创建 E2E 测试文件",
+          "file": "tests/e2e/feat-154-room-list-rental-info.spec.ts",
+          "code_hint": "验证 RoomDto 字段、RoomService 逻辑、roomModel 字段、列表页列和 slot、构建验证"
         },
         {
           "step": 2,
-          "action": "运行后端构建",
-          "verify_command": "cd Gentle && dotnet build"
-        },
-        {
-          "step": 3,
-          "action": "运行前端类型检查",
-          "verify_command": "cd Hans && npm run build:type"
+          "action": "运行测试",
+          "verify_command": "cd tests && npx playwright test e2e/feat-154-room-list-rental-info.spec.ts"
         }
       ],
-      "test_file": "tests/e2e/feat-149-room-fixed-fees-final.spec.ts",
-      "status": "passed",
+      "test_file": "tests/e2e/feat-154-room-list-rental-info.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-09T23:55:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-09T23:50:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "resolved_issues": [
-          "I1: build:type 断言移除脆弱的 not.toContain('error')，改为依赖 execSync 异常机制"
-        ],
-        "minor_issues": [
-          "计划要求运行已有 E2E 测试（feat-002/004/006），实际由 /workflow-verify 阶段执行（工作流分工，可接受）"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     }
   ]
