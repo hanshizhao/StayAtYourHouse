@@ -39,13 +39,14 @@ test.describe('FEAT-145: Room 固定费用 - 数据库迁移', () => {
 
   // ==================== Up 方法 - DropColumn CostPrice 测试 ====================
 
-  test('迁移 Up 方法包含 DropColumn CostPrice 操作', () => {
+  test('迁移 Up 方法不包含 DropColumn CostPrice 操作（已由旧迁移完成）', () => {
     const migrationFile = findMigrationFile();
     expect(migrationFile).not.toBeNull();
     const content = fs.readFileSync(migrationFile!, 'utf-8');
 
-    expect(content, 'Up 方法应包含 DropColumn("CostPrice") 操作').toContain('name: "CostPrice"');
-    expect(content, 'Up 方法应包含 DropColumn 操作').toContain('DropColumn(');
+    const upMethod = content.match(/protected override void Up\([\s\S]*?protected override void Down/)?.[0];
+    expect(upMethod, '应存在 Up 方法').toBeTruthy();
+    expect(upMethod!, 'Up 方法不应包含 DropColumn 操作').not.toContain('DropColumn');
   });
 
   // ==================== Up 方法 - AddColumn 操作测试 ====================
@@ -106,7 +107,7 @@ test.describe('FEAT-145: Room 固定费用 - 数据库迁移', () => {
 
   // ==================== Down 方法 - 恢复操作测试 ====================
 
-  test('迁移 Down 方法包含 4 个 DropColumn 和 AddColumn CostPrice', () => {
+  test('迁移 Down 方法包含 4 个 DropColumn', () => {
     const migrationFile = findMigrationFile();
     expect(migrationFile).not.toBeNull();
     const content = fs.readFileSync(migrationFile!, 'utf-8');
@@ -120,9 +121,6 @@ test.describe('FEAT-145: Room 固定费用 - 数据库迁移', () => {
     for (const field of fixedFeeFields) {
       expect(downMethod, `Down 方法应包含 DropColumn("${field}")`).toContain(`name: "${field}"`);
     }
-
-    // Down 方法应恢复 CostPrice 列
-    expect(downMethod, 'Down 方法应包含 AddColumn("CostPrice")').toContain('name: "CostPrice"');
 
     const dropColumnCount = (downMethod.match(/DropColumn\(/g) || []).length;
     expect(dropColumnCount, 'Down 方法应有 4 个 DropColumn 调用').toBe(4);
