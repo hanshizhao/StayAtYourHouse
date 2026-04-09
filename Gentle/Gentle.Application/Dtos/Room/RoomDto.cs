@@ -84,6 +84,21 @@ public class RoomDto
     public RoomStatus Status { get; set; }
 
     /// <summary>
+    /// 是否已提交安居码
+    /// </summary>
+    public bool? AnjuCodeSubmitted { get; set; }
+
+    /// <summary>
+    /// 已租时长（如"1年2月16天"）
+    /// </summary>
+    public string? LeaseDuration { get; set; }
+
+    /// <summary>
+    /// 到期天数（负数表示已过期天数）
+    /// </summary>
+    public int? DaysUntilExpiry { get; set; }
+
+    /// <summary>
     /// 合同图片路径
     /// </summary>
     public string? ContractImage { get; set; }
