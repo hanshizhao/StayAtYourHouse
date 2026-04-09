@@ -10,10 +10,6 @@ namespace Gentle.Database.Migrations.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "CostPrice",
-                table: "Room");
-
             migrationBuilder.AddColumn<decimal>(
                 name: "ElevatorFee",
                 table: "Room",
@@ -57,13 +53,6 @@ namespace Gentle.Database.Migrations.Migrations
             migrationBuilder.DropColumn(
                 name: "PropertyFee",
                 table: "Room");
-
-            migrationBuilder.AddColumn<decimal>(
-                name: "CostPrice",
-                table: "Room",
-                type: "decimal(18,2)",
-                nullable: false,
-                defaultValue: 0m);
         }
     }
 }
