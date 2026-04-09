@@ -45,12 +45,70 @@ public class RoomService : IRoomService
 
         var list = await query.ToListAsync();
 
-        // 内存排序（SQLite 兼容）
+        // 仅查询当前房间列表中的活跃租住记录，按 RoomId 分组
+        var today = DateTime.Today;
+        var roomIds = list.Select(r => r.Id).ToHashSet();
+        var activeRentals = await _rentalRecordRepository
+            .AsQueryable(false)
+            .Where(r => r.Status == RentalStatus.Active && roomIds.Contains(r.RoomId))
+            .OrderByDescending(r => r.CreatedTime)
+            .ToListAsync();
+
+        var rentalByRoomId = activeRentals
+            .GroupBy(r => r.RoomId)
+            .ToDictionary(g => g.Key, g => g.First());
+
+        // 内存排序并填充租约字段
         return list
             .OrderBy(r => r.Community.Name)
             .ThenBy(r => r.Building)
             .ThenBy(r => r.RoomNumber)
-            .Adapt<List<RoomDto>>();
+            .Select(r =>
+            {
+                var dto = r.Adapt<RoomDto>();
+                if (rentalByRoomId.TryGetValue(r.Id, out var rental))
+                {
+                    dto.AnjuCodeSubmitted = rental.IsAnJuCodeSubmitted;
+                    dto.LeaseDuration = CalculateLeaseDuration(rental.CheckInDate.Date, today);
+                    dto.DaysUntilExpiry = (int)(rental.ContractEndDate.Date - today).TotalDays;
+                }
+                return dto;
+            })
+            .ToList();
+    }
+
+    /// <summary>
+    /// 计算租期时长，返回格式如"1年2月16天"
+    /// </summary>
+    private static string CalculateLeaseDuration(DateTime startDate, DateTime referenceDate)
+    {
+        if (startDate > referenceDate) return "0天";
+
+        var temp = startDate;
+        var years = 0;
+        var months = 0;
+
+        while (temp.AddYears(years + 1) <= referenceDate)
+        {
+            years++;
+        }
+
+        temp = temp.AddYears(years);
+
+        while (temp.AddMonths(months + 1) <= referenceDate)
+        {
+            months++;
+        }
+
+        temp = temp.AddMonths(months);
+        var days = (int)(referenceDate - temp).TotalDays;
+
+        var parts = new List<string>();
+        if (years > 0) parts.Add($"{years}年");
+        if (months > 0) parts.Add($"{months}月");
+        if (days > 0 || parts.Count == 0) parts.Add($"{days}天");
+
+        return string.Join("", parts);
     }
 
     /// <inheritdoc />
