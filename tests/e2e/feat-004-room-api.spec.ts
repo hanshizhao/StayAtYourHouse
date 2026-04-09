@@ -189,9 +189,12 @@ test.describe('FEAT-004: Room API', () => {
       communityId: testCommunityId,
       building: '1栋',
       roomNumber: `10${Date.now().toString().slice(-2)}`,
-      costPrice: 1500,
       rentPrice: 2000,
-      status: 0
+      status: 0,
+      elevatorFee: 150,
+      propertyFee: 200,
+      internetFee: 80,
+      otherFees: 50
     };
 
     const response = await request.post(`${API_BASE}/api/room/add`, {
@@ -212,8 +215,13 @@ test.describe('FEAT-004: Room API', () => {
     expect(result.data.communityId).toBe(testData.communityId);
     expect(result.data.building).toBe(testData.building);
     expect(result.data.roomNumber).toBe(testData.roomNumber);
-    expect(result.data.costPrice).toBe(testData.costPrice);
     expect(result.data.rentPrice).toBe(testData.rentPrice);
+
+    // 验证固定费用字段
+    expect(result.data.elevatorFee).toBe(testData.elevatorFee);
+    expect(result.data.propertyFee).toBe(testData.propertyFee);
+    expect(result.data.internetFee).toBe(testData.internetFee);
+    expect(result.data.otherFees).toBe(testData.otherFees);
   });
 
   test('7. 创建接口 - 必填字段验证（缺少 building）', async ({ request }) => {
@@ -223,7 +231,6 @@ test.describe('FEAT-004: Room API', () => {
         communityId: testCommunityId,
         // 缺少必填的 building 字段
         roomNumber: '101',
-        costPrice: 1500,
         rentPrice: 2000,
         status: 0
       }
@@ -244,7 +251,6 @@ test.describe('FEAT-004: Room API', () => {
         communityId: testCommunityId,
         building: '1栋',
         // 缺少必填的 roomNumber 字段
-        costPrice: 1500,
         rentPrice: 2000,
         status: 0
       }
@@ -265,7 +271,6 @@ test.describe('FEAT-004: Room API', () => {
         communityId: testCommunityId,
         building: '1栋',
         roomNumber: '102',
-        costPrice: -100, // 负数价格
         rentPrice: 2000,
         status: 0
       }
@@ -285,7 +290,6 @@ test.describe('FEAT-004: Room API', () => {
         communityId: 99999999, // 不存在的小区
         building: '1栋',
         roomNumber: '103',
-        costPrice: 1500,
         rentPrice: 2000,
         status: 0
       }
@@ -308,7 +312,6 @@ test.describe('FEAT-004: Room API', () => {
         communityId: testCommunityId,
         building: '2栋',
         roomNumber: `20${Date.now().toString().slice(-2)}`,
-        costPrice: 1200,
         rentPrice: 1800,
         status: 0
       }
@@ -356,7 +359,6 @@ test.describe('FEAT-004: Room API', () => {
         communityId: testCommunityId,
         building: '3栋',
         roomNumber: `30${Date.now().toString().slice(-2)}`,
-        costPrice: 1000,
         rentPrice: 1500,
         status: 0
       }
@@ -372,9 +374,12 @@ test.describe('FEAT-004: Room API', () => {
       communityId: testCommunityId,
       building: '3栋',
       roomNumber: createResult.data.roomNumber,
-      costPrice: 1200,
       rentPrice: 1800,
-      status: 1 // 更新为已出租
+      status: 1, // 更新为已出租
+      elevatorFee: 180,
+      propertyFee: 250,
+      internetFee: 100,
+      otherFees: 30
     };
 
     const response = await request.put(`${API_BASE}/api/room/edit`, {
@@ -386,9 +391,14 @@ test.describe('FEAT-004: Room API', () => {
 
     const result = await response.json();
     expect(result.succeeded).toBe(true);
-    expect(result.data.costPrice).toBe(updateData.costPrice);
     expect(result.data.rentPrice).toBe(updateData.rentPrice);
     expect(result.data.status).toBe(updateData.status);
+
+    // 验证固定费用字段更新
+    expect(result.data.elevatorFee).toBe(updateData.elevatorFee);
+    expect(result.data.propertyFee).toBe(updateData.propertyFee);
+    expect(result.data.internetFee).toBe(updateData.internetFee);
+    expect(result.data.otherFees).toBe(updateData.otherFees);
   });
 
   // ==================== 删除接口测试 ====================
@@ -401,7 +411,6 @@ test.describe('FEAT-004: Room API', () => {
         communityId: testCommunityId,
         building: '4栋',
         roomNumber: `40${Date.now().toString().slice(-2)}`,
-        costPrice: 800,
         rentPrice: 1200,
         status: 0
       }
@@ -447,11 +456,14 @@ test.describe('FEAT-004: Room API', () => {
       communityId: testCommunityId,
       building: '5栋',
       roomNumber: `50${Date.now().toString().slice(-2)}`,
-      costPrice: 1500,
       rentPrice: 2200,
       deposit: 4400,
       waterPrice: 5,
       electricPrice: 1.2,
+      elevatorFee: 120,
+      propertyFee: 180,
+      internetFee: 60,
+      otherFees: 40,
       status: 0,
       remark: 'E2E测试-完整属性'
     };
@@ -472,5 +484,11 @@ test.describe('FEAT-004: Room API', () => {
     expect(result.data.waterPrice).toBe(testData.waterPrice);
     expect(result.data.electricPrice).toBe(testData.electricPrice);
     expect(result.data.remark).toBe(testData.remark);
+
+    // 验证固定费用属性
+    expect(result.data.elevatorFee).toBe(testData.elevatorFee);
+    expect(result.data.propertyFee).toBe(testData.propertyFee);
+    expect(result.data.internetFee).toBe(testData.internetFee);
+    expect(result.data.otherFees).toBe(testData.otherFees);
   });
 });

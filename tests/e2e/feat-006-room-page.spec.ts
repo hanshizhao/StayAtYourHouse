@@ -91,7 +91,7 @@ test.describe('FEAT-006: 房间列表页', () => {
     await expect(table).toBeVisible({ timeout: 5000 });
 
     // 验证表头存在
-    const expectedHeaders = ['楼栋', '房间号', '成本价', '租金', '状态'];
+    const expectedHeaders = ['楼栋', '房间号', '出租价', '押金', '状态'];
     for (const header of expectedHeaders) {
       const headerLocator = table.locator(`th:has-text("${header}")`);
       // 至少有一个表头存在
@@ -178,14 +178,24 @@ test.describe('FEAT-006: 房间列表页', () => {
       await roomNumberInput.fill('101');
     }
 
-    const costPriceInput = page.locator('[data-testid="room-cost-price-input"], input[placeholder*="成本价"]');
-    if (await costPriceInput.isVisible()) {
-      await costPriceInput.fill('1500');
-    }
-
     const rentPriceInput = page.locator('[data-testid="room-rent-price-input"], input[placeholder*="出租价"]');
     if (await rentPriceInput.isVisible()) {
       await rentPriceInput.fill('2000');
+    }
+
+    // 填写固定费用字段
+    const fixedFeeFields = [
+      { testId: 'room-elevator-fee-input', value: '150' },
+      { testId: 'room-property-fee-input', value: '200' },
+      { testId: 'room-internet-fee-input', value: '80' },
+      { testId: 'room-other-fees-input', value: '50' },
+    ];
+
+    for (const field of fixedFeeFields) {
+      const input = page.locator(`[data-testid="${field.testId}"] input`);
+      if (await input.isVisible()) {
+        await input.fill(field.value);
+      }
     }
 
     // 提交表单
@@ -218,10 +228,21 @@ test.describe('FEAT-006: 房间列表页', () => {
     await expect(dialog).toBeVisible({ timeout: 5000 });
 
     // 验证表单已填充数据
-    const costPriceInput = page.locator('[data-testid="room-cost-price-input"], input[placeholder*="成本价"]');
-    if (await costPriceInput.isVisible()) {
-      const value = await costPriceInput.inputValue();
-      expect(value).not.toBe('');
+    // 验证固定费用字段存在且回显数据
+    const fixedFeeTestIds = [
+      'room-elevator-fee-input',
+      'room-property-fee-input',
+      'room-internet-fee-input',
+      'room-other-fees-input',
+    ];
+
+    for (const testId of fixedFeeTestIds) {
+      const input = page.locator(`[data-testid="${testId}"] input`);
+      if (await input.isVisible()) {
+        // 验证回显值不为空（编辑时应从 API 加载已有数据）
+        const value = await input.inputValue();
+        expect(value).not.toBe('');
+      }
     }
   });
 
