@@ -10,39 +10,33 @@
 
 | 模块 | 优先级 | 功能数 | 状态 |
 |------|--------|--------|------|
-| 删除Room的Area和RoomType | P0 | 6 | ✅ 全部完成 |
+| Room固定费用 | P0 | 6 | ⏳ 待开始 |
 
 ## 功能进度
 
-### 删除Room的Area和RoomType (FEAT-138 ~ FEAT-143) ✅
+### Room固定费用 (FEAT-144 ~ FEAT-149)
 
 | ID | 描述 | 状态 | 测试 |
 |----|------|------|------|
-| FEAT-138 | 后端实体 + DTO 删除 Area/RoomType | ✅ 已完成 | 37 passed |
-| FEAT-139 | 后端 Service + Report DTO 删除 Area/RoomType | ✅ 已完成 | static passed |
-| FEAT-140 | 数据库迁移 | ✅ 已完成 | static passed |
-| FEAT-141 | 前端类型定义和页面删除 area/roomType | ✅ 已完成 | e2e passed |
-| FEAT-142 | E2E 测试更新 | ✅ 已完成 | static passed |
-| FEAT-143 | 最终验证 | ✅ 已完成 | 37/37 passed |
+| FEAT-144 | 后端实体与 DTO 变更 | ⏳ 待开始 | - |
+| FEAT-145 | 数据库迁移 | ⏳ 待开始 | - |
+| FEAT-146 | 前端 TypeScript Model 变更 | ⏳ 待开始 | - |
+| FEAT-147 | 前端房间编辑抽屉 UI | ⏳ 待开始 | - |
+| FEAT-148 | E2E 测试更新 | ⏳ 待开始 | - |
+| FEAT-149 | 最终验证 | ⏳ 待开始 | - |
 
 ## 统计
 
-- **已完成**: 6
+- **已完成**: 0
 - **进行中**: 0
-- **待处理**: 0
+- **待处理**: 6
 
 ## 更新日志
 
-### 2026-04-08
+### 2026-04-09
 
-- FEAT-143 最终验证通过：37/37 测试全部通过（后端文件 8 项 + 前端文件 5 项 + E2E 测试 4 项 + 迁移 1 项 + 构建 2 项）
-- FEAT-142 E2E 测试更新完成
-- FEAT-141 前端类型定义和页面删除完成
-- FEAT-140 数据库迁移完成
-- FEAT-139 后端 Service + Report DTO 删除完成
-- FEAT-138 后端实体 + DTO 删除完成
-- 初始化「删除Room的Area和RoomType」功能模块（FEAT-138~143），来源：docs/superpowers/plans/2026-04-08-remove-room-area-type.md
-- 清理已完成任务（FEAT-128~137 passed，已删除）
+- 初始化「Room固定费用」功能模块（FEAT-144~149），来源：docs/superpowers/plans/2026-04-09-room-fixed-fees.md
+- 清理已完成任务（FEAT-138~143 passed，已删除）
 
 ## 状态说明
 
