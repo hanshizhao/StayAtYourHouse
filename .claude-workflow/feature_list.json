@@ -191,7 +191,7 @@
       "priority": "high",
       "test_type": "e2e",
       "description": "前端房间编辑抽屉 UI",
-      "status": "in_progress",
+      "status": "passed",
       "acceptance_criteria": [
         "RoomFormData 接口新增 4 个固定费用属性",
         "formData 初始值包含 4 个固定费用字段",
@@ -251,7 +251,6 @@
         }
       ],
       "test_file": "tests/e2e/feat-147-room-fixed-fees-drawer.spec.ts",
-      "status": "passed",
       "verification": {
         "e2e_tests_created": true,
         "e2e_tests_passed": true,
@@ -359,10 +358,27 @@
         }
       ],
       "test_file": "tests/e2e/feat-149-room-fixed-fees-final.spec.ts",
-      "status": "pending",
+      "status": "passed",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-09T23:55:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-09T23:50:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 1
+        },
+        "resolved_issues": [
+          "I1: build:type 断言移除脆弱的 not.toContain('error')，改为依赖 execSync 异常机制"
+        ],
+        "minor_issues": [
+          "计划要求运行已有 E2E 测试（feat-002/004/006），实际由 /workflow-verify 阶段执行（工作流分工，可接受）"
+        ]
       }
     }
   ]
