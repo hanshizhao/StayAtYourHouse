@@ -44,19 +44,23 @@ public int? DaysUntilExpiry { get; set; }        // 正数=剩余天数，负数
 
 1. 查询所有房间后，收集 RoomId 列表
 2. 通过已注入的 `_rentalRecordRepository` 批量查出 `Status == Active && RoomId in ids` 的租约记录
-3. 构建 `Dictionary<int, RentalRecord>` 以 RoomId 为 key
-4. 遍历房间 DTO 列表，匹配活跃租约记录并填充三个字段
-5. 无匹配的房间字段保持 `null`
+3. 若同一 RoomId 存在多条 Active 记录，取 `ContractEndDate` 最新的一条（正常业务不应出现，做防御性处理）
+4. 构建 `Dictionary<int, RentalRecord>` 以 RoomId 为 key
+5. 遍历房间 DTO 列表，匹配活跃租约记录并填充三个字段
+6. 无匹配的房间字段保持 `null`
 
 ### 租期计算工具方法
 
 新增私有方法 `CalculateLeaseDuration(DateTime checkInDate, DateTime today)` 返回格式化字符串：
 
 ```
-算法：
-1. 计算总年数 = (today.Year - checkInDate.Year)，若 today 月日 < checkInDate 月日则年数-1
-2. 计算剩余月数，若天数为负则月数-1并加30天
-3. 根据年/月/天的值按格式规则拼接，省略为0的部分
+算法（使用 DateTime 逐步递减，避免手工日历计算）：
+1. years = 0; while (checkInDate.AddYears(years + 1) <= today) years++
+2. shifted = checkInDate.AddYears(years)
+3. months = 0; while (shifted.AddMonths(months + 1) <= today) months++
+4. shifted2 = shifted.AddMonths(months)
+5. days = (today - shifted2).Days
+6. 根据年/月/天的值按格式规则拼接，省略为0的部分
 ```
 
 ### 不需要数据库迁移
