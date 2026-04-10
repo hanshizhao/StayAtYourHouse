@@ -196,7 +196,6 @@ test.describe('FEAT-042: E2E 完整已收回状态验证', () => {
         communityId: existingRoom.communityId,
         building: 'T-042',
         roomNumber: 'TEST-042',
-        costPrice: 1000,
         rentPrice: 1500,
         status: 3,
       },

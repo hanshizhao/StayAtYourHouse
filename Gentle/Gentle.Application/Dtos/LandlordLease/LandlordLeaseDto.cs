@@ -61,6 +61,11 @@ public class LandlordLeaseDto
     };
 
     /// <summary>
+    /// 押金金额
+    /// </summary>
+    public decimal? Deposit { get; set; }
+
+    /// <summary>
     /// 押金月数
     /// </summary>
     public int? DepositMonths { get; set; }

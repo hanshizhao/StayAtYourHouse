@@ -73,7 +73,6 @@ test.describe('FEAT-022: Meter API', () => {
         communityId,
         building: '1',
         roomNumber: `R${Date.now().toString().slice(-6)}`,
-        costPrice: 1000,
         rentPrice: 2000
       }
     });

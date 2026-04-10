@@ -52,6 +52,12 @@ public class CreateLandlordLeaseInput
     public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.Monthly;
 
     /// <summary>
+    /// 押金金额
+    /// </summary>
+    [Range(0, double.MaxValue, ErrorMessage = "押金金额不能为负数")]
+    public decimal? Deposit { get; set; }
+
+    /// <summary>
     /// 押金月数
     /// </summary>
     [Range(0, 36, ErrorMessage = "押金月数必须在0到36之间")]

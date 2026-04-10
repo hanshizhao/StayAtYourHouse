@@ -100,6 +100,7 @@ public class LandlordLeaseService : ILandlordLeaseService
         lease.EndDate = input.EndDate;
         lease.MonthlyRent = input.MonthlyRent;
         lease.PaymentMethod = input.PaymentMethod;
+        lease.Deposit = input.Deposit;
         lease.DepositMonths = input.DepositMonths;
         lease.WaterPrice = input.WaterPrice;
         lease.ElectricPrice = input.ElectricPrice;

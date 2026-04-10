@@ -74,6 +74,11 @@
             付款方式
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.LandlordLease.Deposit">
+            <summary>
+            押金金额
+            </summary>
+        </member>
         <member name="P:Gentle.Core.Entities.LandlordLease.DepositMonths">
             <summary>
             押金月数
@@ -455,11 +460,6 @@
             房间号
             </summary>
         </member>
-        <member name="P:Gentle.Core.Entities.Room.CostPrice">
-            <summary>
-            成本价（月租金成本）
-            </summary>
-        </member>
         <member name="P:Gentle.Core.Entities.Room.RentPrice">
             <summary>
             出租价（月租金）
@@ -478,6 +478,26 @@
         <member name="P:Gentle.Core.Entities.Room.ElectricPrice">
             <summary>
             电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.ElevatorFee">
+            <summary>
+            电梯费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.PropertyFee">
+            <summary>
+            物业费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.InternetFee">
+            <summary>
+            网络费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Room.OtherFees">
+            <summary>
+            其他费用（月固定费用）
             </summary>
         </member>
         <member name="P:Gentle.Core.Entities.Room.Status">

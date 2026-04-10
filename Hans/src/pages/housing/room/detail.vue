@@ -94,6 +94,9 @@
           <t-descriptions-item label="月租金" data-testid="lease-monthly-rent">
             <span class="price">¥{{ roomDetail.landlordLease.monthlyRent?.toFixed(2) }}</span>
           </t-descriptions-item>
+          <t-descriptions-item label="押金金额" data-testid="lease-deposit">
+            {{ roomDetail.landlordLease.deposit ? `¥${roomDetail.landlordLease.deposit.toFixed(2)}` : '-' }}
+          </t-descriptions-item>
           <t-descriptions-item label="押金月数" data-testid="lease-deposit-months">
             {{ roomDetail.landlordLease.depositMonths ? `${roomDetail.landlordLease.depositMonths}个月` : '-' }}
           </t-descriptions-item>

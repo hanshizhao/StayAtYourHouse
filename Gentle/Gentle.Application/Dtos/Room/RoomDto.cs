@@ -89,14 +89,19 @@ public class RoomDto
     public bool? AnjuCodeSubmitted { get; set; }
 
     /// <summary>
-    /// 已租时长（如"1年2月16天"）
+    /// 租客姓名
     /// </summary>
-    public string? LeaseDuration { get; set; }
+    public string? TenantName { get; set; }
 
     /// <summary>
-    /// 到期天数（负数表示已过期天数）
+    /// 租赁开始日期
     /// </summary>
-    public int? DaysUntilExpiry { get; set; }
+    public DateTime? RentalStartDate { get; set; }
+
+    /// <summary>
+    /// 租赁结束日期
+    /// </summary>
+    public DateTime? RentalEndDate { get; set; }
 
     /// <summary>
     /// 合同图片路径

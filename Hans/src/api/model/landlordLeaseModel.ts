@@ -38,6 +38,7 @@ export interface LandlordLeaseDetail {
   monthlyRent: number;
   paymentMethod: PaymentMethod;
   paymentMethodText: string;
+  deposit?: number;
   depositMonths?: number;
   waterPrice?: number;
   electricPrice?: number;
@@ -61,6 +62,7 @@ export interface CreateLandlordLeaseParams {
   endDate?: string;
   monthlyRent: number;
   paymentMethod: PaymentMethod;
+  deposit?: number;
   depositMonths?: number;
   waterPrice?: number;
   electricPrice?: number;
@@ -82,6 +84,7 @@ export interface UpdateLandlordLeaseParams {
   endDate?: string;
   monthlyRent: number;
   paymentMethod: PaymentMethod;
+  deposit?: number;
   depositMonths?: number;
   waterPrice?: number;
   electricPrice?: number;

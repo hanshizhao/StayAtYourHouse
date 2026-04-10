@@ -167,7 +167,7 @@ PROMPT_EOF
     show_status
     log "INFO" "开始执行 /$current_cmd ($current_feat)... (预计 5-15 分钟，期间无输出是正常的)"
 
-    if claude -p \
+    if timeout 1800 claude -p \
       --dangerously-skip-permissions \
       --allowed-tools "Bash Edit Read Write Glob Grep Agent Skill TaskCreate TaskGet TaskList TaskUpdate WebSearch WebFetch mcp__pencil__*" \
       < "$PROMPT_FILE" > "$step_log" 2>&1; then

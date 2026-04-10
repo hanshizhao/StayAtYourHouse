@@ -113,7 +113,6 @@ test.describe('FEAT-037: 后端状态转换校验 + 状态文本映射', () => {
         CommunityId: 1,
         Building: '测试楼',
         RoomNumber: 'TEST-RECLAIMED',
-        CostPrice: 1000,
         RentPrice: 1500,
         Status: 3, // Reclaimed
       },

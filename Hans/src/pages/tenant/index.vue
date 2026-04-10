@@ -266,7 +266,6 @@ const idCardRegex = /^(\d{15}|\d{17}[\dX])$/i;
 const formRules: Record<string, FormRule[]> = {
   name: [{ required: true, message: '请输入租客姓名', trigger: 'blur' }],
   phone: [
-    { required: true, message: '请输入联系电话', trigger: 'blur' },
     { pattern: phoneRegex, message: '手机号格式不正确', trigger: 'blur' },
   ],
   idCard: [{ pattern: idCardRegex, message: '身份证号格式不正确', trigger: 'blur' }],

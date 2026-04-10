@@ -8,7 +8,7 @@
  * 2. CreateLandlordLeaseInput 文件存在性及验证特性
  * 3. UpdateLandlordLeaseInput 文件存在性及验证特性
  * 4. RoomDto 新增 LandlordLease 属性
- * 5. CreateRoomInput/UpdateRoomInput CostPrice 去掉 [Required]
+ * 5. CreateRoomInput/UpdateRoomInput CostPrice 已完全移除
  * 6. Mapper.cs Profit 计算改用 LandlordLease.MonthlyRent
  * 7. Mapper.cs 新增 LandlordLease 映射配置
  * 8. 项目构建成功
@@ -145,7 +145,7 @@ test.describe('FEAT-129: 房东租约 - 后端 DTO 和 Mapster 映射', () => {
 
   // ==================== CreateRoomInput/UpdateRoomInput 变更测试 ====================
 
-  test('9. 验证 CreateRoomInput CostPrice 去掉 [Required]', async () => {
+  test('9. 验证 CreateRoomInput 已移除 CostPrice', async () => {
     if (!fs.existsSync(createRoomInputPath)) {
       test.skip('CreateRoomInput 文件不存在');
       return;
@@ -153,18 +153,12 @@ test.describe('FEAT-129: 房东租约 - 后端 DTO 和 Mapster 映射', () => {
 
     const content = fs.readFileSync(createRoomInputPath, 'utf-8');
 
-    // 确认 CostPrice 字段存在
-    expect(content).toMatch(/public\s+decimal\s+CostPrice\s*\{\s*get;\s*set;\s*\}/);
-
-    // CostPrice 仍有 Range 验证
-    expect(content).toMatch(/CostPrice[\s\S]*?Range\(0/);
-
-    // CostPrice 上方不应有 [Required]（成本价注释后紧跟 Range 而非 Required）
-    const costPriceBlock = content.match(/成本价[\s\S]*?public\s+decimal\s+CostPrice\s*\{\s*get;\s*set;\s*\}/)?.[0] ?? '';
-    expect(costPriceBlock).not.toMatch(/\[Required/);
+    // CostPrice 字段已不存在
+    expect(content).not.toMatch(/public\s+decimal\s+CostPrice\s*\{\s*get;\s*set;\s*\}/);
+    expect(content).not.toContain('成本价');
   });
 
-  test('10. 验证 UpdateRoomInput CostPrice 去掉 [Required]', async () => {
+  test('10. 验证 UpdateRoomInput 已移除 CostPrice', async () => {
     if (!fs.existsSync(updateRoomInputPath)) {
       test.skip('UpdateRoomInput 文件不存在');
       return;
@@ -172,10 +166,9 @@ test.describe('FEAT-129: 房东租约 - 后端 DTO 和 Mapster 映射', () => {
 
     const content = fs.readFileSync(updateRoomInputPath, 'utf-8');
 
-    expect(content).toMatch(/public\s+decimal\s+CostPrice\s*\{\s*get;\s*set;\s*\}/);
-
-    const costPriceBlock = content.match(/成本价[\s\S]*?public\s+decimal\s+CostPrice\s*\{\s*get;\s*set;\s*\}/)?.[0] ?? '';
-    expect(costPriceBlock).not.toMatch(/\[Required/);
+    // CostPrice 字段已不存在
+    expect(content).not.toMatch(/public\s+decimal\s+CostPrice\s*\{\s*get;\s*set;\s*\}/);
+    expect(content).not.toContain('成本价');
   });
 
   // ==================== Mapper.cs 变更测试 ====================

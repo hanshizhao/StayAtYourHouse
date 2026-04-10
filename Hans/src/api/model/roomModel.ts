@@ -43,6 +43,10 @@ export interface RoomItem {
   internetFee?: number;
   otherFees?: number;
   status: RoomStatus;
+  anjuCodeSubmitted?: boolean | null;
+  tenantName?: string | null;
+  rentalStartDate?: string | null;
+  rentalEndDate?: string | null;
   contractImage?: string;
   remark?: string;
   createdTime: string;

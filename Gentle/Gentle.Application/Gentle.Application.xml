@@ -677,6 +677,11 @@
             付款方式
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.Deposit">
+            <summary>
+            押金金额
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput.DepositMonths">
             <summary>
             押金月数
@@ -767,6 +772,11 @@
             付款方式文本
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.Deposit">
+            <summary>
+            押金金额
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.LandlordLease.LandlordLeaseDto.DepositMonths">
             <summary>
             押金月数
@@ -855,6 +865,11 @@
         <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.PaymentMethod">
             <summary>
             付款方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.Deposit">
+            <summary>
+            押金金额
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.LandlordLease.UpdateLandlordLeaseInput.DepositMonths">
@@ -2153,11 +2168,6 @@
             房间号
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.CostPrice">
-            <summary>
-            成本价（月租金成本）
-            </summary>
-        </member>
         <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.RentPrice">
             <summary>
             出租价（月租金）
@@ -2176,6 +2186,26 @@
         <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.ElectricPrice">
             <summary>
             电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.ElevatorFee">
+            <summary>
+            电梯费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.PropertyFee">
+            <summary>
+            物业费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.InternetFee">
+            <summary>
+            网络费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.OtherFees">
+            <summary>
+            其他费用（月固定费用）
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Room.CreateRoomInput.Status">
@@ -2223,11 +2253,6 @@
             房间号
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.Room.RoomDto.CostPrice">
-            <summary>
-            成本价（月租金成本）
-            </summary>
-        </member>
         <member name="P:Gentle.Application.Dtos.Room.RoomDto.RentPrice">
             <summary>
             出租价（月租金）
@@ -2253,9 +2278,49 @@
             电费单价（元/度）
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.ElevatorFee">
+            <summary>
+            电梯费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.PropertyFee">
+            <summary>
+            物业费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.InternetFee">
+            <summary>
+            网络费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.OtherFees">
+            <summary>
+            其他费用（月固定费用）
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Room.RoomDto.Status">
             <summary>
             房间状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.AnjuCodeSubmitted">
+            <summary>
+            是否已提交安居码
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.TenantName">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.RentalStartDate">
+            <summary>
+            租赁开始日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.RentalEndDate">
+            <summary>
+            租赁结束日期
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Room.RoomDto.ContractImage">
@@ -2303,11 +2368,6 @@
             房间号
             </summary>
         </member>
-        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.CostPrice">
-            <summary>
-            成本价（月租金成本）
-            </summary>
-        </member>
         <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.RentPrice">
             <summary>
             出租价（月租金）
@@ -2326,6 +2386,26 @@
         <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.ElectricPrice">
             <summary>
             电费单价（元/度）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.ElevatorFee">
+            <summary>
+            电梯费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.PropertyFee">
+            <summary>
+            物业费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.InternetFee">
+            <summary>
+            网络费（月固定费用）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.OtherFees">
+            <summary>
+            其他费用（月固定费用）
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.Room.UpdateRoomInput.Status">

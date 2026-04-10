@@ -89,7 +89,6 @@ test.describe('FEAT-037: 后端状态转换校验 + 状态文本映射', () => {
         communityId: existingRoom.communityId,
         building: 'T-037',
         roomNumber: 'TEST-037',
-        costPrice: 1000,
         rentPrice: 1500,
         status: 3, // 尝试创建为已收回
       },
