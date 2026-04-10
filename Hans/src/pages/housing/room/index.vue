@@ -42,7 +42,9 @@
         :loading="loading"
         :header-affixed-top="headerAffixedTop"
         data-testid="room-table"
+        :expanded-row-keys="expandedRowKeys"
         @page-change="handlePageChange"
+        @expand-change="handleExpandChange"
       >
         <template #communityName="{ row }">
           <t-tooltip :content="row.communityName" placement="top">
@@ -63,21 +65,6 @@
             {{ getStatusText(row.status) }}
           </t-tag>
         </template>
-        <template #anjuCodeSubmitted="{ row }">
-          <t-tag v-if="row.anjuCodeSubmitted === true" theme="success" variant="light">已提交</t-tag>
-          <t-tag v-else-if="row.anjuCodeSubmitted === false" theme="danger" variant="light">未提交</t-tag>
-          <span v-else class="text-secondary">-</span>
-        </template>
-        <template #leaseDuration="{ row }">
-          <span v-if="row.leaseDuration">{{ row.leaseDuration }}</span>
-          <span v-else class="text-secondary">-</span>
-        </template>
-        <template #daysUntilExpiry="{ row }">
-          <span v-if="row.daysUntilExpiry != null" :class="getExpiryClass(row.daysUntilExpiry)">{{
-            row.daysUntilExpiry >= 0 ? `${row.daysUntilExpiry}天` : `已过期${Math.abs(row.daysUntilExpiry)}天`
-          }}</span>
-          <span v-else class="text-secondary">-</span>
-        </template>
         <template #remark="{ row }">
           <t-tooltip v-if="row.remark" :content="row.remark" placement="top">
             <span class="remark-text">{{ row.remark }}</span>
@@ -94,6 +81,27 @@
             <t-link theme="warning" data-testid="maintenance-button" @click="handleMaintenance(row)">维修</t-link>
             <t-link theme="danger" data-testid="delete-button" @click="handleDelete(row)">删除</t-link>
           </t-space>
+        </template>
+        <template #expandedRow="{ row }">
+          <div v-if="row.tenantName" class="expanded-row">
+            <div class="expanded-item">
+              <span class="expanded-label">租客</span>
+              <span class="expanded-value">{{ row.tenantName }}</span>
+            </div>
+            <div class="expanded-item">
+              <span class="expanded-label">租期</span>
+              <span class="expanded-value">
+                {{ row.rentalStartDate?.split('T')[0] ?? '-' }} ~ {{ row.rentalEndDate?.split('T')[0] ?? '-' }}
+              </span>
+            </div>
+            <div class="expanded-item">
+              <span class="expanded-label">安居码</span>
+              <t-tag v-if="row.anjuCodeSubmitted === true" theme="success" variant="light">已提交</t-tag>
+              <t-tag v-else-if="row.anjuCodeSubmitted === false" theme="danger" variant="light">未提交</t-tag>
+              <span v-else class="text-secondary">-</span>
+            </div>
+          </div>
+          <div v-else class="expanded-row expanded-row-empty">暂无租客信息</div>
         </template>
       </t-table>
     </t-card>
@@ -673,9 +681,6 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'rentPrice', title: '出租价', width: 100 },
   { colKey: 'deposit', title: '押金', width: 100 },
   { colKey: 'status', title: '状态', width: 90 },
-  { colKey: 'anjuCodeSubmitted', title: '安居码', width: 80 },
-  { colKey: 'leaseDuration', title: '已租时长', width: 110 },
-  { colKey: 'daysUntilExpiry', title: '到期天数', width: 100 },
   { colKey: 'remark', title: '备注', width: 150, ellipsis: true },
   { colKey: 'createdTime', title: '创建时间', width: 160 },
   { colKey: 'op', title: '操作', width: 220, fixed: 'right' },
@@ -693,6 +698,9 @@ const pagination = ref({
 // 筛选
 const filterCommunityId = ref<number | undefined>(undefined);
 const filterStatus = ref<RoomStatus | undefined>(undefined);
+
+// 展开行
+const expandedRowKeys = ref<number[]>([]);
 
 // 小区选项（使用 clearable 特性，无需"全部"选项）
 const communities = ref<CommunityItem[]>([]);
@@ -838,13 +846,6 @@ function getStatusText(status: RoomStatus): string {
   return RoomStatusText[status];
 }
 
-/** 获取到期天数样式 */
-function getExpiryClass(days: number): string {
-  if (days > 0) return 'expiry-positive';
-  if (days === 0) return 'expiry-zero';
-  return 'expiry-negative';
-}
-
 /** 获取小区列表 */
 async function fetchCommunities() {
   try {
@@ -873,10 +874,16 @@ function handleFilterChange() {
   pagination.value.defaultCurrent = 1;
 }
 
+/** 展开行变化 */
+function handleExpandChange(keys: Array<string | number>) {
+  expandedRowKeys.value = keys as number[];
+}
+
 /** 分页 */
 function handlePageChange(pageInfo: PageInfo) {
   pagination.value.defaultCurrent = pageInfo.current;
   pagination.value.defaultPageSize = pageInfo.pageSize;
+  expandedRowKeys.value = [];
 }
 
 /** 创建房间 */
@@ -1245,19 +1252,31 @@ onMounted(() => {
     font-weight: 500;
   }
 
-  .expiry-positive {
-    color: var(--td-success-color);
-    font-weight: 500;
+  .expanded-row {
+    display: flex;
+    gap: 32px;
+    padding: 8px 0;
   }
 
-  .expiry-zero {
-    color: var(--td-warning-color);
-    font-weight: 500;
+  .expanded-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
-  .expiry-negative {
-    color: var(--td-error-color);
-    font-weight: 500;
+  .expanded-label {
+    color: var(--td-text-color-secondary);
+    font-size: 13px;
+  }
+
+  .expanded-value {
+    color: var(--td-text-color-primary);
+    font-size: 13px;
+  }
+
+  .expanded-row-empty {
+    color: var(--td-text-color-placeholder);
+    font-size: 13px;
   }
 
   .form-section-title {

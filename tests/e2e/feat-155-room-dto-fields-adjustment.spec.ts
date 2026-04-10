@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from '@playwright/test'
 
 const ROOT = path.resolve(__dirname, '../..')
 const DTO_PATH = path.join(ROOT, 'Gentle/Gentle.Application/Dtos/Room/RoomDto.cs')

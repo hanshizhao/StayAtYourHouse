@@ -219,10 +219,24 @@
         }
       ],
       "test_file": "tests/e2e/feat-158-room-table-expand-row.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-10T20:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-10T20:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-10T00:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "notes": "I-1: 删除了 .text-expired 死代码；I-2 文件长度 1337 行为预先存在问题超出范围",
+        "rounds": 2
       }
     },
     {
