@@ -96,6 +96,7 @@
 | `Gentle/Gentle.Application/Services/RoomService.cs` | 添加 Renter Include，调整映射，移除 CalculateLeaseDuration |
 | `Hans/src/api/model/roomModel.ts` | 同步 RoomItem 字段增删 |
 | `Hans/src/pages/housing/room/index.vue` | 删 3 列及死代码，加行展开组件 |
+| `Gentle/Gentle.Application/Gentle.Application.xml` | XML 文档注释随字段变更同步更新 |
 
 ### E2E 测试更新
 
