@@ -87,10 +87,24 @@
         }
       ],
       "test_file": "tests/e2e/feat-156-room-service-mapping.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-10T18:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-10T18:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-10T00:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "notes": "发现的前端类型不同步属于 FEAT-157 范围；XML diff 超范围变更为工作区未提交累积，非代码质量问题",
+        "rounds": 1
       }
     },
     {
