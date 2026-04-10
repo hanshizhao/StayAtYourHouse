@@ -133,10 +133,28 @@
         }
       ],
       "test_file": "tests/e2e/feat-157-room-item-type.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-10T19:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-10T19:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-10T00:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_issues": [
+          "S-1: index.vue 旧字段引用属 FEAT-158 范围",
+          "S-2: 旧测试文件(feat-152/153/154)断言属 FEAT-159 范围",
+          "S-3: feat-151 遗留旧字段断言不在本范围"
+        ],
+        "rounds": 1
       }
     },
     {
