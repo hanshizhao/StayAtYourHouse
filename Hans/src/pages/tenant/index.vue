@@ -67,6 +67,12 @@
           </t-tag>
           <span v-else class="text-secondary">-</span>
         </template>
+        <template #leasePeriod="{ row }">
+          <span v-if="row.checkInDate && row.contractEndDate">
+            {{ row.checkInDate.split('T')[0] }} ~ {{ row.contractEndDate.split('T')[0] }}
+          </span>
+          <span v-else class="text-secondary">-</span>
+        </template>
         <template #emergencyContact="{ row }">
           <span>{{ row.emergencyContact || '-' }}</span>
         </template>
@@ -75,9 +81,6 @@
             <span class="remark-text">{{ row.remark }}</span>
           </t-tooltip>
           <span v-else class="text-secondary">-</span>
-        </template>
-        <template #createdTime="{ row }">
-          {{ formatDateTime(row.createdTime) }}
         </template>
         <template #op="{ row }">
           <t-space>
@@ -186,7 +189,6 @@ import { Gender, RentalStatus } from '@/api/model/tenantModel';
 import { createTenant, deleteTenant, getTenantList, updateTenant } from '@/api/tenant';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
-import { formatDateTime } from '@/utils/date';
 
 import CheckOutDialog from './components/CheckOutDialog.vue';
 
@@ -225,9 +227,9 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'gender', title: '性别', width: 80 },
   { colKey: 'currentRoom', title: '当前房间', width: 200, ellipsis: true },
   { colKey: 'status', title: '状态', width: 100 },
+  { colKey: 'leasePeriod', title: '租期', width: 200 },
   { colKey: 'emergencyContact', title: '紧急联系人', width: 150 },
   { colKey: 'remark', title: '备注', width: 200, ellipsis: true },
-  { colKey: 'createdTime', title: '创建时间', width: 180 },
   { colKey: 'op', title: '操作', width: 120, fixed: 'right' },
 ];
 
@@ -266,7 +268,14 @@ const idCardRegex = /^(\d{15}|\d{17}[\dX])$/i;
 const formRules: Record<string, FormRule[]> = {
   name: [{ required: true, message: '请输入租客姓名', trigger: 'blur' }],
   phone: [
-    { pattern: phoneRegex, message: '手机号格式不正确', trigger: 'blur' },
+    {
+      validator: (val: string) => {
+        if (!val) return true;
+        return phoneRegex.test(val);
+      },
+      message: '手机号格式不正确',
+      trigger: 'blur',
+    },
   ],
   idCard: [{ pattern: idCardRegex, message: '身份证号格式不正确', trigger: 'blur' }],
 };
@@ -386,7 +395,7 @@ async function handleSubmit() {
     if (dialogType.value === 'create') {
       await createTenant({
         name: formData.value.name,
-        phone: formData.value.phone,
+        phone: formData.value.phone || undefined,
         idCard: formData.value.idCard || undefined,
         gender: formData.value.gender,
         emergencyContact: formData.value.emergencyContact || undefined,
@@ -402,7 +411,7 @@ async function handleSubmit() {
       await updateTenant({
         id: tenantId,
         name: formData.value.name,
-        phone: formData.value.phone,
+        phone: formData.value.phone || undefined,
         idCard: formData.value.idCard || undefined,
         gender: formData.value.gender,
         emergencyContact: formData.value.emergencyContact || undefined,

@@ -91,9 +91,8 @@ public class TenantDto
     /// <summary>
     /// 联系电话
     /// </summary>
-    [Required]
     [MaxLength(20)]
-    public string Phone { get; set; } = string.Empty;
+    public string? Phone { get; set; }
 
     /// <summary>
     /// 身份证号
@@ -149,4 +148,14 @@ public class TenantDto
         RentalStatus.Terminated => "已退租",
         _ => null
     };
+
+    /// <summary>
+    /// 合同入住日期（来自当前活跃租赁记录）
+    /// </summary>
+    public DateTime? CheckInDate { get; set; }
+
+    /// <summary>
+    /// 合同结束日期（来自当前活跃租赁记录）
+    /// </summary>
+    public DateTime? ContractEndDate { get; set; }
 }

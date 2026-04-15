@@ -31,7 +31,7 @@ public class TenantService : ITenantService
         {
             query = query.Where(t =>
                 t.Name.Contains(input.Keyword) ||
-                t.Phone.Contains(input.Keyword) ||
+                (t.Phone != null && t.Phone.Contains(input.Keyword)) ||
                 (t.IdCard != null && t.IdCard.Contains(input.Keyword)));
         }
 
@@ -74,6 +74,8 @@ public class TenantService : ITenantService
                 };
                 dto.RentalRecordId = latestRental.Id;
                 dto.Status = latestRental.Status;
+                dto.CheckInDate = latestRental.CheckInDate;
+                dto.ContractEndDate = latestRental.ContractEndDate;
             }
             return dto;
         }).ToList();
@@ -95,13 +97,16 @@ public class TenantService : ITenantService
     /// <inheritdoc />
     public async Task<TenantDto> AddAsync(CreateTenantInput input)
     {
-        // 检查电话是否重复
-        var phoneExists = await _repository.AsQueryable(false)
-            .AnyAsync(t => t.Phone == input.Phone);
-
-        if (phoneExists)
+        // 检查电话是否重复（如果填写了）
+        if (!string.IsNullOrWhiteSpace(input.Phone))
         {
-            throw Oops.Oh($"联系电话 {input.Phone} 已存在");
+            var phoneExists = await _repository.AsQueryable(false)
+                .AnyAsync(t => t.Phone == input.Phone);
+
+            if (phoneExists)
+            {
+                throw Oops.Oh($"联系电话 {input.Phone} 已存在");
+            }
         }
 
         // 检查身份证号是否重复（如果填写了）
@@ -132,13 +137,16 @@ public class TenantService : ITenantService
             throw Oops.Oh($"租客 {input.Id} 不存在");
         }
 
-        // 检查电话是否与其他租客重复
-        var phoneExists = await _repository.AsQueryable(false)
-            .AnyAsync(t => t.Phone == input.Phone && t.Id != input.Id);
-
-        if (phoneExists)
+        // 检查电话是否与其他租客重复（如果填写了）
+        if (!string.IsNullOrWhiteSpace(input.Phone))
         {
-            throw Oops.Oh($"联系电话 {input.Phone} 已存在");
+            var phoneExists = await _repository.AsQueryable(false)
+                .AnyAsync(t => t.Phone == input.Phone && t.Id != input.Id);
+
+            if (phoneExists)
+            {
+                throw Oops.Oh($"联系电话 {input.Phone} 已存在");
+            }
         }
 
         // 检查身份证号是否与其他租客重复（如果填写了）

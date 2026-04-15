@@ -2593,6 +2593,16 @@
             租住状态文本
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantDto.CheckInDate">
+            <summary>
+            合同入住日期（来自当前活跃租赁记录）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Tenant.TenantDto.ContractEndDate">
+            <summary>
+            合同结束日期（来自当前活跃租赁记录）
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Tenant.UpdateTenantInput">
             <summary>
             更新租客请求

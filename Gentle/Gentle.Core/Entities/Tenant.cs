@@ -22,10 +22,9 @@ public class Tenant : Entity<int>, IEntitySeedData<Tenant>
     /// <summary>
     /// 联系电话
     /// </summary>
-    [Required(ErrorMessage = "联系电话不能为空")]
     [MaxLength(20, ErrorMessage = "联系电话长度不能超过20个字符")]
     [RegularExpression(@"^1[3-9]\d{9}$", ErrorMessage = "手机号格式不正确")]
-    public string Phone { get; set; } = string.Empty;
+    public string? Phone { get; set; }
 
     /// <summary>
     /// 身份证号

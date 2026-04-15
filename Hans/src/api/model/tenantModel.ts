@@ -51,7 +51,7 @@ export interface TenantListResult {
 export interface TenantItem {
   id: number;
   name: string;
-  phone: string;
+  phone?: string;
   idCard?: string;
   gender: Gender;
   genderText: string;
@@ -66,6 +66,10 @@ export interface TenantItem {
   status?: RentalStatus;
   /** 租住状态文本 */
   statusText?: string;
+  /** 合同入住日期 */
+  checkInDate?: string;
+  /** 合同结束日期 */
+  contractEndDate?: string;
 }
 
 /**
@@ -73,7 +77,7 @@ export interface TenantItem {
  */
 export interface CreateTenantParams {
   name: string;
-  phone: string;
+  phone?: string;
   idCard?: string;
   gender: Gender;
   emergencyContact?: string;
@@ -86,7 +90,7 @@ export interface CreateTenantParams {
 export interface UpdateTenantParams {
   id: number;
   name: string;
-  phone: string;
+  phone?: string;
   idCard?: string;
   gender: Gender;
   emergencyContact?: string;

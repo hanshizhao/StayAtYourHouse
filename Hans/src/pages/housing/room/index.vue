@@ -71,9 +71,6 @@
           </t-tooltip>
           <span v-else class="text-secondary">-</span>
         </template>
-        <template #createdTime="{ row }">
-          {{ formatDateTime(row.createdTime) }}
-        </template>
         <template #op="{ row }">
           <t-space>
             <t-link theme="primary" data-testid="edit-button" @click="handleEdit(row)">编辑</t-link>
@@ -637,7 +634,6 @@ import { RoomStatus, RoomStatusText } from '@/api/model/roomModel';
 import { createRoom, deleteRoom, getRoomList, updateRoom } from '@/api/room';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
-import { formatDateTime } from '@/utils/date';
 
 defineOptions({
   name: 'HousingRoom',
@@ -682,7 +678,6 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'deposit', title: '押金', width: 100 },
   { colKey: 'status', title: '状态', width: 90 },
   { colKey: 'remark', title: '备注', width: 150, ellipsis: true },
-  { colKey: 'createdTime', title: '创建时间', width: 160 },
   { colKey: 'op', title: '操作', width: 220, fixed: 'right' },
 ];
 
