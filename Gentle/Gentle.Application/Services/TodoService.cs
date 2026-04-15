@@ -139,7 +139,8 @@ public class TodoService : ITodoService
                 .ThenInclude(rr => rr.Room)
                     .ThenInclude(room => room.Community)
             .Include(r => r.Deferrals)
-            .Where(r => r.Status == RentalReminderStatus.Pending)
+            .Where(r => r.Status == RentalReminderStatus.Pending
+                && r.ReminderDate <= DateTime.Today)
             .OrderByDescending(r => r.CreatedTime)
             .ToListAsync();
     }
