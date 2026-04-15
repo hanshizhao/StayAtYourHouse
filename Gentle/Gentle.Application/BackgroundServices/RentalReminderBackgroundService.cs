@@ -126,6 +126,7 @@ public class RentalReminderBackgroundService : BackgroundService
             };
 
             await rentalReminderRepository.InsertAsync(reminder);
+            await rentalReminderRepository.SaveNowAsync();
             createdCount++;
 
             _logger.LogInformation("已为租赁记录 {RecordId} 创建催收提醒，合同到期日：{ContractEndDate}",
