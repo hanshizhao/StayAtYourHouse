@@ -398,8 +398,8 @@ async function handleViewRooms(row: CommunityItem) {
   roomDialogVisible.value = true;
   roomLoading.value = true;
   try {
-    const res = await getRoomList({ communityId: row.id });
-    roomList.value = res || [];
+    const res = await getRoomList({ communityId: row.id, pageSize: 100 });
+    roomList.value = res?.list || [];
   } catch (e: any) {
     MessagePlugin.error(e.message || '获取房间列表失败');
   } finally {

@@ -1,106 +1,157 @@
 <template>
   <div class="room-management">
     <t-card class="list-card-container" :bordered="false">
-      <!-- 顶部操作栏 -->
-      <t-row justify="space-between">
-        <div class="left-operation-container">
-          <t-button theme="primary" data-testid="add-room-button" @click="handleCreate">
-            <template #icon><add-icon /></template>
-            新建房间
-          </t-button>
-        </div>
-        <div class="filter-container">
-          <t-select
-            v-model="filterCommunityId"
-            :options="communityOptions"
-            placeholder="全部小区"
-            clearable
-            class="filter-select"
-            data-testid="community-filter"
-            @change="handleFilterChange"
-          />
-          <t-select
-            v-model="filterStatus"
-            :options="statusOptions"
-            placeholder="全部状态"
-            clearable
-            class="filter-select"
-            data-testid="status-filter"
-            @change="handleFilterChange"
-          />
-        </div>
-      </t-row>
+      <!-- 页面标题 -->
+      <div class="page-header">
+        <h2 class="page-title">
+          房间管理
+        </h2>
+        <t-button theme="primary" data-testid="add-room-button" @click="handleCreate">
+          <template #icon>
+            <add-icon />
+          </template>
+          新增房间
+        </t-button>
+      </div>
 
-      <!-- 数据表格 -->
-      <t-table
-        :data="tableData"
-        :columns="columns"
-        row-key="id"
-        vertical-align="top"
-        :hover="true"
-        :pagination="pagination"
-        :loading="loading"
-        :header-affixed-top="headerAffixedTop"
-        data-testid="room-table"
-        :expanded-row-keys="expandedRowKeys"
-        @page-change="handlePageChange"
-        @expand-change="handleExpandChange"
-      >
-        <template #communityName="{ row }">
-          <t-tooltip :content="row.communityName" placement="top">
-            <span class="community-name">{{ row.communityName }}</span>
-          </t-tooltip>
-        </template>
-        <template #roomInfo="{ row }">
-          <span>{{ row.building }}栋 {{ row.roomNumber }}</span>
-        </template>
-        <template #rentPrice="{ row }">
-          <span>¥{{ row.rentPrice.toFixed(2) }}</span>
-        </template>
-        <template #deposit="{ row }">
-          <span>{{ row.deposit ? `¥${row.deposit.toFixed(2)}` : '-' }}</span>
-        </template>
-        <template #status="{ row }">
-          <t-tag :theme="getStatusTheme(row.status)" variant="light">
-            {{ getStatusText(row.status) }}
-          </t-tag>
-        </template>
-        <template #remark="{ row }">
-          <t-tooltip v-if="row.remark" :content="row.remark" placement="top">
-            <span class="remark-text">{{ row.remark }}</span>
-          </t-tooltip>
-          <span v-else class="text-secondary">-</span>
-        </template>
-        <template #op="{ row }">
-          <t-space>
-            <t-link theme="primary" data-testid="edit-button" @click="handleEdit(row)">编辑</t-link>
-            <t-link theme="primary" data-testid="lease-button" @click="handleOpenLease(row)">房东租约</t-link>
-            <t-link theme="warning" data-testid="maintenance-button" @click="handleMaintenance(row)">维修</t-link>
-            <t-link theme="danger" data-testid="delete-button" @click="handleDelete(row)">删除</t-link>
-          </t-space>
-        </template>
-        <template #expandedRow="{ row }">
-          <div v-if="row.tenantName" class="expanded-row">
-            <div class="expanded-item">
-              <span class="expanded-label">租客</span>
-              <span class="expanded-value">{{ row.tenantName }}</span>
+      <!-- 筛选栏 -->
+      <div class="filter-bar">
+        <t-select
+          v-model="filterCommunityId"
+          :options="communityOptions"
+          placeholder="全部小区"
+          clearable
+          class="filter-select"
+          data-testid="community-filter"
+          @change="handleFilterChange"
+        />
+        <t-select
+          v-model="filterStatus"
+          :options="statusOptions"
+          placeholder="全部状态"
+          clearable
+          class="filter-select"
+          data-testid="status-filter"
+          @change="handleFilterChange"
+        />
+        <t-select
+          v-model="filterHasLeaseAlert"
+          :options="leaseAlertOptions"
+          placeholder="异常租约"
+          clearable
+          class="filter-select"
+          data-testid="lease-alert-filter"
+          @change="handleFilterChange"
+        />
+      </div>
+
+      <!-- 统计摘要 -->
+      <div class="summary-bar">
+        <span class="summary-text" data-testid="room-summary">共 {{ pagination.total }} 间</span>
+      </div>
+
+      <!-- 卡片网格 -->
+      <t-loading :loading="loading">
+        <div v-if="roomList.length > 0" class="room-card-grid" data-testid="room-card-grid">
+          <div v-for="room in roomList" :key="room.id" class="room-card" data-testid="room-card">
+            <!-- 卡片头部：房间名 + 状态 -->
+            <div class="room-card-header">
+              <span class="room-card-title">{{ room.communityName }} {{ room.building }}栋 {{ room.roomNumber }}</span>
+              <t-tag :theme="getStatusTheme(room.status)" variant="light" size="small">
+                {{ getStatusText(room.status) }}
+              </t-tag>
             </div>
-            <div class="expanded-item">
-              <span class="expanded-label">租期</span>
-              <span class="expanded-value">
-                {{ row.rentalStartDate?.split('T')[0] ?? '-' }} ~ {{ row.rentalEndDate?.split('T')[0] ?? '-' }}
-              </span>
+
+            <div class="room-card-divider" />
+
+            <!-- 卡片中部：房东租约 | 租客租约 -->
+            <div class="room-card-middle">
+              <!-- 房东租约 -->
+              <div class="room-card-lease landlord-side">
+                <span class="lease-label">房东租约</span>
+                <template v-if="room.landlordLease">
+                  <span class="lease-name">{{ room.landlordLease.landlordName }}</span>
+                  <div class="lease-rent-row">
+                    <span class="lease-rent-value">¥{{ formatRent(room.landlordLease.monthlyRent) }}</span>
+                    <span class="lease-rent-unit">/月</span>
+                  </div>
+                  <span class="lease-expiry">到期 {{ formatDate(room.landlordLease.endDate) }}</span>
+                  <span :class="['lease-status-tag', `lease-status-${getLeaseStatusKey(room.landlordLeaseStatus)}`]">
+                    {{ getLeaseStatusText(room.landlordLeaseStatus, room.landlordLeaseExpiredDays) }}
+                  </span>
+                </template>
+                <span v-else class="lease-empty">无房东租约</span>
+              </div>
+
+              <!-- 租客租约 -->
+              <div class="room-card-lease tenant-side">
+                <span class="lease-label">租客租约</span>
+                <template v-if="room.tenantName">
+                  <span class="lease-name">{{ room.tenantName }}</span>
+                  <div class="lease-rent-row">
+                    <span class="lease-rent-value">¥{{ formatRent(room.tenantMonthlyRent) }}</span>
+                    <span class="lease-rent-unit">/月</span>
+                  </div>
+                  <span class="lease-expiry">到期 {{ formatDate(room.rentalEndDate) }}</span>
+                  <span :class="['lease-status-tag', `lease-status-${getLeaseStatusKey(room.tenantLeaseStatus)}`]">
+                    {{ getLeaseStatusText(room.tenantLeaseStatus, room.tenantLeaseExpiredDays) }}
+                  </span>
+                </template>
+                <span v-else class="lease-empty">暂无租客</span>
+              </div>
             </div>
-            <div class="expanded-item">
-              <span class="expanded-label">安居码</span>
-              <t-tag v-if="row.anjuCodeSubmitted === true" theme="success" variant="light">已提交</t-tag>
-              <t-tag v-else-if="row.anjuCodeSubmitted === false" theme="danger" variant="light">未提交</t-tag>
-              <span v-else class="text-secondary">-</span>
+
+            <div class="room-card-divider" />
+
+            <!-- 卡片底部：利润 + 操作 -->
+            <div class="room-card-bottom">
+              <div class="room-card-profit">
+                <span class="profit-label">{{ room.tenantName ? '实际利润' : '预期利润' }}</span>
+                <span :class="['profit-value', room.profit >= 0 ? 'positive' : 'negative']">
+                  {{ formatProfit(room.profit) }}/月
+                </span>
+              </div>
+              <div class="room-card-actions">
+                <t-button variant="text" shape="square" data-testid="edit-button" @click="handleEdit(room)">
+                  <template #icon>
+                    <edit-icon />
+                  </template>
+                </t-button>
+                <t-button variant="text" shape="square" data-testid="lease-button" @click="handleOpenLease(room)">
+                  <template #icon>
+                    <file-icon />
+                  </template>
+                </t-button>
+                <t-button variant="text" shape="square" data-testid="maintenance-button" @click="handleMaintenance(room)">
+                  <template #icon>
+                    <tools-icon />
+                  </template>
+                </t-button>
+                <t-button variant="text" shape="square" theme="danger" data-testid="delete-button" @click="handleDelete(room)">
+                  <template #icon>
+                    <delete-icon />
+                  </template>
+                </t-button>
+              </div>
             </div>
           </div>
-          <div v-else class="expanded-row expanded-row-empty">暂无租客信息</div>
-        </template>
-      </t-table>
+        </div>
+        <t-empty v-else description="暂无房间数据" />
+      </t-loading>
+
+      <!-- 分页 -->
+      <div class="pagination-container">
+        <t-pagination
+          :current="pagination.current"
+          :page-size="pagination.pageSize"
+          :total="pagination.total"
+          show-page-size
+          :page-size-options="PAGE_SIZE_OPTIONS"
+          data-testid="room-pagination"
+          @current-change="handlePageChange"
+          @page-size-change="handlePageSizeChange"
+        />
+      </div>
     </t-card>
 
     <!-- 创建/编辑对话框 -->
@@ -115,7 +166,9 @@
     >
       <t-form ref="formRef" :data="formData" :rules="formRules" label-align="right" label-width="90px">
         <!-- 基本信息 -->
-        <div class="form-section-title">基本信息</div>
+        <div class="form-section-title">
+          基本信息
+        </div>
         <t-row :gutter="[24, 12]">
           <t-col :span="6">
             <t-form-item label="所属小区" name="communityId">
@@ -158,12 +211,13 @@
               />
             </t-form-item>
           </t-col>
-
         </t-row>
 
         <!-- 价格信息 -->
         <t-divider />
-        <div class="form-section-title">价格信息</div>
+        <div class="form-section-title">
+          价格信息
+        </div>
         <t-row :gutter="[24, 12]">
           <t-col :span="6">
             <t-form-item label="出租价" name="rentPrice">
@@ -196,7 +250,9 @@
 
         <!-- 费用设置 -->
         <t-divider />
-        <div class="form-section-title">费用设置</div>
+        <div class="form-section-title">
+          费用设置
+        </div>
         <t-row :gutter="24">
           <t-col :span="6">
             <t-form-item label="水费" name="waterPrice">
@@ -305,7 +361,9 @@
       data-testid="confirm-dialog"
       @confirm="onConfirmDelete"
     >
-      <p data-testid="confirm-dialog-message">{{ deleteConfirmBody }}</p>
+      <p data-testid="confirm-dialog-message">
+        {{ deleteConfirmBody }}
+      </p>
     </t-dialog>
 
     <!-- 房东租约抽屉 -->
@@ -328,7 +386,9 @@
         <!-- 表单模式 -->
         <template v-else-if="leaseEditMode">
           <t-form ref="leaseFormRef" :data="leaseForm" :rules="leaseFormRules" label-align="top">
-            <div class="form-section-title">房东信息</div>
+            <div class="form-section-title">
+              房东信息
+            </div>
             <t-row :gutter="[16, 0]">
               <t-col :span="6">
                 <t-form-item label="房东姓名" name="landlordName">
@@ -350,7 +410,9 @@
               </t-col>
             </t-row>
 
-            <div class="form-section-title">租约信息</div>
+            <div class="form-section-title">
+              租约信息
+            </div>
             <t-row :gutter="[16, 0]">
               <t-col :span="6">
                 <t-form-item label="开始日期" name="startDate">
@@ -425,7 +487,9 @@
               </t-col>
             </t-row>
 
-            <div class="form-section-title">费用信息</div>
+            <div class="form-section-title">
+              费用信息
+            </div>
             <t-row :gutter="[16, 0]">
               <t-col :span="6">
                 <t-form-item label="水费" name="waterPrice">
@@ -507,7 +571,9 @@
               </t-col>
             </t-row>
 
-            <div class="form-section-title">备注</div>
+            <div class="form-section-title">
+              备注
+            </div>
             <t-form-item name="remark">
               <t-textarea
                 v-model="leaseForm.remark"
@@ -519,7 +585,9 @@
             </t-form-item>
 
             <div class="lease-drawer-footer">
-              <t-button variant="outline" @click="leaseEditMode = false">取消</t-button>
+              <t-button variant="outline" @click="leaseEditMode = false">
+                取消
+              </t-button>
               <t-button theme="primary" :loading="leaseSaving" data-testid="lease-save-button" @click="handleSaveLease">
                 保存
               </t-button>
@@ -548,45 +616,51 @@
           </div>
 
           <t-descriptions :column="2" bordered>
-            <t-descriptions-item label="房东姓名">{{ leaseData.landlordName }}</t-descriptions-item>
-            <t-descriptions-item label="联系电话">{{ leaseData.landlordPhone || '-' }}</t-descriptions-item>
-            <t-descriptions-item label="开始日期">{{
-              leaseData.startDate ? leaseData.startDate.split('T')[0] : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item label="结束日期">{{
-              leaseData.endDate ? leaseData.endDate.split('T')[0] : '-'
-            }}</t-descriptions-item>
+            <t-descriptions-item label="房东姓名">
+              {{ leaseData.landlordName }}
+            </t-descriptions-item>
+            <t-descriptions-item label="联系电话">
+              {{ leaseData.landlordPhone || '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="开始日期">
+              {{ leaseData.startDate ? leaseData.startDate.split('T')[0] : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="结束日期">
+              {{ leaseData.endDate ? leaseData.endDate.split('T')[0] : '-' }}
+            </t-descriptions-item>
             <t-descriptions-item label="月租金">
               <span class="lease-price">¥{{ leaseData.monthlyRent.toFixed(2) }}</span>
             </t-descriptions-item>
-            <t-descriptions-item label="付款方式">{{ leaseData.paymentMethodText }}</t-descriptions-item>
-            <t-descriptions-item label="押金金额">{{
-              leaseData.deposit != null ? `¥${leaseData.deposit.toFixed(2)}` : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item label="押金月数">{{
-              leaseData.depositMonths ? `${leaseData.depositMonths}个月` : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item label="水费">{{
-              leaseData.waterPrice != null ? `¥${leaseData.waterPrice.toFixed(2)}/吨` : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item label="电费">{{
-              leaseData.electricPrice != null ? `¥${leaseData.electricPrice.toFixed(2)}/度` : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item label="电梯费">{{
-              leaseData.elevatorFee != null ? `¥${leaseData.elevatorFee.toFixed(2)}` : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item label="物业费">{{
-              leaseData.propertyFee != null ? `¥${leaseData.propertyFee.toFixed(2)}` : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item label="网络费">{{
-              leaseData.internetFee != null ? `¥${leaseData.internetFee.toFixed(2)}` : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item label="其他费用">{{
-              leaseData.otherFees != null ? `¥${leaseData.otherFees.toFixed(2)}` : '-'
-            }}</t-descriptions-item>
-            <t-descriptions-item v-if="leaseData.remark" label="备注" :span="2">{{
-              leaseData.remark
-            }}</t-descriptions-item>
+            <t-descriptions-item label="付款方式">
+              {{ leaseData.paymentMethodText }}
+            </t-descriptions-item>
+            <t-descriptions-item label="押金金额">
+              {{ leaseData.deposit != null ? `¥${leaseData.deposit.toFixed(2)}` : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="押金月数">
+              {{ leaseData.depositMonths ? `${leaseData.depositMonths}个月` : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="水费">
+              {{ leaseData.waterPrice != null ? `¥${leaseData.waterPrice.toFixed(2)}/吨` : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="电费">
+              {{ leaseData.electricPrice != null ? `¥${leaseData.electricPrice.toFixed(2)}/度` : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="电梯费">
+              {{ leaseData.elevatorFee != null ? `¥${leaseData.elevatorFee.toFixed(2)}` : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="物业费">
+              {{ leaseData.propertyFee != null ? `¥${leaseData.propertyFee.toFixed(2)}` : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="网络费">
+              {{ leaseData.internetFee != null ? `¥${leaseData.internetFee.toFixed(2)}` : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item label="其他费用">
+              {{ leaseData.otherFees != null ? `¥${leaseData.otherFees.toFixed(2)}` : '-' }}
+            </t-descriptions-item>
+            <t-descriptions-item v-if="leaseData.remark" label="备注" :span="2">
+              {{ leaseData.remark }}
+            </t-descriptions-item>
           </t-descriptions>
         </template>
 
@@ -594,7 +668,9 @@
         <template v-else>
           <t-empty description="暂无租约信息" data-testid="lease-empty-state">
             <template #action>
-              <t-button theme="primary" data-testid="lease-add-button" @click="handleAddLease">添加租约</t-button>
+              <t-button theme="primary" data-testid="lease-add-button" @click="handleAddLease">
+                添加租约
+              </t-button>
             </template>
           </t-empty>
         </template>
@@ -613,10 +689,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { AddIcon } from 'tdesign-icons-vue-next';
-import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SelectOption } from 'tdesign-vue-next';
+import { AddIcon, DeleteIcon, EditIcon, FileIcon, ToolsIcon } from 'tdesign-icons-vue-next';
+import type { FormInstanceFunctions, FormRule, SelectOption } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
-import { computed, onMounted, ref, watchEffect } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { getCommunityList } from '@/api/community';
@@ -629,11 +705,9 @@ import {
 import type { CommunityItem } from '@/api/model/communityModel';
 import type { LandlordLeaseDetail } from '@/api/model/landlordLeaseModel';
 import { PaymentMethod, PaymentMethodText } from '@/api/model/landlordLeaseModel';
-import type { RoomItem } from '@/api/model/roomModel';
-import { RoomStatus, RoomStatusText } from '@/api/model/roomModel';
+import type { GetRoomListParams, RoomItem } from '@/api/model/roomModel';
+import { LeaseStatus, RoomStatus, RoomStatusText } from '@/api/model/roomModel';
 import { createRoom, deleteRoom, getRoomList, updateRoom } from '@/api/room';
-import { prefix } from '@/config/global';
-import { useSettingStore } from '@/store';
 
 defineOptions({
   name: 'HousingRoom',
@@ -641,7 +715,6 @@ defineOptions({
 
 // ==================== 类型定义 ====================
 
-/** 表单数据类型 */
 interface RoomFormData {
   id?: number;
   communityId?: number;
@@ -659,55 +732,42 @@ interface RoomFormData {
   remark?: string;
 }
 
-/** 表头固定配置类型 */
-interface HeaderAffixedTopConfig {
-  offsetTop: number;
-  container: string;
-}
-
 // ==================== 状态 ====================
 
-const settingStore = useSettingStore();
 const router = useRouter();
 
-// 表格列配置
-const columns: PrimaryTableCol[] = [
-  { colKey: 'communityName', title: '小区', width: 140 },
-  { colKey: 'roomInfo', title: '房间', width: 140 },
-  { colKey: 'rentPrice', title: '出租价', width: 100 },
-  { colKey: 'deposit', title: '押金', width: 100 },
-  { colKey: 'status', title: '状态', width: 90 },
-  { colKey: 'remark', title: '备注', width: 150, ellipsis: true },
-  { colKey: 'op', title: '操作', width: 220, fixed: 'right' },
-];
-
-// 状态
+// 数据
 const loading = ref(false);
-const data = ref<RoomItem[]>([]);
-const pagination = ref({
-  defaultPageSize: 20,
+const roomList = ref<RoomItem[]>([]);
+const pagination = reactive({
+  current: 1,
+  pageSize: 9,
   total: 0,
-  defaultCurrent: 1,
 });
 
 // 筛选
 const filterCommunityId = ref<number | undefined>(undefined);
 const filterStatus = ref<RoomStatus | undefined>(undefined);
+const filterHasLeaseAlert = ref<boolean | undefined>(undefined);
 
-// 展开行
-const expandedRowKeys = ref<number[]>([]);
-
-// 小区选项（使用 clearable 特性，无需"全部"选项）
+// 小区选项
 const communities = ref<CommunityItem[]>([]);
 const communityOptions = computed<SelectOption[]>(() => communities.value.map((c) => ({ label: c.name, value: c.id })));
 
-// 状态选项（使用 clearable 特性，无需"全部"选项）
+// 状态选项
 const statusOptions: SelectOption[] = [
   { label: '空置', value: RoomStatus.Vacant },
   { label: '已出租', value: RoomStatus.Rented },
   { label: '装修中', value: RoomStatus.Renovating },
   { label: '已收回', value: RoomStatus.Reclaimed },
 ];
+
+// 异常租约选项
+const leaseAlertOptions: SelectOption[] = [
+  { label: '仅显示异常', value: true },
+];
+
+const PAGE_SIZE_OPTIONS = [9, 18, 27];
 
 // 对话框状态
 const dialogVisible = ref(false);
@@ -793,39 +853,8 @@ const paymentMethodOptions = computed(() =>
   })),
 );
 
-// 过滤后的表格数据
-// 注意：当前使用前端分页和筛选，适用于房间数量较少（<1000）的场景
-// 如需支持大数据量，建议改为后端分页，在 API 请求时传递分页参数和筛选条件
-const tableData = computed(() => {
-  let result = data.value;
-  // 筛选小区
-  if (filterCommunityId.value !== undefined) {
-    result = result.filter((item) => item.communityId === filterCommunityId.value);
-  }
-  // 筛选状态
-  if (filterStatus.value !== undefined) {
-    result = result.filter((item) => item.status === filterStatus.value);
-  }
-  return result;
-});
+// ==================== 辅助方法 ====================
 
-// 过滤后的数据总数
-const filteredTotal = computed(() => tableData.value.length);
-
-// 同步过滤后的总数到分页
-watchEffect(() => {
-  pagination.value.total = filteredTotal.value;
-});
-
-// 固定表头
-const headerAffixedTop = computed<HeaderAffixedTopConfig>(() => ({
-  offsetTop: settingStore.isUseTabsRouter ? 48 : 0,
-  container: `.${prefix}-layout`,
-}));
-
-// ==================== 方法 ====================
-
-/** 获取状态主题 */
 function getStatusTheme(status: RoomStatus): 'success' | 'warning' | 'primary' | 'default' {
   const themes: Record<RoomStatus, 'success' | 'warning' | 'primary' | 'default'> = {
     [RoomStatus.Vacant]: 'success',
@@ -836,12 +865,46 @@ function getStatusTheme(status: RoomStatus): 'success' | 'warning' | 'primary' |
   return themes[status];
 }
 
-/** 获取状态文本 */
 function getStatusText(status: RoomStatus): string {
   return RoomStatusText[status];
 }
 
-/** 获取小区列表 */
+function getLeaseStatusKey(status: LeaseStatus): string {
+  switch (status) {
+    case LeaseStatus.Normal: return 'normal';
+    case LeaseStatus.ExpiringSoon: return 'expiring';
+    case LeaseStatus.Expired: return 'expired';
+    default: return 'none';
+  }
+}
+
+function getLeaseStatusText(status: LeaseStatus, expiredDays?: number | null): string {
+  switch (status) {
+    case LeaseStatus.Normal: return '正常';
+    case LeaseStatus.ExpiringSoon: return '即将到期';
+    case LeaseStatus.Expired: return expiredDays ? `已逾期 ${expiredDays}天` : '已逾期';
+    case LeaseStatus.None: return '无租约';
+    default: return '';
+  }
+}
+
+function formatRent(rent?: number | null): string {
+  if (rent == null) return '-';
+  return rent.toLocaleString('zh-CN');
+}
+
+function formatDate(date?: string | null): string {
+  if (!date) return '-';
+  return date.split('T')[0];
+}
+
+function formatProfit(profit: number): string {
+  const sign = profit >= 0 ? '+' : '-';
+  return `${sign}¥${Math.abs(profit).toLocaleString('zh-CN')}`;
+}
+
+// ==================== 数据获取 ====================
+
 async function fetchCommunities() {
   try {
     const res = await getCommunityList();
@@ -851,12 +914,20 @@ async function fetchCommunities() {
   }
 }
 
-/** 获取房间列表 */
 async function fetchData() {
   loading.value = true;
   try {
-    const res = await getRoomList();
-    data.value = res || [];
+    const params: GetRoomListParams = {
+      page: pagination.current,
+      pageSize: pagination.pageSize,
+    };
+    if (filterCommunityId.value !== undefined) params.communityId = filterCommunityId.value;
+    if (filterStatus.value !== undefined) params.status = filterStatus.value;
+    if (filterHasLeaseAlert.value !== undefined) params.hasLeaseAlert = filterHasLeaseAlert.value;
+
+    const res = await getRoomList(params);
+    roomList.value = res?.list || [];
+    pagination.total = res?.total || 0;
   } catch (e: any) {
     MessagePlugin.error(e.message || '获取房间列表失败');
   } finally {
@@ -864,24 +935,26 @@ async function fetchData() {
   }
 }
 
-/** 筛选变化 */
+// ==================== 事件处理 ====================
+
 function handleFilterChange() {
-  pagination.value.defaultCurrent = 1;
+  pagination.current = 1;
+  fetchData();
 }
 
-/** 展开行变化 */
-function handleExpandChange(keys: Array<string | number>) {
-  expandedRowKeys.value = keys as number[];
+function handlePageChange(current: number) {
+  pagination.current = current;
+  fetchData();
 }
 
-/** 分页 */
-function handlePageChange(pageInfo: PageInfo) {
-  pagination.value.defaultCurrent = pageInfo.current;
-  pagination.value.defaultPageSize = pageInfo.pageSize;
-  expandedRowKeys.value = [];
+function handlePageSizeChange(pageSize: number) {
+  pagination.pageSize = pageSize;
+  pagination.current = 1;
+  fetchData();
 }
 
-/** 创建房间 */
+// ==================== 房间 CRUD ====================
+
 function handleCreate() {
   dialogType.value = 'create';
   formData.value = {
@@ -902,30 +975,28 @@ function handleCreate() {
   dialogVisible.value = true;
 }
 
-/** 编辑房间 */
-function handleEdit(row: RoomItem) {
+function handleEdit(room: RoomItem) {
   dialogType.value = 'edit';
-  editingRoomId.value = row.id;
+  editingRoomId.value = room.id;
   formData.value = {
-    id: row.id,
-    communityId: row.communityId,
-    building: row.building,
-    roomNumber: row.roomNumber,
-    rentPrice: row.rentPrice,
-    deposit: row.deposit,
-    waterPrice: row.waterPrice,
-    electricPrice: row.electricPrice,
-    elevatorFee: row.elevatorFee,
-    propertyFee: row.propertyFee,
-    internetFee: row.internetFee,
-    otherFees: row.otherFees,
-    status: row.status,
-    remark: row.remark,
+    id: room.id,
+    communityId: room.communityId,
+    building: room.building,
+    roomNumber: room.roomNumber,
+    rentPrice: room.rentPrice,
+    deposit: room.deposit,
+    waterPrice: room.waterPrice,
+    electricPrice: room.electricPrice,
+    elevatorFee: room.elevatorFee,
+    propertyFee: room.propertyFee,
+    internetFee: room.internetFee,
+    otherFees: room.otherFees,
+    status: room.status,
+    remark: room.remark,
   };
   dialogVisible.value = true;
 }
 
-/** 提交表单 */
 async function handleSubmit() {
   const valid = await formRef.value?.validate();
   if (valid !== true) return;
@@ -977,24 +1048,20 @@ async function handleSubmit() {
   }
 }
 
-/** 关闭对话框 */
 function handleDialogClose() {
   formRef.value?.reset();
   dialogVisible.value = false;
 }
 
-/** 删除房间 */
-function handleDelete(row: RoomItem) {
-  deletingRoom.value = row;
+function handleDelete(room: RoomItem) {
+  deletingRoom.value = room;
   deleteConfirmVisible.value = true;
 }
 
-/** 报修 - 跳转维修表单页 */
-function handleMaintenance(row: RoomItem) {
-  router.push(`/maintenance/add?roomId=${row.id}`);
+function handleMaintenance(room: RoomItem) {
+  router.push(`/maintenance/add?roomId=${room.id}`);
 }
 
-/** 确认删除 */
 async function onConfirmDelete() {
   if (!deletingRoom.value) return;
 
@@ -1015,7 +1082,6 @@ async function onConfirmDelete() {
 
 // ==================== 房东租约方法 ====================
 
-/** 重置租约表单 */
 function resetLeaseForm() {
   leaseForm.value = {
     landlordName: '',
@@ -1036,15 +1102,13 @@ function resetLeaseForm() {
   };
 }
 
-/** 抽屉关闭回调 */
 function handleLeaseDrawerClose() {
   leaseEditMode.value = false;
   leaseFormRef.value?.reset();
 }
 
-/** 打开租约抽屉 */
-async function handleOpenLease(row: RoomItem) {
-  currentLeaseRoom.value = row;
+async function handleOpenLease(room: RoomItem) {
+  currentLeaseRoom.value = room;
   leaseDrawerVisible.value = true;
   leaseLoading.value = true;
   leaseEditMode.value = false;
@@ -1052,7 +1116,7 @@ async function handleOpenLease(row: RoomItem) {
   resetLeaseForm();
 
   try {
-    const res = await getLandlordLeaseByRoomId(row.id);
+    const res = await getLandlordLeaseByRoomId(room.id);
     leaseData.value = res ?? null;
   } catch {
     leaseData.value = null;
@@ -1062,7 +1126,6 @@ async function handleOpenLease(row: RoomItem) {
   }
 }
 
-/** 进入添加模式 */
 function handleAddLease() {
   leaseEditMode.value = true;
   resetLeaseForm();
@@ -1076,7 +1139,6 @@ function handleAddLease() {
   }
 }
 
-/** 进入编辑模式 */
 function handleEditLease() {
   if (!leaseData.value) return;
   leaseEditMode.value = true;
@@ -1099,7 +1161,6 @@ function handleEditLease() {
   };
 }
 
-/** 保存租约 */
 async function handleSaveLease() {
   const valid = await leaseFormRef.value?.validate();
   if (valid !== true) return;
@@ -1158,12 +1219,10 @@ async function handleSaveLease() {
   }
 }
 
-/** 删除租约确认 */
 function handleDeleteLeaseConfirm() {
   leaseDeleteConfirmVisible.value = true;
 }
 
-/** 确认删除租约 */
 async function handleDeleteLease() {
   if (!leaseData.value) return;
 
@@ -1199,79 +1258,214 @@ onMounted(() => {
     }
   }
 
-  .left-operation-container {
+  .page-header {
     display: flex;
     align-items: center;
-    margin-bottom: var(--td-comp-margin-xxl);
+    justify-content: space-between;
+    margin-bottom: 24px;
   }
 
-  .filter-container {
+  .page-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--td-text-color-primary);
+  }
+
+  .filter-bar {
     display: flex;
-    gap: 16px;
-    margin-bottom: var(--td-comp-margin-xxl);
+    gap: 12px;
+    margin-bottom: 16px;
   }
 
   .filter-select {
     width: 160px;
   }
 
-  .community-name {
-    display: inline-block;
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 500;
-    color: var(--td-text-color-primary);
-  }
-
-  .text-secondary {
-    color: var(--td-text-color-secondary);
-  }
-
-  .remark-text {
-    display: inline-block;
-    max-width: 130px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .profit-positive {
-    color: var(--td-success-color);
-    font-weight: 500;
-  }
-
-  .profit-negative {
-    color: var(--td-error-color);
-    font-weight: 500;
-  }
-
-  .expanded-row {
+  .summary-bar {
     display: flex;
-    gap: 32px;
-    padding: 8px 0;
+    justify-content: flex-end;
+    margin-bottom: 16px;
   }
 
-  .expanded-item {
+  .summary-text {
+    font-size: 13px;
+    color: var(--td-text-color-placeholder);
+  }
+
+  // 卡片网格
+  .room-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+  }
+
+  // 单个卡片
+  .room-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--td-bg-color-container);
+    border: 1px solid var(--td-component-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .room-card-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    padding: 16px 20px;
   }
 
-  .expanded-label {
-    color: var(--td-text-color-secondary);
-    font-size: 13px;
-  }
-
-  .expanded-value {
+  .room-card-title {
+    font-size: 16px;
+    font-weight: 600;
     color: var(--td-text-color-primary);
-    font-size: 13px;
   }
 
-  .expanded-row-empty {
+  .room-card-divider {
+    height: 1px;
+    background: var(--td-component-border);
+  }
+
+  // 中部：房东/租客两栏
+  .room-card-middle {
+    display: flex;
+    padding: 16px 20px;
+  }
+
+  .room-card-lease {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 155px;
+  }
+
+  .landlord-side {
+    padding-right: 12px;
+    border-right: 1px solid var(--td-component-border);
+  }
+
+  .tenant-side {
+    padding-left: 12px;
+  }
+
+  .lease-label {
+    font-size: 12px;
+    font-weight: 500;
     color: var(--td-text-color-placeholder);
+  }
+
+  .lease-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--td-text-color-primary);
+  }
+
+  .lease-rent-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .lease-rent-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--td-text-color-primary);
+  }
+
+  .lease-rent-unit {
+    font-size: 12px;
+    color: var(--td-text-color-placeholder);
+  }
+
+  .lease-expiry {
     font-size: 13px;
+    color: var(--td-text-color-secondary);
+  }
+
+  .lease-status-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    width: fit-content;
+  }
+
+  .lease-status-normal {
+    color: var(--td-success-color);
+    background: var(--td-success-color-1);
+  }
+
+  .lease-status-expiring {
+    color: var(--td-warning-color);
+    background: var(--td-warning-color-1);
+  }
+
+  .lease-status-expired {
+    color: var(--td-error-color);
+    background: var(--td-error-color-1);
+  }
+
+  .lease-status-none {
+    color: var(--td-text-color-disabled);
+    background: var(--td-gray-color-1);
+  }
+
+  .lease-empty {
+    font-size: 14px;
+    color: var(--td-text-color-placeholder);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  }
+
+  // 底部：利润 + 操作
+  .room-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+  }
+
+  .room-card-profit {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .profit-label {
+    font-size: 11px;
+    color: var(--td-text-color-placeholder);
+  }
+
+  .profit-value {
+    font-size: 16px;
+    font-weight: 600;
+
+    &.positive {
+      color: var(--td-success-color);
+    }
+
+    &.negative {
+      color: var(--td-error-color);
+    }
+  }
+
+  .room-card-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  // 分页
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
   }
 
   .form-section-title {
@@ -1284,49 +1478,59 @@ onMounted(() => {
   :deep(.t-divider) {
     margin: 8px 0 20px;
   }
-}
 
-.lease-drawer-content {
-  padding: 0 8px;
-
-  .lease-loading {
-    display: flex;
-    justify-content: center;
-    padding: 80px 0;
+  // 响应式
+  @media (max-width: 1200px) {
+    .room-card-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
-  .lease-detail-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
+  @media (max-width: 768px) {
+    .room-card-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .filter-bar {
+      flex-wrap: wrap;
+    }
   }
 
-  .lease-detail-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--td-text-color-primary);
-  }
+  .lease-drawer-content {
+    padding: 0 8px;
 
-  .lease-price {
-    color: var(--td-error-color);
-    font-weight: 500;
-  }
+    .lease-loading {
+      display: flex;
+      justify-content: center;
+      padding: 80px 0;
+    }
 
-  .lease-drawer-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 24px;
-    padding-top: 16px;
-    border-top: 1px solid var(--td-component-border);
-  }
+    .lease-detail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
 
-  .form-section-title {
-    margin-bottom: 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--td-text-color-primary);
+    .lease-detail-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--td-text-color-primary);
+    }
+
+    .lease-price {
+      color: var(--td-error-color);
+      font-weight: 500;
+    }
+
+    .lease-drawer-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--td-component-border);
+    }
   }
 }
 </style>

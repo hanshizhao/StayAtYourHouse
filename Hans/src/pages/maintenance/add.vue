@@ -300,8 +300,8 @@ const formRules: Record<string, FormRule[]> = {
 async function loadRooms() {
   roomLoading.value = true;
   try {
-    const res = await getRoomList();
-    roomOptions.value = (res || []).map((room) => ({
+    const res = await getRoomList({ pageSize: 100 });
+    roomOptions.value = (res?.list || []).map((room) => ({
       id: room.id,
       fullInfo: `${room.communityName} ${room.building} ${room.roomNumber}`,
     }));

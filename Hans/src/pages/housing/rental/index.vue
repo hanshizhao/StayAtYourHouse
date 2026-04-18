@@ -260,9 +260,9 @@ async function fetchCommunities() {
 /** 按需加载指定小区的房间列表 */
 async function fetchRoomsByCommunity(communityId: number) {
   try {
-    const res = await getRoomList({ communityId });
+    const res = await getRoomList({ communityId, pageSize: 100 });
     if (isUnmounted) return;
-    roomOptions.value = (res || []).map((r: RoomItem) => ({
+    roomOptions.value = (res?.list || []).map((r: RoomItem) => ({
       label: `${r.building} - ${r.roomNumber}`,
       value: r.id,
     }));

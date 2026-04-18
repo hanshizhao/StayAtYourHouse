@@ -383,9 +383,9 @@ async function loadTenants() {
 async function loadVacantRooms() {
   roomLoading.value = true;
   try {
-    const res = await getRoomList({ status: RoomStatus.Vacant });
+    const res = await getRoomList({ status: RoomStatus.Vacant, pageSize: 100 });
     // 转换为选项格式
-    roomOptions.value = (res || []).map((room) => ({
+    roomOptions.value = (res?.list || []).map((room) => ({
       id: room.id,
       fullInfo: `${room.communityName} ${room.building} ${room.roomNumber}`,
       communityName: room.communityName,

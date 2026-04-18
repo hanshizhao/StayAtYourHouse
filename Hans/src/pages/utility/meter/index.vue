@@ -423,8 +423,8 @@ async function fetchCommunities() {
 /** 获取已出租房间列表 */
 async function fetchRentedRooms() {
   try {
-    const res = await getRoomList({ status: RoomStatus.Rented });
-    rentedRooms.value = res || [];
+    const res = await getRoomList({ status: RoomStatus.Rented, pageSize: 100 });
+    rentedRooms.value = res?.list || [];
   } catch (e: unknown) {
     const error = e as { message?: string };
     MessagePlugin.error(error.message || '获取房间列表失败');
