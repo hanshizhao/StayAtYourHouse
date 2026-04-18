@@ -110,11 +110,6 @@ public class TenantDto
     public string GenderText => Gender == Gender.Male ? "男" : "女";
 
     /// <summary>
-    /// 紧急联系人
-    /// </summary>
-    public string? EmergencyContact { get; set; }
-
-    /// <summary>
     /// 备注
     /// </summary>
     public string? Remark { get; set; }

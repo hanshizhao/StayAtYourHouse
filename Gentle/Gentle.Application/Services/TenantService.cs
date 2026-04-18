@@ -166,7 +166,6 @@ public class TenantService : ITenantService
         existing.Phone = input.Phone;
         existing.IdCard = input.IdCard;
         existing.Gender = input.Gender;
-        existing.EmergencyContact = input.EmergencyContact;
         existing.Remark = input.Remark;
 
         var entry = await _repository.UpdateAsync(existing);

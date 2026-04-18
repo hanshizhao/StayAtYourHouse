@@ -73,9 +73,6 @@
           </span>
           <span v-else class="text-secondary">-</span>
         </template>
-        <template #emergencyContact="{ row }">
-          <span>{{ row.emergencyContact || '-' }}</span>
-        </template>
         <template #remark="{ row }">
           <t-tooltip v-if="row.remark" :content="row.remark" placement="top">
             <span class="remark-text">{{ row.remark }}</span>
@@ -139,14 +136,6 @@
             <t-radio :value="Gender.Female">女</t-radio>
           </t-radio-group>
         </t-form-item>
-        <t-form-item label="紧急联系人" name="emergencyContact">
-          <t-input
-            v-model="formData.emergencyContact"
-            placeholder="请输入紧急联系人"
-            :maxlength="100"
-            data-testid="tenant-emergency-input"
-          />
-        </t-form-item>
         <t-form-item label="备注" name="remark">
           <t-textarea
             v-model="formData.remark"
@@ -205,7 +194,6 @@ interface TenantFormData {
   phone: string;
   idCard?: string;
   gender: Gender;
-  emergencyContact?: string;
   remark?: string;
 }
 
@@ -228,7 +216,6 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'currentRoom', title: '当前房间', width: 200, ellipsis: true },
   { colKey: 'status', title: '状态', width: 100 },
   { colKey: 'leasePeriod', title: '租期', width: 200 },
-  { colKey: 'emergencyContact', title: '紧急联系人', width: 150 },
   { colKey: 'remark', title: '备注', width: 200, ellipsis: true },
   { colKey: 'op', title: '操作', width: 120, fixed: 'right' },
 ];
@@ -358,7 +345,6 @@ function handleCreate() {
     phone: '',
     idCard: '',
     gender: Gender.Male,
-    emergencyContact: '',
     remark: '',
   };
   dialogVisible.value = true;
@@ -379,7 +365,6 @@ function handleEdit(row: TenantItem) {
     phone: row.phone,
     idCard: row.idCard || '',
     gender: row.gender,
-    emergencyContact: row.emergencyContact || '',
     remark: row.remark || '',
   };
   dialogVisible.value = true;
@@ -398,7 +383,6 @@ async function handleSubmit() {
         phone: formData.value.phone || undefined,
         idCard: formData.value.idCard || undefined,
         gender: formData.value.gender,
-        emergencyContact: formData.value.emergencyContact || undefined,
         remark: formData.value.remark || undefined,
       });
       MessagePlugin.success('创建租客成功');
@@ -414,7 +398,6 @@ async function handleSubmit() {
         phone: formData.value.phone || undefined,
         idCard: formData.value.idCard || undefined,
         gender: formData.value.gender,
-        emergencyContact: formData.value.emergencyContact || undefined,
         remark: formData.value.remark || undefined,
       });
       MessagePlugin.success('更新租客成功');

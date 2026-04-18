@@ -55,7 +55,6 @@ export interface TenantItem {
   idCard?: string;
   gender: Gender;
   genderText: string;
-  emergencyContact?: string;
   remark?: string;
   createdTime: string;
   /** 当前房间信息(如果有活跃租住记录) */
@@ -80,7 +79,6 @@ export interface CreateTenantParams {
   phone?: string;
   idCard?: string;
   gender: Gender;
-  emergencyContact?: string;
   remark?: string;
 }
 
@@ -93,6 +91,5 @@ export interface UpdateTenantParams {
   phone?: string;
   idCard?: string;
   gender: Gender;
-  emergencyContact?: string;
   remark?: string;
 }

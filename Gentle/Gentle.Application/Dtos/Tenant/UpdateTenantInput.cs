@@ -42,12 +42,6 @@ public class UpdateTenantInput
     public Gender Gender { get; set; }
 
     /// <summary>
-    /// 紧急联系人
-    /// </summary>
-    [MaxLength(100, ErrorMessage = "紧急联系人长度不能超过100个字符")]
-    public string? EmergencyContact { get; set; }
-
-    /// <summary>
     /// 备注
     /// </summary>
     public string? Remark { get; set; }
