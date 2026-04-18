@@ -309,10 +309,34 @@
         }
       ],
       "test_file": "tests/e2e/feat-165-room-card-layout.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-18T21:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "design_comparison": "passed",
+        "verified_at": "2026-04-18T21:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-18T20:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 2,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_notes": [
+          "统计摘要省略了异常数量（有意改进，M-3 已接受）",
+          ".room-card 背景色硬编码 #fff（M-4 遗留，待确认主题方案）",
+          "handleOpenLease catch 块风格与项目不一致（S-3）"
+        ],
+        "fixes_applied": [
+          "I-2: @media 和 .lease-drawer-content 移入 .room-management Less 嵌套块",
+          "M-1: 页面大小选项提取为 PAGE_SIZE_OPTIONS 常量",
+          "M-5: 函数参数 row 重命名为 room（handleEdit/handleDelete/handleMaintenance/handleOpenLease）"
+        ]
       }
     },
     {
