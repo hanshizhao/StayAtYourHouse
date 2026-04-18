@@ -15,35 +15,52 @@
 
 ### Debt（欠款记录）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| Id | int (PK) | 自增主键 |
-| TenantId | int (FK → Tenant) | 关联租客 |
-| TotalAmount | decimal | 总欠款金额 |
-| Status | DebtStatus 枚举 | Ongoing(0) / Settled(1) |
-| Description | string? | 欠款说明 |
-| CreatedDate | DateTime | 创建时间 |
-| Remark | string? | 备注 |
+文件位置：`Gentle.Core/Entities/Debt.cs`
+表名：`[Table("debt")]`
+索引：`[Index(nameof(TenantId))]`
 
-Navigation: `Tenant`
+继承 `Entity<int>`（Furion 基类，自动提供 Id、CreatedTime 等字段）。
+
+| 字段 | 类型 | 属性 | 说明 |
+|------|------|------|------|
+| TenantId | int | [Required] | 关联租客 FK |
+| TotalAmount | decimal | [Required, Range(0.01, double.MaxValue), Column(TypeName = "decimal(10,2)")] | 总欠款金额 |
+| Status | DebtStatus | [Required] | Ongoing(0) / Settled(1) |
+| Description | string? | [MaxLength(500)] | 欠款说明 |
+| Remark | string? | [MaxLength(500)] | 备注 |
+
+Navigation: `Tenant`（多对一），`Repayments`（`ICollection<DebtRepayment>`，一对多）
+
+种子数据：实现 `IEntitySeedData<Debt, MasterDbContextLocator>`，返回空数组。
 
 ### DebtRepayment（还款记录）
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| Id | int (PK) | 自增主键 |
-| DebtId | int (FK → Debt) | 关联欠款 |
-| Amount | decimal | 本次还款金额 |
-| PaymentDate | DateTime | 还款日期 |
-| PaymentMethod | RepaymentMethod 枚举 | Cash(0) / WeChat(1) / Alipay(2) / BankTransfer(3) |
-| Remark | string? | 备注 |
+文件位置：`Gentle.Core/Entities/DebtRepayment.cs`
+表名：`[Table("debt_repayment")]`
+索引：`[Index(nameof(DebtId))]`
 
-Navigation: `Debt`
+继承 `Entity<int>`。
+
+| 字段 | 类型 | 属性 | 说明 |
+|------|------|------|------|
+| DebtId | int | [Required] | 关联欠款 FK |
+| Amount | decimal | [Required, Range(0.01, double.MaxValue), Column(TypeName = "decimal(10,2)")] | 本次还款金额 |
+| PaymentDate | DateTime | [Required] | 还款日期 |
+| PaymentChannel | PaymentChannel 枚举 | [Required] | Cash(0) / WeChat(1) / Alipay(2) / BankTransfer(3) |
+| Remark | string? | [MaxLength(500)] | 备注 |
+
+Navigation: `Debt`（多对一）
+
+种子数据：实现 `IEntitySeedData<DebtRepayment, MasterDbContextLocator>`，返回空数组。
 
 ### 新增枚举
 
-- **DebtStatus**: `Ongoing = 0`（进行中），`Settled = 1`（已还清）
-- **RepaymentMethod**: `Cash = 0`，`WeChat = 1`，`Alipay = 2`，`BankTransfer = 3`
+文件位置：`Gentle.Core/Enums/`
+
+- **DebtStatus.cs**: `Ongoing = 0`（进行中），`Settled = 1`（已还清）
+- **PaymentChannel.cs**: `Cash = 0`，`WeChat = 1`，`Alipay = 2`，`BankTransfer = 3`
+
+注意：命名为 `PaymentChannel` 而非 `RepaymentMethod`，避免与已有 `PaymentMethod`（付款频率）枚举混淆。
 
 ### 金额计算
 
@@ -51,26 +68,52 @@ Navigation: `Debt`
 
 ## 后端 API
 
-在 `Gentle.Application/Apps/` 下新增 `DebtAppService`，实现 `IDynamicApiController`。
+### AppService
 
-服务层在 `Gentle.Application/Services/` 下新增 `IDebtService` / `DebtService`，使用 `IRepository<Debt>` 构造函数注入。
+文件位置：`Gentle.Application/Apps/DebtAppService.cs`
+
+属性：
+- `[Authorize]`
+- `[ApiDescriptionSettings("Debt", Name = "DebtApp", Order = 12)]`
+- 实现 `IDynamicApiController`
+- 路由：`[Route("api/debt")]`
+
+### 服务层
+
+文件位置：`Gentle.Application/Services/IDebtService.cs`、`DebtService.cs`
+
+`IDebtService : ITransient`（Furion 自动注册），使用 `IRepository<Debt>` + `IRepository<DebtRepayment>` 构造函数注入。
+
+### DTO
+
+文件位置：`Gentle.Application/Dtos/Debt/`
+
+| DTO | 用途 |
+|-----|------|
+| `DebtListDto` | 列表输出（含计算字段 PaidAmount、RemainingAmount、TenantName、TenantPhone） |
+| `DebtDetailDto` | 详情输出（含 Repayments 列表） |
+| `CreateDebtInput` | 新增欠款输入（TenantId、TotalAmount、Description、Remark） |
+| `UpdateDebtInput` | 修改欠款输入（Id、TotalAmount、Description、Remark） |
+| `AddRepaymentInput` | 新增还款输入（Amount、PaymentDate、PaymentChannel、Remark） |
+| `DebtRepaymentDto` | 还款记录输出 |
 
 ### 端点
 
 | 方法 | 路由 | 说明 |
 |------|------|------|
-| GET | `/api/debt/list` | 欠款列表（分页、状态筛选、租客搜索） |
-| GET | `/api/debt/{id}` | 欠款详情（含还款记录） |
-| POST | `/api/debt/add` | 新增欠款 |
-| PUT | `/api/debt/edit` | 修改欠款 |
-| DELETE | `/api/debt/remove/{id}` | 删除欠款（仅限无还款记录） |
-| POST | `/api/debt/{id}/repay` | 新增还款记录 |
-| DELETE | `/api/debt/repay/remove/{id}` | 删除还款记录 |
+| GET | `list` | 欠款列表（分页、状态筛选、租客搜索） |
+| GET | `{id}` | 欠款详情（含还款记录） |
+| POST | `add` | 新增欠款 |
+| PUT | `edit` | 修改欠款 |
+| DELETE | `remove/{id}` | 删除欠款（仅限无还款记录） |
+| POST | `{id}/repay` | 新增还款记录 |
+| DELETE | `repay/remove/{id}` | 删除还款记录 |
 
 ### 业务逻辑
 
-- 新增还款时：聚合该欠款下所有还款金额，若 >= TotalAmount，自动将 Status 更新为 Settled
+- 新增还款时：验证还款金额不超过剩余欠款（`TotalAmount - 已还总额`）；若还清则自动将 Status 更新为 Settled
 - 删除还款时：若欠款状态为 Settled，回退为 Ongoing
+- 修改欠款时：若 Status 为 Settled，禁止修改 TotalAmount（防止已还清状态失效）
 - 删除欠款时：已有还款记录则拒绝删除
 
 ## 前端页面
@@ -80,6 +123,7 @@ Navigation: `Debt`
 - 路由：`/debt`
 - 菜单：左侧独立菜单项「老赖管理」
 - 页面文件：`src/pages/debt/index.vue`
+- 路由 meta `orderNo`：待定（根据现有菜单顺序分配）
 
 ### 主列表页
 
@@ -114,5 +158,6 @@ src/pages/debt/
     └── DebtFormDialog.vue
 
 src/api/debt.ts
+src/api/model/debtModel.ts
 src/router/modules/debt.ts
 ```
