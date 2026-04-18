@@ -39,7 +39,11 @@
 | `Hans/src/api/model/debtModel.ts` | TypeScript 类型定义 |
 | `Hans/src/api/debt.ts` | API 调用函数 |
 | `Hans/src/router/modules/debt.ts` | 路由配置 |
-| `Hans/src/pages/debt/index.vue` | 主列表页（含卡片和弹窗） |
+| `Hans/src/pages/debt/index.vue` | 主列表页 |
+| `Hans/src/pages/debt/components/DebtCard.vue` | 欠款卡片组件 |
+| `Hans/src/pages/debt/components/RepayDialog.vue` | 还款弹窗 |
+| `Hans/src/pages/debt/components/DebtDetailDialog.vue` | 详情弹窗 |
+| `Hans/src/pages/debt/components/DebtFormDialog.vue` | 新增/编辑欠款弹窗 |
 
 ### Database — 迁移
 
@@ -151,7 +155,7 @@ namespace Gentle.Core.Entities;
 /// </summary>
 [Table("debt")]
 [Index(nameof(TenantId))]
-public class Debt : Entity<int>
+public class Debt : Entity<int>, IEntitySeedData<Debt>
 {
     /// <summary>
     /// 租客ID
@@ -193,6 +197,14 @@ public class Debt : Entity<int>
     /// 还款记录导航属性
     /// </summary>
     public ICollection<DebtRepayment> Repayments { get; set; } = [];
+
+    /// <summary>
+    /// 配置种子数据
+    /// </summary>
+    public IEnumerable<Debt> HasData(DbContext dbContext, Type dbContextLocator)
+    {
+        return Array.Empty<Debt>();
+    }
 }
 ```
 
@@ -213,7 +225,7 @@ namespace Gentle.Core.Entities;
 /// </summary>
 [Table("debt_repayment")]
 [Index(nameof(DebtId))]
-public class DebtRepayment : Entity<int>
+public class DebtRepayment : Entity<int>, IEntitySeedData<DebtRepayment>
 {
     /// <summary>
     /// 欠款ID
@@ -251,6 +263,14 @@ public class DebtRepayment : Entity<int>
     /// </summary>
     [MaxLength(500, ErrorMessage = "备注长度不能超过500个字符")]
     public string? Remark { get; set; }
+
+    /// <summary>
+    /// 配置种子数据
+    /// </summary>
+    public IEnumerable<DebtRepayment> HasData(DbContext dbContext, Type dbContextLocator)
+    {
+        return Array.Empty<DebtRepayment>();
+    }
 }
 ```
 
@@ -613,11 +633,7 @@ public class DebtService : IDebtService
             throw Oops.Oh($"欠款记录 {input.Id} 不存在");
 
         if (debt.Status == DebtStatus.Settled)
-        {
-            var paidAmount = debt.Repayments.Sum(r => r.Amount);
-            if (input.TotalAmount < paidAmount)
-                throw Oops.Oh($"已还清的欠款，修改后金额不能小于已还金额 ¥{paidAmount:F2}");
-        }
+            throw Oops.Oh("已还清的欠款不允许修改金额");
 
         debt.TotalAmount = input.TotalAmount;
         debt.Description = input.Description;
@@ -756,7 +772,7 @@ namespace Gentle.Application.Apps;
 /// <summary>
 /// 欠款管理应用服务
 /// </summary>
-[ApiDescriptionSettings("Debt", Name = "DebtApp", Order = 45)]
+[ApiDescriptionSettings("Debt", Name = "DebtApp", Order = 12)]
 [Route("api/debt")]
 [Authorize]
 public class DebtAppService : IDynamicApiController
@@ -1122,37 +1138,68 @@ git commit -m "feat: 新增老赖管理路由配置"
 
 ---
 
-## Task 9: 前端主列表页
+## Task 9: 前端主列表页与组件
 
 **Files:**
 - Create: `Hans/src/pages/debt/index.vue`
+- Create: `Hans/src/pages/debt/components/DebtCard.vue`
+- Create: `Hans/src/pages/debt/components/RepayDialog.vue`
+- Create: `Hans/src/pages/debt/components/DebtDetailDialog.vue`
+- Create: `Hans/src/pages/debt/components/DebtFormDialog.vue`
 
-这是最核心的前端任务，包含卡片列表、筛选栏、以及 3 个弹窗（新增/编辑、还款、详情）。
+这是最核心的前端任务，采用组件拆分模式（遵循"许多小文件 > 少数大文件"原则）。
 
-- [ ] **Step 1: 创建主页面骨架**
+- [ ] **Step 1: 创建 DebtCard 组件**
 
-创建 `Hans/src/pages/debt/index.vue`，包含完整的 `<template>`、`<script setup lang="ts">`、`<style lang="less" scoped>`。
+`Hans/src/pages/debt/components/DebtCard.vue`
+
+Props: `debt: DebtDetail`
+Emits: `repay`, `detail`, `edit`, `delete`
+
+卡片展示：租客姓名、电话、欠款说明、金额进度（已还/总额 + `t-progress` 进度条）、状态标签（`t-tag`）、操作按钮。使用 `data-testid` 便于测试。
+
+- [ ] **Step 2: 创建 RepayDialog 组件**
+
+`Hans/src/pages/debt/components/RepayDialog.vue`
+
+Props: `visible`, `debt: DebtDetail | null`
+Emits: `update:visible`, `success`
+
+表单：还款金额（`t-input-number`）、还款日期（`t-date-picker`，默认今天）、还款方式（`t-select` 下拉）、备注（`t-textarea`）。调用 `addRepayment` API。
+
+- [ ] **Step 3: 创建 DebtDetailDialog 组件**
+
+`Hans/src/pages/debt/components/DebtDetailDialog.vue`
+
+Props: `visible`, `debt: DebtDetail | null`
+Emits: `update:visible`
+
+展示：租客信息 + 金额汇总（总欠款/已还/剩余，用 `t-card` 三列布局）+ 还款记录表格（`t-table`：日期、金额、方式、备注）。
+
+- [ ] **Step 4: 创建 DebtFormDialog 组件**
+
+`Hans/src/pages/debt/components/DebtFormDialog.vue`
+
+Props: `visible`, `editDebt: DebtDetail | null`
+Emits: `update:visible`, `success`
+
+表单：选择租客（`t-select`，`filterable`，调用 `getTenantList` 获取选项）、欠款金额（`t-input-number`）、欠款说明（`t-textarea`）、备注（`t-textarea`）。新增调用 `createDebt`，编辑调用 `updateDebt`。
+
+- [ ] **Step 5: 创建主页面 index.vue**
+
+`Hans/src/pages/debt/index.vue`
 
 页面结构：
-1. 顶部操作栏：标题「老赖管理」+ 新增欠款按钮
-2. 筛选栏：租客姓名搜索输入框 + 状态筛选下拉（全部/进行中/已还清）
-3. 卡片网格：每张卡片显示租客姓名、电话、欠款说明、金额进度（已还/总额 + 进度条）、状态标签、操作按钮（还款/详情/编辑/删除）
-4. 分页控件
+1. 顶部操作栏：标题「老赖管理」+ `t-button`「新增欠款」
+2. 筛选栏：`t-input` 租客搜索 + `t-select` 状态筛选（全部/进行中/已还清）
+3. 卡片网格：CSS Grid（`grid-template-columns: repeat(auto-fill, minmax(360px, 1fr))`）+ `DebtCard` 组件
+4. `t-pagination` 分页控件
+5. 弹窗：`RepayDialog`、`DebtDetailDialog`、`DebtFormDialog`
 
-弹窗：
-- `DebtFormDialog`：新增/编辑欠款（选择租客、金额、说明、备注）
-- `RepayDialog`：还款（金额、日期、还款方式、备注）
-- `DebtDetailDialog`：详情（基本信息 + 金额汇总 + 还款记录表格）
-
-关键实现要点：
-- 使用 TDesign 的 `t-card`、`t-input`、`t-select`、`t-button`、`t-dialog`、`t-form`、`t-tag`、`t-table`、`t-pagination` 组件
-- 卡片布局使用 CSS Grid（`.debt-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }`）
-- 进度条使用 `t-progress` 组件
-- 金额格式化：`¥${amount.toLocaleString('zh-CN', { minimumFractionDigits: 2 })}` 
-- 租客下拉使用 `getTenantList` API 获取选项
-- 弹窗内表单使用 `t-form` 的 `:rules` 验证
+关键要点：
+- 金额格式化：`¥${amount.toLocaleString('zh-CN', { minimumFractionDigits: 2 })}`
 - `onMounted` + `onActivated` 都调用 `fetchData()`
-- 按钮使用 `data-testid` 属性便于 E2E 测试
+- 弹窗内表单使用 `t-form` 的 `:rules` 验证
 
 - [ ] **Step 2: 验证开发服务器渲染**
 
