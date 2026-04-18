@@ -1,305 +1,284 @@
 {
-  "module": "room-table-redesign",
+  "module": "room-card-redesign",
   "features": [
     {
-      "id": "FEAT-155",
+      "id": "FEAT-160",
       "category": "后端",
-      "module": "房间列表表格重设计",
+      "module": "房间管理卡片重设计",
       "priority": "high",
       "test_type": "static",
-      "description": "后端 RoomDto 字段调整：删除 LeaseDuration/DaysUntilExpiry，新增 TenantName/RentalStartDate/RentalEndDate",
+      "description": "新增 LeaseStatus 枚举及扩展方法",
       "acceptance_criteria": [
-        "RoomDto 删除 LeaseDuration 和 DaysUntilExpiry 字段",
-        "RoomDto 新增 TenantName (string?)、RentalStartDate (DateTime?)、RentalEndDate (DateTime?)",
-        "E2E 测试验证字段增删正确（dotnet build 在 FEAT-156 中验证）"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "删除 LeaseDuration 和 DaysUntilExpiry 字段，新增 TenantName、RentalStartDate、RentalEndDate",
-          "file": "Gentle/Gentle.Application/Dtos/Room/RoomDto.cs",
-          "code_hint": "替换第91-99行的 LeaseDuration/DaysUntilExpiry 为 TenantName(string?), RentalStartDate(DateTime?), RentalEndDate(DateTime?)"
-        }
-      ],
-      "test_file": "tests/e2e/feat-155-room-dto-fields-adjustment.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-10T17:24:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-10T17:24:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-10T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "rounds": 2
-      }
-    },
-    {
-      "id": "FEAT-156",
-      "category": "后端",
-      "module": "房间列表表格重设计",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端 RoomService 映射逻辑调整：添加 Renter Include，调整租客信息映射，移除 CalculateLeaseDuration",
-      "acceptance_criteria": [
-        "活跃租赁查询添加 .Include(r => r.Renter)",
-        "映射逻辑填充 TenantName、RentalStartDate、RentalEndDate",
-        "CalculateLeaseDuration 方法已移除",
-        "Gentle.Application.xml 已同步更新",
+        "创建 LeaseStatus.cs 枚举（Normal=0, ExpiringSoon=1, Expired=2, None=3）",
+        "创建 LeaseStatusExtensions.cs 扩展方法（ToText）",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "添加 Renter Include",
-          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "在活跃租赁查询中添加 .Include(r => r.Renter)"
+          "action": "创建 LeaseStatus 枚举",
+          "file": "Gentle/Gentle.Core/Enums/LeaseStatus.cs",
+          "code_hint": "参照 RoomStatus.cs 模式，定义 Normal=0, ExpiringSoon=1, Expired=2, None=3"
         },
         {
           "step": 2,
-          "action": "调整映射逻辑，填充 TenantName/RentalStartDate/RentalEndDate",
-          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "替换 LeaseDuration/DaysUntilExpiry 映射为 TenantName=rental.Renter?.Name, RentalStartDate=rental.CheckInDate, RentalEndDate=rental.ContractEndDate；移除 today 变量"
+          "action": "创建 LeaseStatusExtensions 扩展方法",
+          "file": "Gentle/Gentle.Core/Enums/LeaseStatusExtensions.cs",
+          "code_hint": "参照 RoomStatusExtensions.cs 模式，实现 ToText() 方法"
         },
         {
           "step": 3,
-          "action": "移除 CalculateLeaseDuration 方法",
-          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "删除 CalculateLeaseDuration 私有方法（约第80-112行）"
-        },
-        {
-          "step": 4,
-          "action": "更新 Gentle.Application.xml",
-          "file": "Gentle/Gentle.Application/Gentle.Application.xml",
-          "code_hint": "移除 LeaseDuration/DaysUntilExpiry/CalculateLeaseDuration 条目，添加 TenantName/RentalStartDate/RentalEndDate 条目"
-        },
-        {
-          "step": 5,
-          "action": "验证后端编译通过",
+          "action": "验证后端编译",
           "verify_command": "cd Gentle && dotnet build"
         }
       ],
-      "test_file": "tests/e2e/feat-156-room-service-mapping.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-10T18:00:00Z",
+      "test_file": "tests/e2e/feat-160-lease-status-enum.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-10T18:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-10T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": "发现的前端类型不同步属于 FEAT-157 范围；XML diff 超范围变更为工作区未提交累积，非代码质量问题",
-        "rounds": 1
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-157",
-      "category": "前端",
-      "module": "房间列表表格重设计",
+      "id": "FEAT-161",
+      "category": "后端",
+      "module": "房间管理卡片重设计",
       "priority": "high",
       "test_type": "static",
-      "description": "前端 RoomItem 类型调整：删除 leaseDuration/daysUntilExpiry，新增 tenantName/rentalStartDate/rentalEndDate",
+      "description": "RoomDto 新增字段和分页类型",
       "acceptance_criteria": [
-        "RoomItem 接口删除 leaseDuration、daysUntilExpiry",
-        "RoomItem 接口新增 tenantName、rentalStartDate、rentalEndDate",
+        "RoomDto 新增 5 个字段（LandlordLeaseStatus, LandlordLeaseExpiredDays, TenantLeaseStatus, TenantLeaseExpiredDays, TenantMonthlyRent）",
+        "新增 RoomListInput 类（CommunityId, Status, HasLeaseAlert, Page, PageSize）",
+        "新增 RoomListResult 类（List, Total）",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "在 RoomDto 中新增 5 个字段和分页类型",
+          "file": "Gentle/Gentle.Application/Dtos/Room/RoomDto.cs",
+          "code_hint": "在 LandlordLease 属性后添加 LandlordLeaseStatus/TenantLeaseStatus 等 5 个字段；文件末尾新增 RoomListInput 和 RoomListResult 类"
+        },
+        {
+          "step": 2,
+          "action": "验证编译",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-161-room-dto-pagination-types.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-162",
+      "category": "后端",
+      "module": "房间管理卡片重设计",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "后端服务层实现租约状态计算和服务端分页",
+      "acceptance_criteria": [
+        "IRoomService.GetListAsync 签名改为接受 RoomListInput 返回 RoomListResult",
+        "RoomService 实现租约状态计算（7天阈值）",
+        "按 HasLeaseAlert 筛选异常租约",
+        "服务端分页（Skip/Take + CountAsync）",
+        "Profit 计算区分有/无租客",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新 IRoomService 接口签名",
+          "file": "Gentle/Gentle.Application/Services/IRoomService.cs",
+          "code_hint": "将 GetListAsync 签名改为 Task<RoomListResult> GetListAsync(RoomListInput input)"
+        },
+        {
+          "step": 2,
+          "action": "替换 RoomService.GetListAsync 方法并添加租约状态计算",
+          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
+          "code_hint": "只替换 GetListAsync 方法，保留其他方法；添加 CalculateLeaseStatus 私有方法和 LeaseAlertThresholdDays 常量"
+        },
+        {
+          "step": 3,
+          "action": "验证编译",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-162-room-service-lease-pagination.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-163",
+      "category": "后端",
+      "module": "房间管理卡片重设计",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "后端 API 层适配分页查询参数",
+      "acceptance_criteria": [
+        "RoomAppService.GetList 改为接受 RoomListInput，返回 RoomListResult",
+        "API 路由 [HttpGet(\"list\")] + [FromQuery] 参数绑定",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "更新 RoomAppService.GetList 方法签名和实现",
+          "file": "Gentle/Gentle.Application/Apps/RoomAppService.cs",
+          "code_hint": "改为 async Task<RoomListResult> GetList([FromQuery] RoomListInput input)，调用 _roomService.GetListAsync(input)"
+        },
+        {
+          "step": 2,
+          "action": "验证编译",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-163-room-app-service-pagination.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-164",
+      "category": "前端",
+      "module": "房间管理卡片重设计",
+      "priority": "high",
+      "test_type": "static",
+      "description": "前端 API 模型更新：LeaseStatus 枚举、分页类型、RoomItem 新字段",
+      "acceptance_criteria": [
+        "新增 LeaseStatus 枚举（Normal=0, ExpiringSoon=1, Expired=2, None=3）",
+        "RoomItem 接口新增 5 个字段",
+        "GetRoomListParams 更新为分页参数",
+        "新增 RoomListResult 类型",
+        "getRoomList 返回类型改为 RoomListResult",
         "npm run build:type 无类型错误"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "更新 RoomItem 接口",
+          "action": "新增 LeaseStatus 枚举和更新 RoomItem/GetRoomListParams/RoomListResult 类型",
           "file": "Hans/src/api/model/roomModel.ts",
-          "code_hint": "替换 leaseDuration/daysUntilExpiry 为 tenantName(string|null), rentalStartDate(string|null), rentalEndDate(string|null)"
+          "code_hint": "添加 LeaseStatus 枚举；RoomItem 新增 landlordLeaseStatus/tenantLeaseStatus 等 5 字段；更新 GetRoomListParams 添加 hasLeaseAlert/page/pageSize；新增 RoomListResult"
         },
         {
           "step": 2,
-          "action": "验证前端类型检查通过",
+          "action": "更新 room.ts API 调用返回类型",
+          "file": "Hans/src/api/room.ts",
+          "code_hint": "getRoomList 返回类型从 RoomItem[] 改为 RoomListResult"
+        },
+        {
+          "step": 3,
+          "action": "验证前端类型检查",
           "verify_command": "cd Hans && npm run build:type"
         }
       ],
-      "test_file": "tests/e2e/feat-157-room-item-type.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-10T19:00:00Z",
+      "test_file": "tests/e2e/feat-164-frontend-api-model-update.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-10T19:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-10T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "S-1: index.vue 旧字段引用属 FEAT-158 范围",
-          "S-2: 旧测试文件(feat-152/153/154)断言属 FEAT-159 范围",
-          "S-3: feat-151 遗留旧字段断言不在本范围"
-        ],
-        "rounds": 1
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-158",
+      "id": "FEAT-165",
       "category": "前端",
-      "module": "房间列表表格重设计",
+      "module": "房间管理卡片重设计",
       "priority": "high",
       "test_type": "e2e",
-      "description": "前端表格重设计：删列、加展开行、清理死代码",
+      "design_file": "docs/prototypes/room-card-redesign-prototype.pen",
+      "description": "前端页面重写为卡片布局",
       "acceptance_criteria": [
-        "删除安居码、已租时长、到期天数三列配置",
-        "删除对应的三个模板槽",
-        "t-table 添加 expanded-row-keys 和 @expand-change",
-        "添加 #expandedRow 展开行模板",
-        "添加 expandedRowKeys ref 和 handleExpandChange 函数",
-        "handlePageChange 中重置展开状态",
-        "删除 getExpiryClass 函数",
-        "删除过期 CSS 类，添加展开行样式",
+        "移除 t-table，替换为 CSS Grid 卡片布局（3列响应式）",
+        "筛选栏：小区/状态/异常租约 + 统计摘要",
+        "卡片结构：头部（房间名+状态）→ 中部（房东/租客两栏）→ 底部（利润+操作按钮）",
+        "后端分页（t-pagination）",
+        "保留现有弹窗和抽屉",
         "npm run build:type 无错误"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "删除三列配置（anjuCodeSubmitted、leaseDuration、daysUntilExpiry）",
+          "action": "重写模板部分：替换 t-table 为 CSS Grid 卡片布局",
           "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "从 columns 数组删除 colKey: 'anjuCodeSubmitted'/'leaseDuration'/'daysUntilExpiry' 三行"
+          "code_hint": "参照原型设计：筛选栏 + grid-template-columns: repeat(3,1fr) + 卡片三段式结构（头/中/底）+ t-pagination"
         },
         {
           "step": 2,
-          "action": "删除三个模板槽",
+          "action": "重写 script 部分：后端分页逻辑 + 辅助方法",
           "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "删除 #anjuCodeSubmitted、#leaseDuration、#daysUntilExpiry 三个 template 块"
+          "code_hint": "移除 data/tableData 改为 roomList ref + pagination reactive；新增 getLeaseTagTheme/getLeaseStatusText/formatProfit 等辅助方法"
         },
         {
           "step": 3,
-          "action": "添加 t-table 展开行属性和模板",
+          "action": "编写样式部分：卡片 CSS + 响应式",
           "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "添加 :expanded-row-keys 和 @expand-change 到 t-table；在 #op 之后添加 #expandedRow 模板展示租客/租期/安居码"
+          "code_hint": "参照原型参数：.room-card-grid 3列、.room-card 圆角8px、响应式断点 1200px/768px"
         },
         {
           "step": 4,
-          "action": "添加展开行 script 逻辑（expandedRowKeys ref + handleExpandChange + handlePageChange 重置）",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "const expandedRowKeys = ref<number[]>([]); handleExpandChange 函数; handlePageChange 中添加 expandedRowKeys.value = []"
-        },
-        {
-          "step": 5,
-          "action": "删除 getExpiryClass 函数",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "删除 getExpiryClass 函数及其 JSDoc 注释"
-        },
-        {
-          "step": 6,
-          "action": "删除过期 CSS 类，添加展开行样式",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "删除 .expiry-positive/.expiry-zero/.expiry-negative；添加 .expanded-row/.expanded-item/.expanded-label/.expanded-value/.text-expired/.expanded-row-empty"
-        },
-        {
-          "step": 7,
-          "action": "验证前端构建通过",
+          "action": "验证前端类型检查",
           "verify_command": "cd Hans && npm run build:type"
         }
       ],
-      "test_file": "tests/e2e/feat-158-room-table-expand-row.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-10T20:00:00Z",
+      "test_file": "tests/e2e/feat-165-room-card-layout.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-10T20:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-10T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "notes": "I-1: 删除了 .text-expired 死代码；I-2 文件长度 1337 行为预先存在问题超出范围",
-        "rounds": 2
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-159",
+      "id": "FEAT-166",
       "category": "集成",
-      "module": "房间列表表格重设计",
+      "module": "房间管理卡片重设计",
       "priority": "high",
       "test_type": "e2e",
-      "description": "E2E 测试更新：匹配展开行结构",
+      "description": "端到端验证：卡片布局全流程",
       "acceptance_criteria": [
-        "feat-152 测试移除旧字段断言，添加新字段断言",
-        "feat-153 测试移除旧列断言，验证展开行属性和模板",
-        "feat-154 测试添加展开行交互断言",
-        "所有 E2E 测试通过"
+        "卡片网格正确渲染（3列布局）",
+        "房东租约信息正确显示（姓名/租金/到期/状态）",
+        "租客租约信息正确显示（已出租房间 vs 空置）",
+        "利润显示正确（实际/预期，绿色/红色）",
+        "租约状态标签颜色正确",
+        "筛选功能正常",
+        "分页功能正常",
+        "CRUD 操作正常",
+        "响应式布局正常"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "更新 feat-152 测试：移除 leaseDuration/daysUntilExpiry 断言，添加 tenantName/rentalStartDate/rentalEndDate 断言",
-          "file": "tests/e2e/feat-152-room-model-rental-fields.spec.ts",
-          "code_hint": "替换旧字段类型断言为新字段类型断言"
+          "action": "编写 E2E 测试：卡片渲染和内容验证",
+          "file": "tests/e2e/feat-166-room-card-e2e.spec.ts",
+          "code_hint": "验证卡片网格、房东/租客信息、利润、状态标签"
         },
         {
           "step": 2,
-          "action": "更新 feat-153 测试：移除旧列断言，验证展开行属性",
-          "file": "tests/e2e/feat-153-room-list-rental-columns.spec.ts",
-          "code_hint": "验证 columns 不含旧 colKey；验证 expanded-row-keys 属性和 #expandedRow 模板存在；验证 getExpiryClass 已移除"
+          "action": "编写 E2E 测试：筛选、分页、CRUD 交互",
+          "file": "tests/e2e/feat-166-room-card-e2e.spec.ts",
+          "code_hint": "验证小区/状态/异常筛选、分页切换、编辑/删除操作"
         },
         {
           "step": 3,
-          "action": "更新 feat-154 测试：添加展开行交互断言",
-          "file": "tests/e2e/feat-154-room-list-rental-info.spec.ts",
-          "code_hint": "移除旧列渲染断言；添加点击展开验证租客信息、空置房间显示暂无租客信息"
-        },
-        {
-          "step": 4,
-          "action": "运行测试验证",
-          "verify_command": "cd tests && npx playwright test e2e/feat-152-room-model-rental-fields.spec.ts e2e/feat-153-room-list-rental-columns.spec.ts e2e/feat-154-room-list-rental-info.spec.ts"
+          "action": "运行全部 E2E 测试",
+          "verify_command": "cd tests && npx playwright test e2e/feat-166-room-card-e2e.spec.ts"
         }
       ],
-      "test_file": "tests/e2e/feat-159-room-table-redesign.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-10T20:30:00Z",
+      "test_file": "tests/e2e/feat-166-room-card-e2e.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-10T20:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-10T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "S-1: feat-159 测试名'feat-153 测试验证旧代码移除'命名可更精确（可读性建议）",
-          "S-2: feat-152 和 feat-154 对 roomModel.ts 的旧字段断言存在合理重叠（防御性冗余）"
-        ],
-        "notes": "C-1(上一轮): 移除 feat-159 中 not.toMatch 自引用断言，由 feat-152 自身直接检查源文件",
-        "rounds": 2
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false,
+        "required_tests": ["card_render", "landlord_info", "tenant_info", "profit_display", "lease_status_tags", "filter", "pagination", "crud", "responsive"]
       }
     }
   ]
