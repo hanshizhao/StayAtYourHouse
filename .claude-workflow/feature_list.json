@@ -1,408 +1,429 @@
 {
-  "module": "room-card-redesign",
+  "module": "debt-management",
   "features": [
     {
-      "id": "FEAT-160",
+      "id": "FEAT-167",
       "category": "后端",
-      "module": "房间管理卡片重设计",
+      "module": "老赖管理",
       "priority": "high",
       "test_type": "static",
-      "description": "新增 LeaseStatus 枚举及扩展方法",
+      "description": "后端枚举：DebtStatus 和 PaymentChannel",
       "acceptance_criteria": [
-        "创建 LeaseStatus.cs 枚举（Normal=0, ExpiringSoon=1, Expired=2, None=3）",
-        "创建 LeaseStatusExtensions.cs 扩展方法（ToText）",
+        "创建 DebtStatus 枚举（Ongoing=0, Settled=1）",
+        "创建 PaymentChannel 枚举（Cash=0, WeChat=1, Alipay=2, BankTransfer=3）",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 LeaseStatus 枚举",
-          "file": "Gentle/Gentle.Core/Enums/LeaseStatus.cs",
-          "code_hint": "参照 RoomStatus.cs 模式，定义 Normal=0, ExpiringSoon=1, Expired=2, None=3"
+          "action": "创建 DebtStatus 枚举",
+          "file": "Gentle/Gentle.Core/Enums/DebtStatus.cs",
+          "code_hint": "namespace Gentle.Core.Enums; public enum DebtStatus { Ongoing = 0, Settled = 1 }"
         },
         {
           "step": 2,
-          "action": "创建 LeaseStatusExtensions 扩展方法",
-          "file": "Gentle/Gentle.Core/Enums/LeaseStatusExtensions.cs",
-          "code_hint": "参照 RoomStatusExtensions.cs 模式，实现 ToText() 方法"
+          "action": "创建 PaymentChannel 枚举",
+          "file": "Gentle/Gentle.Core/Enums/PaymentChannel.cs",
+          "code_hint": "namespace Gentle.Core.Enums; public enum PaymentChannel { Cash = 0, WeChat = 1, Alipay = 2, BankTransfer = 3 }"
         },
         {
           "step": 3,
-          "action": "验证后端编译",
+          "action": "验证构建",
           "verify_command": "cd Gentle && dotnet build"
         }
       ],
-      "test_file": "tests/e2e/feat-160-lease-status-enum.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-18T13:30:00Z",
+      "test_file": "tests/e2e/feat-167-debt-enums.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-18T13:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-18T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-161",
+      "id": "FEAT-168",
       "category": "后端",
-      "module": "房间管理卡片重设计",
+      "module": "老赖管理",
       "priority": "high",
       "test_type": "static",
-      "description": "RoomDto 新增字段和分页类型",
+      "description": "后端实体：Debt 和 DebtRepayment",
       "acceptance_criteria": [
-        "RoomDto 新增 5 个字段（LandlordLeaseStatus, LandlordLeaseExpiredDays, TenantLeaseStatus, TenantLeaseExpiredDays, TenantMonthlyRent）",
-        "新增 RoomListInput 类（CommunityId, Status, HasLeaseAlert, Page, PageSize）",
-        "新增 RoomListResult 类（List, Total）",
+        "创建 Debt 实体（继承 Entity<int>，IEntitySeedData<Debt>）",
+        "创建 DebtRepayment 实体（继承 Entity<int>，IEntitySeedData<DebtRepayment>）",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "在 RoomDto 中新增 5 个字段和分页类型",
-          "file": "Gentle/Gentle.Application/Dtos/Room/RoomDto.cs",
-          "code_hint": "在 LandlordLease 属性后添加 LandlordLeaseStatus/TenantLeaseStatus 等 5 个字段；文件末尾新增 RoomListInput 和 RoomListResult 类"
+          "action": "创建 Debt 实体",
+          "file": "Gentle/Gentle.Core/Entities/Debt.cs",
+          "code_hint": "参考 MaintenanceRecord.cs 模式：[Table(\"debt\")]、[Index(nameof(TenantId))]、继承 Entity<int>、IEntitySeedData<Debt>"
         },
         {
           "step": 2,
-          "action": "验证编译",
-          "verify_command": "cd Gentle && dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-161-room-dto-pagination-types.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-18T14:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-18T14:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-18T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "rounds": 2,
-        "fixes_applied": [
-          "RoomListResult 补充 Page/PageSize 分页元数据字段",
-          "RoomListInput.Page 添加 [Range(1, int.MaxValue)] 验证",
-          "RoomListInput.PageSize 添加 [Range(1, 100)] 验证"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-162",
-      "category": "后端",
-      "module": "房间管理卡片重设计",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端服务层实现租约状态计算和服务端分页",
-      "acceptance_criteria": [
-        "IRoomService.GetListAsync 签名改为接受 RoomListInput 返回 RoomListResult",
-        "RoomService 实现租约状态计算（7天阈值）",
-        "按 HasLeaseAlert 筛选异常租约",
-        "服务端分页（Skip/Take + CountAsync）",
-        "Profit 计算区分有/无租客",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "更新 IRoomService 接口签名",
-          "file": "Gentle/Gentle.Application/Services/IRoomService.cs",
-          "code_hint": "将 GetListAsync 签名改为 Task<RoomListResult> GetListAsync(RoomListInput input)"
-        },
-        {
-          "step": 2,
-          "action": "替换 RoomService.GetListAsync 方法并添加租约状态计算",
-          "file": "Gentle/Gentle.Application/Services/RoomService.cs",
-          "code_hint": "只替换 GetListAsync 方法，保留其他方法；添加 CalculateLeaseStatus 私有方法和 LeaseAlertThresholdDays 常量"
+          "action": "创建 DebtRepayment 实体",
+          "file": "Gentle/Gentle.Core/Entities/DebtRepayment.cs",
+          "code_hint": "[Table(\"debt_repayment\")]、[Index(nameof(DebtId))]、继承 Entity<int>、IEntitySeedData<DebtRepayment>"
         },
         {
           "step": 3,
-          "action": "验证编译",
+          "action": "验证构建",
           "verify_command": "cd Gentle && dotnet build"
         }
       ],
-      "test_file": "tests/e2e/feat-162-room-service-lease-pagination.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-18T16:00:00Z",
+      "test_file": "tests/e2e/feat-168-debt-entities.spec.ts",
+      "status": "pending",
       "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-18T16:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-18T15:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 1,
-        "issues": {
-          "critical": 0,
-          "important": 1,
-          "minor": 3
-        },
-        "important_notes": [
-          "验收标准要求 CountAsync，实际使用内存分页。原因：租约状态计算需跨表内存处理，全量加载后分页是合理折中"
-        ],
-        "minor_fixes_applied": [
-          "移除 RoomService.GetListAsync 中多余的 .AsQueryable() 调用",
-          "修复 IQueryable 类型赋值错误：显式声明 query 为 IQueryable<Room>"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-163",
+      "id": "FEAT-169",
       "category": "后端",
-      "module": "房间管理卡片重设计",
+      "module": "老赖管理",
       "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端 API 层适配分页查询参数",
+      "test_type": "static",
+      "description": "后端 DTO：欠款管理数据传输对象",
       "acceptance_criteria": [
-        "RoomAppService.GetList 改为接受 RoomListInput，返回 RoomListResult",
-        "API 路由 [HttpGet(\"list\")] + [FromQuery] 参数绑定",
+        "创建 DebtRepaymentDto",
+        "创建 DebtDetailDto（含计算字段 PaidAmount/RemainingAmount）",
+        "创建 DebtListResult",
+        "创建 CreateDebtInput/UpdateDebtInput/AddRepaymentInput",
         "dotnet build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "更新 RoomAppService.GetList 方法签名和实现",
-          "file": "Gentle/Gentle.Application/Apps/RoomAppService.cs",
-          "code_hint": "改为 async Task<RoomListResult> GetList([FromQuery] RoomListInput input)，调用 _roomService.GetListAsync(input)"
+          "action": "创建 DebtRepaymentDto",
+          "file": "Gentle/Gentle.Application/Dtos/Debt/DebtRepaymentDto.cs",
+          "code_hint": "包含 Id/DebtId/Amount/PaymentDate/PaymentChannel/PaymentChannelText/Remark/CreatedTime"
         },
         {
           "step": 2,
-          "action": "验证编译",
+          "action": "创建 DebtDetailDto",
+          "file": "Gentle/Gentle.Application/Dtos/Debt/DebtDetailDto.cs",
+          "code_hint": "含 TenantName/TenantPhone/TotalAmount/PaidAmount/RemainingAmount/Status/StatusText/Repayments"
+        },
+        {
+          "step": 3,
+          "action": "创建 DebtListResult",
+          "file": "Gentle/Gentle.Application/Dtos/Debt/DebtListResult.cs",
+          "code_hint": "Items/List + Total/Page/PageSize"
+        },
+        {
+          "step": 4,
+          "action": "创建 CreateDebtInput",
+          "file": "Gentle/Gentle.Application/Dtos/Debt/CreateDebtInput.cs",
+          "code_hint": "TenantId + TotalAmount + Description + Remark，含 DataAnnotations 验证"
+        },
+        {
+          "step": 5,
+          "action": "创建 UpdateDebtInput",
+          "file": "Gentle/Gentle.Application/Dtos/Debt/UpdateDebtInput.cs",
+          "code_hint": "Id + TotalAmount + Description + Remark"
+        },
+        {
+          "step": 6,
+          "action": "创建 AddRepaymentInput",
+          "file": "Gentle/Gentle.Application/Dtos/Debt/AddRepaymentInput.cs",
+          "code_hint": "Amount + PaymentDate + PaymentChannel + Remark"
+        },
+        {
+          "step": 7,
+          "action": "验证构建",
           "verify_command": "cd Gentle && dotnet build"
         }
       ],
-      "test_file": "tests/e2e/feat-163-room-app-service-pagination.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-18T17:30:00Z",
+      "test_file": "tests/e2e/feat-169-debt-dtos.spec.ts",
+      "status": "pending",
       "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-18T17:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-18T17:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 1,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "minor_fixes_applied": [
-          "移除未使用的 using Gentle.Core.Enums 导入"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-164",
+      "id": "FEAT-170",
+      "category": "后端",
+      "module": "老赖管理",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "后端服务层：IDebtService 接口和 DebtService 实现",
+      "acceptance_criteria": [
+        "创建 IDebtService 接口（继承 ITransient）",
+        "实现 DebtService（含 CRUD + 还款 + 金额校验逻辑）",
+        "Mapster 映射配置",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 IDebtService 接口",
+          "file": "Gentle/Gentle.Application/Services/IDebtService.cs",
+          "code_hint": "GetListAsync/GetByIdAsync/CreateAsync/UpdateAsync/DeleteAsync/AddRepaymentAsync/DeleteRepaymentAsync"
+        },
+        {
+          "step": 2,
+          "action": "创建 DebtService 实现",
+          "file": "Gentle/Gentle.Application/Services/DebtService.cs",
+          "code_hint": "注入 IRepository<Debt>/IRepository<DebtRepayment>/IRepository<Tenant>，使用 Mapster 映射，Oops.Oh 异常"
+        },
+        {
+          "step": 3,
+          "action": "验证构建",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-170-debt-service.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-171",
+      "category": "后端",
+      "module": "老赖管理",
+      "priority": "high",
+      "test_type": "api_runtime",
+      "description": "后端 AppService：DebtAppService API 控制器",
+      "acceptance_criteria": [
+        "创建 DebtAppService（实现 IDynamicApiController）",
+        "API 路由 [Route(\"api/debt\")]",
+        "端点：list/{id}/add/edit/remove/{id}/repay/repay/remove/{id}",
+        "dotnet build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 DebtAppService",
+          "file": "Gentle/Gentle.Application/Apps/DebtAppService.cs",
+          "code_hint": "[Route(\"api/debt\")] + IDynamicApiController，HttpGet/HttpPost/HttpPut/HttpDelete 显式路由"
+        },
+        {
+          "step": 2,
+          "action": "验证构建",
+          "verify_command": "cd Gentle && dotnet build"
+        }
+      ],
+      "test_file": "tests/e2e/feat-171-debt-app-service.spec.ts",
+      "status": "pending",
+      "verification": {
+        "api_routes_checked": false,
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false,
+        "api_routes": {
+          "base": "/api/debt",
+          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}", "{id}/repay", "repay/remove/{id}"]
+        }
+      }
+    },
+    {
+      "id": "FEAT-172",
+      "category": "后端",
+      "module": "老赖管理",
+      "priority": "high",
+      "test_type": "static",
+      "description": "数据库迁移：新增 debt 和 debt_repayment 表",
+      "acceptance_criteria": [
+        "EF Core 迁移成功生成",
+        "包含 CreateTable(\"debt\", ...) 和 CreateTable(\"debt_repayment\", ...)",
+        "dotnet ef database update 成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "生成 EF Core 迁移",
+          "verify_command": "cd Gentle && dotnet ef migrations add AddDebtTables --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
+        },
+        {
+          "step": 2,
+          "action": "检查生成的迁移文件包含 debt 和 debt_repayment 建表语句"
+        },
+        {
+          "step": 3,
+          "action": "应用迁移",
+          "verify_command": "cd Gentle && dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
+        }
+      ],
+      "test_file": "tests/e2e/feat-172-debt-migration.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-173",
       "category": "前端",
-      "module": "房间管理卡片重设计",
+      "module": "老赖管理",
       "priority": "high",
       "test_type": "static",
-      "description": "前端 API 模型更新：LeaseStatus 枚举、分页类型、RoomItem 新字段",
+      "description": "前端 API Model 和 Service：debtModel.ts + debt.ts",
       "acceptance_criteria": [
-        "新增 LeaseStatus 枚举（Normal=0, ExpiringSoon=1, Expired=2, None=3）",
-        "RoomItem 接口新增 5 个字段",
-        "GetRoomListParams 更新为分页参数",
-        "新增 RoomListResult 类型",
-        "getRoomList 返回类型改为 RoomListResult",
+        "创建 debtModel.ts（枚举 + 接口类型定义）",
+        "创建 debt.ts（API 调用函数）",
         "npm run build:type 无类型错误"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "新增 LeaseStatus 枚举和更新 RoomItem/GetRoomListParams/RoomListResult 类型",
-          "file": "Hans/src/api/model/roomModel.ts",
-          "code_hint": "添加 LeaseStatus 枚举；RoomItem 新增 landlordLeaseStatus/tenantLeaseStatus 等 5 字段；更新 GetRoomListParams 添加 hasLeaseAlert/page/pageSize；新增 RoomListResult"
+          "action": "创建 debtModel.ts 类型定义",
+          "file": "Hans/src/api/model/debtModel.ts",
+          "code_hint": "DebtStatus/PaymentChannel 枚举 + DebtRepaymentDto/DebtDetail/DebtListResult/CreateDebtInput/UpdateDebtInput/AddRepaymentInput/DebtListParams 接口"
         },
         {
           "step": 2,
-          "action": "更新 room.ts API 调用返回类型",
-          "file": "Hans/src/api/room.ts",
-          "code_hint": "getRoomList 返回类型从 RoomItem[] 改为 RoomListResult"
+          "action": "创建 debt.ts API 调用",
+          "file": "Hans/src/api/debt.ts",
+          "code_hint": "getDebtList/getDebtById/createDebt/updateDebt/deleteDebt/addRepayment/deleteRepayment"
         },
         {
           "step": 3,
-          "action": "验证前端类型检查",
+          "action": "验证类型检查",
           "verify_command": "cd Hans && npm run build:type"
         }
       ],
-      "test_file": "tests/e2e/feat-164-frontend-api-model-update.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-18T19:00:00Z",
+      "test_file": "tests/e2e/feat-173-debt-frontend-api.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-18T19:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-18T18:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 1,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        }
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-165",
+      "id": "FEAT-174",
       "category": "前端",
-      "module": "房间管理卡片重设计",
+      "module": "老赖管理",
       "priority": "high",
-      "test_type": "e2e",
-      "design_file": "docs/prototypes/room-card-redesign-prototype.pen",
-      "description": "前端页面重写为卡片布局",
+      "test_type": "static",
+      "description": "前端路由：老赖管理路由配置",
       "acceptance_criteria": [
-        "移除 t-table，替换为 CSS Grid 卡片布局（3列响应式）",
-        "筛选栏：小区/状态/异常租约 + 统计摘要",
-        "卡片结构：头部（房间名+状态）→ 中部（房东/租客两栏）→ 底部（利润+操作按钮）",
-        "后端分页（t-pagination）",
-        "保留现有弹窗和抽屉",
-        "npm run build:type 无错误"
+        "创建 debt.ts 路由文件",
+        "路由被 import.meta.glob 自动发现",
+        "左侧菜单出现「老赖管理」"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "重写模板部分：替换 t-table 为 CSS Grid 卡片布局",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "参照原型设计：筛选栏 + grid-template-columns: repeat(3,1fr) + 卡片三段式结构（头/中/底）+ t-pagination"
+          "action": "创建路由配置",
+          "file": "Hans/src/router/modules/debt.ts",
+          "code_hint": "path: '/debt'，orderNo: 3，icon: 'wallet'，子路由 '/debt/list'"
         },
         {
           "step": 2,
-          "action": "重写 script 部分：后端分页逻辑 + 辅助方法",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "移除 data/tableData 改为 roomList ref + pagination reactive；新增 getLeaseTagTheme/getLeaseStatusText/formatProfit 等辅助方法"
+          "action": "验证开发服务器加载路由",
+          "verify_command": "cd Hans && npm run dev"
+        }
+      ],
+      "test_file": "tests/e2e/feat-174-debt-route.spec.ts",
+      "status": "pending",
+      "verification": {
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
+      }
+    },
+    {
+      "id": "FEAT-175",
+      "category": "前端",
+      "module": "老赖管理",
+      "priority": "high",
+      "test_type": "e2e",
+      "description": "前端主列表页与组件：卡片布局+弹窗",
+      "acceptance_criteria": [
+        "创建 DebtCard 卡片组件（展示欠款信息和进度条）",
+        "创建 RepayDialog 还款弹窗",
+        "创建 DebtDetailDialog 详情弹窗",
+        "创建 DebtFormDialog 新增/编辑弹窗",
+        "创建 index.vue 主页面（卡片网格+筛选+分页）",
+        "npm run build 构建成功"
+      ],
+      "implementation_steps": [
+        {
+          "step": 1,
+          "action": "创建 DebtCard 卡片组件",
+          "file": "Hans/src/pages/debt/components/DebtCard.vue",
+          "code_hint": "Props: debt: DebtDetail，Emits: repay/detail/edit/delete，t-progress 进度条 + t-tag 状态标签 + data-testid"
+        },
+        {
+          "step": 2,
+          "action": "创建 RepayDialog 还款弹窗",
+          "file": "Hans/src/pages/debt/components/RepayDialog.vue",
+          "code_hint": "Props: visible/debt，表单：金额/日期/渠道/备注，调用 addRepayment API"
         },
         {
           "step": 3,
-          "action": "编写样式部分：卡片 CSS + 响应式",
-          "file": "Hans/src/pages/housing/room/index.vue",
-          "code_hint": "参照原型参数：.room-card-grid 3列、.room-card 圆角8px、响应式断点 1200px/768px"
+          "action": "创建 DebtDetailDialog 详情弹窗",
+          "file": "Hans/src/pages/debt/components/DebtDetailDialog.vue",
+          "code_hint": "三列金额汇总 + t-table 还款记录列表"
         },
         {
           "step": 4,
-          "action": "验证前端类型检查",
-          "verify_command": "cd Hans && npm run build:type"
+          "action": "创建 DebtFormDialog 新增/编辑弹窗",
+          "file": "Hans/src/pages/debt/components/DebtFormDialog.vue",
+          "code_hint": "t-select filterable 租客选择 + 金额 + 说明 + 备注，createDebt/updateDebt"
+        },
+        {
+          "step": 5,
+          "action": "创建主页面 index.vue",
+          "file": "Hans/src/pages/debt/index.vue",
+          "code_hint": "CSS Grid 卡片网格 + 筛选栏（租客搜索+状态筛选）+ t-pagination + 弹窗组合"
+        },
+        {
+          "step": 6,
+          "action": "验证构建",
+          "verify_command": "cd Hans && npm run build"
         }
       ],
-      "test_file": "tests/e2e/feat-165-room-card-layout.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-18T21:00:00Z",
+      "test_file": "tests/e2e/feat-175-debt-page-components.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "design_comparison": "passed",
-        "verified_at": "2026-04-18T21:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-18T20:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_notes": [
-          "统计摘要省略了异常数量（有意改进，M-3 已接受）",
-          ".room-card 背景色硬编码 #fff（M-4 遗留，待确认主题方案）",
-          "handleOpenLease catch 块风格与项目不一致（S-3）"
-        ],
-        "fixes_applied": [
-          "I-2: @media 和 .lease-drawer-content 移入 .room-management Less 嵌套块",
-          "M-1: 页面大小选项提取为 PAGE_SIZE_OPTIONS 常量",
-          "M-5: 函数参数 row 重命名为 room（handleEdit/handleDelete/handleMaintenance/handleOpenLease）"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-166",
+      "id": "FEAT-176",
       "category": "集成",
-      "module": "房间管理卡片重设计",
+      "module": "老赖管理",
       "priority": "high",
       "test_type": "e2e",
-      "description": "端到端验证：卡片布局全流程",
+      "description": "端到端验证：老赖管理全流程",
       "acceptance_criteria": [
-        "卡片网格正确渲染（3列布局）",
-        "房东租约信息正确显示（姓名/租金/到期/状态）",
-        "租客租约信息正确显示（已出租房间 vs 空置）",
-        "利润显示正确（实际/预期，绿色/红色）",
-        "租约状态标签颜色正确",
-        "筛选功能正常",
-        "分页功能正常",
-        "CRUD 操作正常",
-        "响应式布局正常"
+        "后端 API 启动成功",
+        "前端页面加载无报错",
+        "新增欠款 → 卡片列表显示",
+        "还款 → 已还金额更新",
+        "还清后状态变为「已还清」",
+        "编辑/删除功能正常",
+        "搜索/筛选功能正常"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "编写 E2E 测试：卡片渲染和内容验证",
-          "file": "tests/e2e/feat-166-room-card-e2e.spec.ts",
-          "code_hint": "验证卡片网格、房东/租客信息、利润、状态标签"
+          "action": "编写 E2E 测试：页面加载和核心元素验证",
+          "file": "tests/e2e/feat-176-debt-e2e.spec.ts",
+          "code_hint": "页面加载 + 菜单导航 + 卡片渲染 + 新增按钮"
         },
         {
           "step": 2,
-          "action": "编写 E2E 测试：筛选、分页、CRUD 交互",
-          "file": "tests/e2e/feat-166-room-card-e2e.spec.ts",
-          "code_hint": "验证小区/状态/异常筛选、分页切换、编辑/删除操作"
+          "action": "编写 E2E 测试：CRUD + 还款流程",
+          "file": "tests/e2e/feat-176-debt-e2e.spec.ts",
+          "code_hint": "新增欠款 → 还款 → 详情查看 → 编辑 → 删除 + 搜索筛选"
         },
         {
           "step": 3,
           "action": "运行全部 E2E 测试",
-          "verify_command": "cd tests && npx playwright test e2e/feat-166-room-card-e2e.spec.ts"
+          "verify_command": "cd tests && npx playwright test e2e/feat-176-debt-e2e.spec.ts"
         }
       ],
-      "test_file": "tests/e2e/feat-166-room-card-e2e.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-18T23:00:00Z",
+      "test_file": "tests/e2e/feat-176-debt-e2e.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "required_tests": ["card_render", "landlord_info", "tenant_info", "profit_display", "lease_status_tags", "filter", "pagination", "crud", "lease_drawer", "responsive"],
-        "verified_at": "2026-04-18T23:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-18T22:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 0
-        },
-        "fixes_applied": [
-          "I-1: 移除 .gitignore 中的 tests/ 条目（阻止E2E测试文件提交）",
-          "I-2: 5个关联页面 getRoomList() 添加 pageSize: 100（避免分页截断）",
-          "I-3: E2E测试凭据改为环境变量 TEST_USERNAME/TEST_PASSWORD",
-          "M-4: 卡片背景 #fff → var(--td-bg-color-container)",
-          "M-5: 租约状态标签颜色改为 TDesign 主题变量",
-          "M-7: 移除 .lease-drawer-content 内重复的 .form-section-title"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false,
+        "required_tests": ["page_load", "create", "repay", "detail", "edit", "delete", "search", "status_change"]
       }
     }
   ]
