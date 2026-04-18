@@ -23,30 +23,26 @@ public class RoomService : IRoomService
     }
 
     /// <inheritdoc />
-    public async Task<List<RoomDto>> GetListAsync(int? communityId, RoomStatus? status)
+    public async Task<RoomListResult> GetListAsync(RoomListInput input)
     {
-        var query = _repository
+        IQueryable<Room> query = _repository
             .AsQueryable(false)
             .Include(r => r.Community)
-            .Include(r => r.LandlordLease)
-            .AsQueryable();
+            .Include(r => r.LandlordLease);
 
-        // 按小区筛选
-        if (communityId.HasValue)
+        if (input.CommunityId.HasValue)
         {
-            query = query.Where(r => r.CommunityId == communityId.Value);
+            query = query.Where(r => r.CommunityId == input.CommunityId.Value);
         }
 
-        // 按状态筛选
-        if (status.HasValue)
+        if (input.Status.HasValue)
         {
-            query = query.Where(r => r.Status == status.Value);
+            query = query.Where(r => r.Status == input.Status.Value);
         }
 
-        var list = await query.ToListAsync();
+        var allRooms = await query.ToListAsync();
 
-        // 仅查询当前房间列表中的活跃租住记录，按 RoomId 分组
-        var roomIds = list.Select(r => r.Id).ToHashSet();
+        var roomIds = allRooms.Select(r => r.Id).ToHashSet();
         var activeRentals = await _rentalRecordRepository
             .AsQueryable(false)
             .Include(r => r.Renter)
@@ -58,24 +54,64 @@ public class RoomService : IRoomService
             .GroupBy(r => r.RoomId)
             .ToDictionary(g => g.Key, g => g.First());
 
-        // 内存排序并填充租约字段
-        return list
-            .OrderBy(r => r.Community.Name)
-            .ThenBy(r => r.Building)
-            .ThenBy(r => r.RoomNumber)
+        var dtoList = allRooms
             .Select(r =>
             {
                 var dto = r.Adapt<RoomDto>();
+
+                dto.LandlordLeaseStatus = CalculateLeaseStatus(r.LandlordLease?.EndDate);
+                dto.LandlordLeaseExpiredDays = CalculateExpiredDays(r.LandlordLease?.EndDate);
+
                 if (rentalByRoomId.TryGetValue(r.Id, out var rental))
                 {
+                    dto.TenantLeaseStatus = CalculateLeaseStatus(rental.ContractEndDate);
+                    dto.TenantLeaseExpiredDays = CalculateExpiredDays(rental.ContractEndDate);
+                    dto.TenantMonthlyRent = rental.MonthlyRent;
                     dto.AnjuCodeSubmitted = rental.IsAnJuCodeSubmitted;
                     dto.TenantName = rental.Renter?.Name;
                     dto.RentalStartDate = rental.CheckInDate;
                     dto.RentalEndDate = rental.ContractEndDate;
+                    dto.Profit = rental.MonthlyRent - (r.LandlordLease?.MonthlyRent ?? 0);
                 }
+                else
+                {
+                    dto.TenantLeaseStatus = LeaseStatus.None;
+                    dto.TenantLeaseExpiredDays = null;
+                    dto.TenantMonthlyRent = null;
+                    dto.Profit = r.RentPrice - (r.LandlordLease?.MonthlyRent ?? 0);
+                }
+
                 return dto;
             })
             .ToList();
+
+        if (input.HasLeaseAlert == true)
+        {
+            dtoList = dtoList
+                .Where(dto => dto.LandlordLeaseStatus is LeaseStatus.ExpiringSoon or LeaseStatus.Expired
+                    || dto.TenantLeaseStatus is LeaseStatus.ExpiringSoon or LeaseStatus.Expired)
+                .ToList();
+        }
+
+        var sorted = dtoList
+            .OrderBy(r => r.CommunityName)
+            .ThenBy(r => r.Building)
+            .ThenBy(r => r.RoomNumber)
+            .ToList();
+
+        var total = sorted.Count;
+        var pagedItems = sorted
+            .Skip((input.Page - 1) * input.PageSize)
+            .Take(input.PageSize)
+            .ToList();
+
+        return new RoomListResult
+        {
+            List = pagedItems,
+            Total = total,
+            Page = input.Page,
+            PageSize = input.PageSize
+        };
     }
 
     /// <inheritdoc />
@@ -233,5 +269,29 @@ public class RoomService : IRoomService
 
         await _repository.DeleteAsync(room);
         await _repository.SaveNowAsync();
+    }
+
+    private const int LeaseAlertThresholdDays = 7;
+
+    private static LeaseStatus CalculateLeaseStatus(DateTime? endDate)
+    {
+        if (!endDate.HasValue)
+            return LeaseStatus.None;
+
+        var today = DateTime.Today;
+        var daysRemaining = (endDate.Value.Date - today).Days;
+
+        if (daysRemaining < 0)
+            return LeaseStatus.Expired;
+        if (daysRemaining <= LeaseAlertThresholdDays)
+            return LeaseStatus.ExpiringSoon;
+        return LeaseStatus.Normal;
+    }
+
+    private static int? CalculateExpiredDays(DateTime? endDate)
+    {
+        if (!endDate.HasValue)
+            return null;
+        return (DateTime.Today - endDate.Value.Date).Days;
     }
 }

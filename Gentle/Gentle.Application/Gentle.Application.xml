@@ -294,9 +294,9 @@
             房间管理应用服务
             </summary>
         </member>
-        <member name="M:Gentle.Application.Apps.RoomAppService.GetList(System.Nullable{System.Int32},System.Nullable{Gentle.Core.Enums.RoomStatus})">
+        <member name="M:Gentle.Application.Apps.RoomAppService.GetList(Gentle.Application.Dtos.Room.RoomListInput)">
             <summary>
-            获取房间列表（支持按小区和状态筛选）
+            获取房间列表（支持筛选和分页）
             </summary>
         </member>
         <member name="M:Gentle.Application.Apps.RoomAppService.GetById(System.Int32)">
@@ -2343,6 +2343,86 @@
             房东租约信息
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.LandlordLeaseStatus">
+            <summary>
+            房东租约状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.LandlordLeaseExpiredDays">
+            <summary>
+            房东租约过期天数（正数=已过期天数，负数=距到期天数）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.TenantLeaseStatus">
+            <summary>
+            租客租约状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.TenantLeaseExpiredDays">
+            <summary>
+            租客租约过期天数（正数=已过期天数，负数=距到期天数）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomDto.TenantMonthlyRent">
+            <summary>
+            租客月租金
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Room.RoomListInput">
+            <summary>
+            房间列表查询参数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListInput.CommunityId">
+            <summary>
+            小区ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListInput.Status">
+            <summary>
+            房间状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListInput.HasLeaseAlert">
+            <summary>
+            是否有租约异常
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListInput.Page">
+            <summary>
+            页码（从1开始）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListInput.PageSize">
+            <summary>
+            每页数量
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Room.RoomListResult">
+            <summary>
+            房间列表分页结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListResult.List">
+            <summary>
+            房间列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListResult.Total">
+            <summary>
+            总数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListResult.Page">
+            <summary>
+            当前页码
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Room.RoomListResult.PageSize">
+            <summary>
+            每页数量
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.Room.UpdateRoomInput">
             <summary>
             更新房间请求
@@ -3164,9 +3244,9 @@
             房间服务接口
             </summary>
         </member>
-        <member name="M:Gentle.Application.Services.IRoomService.GetListAsync(System.Nullable{System.Int32},System.Nullable{Gentle.Core.Enums.RoomStatus})">
+        <member name="M:Gentle.Application.Services.IRoomService.GetListAsync(Gentle.Application.Dtos.Room.RoomListInput)">
             <summary>
-            获取房间列表（支持按小区和状态筛选）
+            获取房间列表（支持筛选和分页）
             </summary>
         </member>
         <member name="M:Gentle.Application.Services.IRoomService.GetByIdAsync(System.Int32)">
@@ -3437,7 +3517,7 @@
             房间服务实现
             </summary>
         </member>
-        <member name="M:Gentle.Application.Services.RoomService.GetListAsync(System.Nullable{System.Int32},System.Nullable{Gentle.Core.Enums.RoomStatus})">
+        <member name="M:Gentle.Application.Services.RoomService.GetListAsync(Gentle.Application.Dtos.Room.RoomListInput)">
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.RoomService.GetByIdAsync(System.Int32)">

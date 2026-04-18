@@ -9,9 +9,9 @@ namespace Gentle.Application.Services;
 public interface IRoomService : ITransient
 {
     /// <summary>
-    /// 获取房间列表（支持按小区和状态筛选）
+    /// 获取房间列表（支持筛选和分页）
     /// </summary>
-    Task<List<RoomDto>> GetListAsync(int? communityId, RoomStatus? status);
+    Task<RoomListResult> GetListAsync(RoomListInput input);
 
     /// <summary>
     /// 根据ID获取房间

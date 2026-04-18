@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Gentle.Application.Dtos.LandlordLease;
 using Gentle.Core.Enums;
 
@@ -122,4 +123,88 @@ public class RoomDto
     /// 房东租约信息
     /// </summary>
     public LandlordLeaseDto? LandlordLease { get; set; }
+
+    /// <summary>
+    /// 房东租约状态
+    /// </summary>
+    public LeaseStatus LandlordLeaseStatus { get; set; }
+
+    /// <summary>
+    /// 房东租约过期天数（正数=已过期天数，负数=距到期天数）
+    /// </summary>
+    public int? LandlordLeaseExpiredDays { get; set; }
+
+    /// <summary>
+    /// 租客租约状态
+    /// </summary>
+    public LeaseStatus TenantLeaseStatus { get; set; }
+
+    /// <summary>
+    /// 租客租约过期天数（正数=已过期天数，负数=距到期天数）
+    /// </summary>
+    public int? TenantLeaseExpiredDays { get; set; }
+
+    /// <summary>
+    /// 租客月租金
+    /// </summary>
+    public decimal? TenantMonthlyRent { get; set; }
+}
+
+/// <summary>
+/// 房间列表查询参数
+/// </summary>
+public class RoomListInput
+{
+    /// <summary>
+    /// 小区ID
+    /// </summary>
+    public int? CommunityId { get; set; }
+
+    /// <summary>
+    /// 房间状态
+    /// </summary>
+    public RoomStatus? Status { get; set; }
+
+    /// <summary>
+    /// 是否有租约异常
+    /// </summary>
+    public bool? HasLeaseAlert { get; set; }
+
+    /// <summary>
+    /// 页码（从1开始）
+    /// </summary>
+    [Range(1, int.MaxValue)]
+    public int Page { get; set; } = 1;
+
+    /// <summary>
+    /// 每页数量
+    /// </summary>
+    [Range(1, 100)]
+    public int PageSize { get; set; } = 20;
+}
+
+/// <summary>
+/// 房间列表分页结果
+/// </summary>
+public class RoomListResult
+{
+    /// <summary>
+    /// 房间列表
+    /// </summary>
+    public List<RoomDto> List { get; set; } = [];
+
+    /// <summary>
+    /// 总数
+    /// </summary>
+    public int Total { get; set; }
+
+    /// <summary>
+    /// 当前页码
+    /// </summary>
+    public int Page { get; set; }
+
+    /// <summary>
+    /// 每页数量
+    /// </summary>
+    public int PageSize { get; set; }
 }

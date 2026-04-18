@@ -22,12 +22,12 @@ public class RoomAppService : IDynamicApiController
     }
 
     /// <summary>
-    /// 获取房间列表（支持按小区和状态筛选）
+    /// 获取房间列表（支持筛选和分页）
     /// </summary>
     [HttpGet("list")]
-    public async Task<List<RoomDto>> GetList([FromQuery] int? communityId, [FromQuery] RoomStatus? status)
+    public async Task<RoomListResult> GetList([FromQuery] RoomListInput input)
     {
-        return await _roomService.GetListAsync(communityId, status);
+        return await _roomService.GetListAsync(input);
     }
 
     /// <summary>
