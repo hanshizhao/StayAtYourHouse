@@ -4,6 +4,8 @@
 
 当前房间列表页（`/housing/room`）采用传统表格布局，租约信息分散（房东租约需要打开抽屉才能看到），利润信息不显示，租约到期/逾期状态无预警。需要重新设计为卡片布局，让关键信息一目了然。
 
+**原型图**：`docs/superpowers/prototypes/room-card-redesign-prototype.png`
+
 ## 设计方案：分区卡片布局
 
 ### 页面整体结构
