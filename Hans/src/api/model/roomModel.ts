@@ -1,6 +1,20 @@
 import type { LandlordLeaseDetail } from './landlordLeaseModel';
 
 /**
+ * 租约状态枚举
+ */
+export enum LeaseStatus {
+  /** 正常 */
+  Normal = 0,
+  /** 即将到期（7天内） */
+  ExpiringSoon = 1,
+  /** 已过期 */
+  Expired = 2,
+  /** 无租约 */
+  None = 3,
+}
+
+/**
  * 房间状态枚举
  */
 export enum RoomStatus {
@@ -51,6 +65,11 @@ export interface RoomItem {
   remark?: string;
   createdTime: string;
   landlordLease?: LandlordLeaseDetail;
+  landlordLeaseStatus: LeaseStatus;
+  landlordLeaseExpiredDays?: number | null;
+  tenantLeaseStatus: LeaseStatus;
+  tenantLeaseExpiredDays?: number | null;
+  tenantMonthlyRent?: number | null;
 }
 
 /**
@@ -59,6 +78,9 @@ export interface RoomItem {
 export interface GetRoomListParams {
   communityId?: number;
   status?: RoomStatus;
+  hasLeaseAlert?: boolean;
+  page?: number;
+  pageSize?: number;
 }
 
 /**
@@ -100,4 +122,14 @@ export interface UpdateRoomParams {
   status: RoomStatus;
   contractImage?: string;
   remark?: string;
+}
+
+/**
+ * 房间列表分页结果
+ */
+export interface RoomListResult {
+  list: RoomItem[];
+  total: number;
+  page: number;
+  pageSize: number;
 }

@@ -1,4 +1,4 @@
-import type { CreateRoomParams, GetRoomListParams, RoomItem, UpdateRoomParams } from '@/api/model/roomModel';
+import type { CreateRoomParams, GetRoomListParams, RoomItem, RoomListResult, UpdateRoomParams } from '@/api/model/roomModel';
 import { request } from '@/utils/request';
 
 const Api = {
@@ -13,7 +13,7 @@ const Api = {
  * 获取房间列表
  */
 export function getRoomList(params?: GetRoomListParams) {
-  return request.get<RoomItem[]>({
+  return request.get<RoomListResult>({
     url: Api.List,
     params,
   });
