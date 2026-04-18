@@ -112,26 +112,34 @@
                 </span>
               </div>
               <div class="room-card-actions">
-                <t-button variant="text" shape="square" data-testid="edit-button" @click="handleEdit(room)">
-                  <template #icon>
-                    <edit-icon />
-                  </template>
-                </t-button>
-                <t-button variant="text" shape="square" data-testid="lease-button" @click="handleOpenLease(room)">
-                  <template #icon>
-                    <file-icon />
-                  </template>
-                </t-button>
-                <t-button variant="text" shape="square" data-testid="maintenance-button" @click="handleMaintenance(room)">
-                  <template #icon>
-                    <tools-icon />
-                  </template>
-                </t-button>
-                <t-button variant="text" shape="square" theme="danger" data-testid="delete-button" @click="handleDelete(room)">
-                  <template #icon>
-                    <delete-icon />
-                  </template>
-                </t-button>
+                <t-tooltip content="编辑房间">
+                  <t-button variant="text" shape="square" data-testid="edit-button" @click="handleEdit(room)">
+                    <template #icon>
+                      <edit-icon />
+                    </template>
+                  </t-button>
+                </t-tooltip>
+                <t-tooltip content="房东租约">
+                  <t-button variant="text" shape="square" data-testid="lease-button" @click="handleOpenLease(room)">
+                    <template #icon>
+                      <file-icon />
+                    </template>
+                  </t-button>
+                </t-tooltip>
+                <t-tooltip content="维修记录">
+                  <t-button variant="text" shape="square" data-testid="maintenance-button" @click="handleMaintenance(room)">
+                    <template #icon>
+                      <tools-icon />
+                    </template>
+                  </t-button>
+                </t-tooltip>
+                <t-tooltip content="删除房间">
+                  <t-button variant="text" shape="square" theme="danger" data-testid="delete-button" @click="handleDelete(room)">
+                    <template #icon>
+                      <delete-icon />
+                    </template>
+                  </t-button>
+                </t-tooltip>
               </div>
             </div>
           </div>
