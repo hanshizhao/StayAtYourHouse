@@ -1,6 +1,5 @@
 using Gentle.Application.Dtos.Room;
 using Gentle.Application.Services;
-using Gentle.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
