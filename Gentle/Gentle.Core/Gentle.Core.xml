@@ -755,6 +755,41 @@
             女
             </summary>
         </member>
+        <member name="T:Gentle.Core.Enums.LeaseStatus">
+            <summary>
+            租约状态枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.LeaseStatus.Normal">
+            <summary>
+            正常
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.LeaseStatus.ExpiringSoon">
+            <summary>
+            即将到期（7天内）
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.LeaseStatus.Expired">
+            <summary>
+            已过期
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.LeaseStatus.None">
+            <summary>
+            无租约
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.LeaseStatusExtensions">
+            <summary>
+            LeaseStatus 枚举扩展方法
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Enums.LeaseStatusExtensions.ToText(Gentle.Core.Enums.LeaseStatus)">
+            <summary>
+            获取租约状态的中文文本
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.MaintenancePriority">
             <summary>
             维修优先级
