@@ -112,6 +112,30 @@ workflow-next 读取索引 → 发现"主列表页"匹配 → 提取 node ID：
 → 不读取弹窗数据（不属于这个 FEAT）
 ```
 
+## 边界情况
+
+### 没有 .pen 文件时
+
+workflow-init 检测不到 .pen 文件时，跳过索引生成，FEAT 不添加 `design_file` 字段。workflow-next 无该字段时按原有流程执行，无任何影响。
+
+### 索引文件过期
+
+当 .pen 文件被修改但索引未更新时，workflow-next 定向读取可能得到不存在的 node ID。处理方式：
+
+- workflow-next 用 `batch_get` 读取 node ID 时，如果返回空或报错，提示用户重新运行 workflow-init 更新索引
+- workflow-init 生成索引时总是覆盖已有索引文件，不做增量更新
+
+### FEAT 到 node ID 的匹配规则
+
+workflow-next 根据 FEAT 描述中的关键词匹配索引中的画板名称和组件名称：
+
+1. 提取 FEAT 描述中的 UI 相关关键词（如"主列表页"、"还款弹窗"）
+2. 在索引的画板名称中查找匹配（如"主列表页"匹配到 `Rc7RP`）
+3. 读取匹配画板下的所有子组件 node ID
+4. 如果 FEAT 描述更具体（如只涉及"筛选栏"），则只读取对应子组件
+
+匹配依赖索引中组件的命名语义，因此 .pen 文件中的组件命名应具有描述性。
+
 ## 数据保真
 
 - 浅读 .pen 只用于提取结构和 node ID，不丢弃任何样式数据
