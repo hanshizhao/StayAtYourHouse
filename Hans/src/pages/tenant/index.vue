@@ -194,6 +194,7 @@ interface TenantFormData {
   phone: string;
   idCard?: string;
   gender: Gender;
+  emergencyContact?: string;
   remark?: string;
 }
 
