@@ -462,6 +462,8 @@
       "test_type": "static",
       "design_file": "docs/prototypes/2026-04-18-debt-management-design-index.md",
       "description": "前端 DebtFormDialog 组件：新增/编辑弹窗",
+      "status": "passed",
+      "completed_at": "2026-04-19T23:45:00Z",
       "acceptance_criteria": [
         "支持新增和编辑模式",
         "表单字段：租客选择、欠款金额、欠款说明、备注",
@@ -482,10 +484,31 @@
         }
       ],
       "test_file": "tests/e2e/feat-176-debt-form-dialog.spec.ts",
-      "status": "pending",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-19T23:45:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-19T23:30:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 2,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_issues": [
+          "M-1: FormData.tenantId 类型 number|undefined 与 CreateDebtParams.tenantId 的 number 不完全匹配（非空断言安全，无需修改）",
+          "M-2: 租户选择加载时无初始焦点（纯 UX 优化，超出 scope）",
+          "M-3: 组件尚未集成到页面（预期行为，页面集成是独立 FEAT）"
+        ],
+        "fixes_applied": [
+          "I-1: 添加 onBeforeUnmount 清理 searchTimer 防止内存泄漏",
+          "I-2: handleSubmit 成功路径末尾添加 formRef.value?.reset() 避免陈旧数据",
+          "I-3: loadTenants catch 块添加 MessagePlugin.warning 错误提示"
+        ]
       }
     },
     {
