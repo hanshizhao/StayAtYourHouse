@@ -3249,6 +3249,32 @@
         <member name="M:Gentle.Application.Services.CommunityService.DeleteAsync(System.Int32)">
             <inheritdoc />
         </member>
+        <member name="T:Gentle.Application.Services.DebtService">
+            <summary>
+            欠款服务实现
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.DebtService.GetListAsync(Gentle.Application.Dtos.Debt.DebtListInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.DebtService.GetByIdAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.DebtService.AddAsync(Gentle.Application.Dtos.Debt.CreateDebtInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.DebtService.UpdateAsync(Gentle.Application.Dtos.Debt.UpdateDebtInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.DebtService.DeleteAsync(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.DebtService.AddRepaymentAsync(System.Int32,Gentle.Application.Dtos.Debt.AddRepaymentInput)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.DebtService.DeleteRepaymentAsync(System.Int32)">
+            <inheritdoc />
+        </member>
         <member name="T:Gentle.Application.Services.ICommunityService">
             <summary>
             小区服务接口
@@ -3277,6 +3303,46 @@
         <member name="M:Gentle.Application.Services.ICommunityService.DeleteAsync(System.Int32)">
             <summary>
             删除小区
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Services.IDebtService">
+            <summary>
+            欠款服务接口
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IDebtService.GetListAsync(Gentle.Application.Dtos.Debt.DebtListInput)">
+            <summary>
+            获取欠款分页列表
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IDebtService.GetByIdAsync(System.Int32)">
+            <summary>
+            根据ID获取欠款详情
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IDebtService.AddAsync(Gentle.Application.Dtos.Debt.CreateDebtInput)">
+            <summary>
+            新增欠款
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IDebtService.UpdateAsync(Gentle.Application.Dtos.Debt.UpdateDebtInput)">
+            <summary>
+            更新欠款
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IDebtService.DeleteAsync(System.Int32)">
+            <summary>
+            删除欠款
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IDebtService.AddRepaymentAsync(System.Int32,Gentle.Application.Dtos.Debt.AddRepaymentInput)">
+            <summary>
+            添加还款记录
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.IDebtService.DeleteRepaymentAsync(System.Int32)">
+            <summary>
+            删除还款记录
             </summary>
         </member>
         <member name="T:Gentle.Application.Services.ILandlordLeaseService">
