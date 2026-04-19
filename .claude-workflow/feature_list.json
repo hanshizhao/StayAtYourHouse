@@ -374,10 +374,27 @@
         }
       ],
       "test_file": "tests/e2e/feat-174-debt-frontend-api.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-19T22:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-19T22:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-19T21:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_issues": [
+          "DebtListResult 包含 page/pageSize 字段（比 tenant 模式更完整，与后端 DTO 对齐正确）",
+          "amount 字段前后端 number/decimal 类型差异（JSON 序列化标准做法，无需处理）",
+          "TypeScript 编译测试 (test 12) 中 vue-tsc 非零退出码可能触发 execSync 异常（当前可接受）"
+        ]
       }
     },
     {
