@@ -657,10 +657,34 @@
         }
       ],
       "test_file": "tests/e2e/feat-179-debt-main-page.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-19T16:30:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-19T16:30:00Z",
+        "required_tests": ["page_access", "core_elements", "status_tabs", "search", "form_dialog", "pagination", "empty_state", "card_grid"],
+        "required_tests_passed": true
+      },
+      "review": {
+        "last_review_at": "2026-04-19T12:20:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 2,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 4
+        },
+        "minor_issues": [
+          "S-1: 删除确认消息不含租客姓名标识（纯 UX 优化）",
+          "S-2: fetchData 直接赋值 pagination.value.total（项目 Vue 模式可接受）",
+          "S-3: E2E 测试硬编码凭据（项目共享模式）",
+          "S-4: E2E test 4 和 test 7 概念重复（可合并但不阻断）"
+        ],
+        "fixes_applied": [
+          "I-1: 添加 onBeforeUnmount 清理 searchTimer 防止内存泄漏"
+        ]
       }
     },
     {
