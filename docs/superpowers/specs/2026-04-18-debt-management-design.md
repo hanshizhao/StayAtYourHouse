@@ -21,13 +21,14 @@
 
 继承 `Entity<int>`（Furion 基类，自动提供 Id、CreatedTime 等字段）。
 
-| 字段 | 类型 | 属性 | 说明 |
-|------|------|------|------|
-| TenantId | int | [Required] | 关联租客 FK |
-| TotalAmount | decimal | [Required, Range(0.01, double.MaxValue), Column(TypeName = "decimal(10,2)")] | 总欠款金额 |
-| Status | DebtStatus | [Required] | Ongoing(0) / Settled(1) |
-| Description | string? | [MaxLength(500)] | 欠款说明 |
-| Remark | string? | [MaxLength(500)] | 备注 |
+
+| 字段        | 类型       | 属性                                                                         | 说明                    |
+| ----------- | ---------- | ---------------------------------------------------------------------------- | ----------------------- |
+| TenantId    | int        | [Required]                                                                   | 关联租客 FK             |
+| TotalAmount | decimal    | [Required, Range(0.01, double.MaxValue), Column(TypeName = "decimal(10,2)")] | 总欠款金额              |
+| Status      | DebtStatus | [Required]                                                                   | Ongoing(0) / Settled(1) |
+| Description | string?    | [MaxLength(500)]                                                             | 欠款说明                |
+| Remark      | string?    | [MaxLength(500)]                                                             | 备注                    |
 
 Navigation: `Tenant`（多对一），`Repayments`（`ICollection<DebtRepayment>`，一对多）
 
@@ -41,13 +42,14 @@ Navigation: `Tenant`（多对一），`Repayments`（`ICollection<DebtRepayment>
 
 继承 `Entity<int>`。
 
-| 字段 | 类型 | 属性 | 说明 |
-|------|------|------|------|
-| DebtId | int | [Required] | 关联欠款 FK |
-| Amount | decimal | [Required, Range(0.01, double.MaxValue), Column(TypeName = "decimal(10,2)")] | 本次还款金额 |
-| PaymentDate | DateTime | [Required] | 还款日期 |
-| PaymentChannel | PaymentChannel 枚举 | [Required] | Cash(0) / WeChat(1) / Alipay(2) / BankTransfer(3) |
-| Remark | string? | [MaxLength(500)] | 备注 |
+
+| 字段           | 类型                | 属性                                                                         | 说明                                              |
+| -------------- | ------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------- |
+| DebtId         | int                 | [Required]                                                                   | 关联欠款 FK                                       |
+| Amount         | decimal             | [Required, Range(0.01, double.MaxValue), Column(TypeName = "decimal(10,2)")] | 本次还款金额                                      |
+| PaymentDate    | DateTime            | [Required]                                                                   | 还款日期                                          |
+| PaymentChannel | PaymentChannel 枚举 | [Required]                                                                   | Cash(0) / WeChat(1) / Alipay(2) / BankTransfer(3) |
+| Remark         | string?             | [MaxLength(500)]                                                             | 备注                                              |
 
 Navigation: `Debt`（多对一）
 
@@ -73,6 +75,7 @@ Navigation: `Debt`（多对一）
 文件位置：`Gentle.Application/Apps/DebtAppService.cs`
 
 属性：
+
 - `[Authorize]`
 - `[ApiDescriptionSettings("Debt", Name = "DebtApp", Order = 12)]`
 - 实现 `IDynamicApiController`
@@ -88,26 +91,28 @@ Navigation: `Debt`（多对一）
 
 文件位置：`Gentle.Application/Dtos/Debt/`
 
-| DTO | 用途 |
-|-----|------|
-| `DebtListDto` | 列表输出（含计算字段 PaidAmount、RemainingAmount、TenantName、TenantPhone） |
-| `DebtDetailDto` | 详情输出（含 Repayments 列表） |
-| `CreateDebtInput` | 新增欠款输入（TenantId、TotalAmount、Description、Remark） |
-| `UpdateDebtInput` | 修改欠款输入（Id、TotalAmount、Description、Remark） |
-| `AddRepaymentInput` | 新增还款输入（Amount、PaymentDate、PaymentChannel、Remark） |
-| `DebtRepaymentDto` | 还款记录输出 |
+
+| DTO                 | 用途                                                                        |
+| ------------------- | --------------------------------------------------------------------------- |
+| `DebtListDto`       | 列表输出（含计算字段 PaidAmount、RemainingAmount、TenantName、TenantPhone） |
+| `DebtDetailDto`     | 详情输出（含 Repayments 列表）                                              |
+| `CreateDebtInput`   | 新增欠款输入（TenantId、TotalAmount、Description、Remark）                  |
+| `UpdateDebtInput`   | 修改欠款输入（Id、TotalAmount、Description、Remark）                        |
+| `AddRepaymentInput` | 新增还款输入（Amount、PaymentDate、PaymentChannel、Remark）                 |
+| `DebtRepaymentDto`  | 还款记录输出                                                                |
 
 ### 端点
 
-| 方法 | 路由 | 说明 |
-|------|------|------|
-| GET | `list` | 欠款列表（分页、状态筛选、租客搜索） |
-| GET | `{id}` | 欠款详情（含还款记录） |
-| POST | `add` | 新增欠款 |
-| PUT | `edit` | 修改欠款 |
-| DELETE | `remove/{id}` | 删除欠款（仅限无还款记录） |
-| POST | `{id}/repay` | 新增还款记录 |
-| DELETE | `repay/remove/{id}` | 删除还款记录 |
+
+| 方法   | 路由                | 说明                                 |
+| ------ | ------------------- | ------------------------------------ |
+| GET    | `list`              | 欠款列表（分页、状态筛选、租客搜索） |
+| GET    | `{id}`              | 欠款详情（含还款记录）               |
+| POST   | `add`               | 新增欠款                             |
+| PUT    | `edit`              | 修改欠款                             |
+| DELETE | `remove/{id}`       | 删除欠款（仅限无还款记录）           |
+| POST   | `{id}/repay`        | 新增还款记录                         |
+| DELETE | `repay/remove/{id}` | 删除还款记录                         |
 
 ### 业务逻辑
 
@@ -132,6 +137,7 @@ Navigation: `Debt`（多对一）
 欠款卡片列表（参考现有房间管理卡片布局）：
 
 每张卡片展示：
+
 - 租客姓名、电话
 - 欠款说明
 - 金额进度：`已还 8,000 / 欠款 20,000`，带进度条

@@ -54,6 +54,50 @@
             删除小区
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.DebtAppService">
+            <summary>
+            老赖管理应用服务
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.DebtAppService.GetList(System.String,System.Nullable{Gentle.Core.Enums.DebtStatus},System.Int32,System.Int32)">
+            <summary>
+            获取欠款分页列表
+            </summary>
+            <param name="keyword">搜索关键字（租客姓名/电话）</param>
+            <param name="status">欠款状态筛选</param>
+            <param name="page">页码（从1开始）</param>
+            <param name="pageSize">每页数量</param>
+        </member>
+        <member name="M:Gentle.Application.Apps.DebtAppService.GetById(System.Int32)">
+            <summary>
+            根据ID获取欠款详情
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.DebtAppService.Add(Gentle.Application.Dtos.Debt.CreateDebtInput)">
+            <summary>
+            新增欠款
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.DebtAppService.Edit(Gentle.Application.Dtos.Debt.UpdateDebtInput)">
+            <summary>
+            编辑欠款
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.DebtAppService.Remove(System.Int32)">
+            <summary>
+            删除欠款
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.DebtAppService.AddRepayment(System.Int32,Gentle.Application.Dtos.Debt.AddRepaymentInput)">
+            <summary>
+            添加还款记录
+            </summary>
+        </member>
+        <member name="M:Gentle.Application.Apps.DebtAppService.RemoveRepayment(System.Int32)">
+            <summary>
+            删除还款记录
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Apps.LandlordLeaseAppService">
             <summary>
             房东租约管理应用服务
