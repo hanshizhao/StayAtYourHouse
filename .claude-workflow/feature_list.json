@@ -598,10 +598,33 @@
         }
       ],
       "test_file": "tests/e2e/feat-178-debt-detail-dialog.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-19T12:10:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-19T12:10:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-19T23:58:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 2,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 3
+        },
+        "minor_issues": [
+          "M-1: 删除还款记录缺少二次确认对话框（UI最佳实践，非阻断）",
+          "M-2: formatAmount 函数与 RepayDialog 重复（可后续提取共享工具）",
+          "M-3: formatAmount(0) 走 fallback 而非 toFixed(0)，结果相同无视觉 bug"
+        ],
+        "fixes_applied": [
+          "I-1: 添加状态标签（t-tag + DebtStatus 枚举）",
+          "I-2: 添加备注字段显示",
+          "M-2: 移除 :footer=false 使自定义 footer slot 生效"
+        ]
       }
     },
     {
