@@ -34,9 +34,9 @@
             欠款实体
             </summary>
         </member>
-        <member name="P:Gentle.Core.Entities.Debt.TenantId">
+        <member name="P:Gentle.Core.Entities.Debt.DebtorId">
             <summary>
-            关联租客 ID
+            欠款租客 ID
             </summary>
         </member>
         <member name="P:Gentle.Core.Entities.Debt.TotalAmount">
@@ -59,9 +59,9 @@
             备注
             </summary>
         </member>
-        <member name="P:Gentle.Core.Entities.Debt.Tenant">
+        <member name="P:Gentle.Core.Entities.Debt.Debtor">
             <summary>
-            关联租客
+            关联租客（欠款人）
             </summary>
         </member>
         <member name="P:Gentle.Core.Entities.Debt.Repayments">

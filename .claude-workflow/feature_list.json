@@ -309,10 +309,30 @@
         }
       ],
       "test_file": "tests/e2e/feat-173-debt-migration.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-19T20:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-19T20:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-19T19:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 1,
+        "issues": {
+          "critical": 0,
+          "important": 2,
+          "minor": 0
+        },
+        "important_notes": [
+          "I-1: FEAT 范围蔓延（实体 TenantId→DebtorId 重命名和 DebtService 同步修改混入迁移 FEAT），代码改进正确但超出 FEAT-173 计划范围",
+          "I-2: DebtService.AddAsync 从 Mapster Adapt 改为手动映射，属合理改进但不在迁移 scope 内"
+        ],
+        "fixes_applied": [
+          "优化测试文件：将多次 fs.readFileSync 改为 beforeAll 中一次性读取并复用"
+        ]
       }
     },
     {

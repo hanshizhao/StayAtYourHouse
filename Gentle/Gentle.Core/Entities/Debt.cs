@@ -12,14 +12,13 @@ namespace Gentle.Core.Entities;
 /// 欠款实体
 /// </summary>
 [Table("debt")]
-[Index(nameof(TenantId))]
 public class Debt : Entity<int>, IEntitySeedData<Debt>
 {
     /// <summary>
-    /// 关联租客 ID
+    /// 欠款租客 ID
     /// </summary>
     [Required]
-    public int TenantId { get; set; }
+    public int DebtorId { get; set; }
 
     /// <summary>
     /// 总欠款金额
@@ -48,9 +47,9 @@ public class Debt : Entity<int>, IEntitySeedData<Debt>
     public string? Remark { get; set; }
 
     /// <summary>
-    /// 关联租客
+    /// 关联租客（欠款人）
     /// </summary>
-    public Tenant Tenant { get; set; } = null!;
+    public Tenant Debtor { get; set; } = null!;
 
     /// <summary>
     /// 还款记录集合

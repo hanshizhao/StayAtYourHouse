@@ -32,8 +32,8 @@ public class DebtService : IDebtService
         if (!string.IsNullOrWhiteSpace(input.Keyword))
         {
             baseQuery = baseQuery.Where(d =>
-                d.Tenant.Name.Contains(input.Keyword) ||
-                (d.Tenant.Phone != null && d.Tenant.Phone.Contains(input.Keyword)));
+                d.Debtor.Name.Contains(input.Keyword) ||
+                (d.Debtor.Phone != null && d.Debtor.Phone.Contains(input.Keyword)));
         }
 
         if (input.Status.HasValue)
@@ -44,7 +44,7 @@ public class DebtService : IDebtService
         var total = await baseQuery.CountAsync();
 
         var list = await baseQuery
-            .Include(d => d.Tenant)
+            .Include(d => d.Debtor)
             .Include(d => d.Repayments)
             .AsSplitQuery()
             .OrderByDescending(d => d.CreatedTime)
@@ -55,9 +55,9 @@ public class DebtService : IDebtService
         var dtos = list.Select(d => new DebtListDto
         {
             Id = d.Id,
-            TenantId = d.TenantId,
-            TenantName = d.Tenant.Name,
-            TenantPhone = d.Tenant.Phone,
+            TenantId = d.DebtorId,
+            TenantName = d.Debtor.Name,
+            TenantPhone = d.Debtor.Phone,
             TotalAmount = d.TotalAmount,
             PaidAmount = d.Repayments.Sum(r => r.Amount),
             Status = d.Status,
@@ -78,7 +78,7 @@ public class DebtService : IDebtService
     public async Task<DebtDetailDto> GetByIdAsync(int id)
     {
         var debt = await _debtRepository.AsQueryable(false)
-            .Include(d => d.Tenant)
+            .Include(d => d.Debtor)
             .Include(d => d.Repayments.OrderByDescending(r => r.PaymentDate))
             .AsSplitQuery()
             .FirstOrDefaultAsync(d => d.Id == id);
@@ -100,15 +100,21 @@ public class DebtService : IDebtService
             throw Oops.Oh($"租客 {input.TenantId} 不存在");
         }
 
-        var debt = input.Adapt<Core.Entities.Debt>();
-        debt.Status = DebtStatus.Ongoing;
-        debt.CreatedTime = DateTimeOffset.Now;
+        var debt = new Core.Entities.Debt
+        {
+            DebtorId = input.TenantId,
+            TotalAmount = input.TotalAmount,
+            Description = input.Description,
+            Remark = input.Remark,
+            Status = DebtStatus.Ongoing,
+            CreatedTime = DateTimeOffset.Now
+        };
 
         var entry = await _debtRepository.InsertAsync(debt);
         await _debtRepository.SaveNowAsync();
 
         var saved = await _debtRepository.AsQueryable(false)
-            .Include(d => d.Tenant)
+            .Include(d => d.Debtor)
             .Include(d => d.Repayments)
             .AsSplitQuery()
             .FirstAsync(d => d.Id == entry.Entity.Id);
@@ -143,7 +149,7 @@ public class DebtService : IDebtService
         await _debtRepository.SaveNowAsync();
 
         var updated = await _debtRepository.AsQueryable(false)
-            .Include(d => d.Tenant)
+            .Include(d => d.Debtor)
             .Include(d => d.Repayments.OrderByDescending(r => r.PaymentDate))
             .AsSplitQuery()
             .FirstAsync(d => d.Id == debt.Id);
@@ -247,9 +253,9 @@ public class DebtService : IDebtService
         return new DebtDetailDto
         {
             Id = debt.Id,
-            TenantId = debt.TenantId,
-            TenantName = debt.Tenant.Name,
-            TenantPhone = debt.Tenant.Phone,
+            TenantId = debt.DebtorId,
+            TenantName = debt.Debtor.Name,
+            TenantPhone = debt.Debtor.Phone,
             TotalAmount = debt.TotalAmount,
             PaidAmount = paidAmount,
             Status = debt.Status,
