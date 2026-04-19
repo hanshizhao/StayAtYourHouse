@@ -77,7 +77,7 @@ Source: docs/prototypes/2026-04-18-debt-management-design.pen
 
 feature_list.json 示例：
 
-```json
+```json****
 {
   "feat_id": "FEAT-175",
   "description": "前端主列表页与组件：卡片布局+弹窗",
