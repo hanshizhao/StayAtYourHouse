@@ -33,10 +33,25 @@
         }
       ],
       "test_file": "tests/e2e/feat-168-debt-enums.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-19T12:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-19T12:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-19T00:00:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 1
+        },
+        "minor_issues": [
+          "DebtStatus Settled 注释措辞为「已结清」vs 计划中的「已还清」，语义相同无需修改"
+        ]
       }
     },
     {

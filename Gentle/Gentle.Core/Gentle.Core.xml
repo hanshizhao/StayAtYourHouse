@@ -720,6 +720,21 @@
             配置种子数据
             </summary>
         </member>
+        <member name="T:Gentle.Core.Enums.DebtStatus">
+            <summary>
+            欠款状态枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.DebtStatus.Ongoing">
+            <summary>
+            进行中
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.DebtStatus.Settled">
+            <summary>
+            已结清
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Enums.DepositStatus">
             <summary>
             押金状态枚举
@@ -828,6 +843,31 @@
         <member name="F:Gentle.Core.Enums.MaintenanceStatus.Completed">
             <summary>
             已完成
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Enums.PaymentChannel">
+            <summary>
+            还款渠道枚举
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentChannel.Cash">
+            <summary>
+            现金
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentChannel.WeChat">
+            <summary>
+            微信
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentChannel.Alipay">
+            <summary>
+            支付宝
+            </summary>
+        </member>
+        <member name="F:Gentle.Core.Enums.PaymentChannel.BankTransfer">
+            <summary>
+            银行转账
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.PaymentMethod">
