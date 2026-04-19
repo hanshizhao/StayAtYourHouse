@@ -637,6 +637,306 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Application.Dtos.Debt.DebtListDto">
+            <summary>
+            欠款列表项 DTO
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.Id">
+            <summary>
+            欠款ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.TenantId">
+            <summary>
+            租客ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.TenantName">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.TenantPhone">
+            <summary>
+            租客电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.TotalAmount">
+            <summary>
+            总欠款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.PaidAmount">
+            <summary>
+            已还金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.RemainingAmount">
+            <summary>
+            剩余欠款
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.Status">
+            <summary>
+            欠款状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.StatusText">
+            <summary>
+            欠款状态文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.Description">
+            <summary>
+            欠款说明
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Debt.DebtDetailDto">
+            <summary>
+            欠款详情 DTO
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.Id">
+            <summary>
+            欠款ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.TenantId">
+            <summary>
+            租客ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.TenantName">
+            <summary>
+            租客姓名
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.TenantPhone">
+            <summary>
+            租客电话
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.TotalAmount">
+            <summary>
+            总欠款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.PaidAmount">
+            <summary>
+            已还金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.RemainingAmount">
+            <summary>
+            剩余欠款
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.Status">
+            <summary>
+            欠款状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.StatusText">
+            <summary>
+            欠款状态文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.Description">
+            <summary>
+            欠款说明
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtDetailDto.Repayments">
+            <summary>
+            还款记录
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Debt.DebtRepaymentDto">
+            <summary>
+            还款记录 DTO
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtRepaymentDto.Id">
+            <summary>
+            还款记录ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtRepaymentDto.DebtId">
+            <summary>
+            欠款ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtRepaymentDto.Amount">
+            <summary>
+            还款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtRepaymentDto.PaymentDate">
+            <summary>
+            还款日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtRepaymentDto.PaymentChannel">
+            <summary>
+            还款方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtRepaymentDto.PaymentChannelText">
+            <summary>
+            还款方式文本
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtRepaymentDto.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtRepaymentDto.CreatedTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Debt.DebtListInput">
+            <summary>
+            欠款列表查询参数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListInput.Keyword">
+            <summary>
+            搜索关键字（租客姓名/电话）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListInput.Status">
+            <summary>
+            欠款状态筛选
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListInput.Page">
+            <summary>
+            页码（从1开始）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListInput.PageSize">
+            <summary>
+            每页数量
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Debt.DebtListResult">
+            <summary>
+            欠款列表分页结果
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListResult.List">
+            <summary>
+            欠款列表
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListResult.Total">
+            <summary>
+            总记录数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListResult.Page">
+            <summary>
+            当前页码
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.DebtListResult.PageSize">
+            <summary>
+            每页数量
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Debt.CreateDebtInput">
+            <summary>
+            新增欠款输入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.CreateDebtInput.TenantId">
+            <summary>
+            租客ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.CreateDebtInput.TotalAmount">
+            <summary>
+            总欠款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.CreateDebtInput.Description">
+            <summary>
+            欠款说明
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.CreateDebtInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Debt.UpdateDebtInput">
+            <summary>
+            编辑欠款输入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.UpdateDebtInput.Id">
+            <summary>
+            欠款ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.UpdateDebtInput.TotalAmount">
+            <summary>
+            总欠款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.UpdateDebtInput.Description">
+            <summary>
+            欠款说明
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.UpdateDebtInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.Debt.AddRepaymentInput">
+            <summary>
+            添加还款输入
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.AddRepaymentInput.Amount">
+            <summary>
+            还款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.AddRepaymentInput.PaymentDate">
+            <summary>
+            还款日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.AddRepaymentInput.PaymentChannel">
+            <summary>
+            还款方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Debt.AddRepaymentInput.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Dtos.LandlordLease.CreateLandlordLeaseInput">
             <summary>
             创建房东租约请求
