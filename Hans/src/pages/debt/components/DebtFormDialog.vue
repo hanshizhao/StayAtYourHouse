@@ -9,13 +9,7 @@
     :on-confirm="handleSubmit"
     :on-close="handleClose"
   >
-    <t-form
-      ref="formRef"
-      :data="formData"
-      :rules="formRules"
-      label-align="top"
-      class="debt-form"
-    >
+    <t-form ref="formRef" :data="formData" :rules="formRules" label-align="top" class="debt-form">
       <t-form-item label="选择租客" name="tenantId">
         <t-select
           v-model="formData.tenantId"
@@ -26,12 +20,7 @@
           :on-search="handleTenantSearch"
           data-testid="debt-form-tenant-select"
         >
-          <t-option
-            v-for="tenant in tenantOptions"
-            :key="tenant.id"
-            :value="tenant.id"
-            :label="tenant.name"
-          />
+          <t-option v-for="tenant in tenantOptions" :key="tenant.id" :value="tenant.id" :label="tenant.name" />
         </t-select>
       </t-form-item>
 
@@ -41,9 +30,10 @@
           placeholder="请输入欠款金额"
           :min="0.01"
           :max="9999999.99"
+          style="width: 100%"
           :decimal-places="2"
           :step="100"
-          theme="column"
+          theme="normal"
           data-testid="debt-form-amount-input"
         >
           <template #prefixIcon>
@@ -74,14 +64,13 @@
     </t-form>
   </t-dialog>
 </template>
-
 <script setup lang="ts">
 import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
-import type { CreateDebtParams, DebtDetail, UpdateDebtParams } from '@/api/model/debtModel';
 import { createDebt, updateDebt } from '@/api/debt';
+import type { CreateDebtParams, DebtDetail, UpdateDebtParams } from '@/api/model/debtModel';
 import { getTenantList } from '@/api/tenant';
 
 interface Props {
@@ -104,7 +93,7 @@ const dialogVisible = computed({
 });
 
 const isEdit = computed(() => !!props.editData);
-const dialogTitle = computed(() => (isEdit.value ? '编辑欠款' : '新增欠款'));
+const dialogTitle = computed(() => (isEdit.value ? '编辑老赖' : '新增老赖'));
 
 interface FormData {
   tenantId: number | undefined;
@@ -141,7 +130,7 @@ async function loadTenants(keyword?: string) {
   tenantLoading.value = true;
   try {
     const result = await getTenantList({ keyword, page: 1, pageSize: 50 });
-    tenantOptions.value = result.list.map(t => ({ id: t.id, name: t.name }));
+    tenantOptions.value = result.list.map((t) => ({ id: t.id, name: t.name }));
   } catch {
     tenantOptions.value = [];
     MessagePlugin.warning('加载租客列表失败');
@@ -227,7 +216,6 @@ function handleClose() {
   emit('update:visible', false);
 }
 </script>
-
 <style lang="less" scoped>
 .debt-form {
   :deep(.t-form__item) {

@@ -54,9 +54,7 @@
           </div>
           <div class="detail-summary-item">
             <div class="detail-summary-label">已还</div>
-            <div class="detail-summary-value detail-summary-value--primary">
-              ¥{{ formatAmount(detail.paidAmount) }}
-            </div>
+            <div class="detail-summary-value detail-summary-value--primary">¥{{ formatAmount(detail.paidAmount) }}</div>
           </div>
           <div class="detail-summary-item">
             <div class="detail-summary-label">剩余</div>
@@ -77,6 +75,9 @@
             data-testid="detail-repay-table"
             :empty="tableEmpty"
           >
+            <template #paymentDate="{ row }">
+              {{ row.paymentDate?.slice(0, 10) ?? '-' }}
+            </template>
             <template #amount="{ row }">
               <span class="detail-amount-cell">¥{{ formatAmount(row.amount) }}</span>
             </template>
@@ -99,20 +100,17 @@
     </t-loading>
 
     <template #footer>
-      <t-button variant="outline" data-testid="detail-close-btn" @click="handleClose">
-        关闭
-      </t-button>
+      <t-button variant="outline" data-testid="detail-close-btn" @click="handleClose"> 关闭 </t-button>
     </template>
   </t-dialog>
 </template>
-
 <script setup lang="ts">
-import type { DebtDetail } from '@/api/model/debtModel';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, ref, watch } from 'vue';
 
-import { DebtStatus, PAYMENT_CHANNEL_MAP, PaymentChannel } from '@/api/model/debtModel';
 import { deleteRepayment, getDebtDetail } from '@/api/debt';
+import type { DebtDetail, PaymentChannel } from '@/api/model/debtModel';
+import { DebtStatus, PAYMENT_CHANNEL_MAP } from '@/api/model/debtModel';
 
 interface Props {
   visible: boolean;
@@ -195,7 +193,6 @@ function handleClose() {
   emit('update:visible', false);
 }
 </script>
-
 <style lang="less" scoped>
 .detail-content {
   min-height: 200px;

@@ -1,5 +1,5 @@
 <template>
-  <t-card class="debt-card" :bordered="false" hover-shadow>
+  <t-card class="debt-card">
     <div class="debt-card__header">
       <div class="debt-card__tenant">
         <span class="debt-card__name">{{ data.tenantName }}</span>
@@ -19,64 +19,33 @@
           <span class="debt-card__total">¥{{ formatAmount(data.totalAmount) }}</span>
         </span>
       </div>
-      <t-progress
-        :percentage="paidPercentage"
-        :status="progressStatus"
-        size="small"
-        :label="false"
-      />
+      <t-progress :percentage="paidPercentage" :status="progressStatus" size="small" :label="false" />
     </div>
 
     <div class="debt-card__footer">
       <t-space size="small">
         <t-button
           size="small"
-          variant="text"
           theme="primary"
           :disabled="data.status === DebtStatus.Settled"
           @click="emit('repay', data)"
         >
           还款
         </t-button>
-        <t-button
-          size="small"
-          variant="text"
-          theme="default"
-          @click="emit('detail', data)"
-        >
-          详情
-        </t-button>
-        <t-button
-          size="small"
-          variant="text"
-          theme="default"
-          @click="emit('edit', data)"
-        >
-          编辑
-        </t-button>
-        <t-button
-          size="small"
-          variant="text"
-          theme="danger"
-          @click="emit('delete', data)"
-        >
-          删除
-        </t-button>
+        <t-button size="small" variant="outline" theme="default" @click="emit('detail', data)"> 详情 </t-button>
+        <t-button size="small" variant="outline" theme="default" @click="emit('edit', data)"> 编辑 </t-button>
+        <t-button size="small" variant="outline" theme="danger" @click="emit('delete', data)"> 删除 </t-button>
       </t-space>
     </div>
   </t-card>
 </template>
-
 <script setup lang="ts">
 import { computed } from 'vue';
-import { DebtStatus } from '@/api/model/debtModel';
+
 import type { DebtListItem } from '@/api/model/debtModel';
+import { DebtStatus } from '@/api/model/debtModel';
 
 defineOptions({ name: 'DebtCard' });
-
-interface Props {
-  data: DebtListItem;
-}
 
 const props = defineProps<Props>();
 
@@ -86,6 +55,10 @@ const emit = defineEmits<{
   (e: 'edit', item: DebtListItem): void;
   (e: 'delete', item: DebtListItem): void;
 }>();
+
+interface Props {
+  data: DebtListItem;
+}
 
 const statusTheme = computed(() => {
   return props.data.status === DebtStatus.Settled ? 'success' : 'warning';
@@ -107,7 +80,6 @@ function formatAmount(amount: number): string {
   return Number.isFinite(amount) ? amount.toFixed(2) : '0.00';
 }
 </script>
-
 <style lang="less" scoped>
 .debt-card {
   height: 100%;
@@ -186,7 +158,7 @@ function formatAmount(amount: number): string {
 
   &__footer {
     margin-top: auto;
-    padding-top: var(--td-comp-margin-s);
+    padding-top: calc(var(--td-comp-margin-s) + 10px);
     border-top: 1px solid var(--td-component-border);
   }
 }

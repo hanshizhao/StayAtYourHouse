@@ -2,14 +2,12 @@
   <div class="debt-management">
     <t-card :bordered="false" class="debt-main-card">
       <div class="debt-page-header">
-        <h2 class="debt-page-title">
-          老赖管理
-        </h2>
+        <h2 class="debt-page-title">老赖管理</h2>
         <t-button theme="primary" data-testid="debt-add-btn" @click="handleCreate">
           <template #icon>
             <t-icon name="add" />
           </template>
-          新增欠款
+          新增老赖
         </t-button>
       </div>
 
@@ -44,16 +42,8 @@
       <t-loading :loading="loading">
         <div v-if="debtList.length > 0" class="debt-card-grid">
           <t-row :gutter="[20, 20]">
-            <t-col
-              v-for="item in debtList"
-              :key="item.id"
-              :xs="12"
-              :sm="6"
-              :md="4"
-              :lg="4"
-              :xl="4"
-            >
-              <DebtCard
+            <t-col v-for="item in debtList" :key="item.id" :xs="12" :sm="6" :md="4" :lg="4" :xl="4">
+              <debt-card
                 :data="item"
                 @repay="handleRepay"
                 @detail="handleDetail"
@@ -80,23 +70,11 @@
       </t-loading>
     </t-card>
 
-    <DebtFormDialog
-      v-model:visible="formDialogVisible"
-      :edit-data="editingDebt"
-      @success="fetchData"
-    />
+    <debt-form-dialog v-model:visible="formDialogVisible" :edit-data="editingDebt" @success="fetchData" />
 
-    <RepayDialog
-      v-model:visible="repayDialogVisible"
-      :debt="repayingDebt"
-      @success="fetchData"
-    />
+    <repay-dialog v-model:visible="repayDialogVisible" :debt="repayingDebt" @success="fetchData" />
 
-    <DebtDetailDialog
-      v-model:visible="detailDialogVisible"
-      :debt-id="detailingDebtId"
-      @refresh="fetchData"
-    />
+    <debt-detail-dialog v-model:visible="detailDialogVisible" :debt-id="detailingDebtId" @refresh="fetchData" />
 
     <t-dialog
       v-model:visible="deleteConfirmVisible"
@@ -110,14 +88,13 @@
     />
   </div>
 </template>
-
 <script setup lang="ts">
-import type { DebtDetail, DebtListItem } from '@/api/model/debtModel';
-import { DebtStatus } from '@/api/model/debtModel';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import { deleteDebt, getDebtDetail, getDebtList } from '@/api/debt';
+import type { DebtDetail, DebtListItem } from '@/api/model/debtModel';
+import { DebtStatus } from '@/api/model/debtModel';
 
 import DebtCard from './components/DebtCard.vue';
 import DebtDetailDialog from './components/DebtDetailDialog.vue';
@@ -267,7 +244,6 @@ onBeforeUnmount(() => {
   if (searchTimer) clearTimeout(searchTimer);
 });
 </script>
-
 <style lang="less" scoped>
 .debt-management {
   height: 100%;
