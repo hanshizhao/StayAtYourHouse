@@ -29,6 +29,91 @@
             备注
             </summary>
         </member>
+        <member name="T:Gentle.Core.Entities.Debt">
+            <summary>
+            欠款实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Debt.TenantId">
+            <summary>
+            关联租客 ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Debt.TotalAmount">
+            <summary>
+            总欠款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Debt.Status">
+            <summary>
+            欠款状态
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Debt.Description">
+            <summary>
+            欠款说明
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Debt.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Debt.Tenant">
+            <summary>
+            关联租客
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.Debt.Repayments">
+            <summary>
+            还款记录集合
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.Debt.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            种子数据
+            </summary>
+        </member>
+        <member name="T:Gentle.Core.Entities.DebtRepayment">
+            <summary>
+            还款记录实体
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.DebtRepayment.DebtId">
+            <summary>
+            关联欠款 ID
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.DebtRepayment.Amount">
+            <summary>
+            本次还款金额
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.DebtRepayment.PaymentDate">
+            <summary>
+            还款日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.DebtRepayment.PaymentChannel">
+            <summary>
+            还款方式
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.DebtRepayment.Remark">
+            <summary>
+            备注
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.DebtRepayment.Debt">
+            <summary>
+            关联欠款
+            </summary>
+        </member>
+        <member name="M:Gentle.Core.Entities.DebtRepayment.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
+            <summary>
+            种子数据
+            </summary>
+        </member>
         <member name="T:Gentle.Core.Entities.LandlordLease">
             <summary>
             房东租约实体

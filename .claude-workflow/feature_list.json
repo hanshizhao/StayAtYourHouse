@@ -88,10 +88,27 @@
         }
       ],
       "test_file": "tests/e2e/feat-169-debt-entities.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-19T13:00:00Z",
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "verified_at": "2026-04-19T13:00:00Z"
+      },
+      "review": {
+        "last_review_at": "2026-04-19T12:30:00Z",
+        "reviewer": "superpowers:code-reviewer",
+        "status": "passed",
+        "rounds": 2,
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 2
+        },
+        "minor_issues": [
+          "DebtRepayment.PaymentChannel 默认值 Cash 与计划模板略有差异，属合理业务选择",
+          "DebtStatus Settled 注释「已结清」vs 计划中「已还清」，语义相同无需修改"
+        ]
       }
     },
     {
