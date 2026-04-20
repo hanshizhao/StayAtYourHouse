@@ -3,9 +3,7 @@
     <t-card class="list-card-container" :bordered="false">
       <!-- 页面标题 -->
       <div class="page-header">
-        <h2 class="page-title">
-          房间管理
-        </h2>
+        <h2 class="page-title">房间管理</h2>
         <t-button theme="primary" data-testid="add-room-button" @click="handleCreate">
           <template #icon>
             <add-icon />
@@ -127,14 +125,25 @@
                   </t-button>
                 </t-tooltip>
                 <t-tooltip content="维修记录">
-                  <t-button variant="text" shape="square" data-testid="maintenance-button" @click="handleMaintenance(room)">
+                  <t-button
+                    variant="text"
+                    shape="square"
+                    data-testid="maintenance-button"
+                    @click="handleMaintenance(room)"
+                  >
                     <template #icon>
                       <tools-icon />
                     </template>
                   </t-button>
                 </t-tooltip>
                 <t-tooltip content="删除房间">
-                  <t-button variant="text" shape="square" theme="danger" data-testid="delete-button" @click="handleDelete(room)">
+                  <t-button
+                    variant="text"
+                    shape="square"
+                    theme="danger"
+                    data-testid="delete-button"
+                    @click="handleDelete(room)"
+                  >
                     <template #icon>
                       <delete-icon />
                     </template>
@@ -174,9 +183,7 @@
     >
       <t-form ref="formRef" :data="formData" :rules="formRules" label-align="right" label-width="90px">
         <!-- 基本信息 -->
-        <div class="form-section-title">
-          基本信息
-        </div>
+        <div class="form-section-title">基本信息</div>
         <t-row :gutter="[24, 12]">
           <t-col :span="6">
             <t-form-item label="所属小区" name="communityId">
@@ -223,9 +230,7 @@
 
         <!-- 价格信息 -->
         <t-divider />
-        <div class="form-section-title">
-          价格信息
-        </div>
+        <div class="form-section-title">价格信息</div>
         <t-row :gutter="[24, 12]">
           <t-col :span="6">
             <t-form-item label="出租价" name="rentPrice">
@@ -258,10 +263,8 @@
 
         <!-- 费用设置 -->
         <t-divider />
-        <div class="form-section-title">
-          费用设置
-        </div>
-        <t-row :gutter="24">
+        <div class="form-section-title">费用设置</div>
+        <t-row :gutter="[24, 12]">
           <t-col :span="6">
             <t-form-item label="水费" name="waterPrice">
               <t-input-number
@@ -288,8 +291,7 @@
               />
             </t-form-item>
           </t-col>
-        </t-row>
-        <t-row :gutter="24">
+
           <t-col :span="6">
             <t-form-item label="电梯费" name="elevatorFee">
               <t-input-number
@@ -316,8 +318,7 @@
               />
             </t-form-item>
           </t-col>
-        </t-row>
-        <t-row :gutter="24">
+
           <t-col :span="6">
             <t-form-item label="网络费" name="internetFee">
               <t-input-number
@@ -351,6 +352,7 @@
         <t-form-item label="备注" name="remark">
           <t-textarea
             v-model="formData.remark"
+            style="width: 90%"
             placeholder="请输入备注信息"
             :maxlength="500"
             :autosize="{ minRows: 3, maxRows: 5 }"
@@ -394,9 +396,7 @@
         <!-- 表单模式 -->
         <template v-else-if="leaseEditMode">
           <t-form ref="leaseFormRef" :data="leaseForm" :rules="leaseFormRules" label-align="top">
-            <div class="form-section-title">
-              房东信息
-            </div>
+            <div class="form-section-title">房东信息</div>
             <t-row :gutter="[16, 0]">
               <t-col :span="6">
                 <t-form-item label="房东姓名" name="landlordName">
@@ -418,9 +418,7 @@
               </t-col>
             </t-row>
 
-            <div class="form-section-title">
-              租约信息
-            </div>
+            <div class="form-section-title">租约信息</div>
             <t-row :gutter="[16, 0]">
               <t-col :span="6">
                 <t-form-item label="开始日期" name="startDate">
@@ -495,9 +493,7 @@
               </t-col>
             </t-row>
 
-            <div class="form-section-title">
-              费用信息
-            </div>
+            <div class="form-section-title">费用信息</div>
             <t-row :gutter="[16, 0]">
               <t-col :span="6">
                 <t-form-item label="水费" name="waterPrice">
@@ -579,9 +575,7 @@
               </t-col>
             </t-row>
 
-            <div class="form-section-title">
-              备注
-            </div>
+            <div class="form-section-title">备注</div>
             <t-form-item name="remark">
               <t-textarea
                 v-model="leaseForm.remark"
@@ -593,9 +587,7 @@
             </t-form-item>
 
             <div class="lease-drawer-footer">
-              <t-button variant="outline" @click="leaseEditMode = false">
-                取消
-              </t-button>
+              <t-button variant="outline" @click="leaseEditMode = false"> 取消 </t-button>
               <t-button theme="primary" :loading="leaseSaving" data-testid="lease-save-button" @click="handleSaveLease">
                 保存
               </t-button>
@@ -676,9 +668,7 @@
         <template v-else>
           <t-empty description="暂无租约信息" data-testid="lease-empty-state">
             <template #action>
-              <t-button theme="primary" data-testid="lease-add-button" @click="handleAddLease">
-                添加租约
-              </t-button>
+              <t-button theme="primary" data-testid="lease-add-button" @click="handleAddLease"> 添加租约 </t-button>
             </template>
           </t-empty>
         </template>
@@ -771,9 +761,7 @@ const statusOptions: SelectOption[] = [
 ];
 
 // 异常租约选项
-const leaseAlertOptions: SelectOption[] = [
-  { label: '仅显示异常', value: true },
-];
+const leaseAlertOptions: SelectOption[] = [{ label: '仅显示异常', value: true }];
 
 const PAGE_SIZE_OPTIONS = [9, 18, 27];
 
@@ -879,20 +867,29 @@ function getStatusText(status: RoomStatus): string {
 
 function getLeaseStatusKey(status: LeaseStatus): string {
   switch (status) {
-    case LeaseStatus.Normal: return 'normal';
-    case LeaseStatus.ExpiringSoon: return 'expiring';
-    case LeaseStatus.Expired: return 'expired';
-    default: return 'none';
+    case LeaseStatus.Normal:
+      return 'normal';
+    case LeaseStatus.ExpiringSoon:
+      return 'expiring';
+    case LeaseStatus.Expired:
+      return 'expired';
+    default:
+      return 'none';
   }
 }
 
 function getLeaseStatusText(status: LeaseStatus, expiredDays?: number | null): string {
   switch (status) {
-    case LeaseStatus.Normal: return '正常';
-    case LeaseStatus.ExpiringSoon: return '即将到期';
-    case LeaseStatus.Expired: return expiredDays ? `已逾期 ${expiredDays}天` : '已逾期';
-    case LeaseStatus.None: return '无租约';
-    default: return '';
+    case LeaseStatus.Normal:
+      return '正常';
+    case LeaseStatus.ExpiringSoon:
+      return '即将到期';
+    case LeaseStatus.Expired:
+      return expiredDays ? `已逾期 ${expiredDays}天` : '已逾期';
+    case LeaseStatus.None:
+      return '无租约';
+    default:
+      return '';
   }
 }
 
