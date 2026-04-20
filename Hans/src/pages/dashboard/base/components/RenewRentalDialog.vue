@@ -38,6 +38,7 @@
               :min="1"
               :max="36"
               :step="1"
+              style="width: 100%"
               theme="normal"
               suffix="个月"
               placeholder="请输入租期月数"
@@ -51,6 +52,7 @@
               :min="0.01"
               :decimal-places="2"
               style="width: 100%"
+              theme="normal"
             />
           </t-form-item>
           <t-form-item label="合同到期日" name="contractEndDate">
