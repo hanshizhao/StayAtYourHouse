@@ -15,18 +15,23 @@ public class RentalRecordService : IRentalRecordService
     private const int DefaultPageSize = 20;
     private const int MaxPageSize = 100;
 
+    private const int ReminderDaysBeforeExpiry = 3;
+
     private readonly IRepository<RentalRecord> _repository;
     private readonly IRepository<TenantEntity> _tenantRepository;
     private readonly IRepository<Room> _roomRepository;
+    private readonly IRepository<RentalReminder> _rentalReminderRepository;
 
     public RentalRecordService(
         IRepository<RentalRecord> repository,
         IRepository<TenantEntity> tenantRepository,
-        IRepository<Room> roomRepository)
+        IRepository<Room> roomRepository,
+        IRepository<RentalReminder> rentalReminderRepository)
     {
         _repository = repository;
         _tenantRepository = tenantRepository;
         _roomRepository = roomRepository;
+        _rentalReminderRepository = rentalReminderRepository;
     }
 
     /// <inheritdoc />
@@ -185,6 +190,9 @@ public class RentalRecordService : IRentalRecordService
 
         await _repository.SaveNowAsync();
 
+        // 补录入住时，合同到期日可能已过或在提醒窗口内，立即创建催收提醒
+        await CreateReminderIfNeededAsync(entry.Entity.Id, contractEndDate);
+
         // 重新查询以获取完整导航属性
         var createdRecord = await _repository
             .AsQueryable(false)
@@ -329,12 +337,98 @@ public class RentalRecordService : IRentalRecordService
         return updatedRecord!.Adapt<RentalRecordDto>();
     }
 
+    /// <inheritdoc />
+    [UnitOfWork]
+    public async Task<RentalRecordDto> UpdateAsync(int id, UpdateRentalRecordInput input)
+    {
+        var record = await _repository
+            .AsQueryable()
+            .Include(r => r.Renter)
+            .Include(r => r.Room)
+                .ThenInclude(room => room.Community)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (record == null)
+        {
+            throw Oops.Oh($"租住记录 {id} 不存在");
+        }
+
+        if (record.Status != RentalStatus.Active)
+        {
+            throw Oops.Oh("只有生效中的租约才能修改");
+        }
+
+        if (input.ContractEndDate <= input.CheckInDate)
+        {
+            throw Oops.Oh("合同结束日期必须晚于入住日期");
+        }
+
+        record.CheckInDate = input.CheckInDate;
+        record.LeaseMonths = input.LeaseMonths;
+        record.ContractEndDate = input.ContractEndDate;
+        record.MonthlyRent = input.MonthlyRent;
+        record.Deposit = input.Deposit;
+        record.Remark = input.Remark;
+
+        await _repository.UpdateAsync(record);
+        await _repository.SaveNowAsync();
+
+        // 重新查询以获取完整导航属性
+        var updatedRecord = await _repository
+            .AsQueryable(false)
+            .Include(r => r.Renter)
+            .Include(r => r.Room)
+                .ThenInclude(room => room.Community)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        return updatedRecord!.Adapt<RentalRecordDto>();
+    }
+
     /// <summary>
     /// 计算合同结束日期
     /// </summary>
     private static DateTime CalculateContractEndDate(DateTime checkInDate, int leaseMonths)
     {
         return checkInDate.AddMonths(leaseMonths).AddDays(-1);
+    }
+
+    /// <summary>
+    /// 如果合同到期日在提醒窗口内或已过期，立即创建催收提醒
+    /// </summary>
+    /// <remarks>
+    /// 处理补录入住场景：当入住日期为过去日期时，合同到期日可能已经过了或即将到来，
+    /// 后台定时服务无法捕获这种情况，因此需要在入住时立即创建提醒。
+    /// </remarks>
+    private async Task CreateReminderIfNeededAsync(int rentalRecordId, DateTime contractEndDate)
+    {
+        var reminderThreshold = DateTime.Today.AddDays(ReminderDaysBeforeExpiry);
+
+        if (contractEndDate > reminderThreshold)
+        {
+            return;
+        }
+
+        // 防重复：检查是否已存在待处理提醒
+        var exists = await _rentalReminderRepository
+            .AsQueryable()
+            .AnyAsync(r => r.RentalRecordId == rentalRecordId
+                && r.Status == RentalReminderStatus.Pending);
+
+        if (exists)
+        {
+            return;
+        }
+
+        var reminder = new RentalReminder
+        {
+            RentalRecordId = rentalRecordId,
+            ReminderDate = DateTime.Today,
+            Status = RentalReminderStatus.Pending,
+            Remark = $"系统自动创建：合同将于 {contractEndDate:yyyy-MM-dd} 到期"
+        };
+
+        await _rentalReminderRepository.InsertAsync(reminder);
+        await _rentalReminderRepository.SaveNowAsync();
     }
 
     /// <summary>

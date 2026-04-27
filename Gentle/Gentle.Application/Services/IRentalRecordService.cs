@@ -50,4 +50,9 @@ public interface IRentalRecordService : ITransient
     /// 确认安居码已提交
     /// </summary>
     Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id);
+
+    /// <summary>
+    /// 修改租约
+    /// </summary>
+    Task<RentalRecordDto> UpdateAsync(int id, UpdateRentalRecordInput input);
 }
