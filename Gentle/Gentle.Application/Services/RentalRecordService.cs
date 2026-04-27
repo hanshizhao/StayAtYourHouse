@@ -373,6 +373,23 @@ public class RentalRecordService : IRentalRecordService
         await _repository.UpdateAsync(record);
         await _repository.SaveNowAsync();
 
+        // 同步催收提醒：清理旧的 Pending 提醒，根据新合同日期重新创建
+        var oldReminders = await _rentalReminderRepository
+            .AsQueryable()
+            .Where(r => r.RentalRecordId == id && r.Status == RentalReminderStatus.Pending)
+            .ToListAsync();
+        foreach (var old in oldReminders)
+        {
+            await _rentalReminderRepository.DeleteAsync(old);
+        }
+
+        if (oldReminders.Count > 0)
+        {
+            await _rentalReminderRepository.SaveNowAsync();
+        }
+
+        await CreateReminderIfNeededAsync(id, input.ContractEndDate);
+
         // 重新查询以获取完整导航属性
         var updatedRecord = await _repository
             .AsQueryable(false)
