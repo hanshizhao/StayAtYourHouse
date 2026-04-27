@@ -42,18 +42,18 @@
         @page-change="handlePageChange"
       >
         <template #name="{ row }">
-          <span class="tenant-name">{{ row.name }}</span>
+          <t-space>
+            <span class="tenant-name">{{ row.name }}</span>
+            <t-tag :theme="row.gender === Gender.Male ? 'primary' : 'warning'" variant="light">
+              {{ row.genderText }}
+            </t-tag>
+          </t-space>
         </template>
         <template #phone="{ row }">
           <span>{{ row.phone }}</span>
         </template>
         <template #idCard="{ row }">
           <span>{{ maskIdCard(row.idCard) }}</span>
-        </template>
-        <template #gender="{ row }">
-          <t-tag :theme="row.gender === Gender.Male ? 'primary' : 'warning'" variant="light">
-            {{ row.genderText }}
-          </t-tag>
         </template>
         <template #currentRoom="{ row }">
           <span v-if="row.currentRoom" class="room-info">
@@ -191,8 +191,8 @@ import type { TenantItem } from '@/api/model/tenantModel';
 import { Gender, RentalStatus } from '@/api/model/tenantModel';
 import { createTenant, deleteTenant, getTenantList, updateTenant } from '@/api/tenant';
 import { prefix } from '@/config/global';
-import { formatDate } from '@/utils/date';
 import { useSettingStore } from '@/store';
+import { formatDate } from '@/utils/date';
 
 import CheckOutDialog from './components/CheckOutDialog.vue';
 import EditRentalDialog from './components/EditRentalDialog.vue';
@@ -226,10 +226,9 @@ const router = useRouter();
 
 // 表格列配置
 const columns: PrimaryTableCol[] = [
-  { colKey: 'name', title: '租客姓名', width: 120 },
+  { colKey: 'name', title: '租客姓名', width: 130 },
   { colKey: 'phone', title: '联系电话', width: 140 },
   { colKey: 'idCard', title: '身份证号', width: 180 },
-  { colKey: 'gender', title: '性别', width: 80 },
   { colKey: 'currentRoom', title: '当前房间', width: 200, ellipsis: true },
   { colKey: 'status', title: '状态', width: 100 },
   { colKey: 'leasePeriod', title: '租期', width: 200 },
