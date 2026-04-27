@@ -69,7 +69,7 @@
         </template>
         <template #leasePeriod="{ row }">
           <span v-if="row.checkInDate && row.contractEndDate">
-            {{ row.checkInDate.split('T')[0] }} ~ {{ row.contractEndDate.split('T')[0] }}
+            {{ formatDate(row.checkInDate) }} ~ {{ formatDate(row.contractEndDate) }}
           </span>
           <span v-else class="text-secondary">-</span>
         </template>
@@ -81,6 +81,14 @@
         </template>
         <template #op="{ row }">
           <t-space>
+            <t-link
+              v-if="row.status === RentalStatus.Active && row.rentalRecordId"
+              theme="primary"
+              data-testid="edit-rental-button"
+              @click="handleEditRental(row)"
+            >
+              修改租约
+            </t-link>
             <t-link
               v-if="row.status === RentalStatus.Active && row.rentalRecordId"
               theme="warning"
@@ -164,6 +172,12 @@
       :tenant="checkingOutTenant"
       @success="handleCheckOutSuccess"
     />
+    <!-- 编辑租约弹窗 -->
+    <edit-rental-dialog
+      v-model:visible="editRentalDialogVisible"
+      :tenant="editingRentalTenant"
+      @success="handleEditRentalSuccess"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -177,9 +191,11 @@ import type { TenantItem } from '@/api/model/tenantModel';
 import { Gender, RentalStatus } from '@/api/model/tenantModel';
 import { createTenant, deleteTenant, getTenantList, updateTenant } from '@/api/tenant';
 import { prefix } from '@/config/global';
+import { formatDate } from '@/utils/date';
 import { useSettingStore } from '@/store';
 
 import CheckOutDialog from './components/CheckOutDialog.vue';
+import EditRentalDialog from './components/EditRentalDialog.vue';
 
 defineOptions({
   name: 'TenantList',
@@ -283,6 +299,10 @@ const deleteConfirmBody = computed(() => {
 // 退租弹窗状态
 const checkOutDialogVisible = ref(false);
 const checkingOutTenant = ref<TenantItem | null>(null);
+
+// 编辑租约弹窗状态
+const editRentalDialogVisible = ref(false);
+const editingRentalTenant = ref<TenantItem | null>(null);
 
 // 固定表头
 const headerAffixedTop = computed<HeaderAffixedTopConfig>(() => ({
@@ -452,6 +472,17 @@ function handleCheckOut(row: TenantItem) {
 
 // 退租成功回调
 function handleCheckOutSuccess() {
+  fetchData();
+}
+
+// 打开编辑租约弹窗
+function handleEditRental(row: TenantItem) {
+  editingRentalTenant.value = row;
+  editRentalDialogVisible.value = true;
+}
+
+// 编辑租约成功回调
+function handleEditRentalSuccess() {
   fetchData();
 }
 
