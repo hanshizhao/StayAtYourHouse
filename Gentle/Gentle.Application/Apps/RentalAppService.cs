@@ -110,6 +110,15 @@ public class RentalAppService : IDynamicApiController
     }
 
     /// <summary>
+    /// 修改租约
+    /// </summary>
+    [HttpPut("{id}")]
+    public async Task<RentalRecordDto> Update(int id, UpdateRentalRecordInput input)
+    {
+        return await _rentalRecordService.UpdateAsync(id, input);
+    }
+
+    /// <summary>
     /// 确认安居码提交
     /// </summary>
     [HttpPost("confirm-anju-code/{id}")]
