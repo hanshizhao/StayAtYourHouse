@@ -262,6 +262,17 @@ public class RentalRecordService : IRentalRecordService
             await _roomRepository.UpdateAsync(room);
         }
 
+        // 清理关联的待处理催收提醒
+        var pendingReminders = await _rentalReminderRepository
+            .AsQueryable()
+            .Where(r => r.RentalRecordId == record.Id && r.Status == RentalReminderStatus.Pending)
+            .ToListAsync();
+        foreach (var reminder in pendingReminders)
+        {
+            reminder.Status = RentalReminderStatus.Completed;
+            await _rentalReminderRepository.UpdateAsync(reminder);
+        }
+
         await _repository.SaveNowAsync();
 
         // 重新查询以获取完整导航属性
