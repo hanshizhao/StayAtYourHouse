@@ -107,7 +107,7 @@
   </t-dialog>
 </template>
 <script setup lang="ts">
-import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
+import type { DateMultipleValue, DateValue, FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import dayjs from 'dayjs';
 import { computed, ref, watch } from 'vue';
@@ -176,8 +176,8 @@ function onCheckInDateOrMonthsChange() {
 }
 
 // 修改合同结束日期 → 自动计算租期月数
-function onContractEndDateChange(val: string) {
-  if (!val || !formData.value.checkInDate) return;
+function onContractEndDateChange(val: DateValue | DateMultipleValue) {
+  if (!val || Array.isArray(val) || !formData.value.checkInDate) return;
   const checkIn = dayjs(formData.value.checkInDate);
   const end = dayjs(val);
   // 模拟后端逻辑：ContractEndDate = CheckInDate.AddMonths(n).AddDays(-1)
