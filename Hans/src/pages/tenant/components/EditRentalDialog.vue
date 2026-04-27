@@ -176,7 +176,7 @@ function onCheckInDateOrMonthsChange() {
 }
 
 // 修改合同结束日期 → 自动计算租期月数
-function onContractEndDateChange(val: string | number | Date) {
+function onContractEndDateChange(val: string) {
   if (!val || !formData.value.checkInDate) return;
   const checkIn = dayjs(formData.value.checkInDate);
   const end = dayjs(val);
