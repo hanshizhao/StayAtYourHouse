@@ -33,7 +33,7 @@
           </div>
           <div class="info-item">
             <span class="info-label">报修日期</span>
-            <span class="info-value">{{ record.reportDate }}</span>
+            <span class="info-value">{{ formatDate(record.reportDate) }}</span>
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
           </div>
           <div v-if="record.completedDate" class="info-item">
             <span class="info-label">完成日期</span>
-            <span class="info-value">{{ record.completedDate }}</span>
+            <span class="info-value">{{ formatDate(record.completedDate) }}</span>
           </div>
         </div>
       </div>
@@ -101,6 +101,7 @@ import { useRouter } from 'vue-router';
 import { completeMaintenance } from '@/api/maintenance';
 import type { MaintenanceDetail } from '@/api/model/maintenanceModel';
 import { MaintenancePriority, MaintenanceStatus } from '@/api/model/maintenanceModel';
+import { formatDate } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
 
 defineOptions({

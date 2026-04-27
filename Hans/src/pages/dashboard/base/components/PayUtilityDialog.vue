@@ -15,7 +15,7 @@
       </div>
       <div class="info-row">
         <span class="info-label">账单周期</span>
-        <span class="info-value">{{ bill.periodStart }} ~ {{ bill.periodEnd }}</span>
+        <span class="info-value">{{ formatDate(bill.periodStart) }} ~ {{ formatDate(bill.periodEnd) }}</span>
       </div>
       <div class="info-row">
         <span class="info-label">水费</span>
@@ -64,6 +64,7 @@ import { computed, ref, watch } from 'vue';
 
 import { payUtilityBill } from '@/api/meter';
 import type { UtilityBillItem } from '@/api/model/meterModel';
+import { formatDate } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
 
 defineOptions({

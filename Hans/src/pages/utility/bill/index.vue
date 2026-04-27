@@ -54,7 +54,7 @@
           <span v-else class="text-secondary">-</span>
         </template>
         <template #periodText="{ row }">
-          <span>{{ row.periodStart }} ~ {{ row.periodEnd }}</span>
+          <span>{{ formatDate(row.periodStart) }} ~ {{ formatDate(row.periodEnd) }}</span>
         </template>
         <template #waterUsage="{ row }">
           <span>{{ row.waterUsage.toFixed(2) }} 吨</span>
@@ -124,7 +124,7 @@
           <span>{{ payingBill?.roomInfo }}</span>
         </t-form-item>
         <t-form-item label="账单周期">
-          <span>{{ payingBill?.periodStart }} ~ {{ payingBill?.periodEnd }}</span>
+          <span>{{ formatDate(payingBill?.periodStart) }} ~ {{ formatDate(payingBill?.periodEnd) }}</span>
         </t-form-item>
         <t-form-item label="水费">
           <span>¥{{ formatMoney(payingBill?.waterFee || 0) }}</span>
@@ -169,7 +169,7 @@
         <t-descriptions-item label="房间">{{ viewingBill.roomInfo }}</t-descriptions-item>
         <t-descriptions-item label="租客">{{ viewingBill.tenantName || '-' }}</t-descriptions-item>
         <t-descriptions-item label="账单周期">
-          {{ viewingBill.periodStart }} ~ {{ viewingBill.periodEnd }}
+          {{ formatDate(viewingBill.periodStart) }} ~ {{ formatDate(viewingBill.periodEnd) }}
         </t-descriptions-item>
         <t-descriptions-item label="用水量">{{ viewingBill.waterUsage.toFixed(2) }} 吨</t-descriptions-item>
         <t-descriptions-item label="用电量">{{ viewingBill.electricUsage.toFixed(2) }} 度</t-descriptions-item>

@@ -25,7 +25,7 @@
         </div>
         <div v-if="reminder.rentalReminder?.contractEndDate" class="info-row">
           <span class="info-label">合同到期</span>
-          <span class="info-value warning">{{ reminder.rentalReminder.contractEndDate }}</span>
+          <span class="info-value warning">{{ formatDate(reminder.rentalReminder.contractEndDate) }}</span>
         </div>
       </div>
 
@@ -108,6 +108,7 @@ import { computed, ref, watch } from 'vue';
 
 import type { RenewRentalInput, TodoItem } from '@/api/model/todoModel';
 import { renewRental } from '@/api/todo';
+import { formatDate } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
 
 defineOptions({

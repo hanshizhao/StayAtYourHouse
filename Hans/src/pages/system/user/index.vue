@@ -40,10 +40,10 @@
           </t-tag>
         </template>
         <template #lastLoginTime="{ row }">
-          {{ row.lastLoginTime ? formatDate(row.lastLoginTime) : '-' }}
+          {{ row.lastLoginTime ? formatDateTime(row.lastLoginTime) : '-' }}
         </template>
         <template #createdTime="{ row }">
-          {{ formatDate(row.createdTime) }}
+          {{ formatDateTime(row.createdTime) }}
         </template>
         <template #op="{ row }">
           <t-space>
@@ -110,6 +110,7 @@ import type { CreateUserParams, ResetPasswordParams, UpdateUserParams, UserItem 
 import { createUser, getUserList, resetPassword as resetPasswordApi, toggleUser, updateUser } from '@/api/user';
 import { prefix } from '@/config/global';
 import { useSettingStore } from '@/store';
+import { formatDateTime } from '@/utils/date';
 
 defineOptions({
   name: 'SystemUser',
@@ -190,19 +191,6 @@ const headerAffixedTop = computed(
       container: `.${prefix}-layout`,
     }) as any,
 );
-
-// 格式化日期
-function formatDate(dateStr: string) {
-  if (!dateStr) return '-';
-  const date = new Date(dateStr);
-  return date.toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
 
 // 获取用户列表
 async function fetchData() {

@@ -3,7 +3,7 @@
     <div class="debt-card__header">
       <div class="debt-card__tenant">
         <span class="debt-card__name">{{ data.tenantName }}</span>
-        <span v-if="data.tenantPhone" class="debt-card__phone">{{ data.tenantPhone }}</span>
+        <span class="debt-card__phone">{{ data.tenantPhone || '&nbsp;' }}</span>
       </div>
       <t-tag :theme="statusTheme" variant="light" size="small">
         {{ data.statusText }}
@@ -20,6 +20,13 @@
         </span>
       </div>
       <t-progress :percentage="paidPercentage" :status="progressStatus" size="small" :label="false" />
+    </div>
+
+    <div v-if="data.description" class="debt-card__description">
+      <span class="debt-card__description-label">欠款说明：</span>
+      <t-tooltip :content="data.description" placement="top">
+        <span class="debt-card__description-text">{{ data.description }}</span>
+      </t-tooltip>
     </div>
 
     <div class="debt-card__footer">
@@ -154,6 +161,26 @@ function formatAmount(amount: number): string {
 
   &__total {
     color: var(--td-text-color-primary);
+  }
+
+  &__description {
+    font-size: 12px;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  &__description-label {
+    flex-shrink: 0;
+    color: var(--td-text-color-placeholder);
+  }
+
+  &__description-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--td-text-color-secondary);
   }
 
   &__footer {

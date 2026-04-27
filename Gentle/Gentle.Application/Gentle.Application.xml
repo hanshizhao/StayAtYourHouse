@@ -297,6 +297,11 @@
             退租办理
             </summary>
         </member>
+        <member name="M:Gentle.Application.Apps.RentalAppService.Update(System.Int32,Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput)">
+            <summary>
+            修改租约
+            </summary>
+        </member>
         <member name="M:Gentle.Application.Apps.RentalAppService.ConfirmAnJuCode(System.Int32)">
             <summary>
             确认安居码提交
@@ -517,6 +522,15 @@
             <summary>
             提前提醒天数
             </summary>
+        </member>
+        <member name="F:Gentle.Application.BackgroundServices.RentalReminderBackgroundService.LookbackDays">
+            <summary>
+            回溯扫描天数
+            </summary>
+            <remarks>
+            当服务器宕机或补录入住导致错过提醒窗口时，回溯扫描已过期的合同，
+            确保不会遗漏催收提醒。
+            </remarks>
         </member>
         <member name="F:Gentle.Application.BackgroundServices.RentalReminderBackgroundService.DailyExecutionHour">
             <summary>
@@ -2014,6 +2028,41 @@
         <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordListResult.PageSize">
             <summary>
             每页数量
+            </summary>
+        </member>
+        <member name="T:Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput">
+            <summary>
+            修改租约请求
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput.CheckInDate">
+            <summary>
+            入住日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput.LeaseMonths">
+            <summary>
+            租期月数
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput.ContractEndDate">
+            <summary>
+            合同结束日期
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput.MonthlyRent">
+            <summary>
+            月租金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput.Deposit">
+            <summary>
+            押金
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput.Remark">
+            <summary>
+            备注
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.Rental.DeferralRecordDto">
@@ -3587,6 +3636,11 @@
             确认安居码已提交
             </summary>
         </member>
+        <member name="M:Gentle.Application.Services.IRentalRecordService.UpdateAsync(System.Int32,Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput)">
+            <summary>
+            修改租约
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Services.IRentalReminderService">
             <summary>
             催收提醒服务接口
@@ -3873,10 +3927,22 @@
         <member name="M:Gentle.Application.Services.RentalRecordService.ConfirmAnJuCodeAsync(System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.UpdateAsync(System.Int32,Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput)">
+            <inheritdoc />
+        </member>
         <member name="M:Gentle.Application.Services.RentalRecordService.CalculateContractEndDate(System.DateTime,System.Int32)">
             <summary>
             计算合同结束日期
             </summary>
+        </member>
+        <member name="M:Gentle.Application.Services.RentalRecordService.CreateReminderIfNeededAsync(System.Int32,System.DateTime)">
+            <summary>
+            如果合同到期日在提醒窗口内或已过期，立即创建催收提醒
+            </summary>
+            <remarks>
+            处理补录入住场景：当入住日期为过去日期时，合同到期日可能已经过了或即将到来，
+            后台定时服务无法捕获这种情况，因此需要在入住时立即创建提醒。
+            </remarks>
         </member>
         <member name="M:Gentle.Application.Services.RentalRecordService.GetRoomStatusText(Gentle.Core.Enums.RoomStatus)">
             <summary>

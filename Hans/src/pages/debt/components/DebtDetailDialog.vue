@@ -42,7 +42,7 @@
             </div>
             <div class="detail-info-item">
               <div class="detail-info-label">创建时间</div>
-              <div class="detail-info-value">{{ detail.createdTime }}</div>
+              <div class="detail-info-value">{{ formatDateTime(detail.createdTime) }}</div>
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@
             :empty="tableEmpty"
           >
             <template #paymentDate="{ row }">
-              {{ row.paymentDate?.slice(0, 10) ?? '-' }}
+              {{ formatDate(row.paymentDate) }}
             </template>
             <template #amount="{ row }">
               <span class="detail-amount-cell">¥{{ formatAmount(row.amount) }}</span>
@@ -111,6 +111,7 @@ import { computed, ref, watch } from 'vue';
 import { deleteRepayment, getDebtDetail } from '@/api/debt';
 import type { DebtDetail, PaymentChannel } from '@/api/model/debtModel';
 import { DebtStatus, PAYMENT_CHANNEL_MAP } from '@/api/model/debtModel';
+import { formatDate, formatDateTime } from '@/utils/date';
 
 interface Props {
   visible: boolean;

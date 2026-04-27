@@ -23,6 +23,15 @@ public class RentalReminderBackgroundService : BackgroundService
     private const int ReminderDaysBeforeExpiry = 3;
 
     /// <summary>
+    /// 回溯扫描天数
+    /// </summary>
+    /// <remarks>
+    /// 当服务器宕机或补录入住导致错过提醒窗口时，回溯扫描已过期的合同，
+    /// 确保不会遗漏催收提醒。
+    /// </remarks>
+    private const int LookbackDays = 30;
+
+    /// <summary>
     /// 每日执行时间（小时）
     /// </summary>
     private const int DailyExecutionHour = 0; // 凌晨 0 点
@@ -86,13 +95,14 @@ public class RentalReminderBackgroundService : BackgroundService
 
         var today = DateTime.Today;
         var reminderDate = today.AddDays(ReminderDaysBeforeExpiry);
+        var lookbackDate = today.AddDays(-LookbackDays);
 
-        // 查找即将到期的租赁记录（合同结束日期在今天到提醒日期之间）
+        // 查找即将到期或已过期（回溯期内）的租赁记录
         // 且状态为在租中
         var upcomingExpirations = await rentalRecordRepository
             .AsQueryable()
             .Where(r => r.Status == RentalStatus.Active
-                && r.ContractEndDate >= today
+                && r.ContractEndDate >= lookbackDate
                 && r.ContractEndDate <= reminderDate)
             .ToListAsync(stoppingToken);
 

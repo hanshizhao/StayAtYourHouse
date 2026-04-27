@@ -623,10 +623,10 @@
               {{ leaseData.landlordPhone || '-' }}
             </t-descriptions-item>
             <t-descriptions-item label="开始日期">
-              {{ leaseData.startDate ? leaseData.startDate.split('T')[0] : '-' }}
+              {{ formatDate(leaseData.startDate) }}
             </t-descriptions-item>
             <t-descriptions-item label="结束日期">
-              {{ leaseData.endDate ? leaseData.endDate.split('T')[0] : '-' }}
+              {{ formatDate(leaseData.endDate) }}
             </t-descriptions-item>
             <t-descriptions-item label="月租金">
               <span class="lease-price">¥{{ leaseData.monthlyRent.toFixed(2) }}</span>
@@ -706,6 +706,7 @@ import { PaymentMethod, PaymentMethodText } from '@/api/model/landlordLeaseModel
 import type { GetRoomListParams, RoomItem } from '@/api/model/roomModel';
 import { LeaseStatus, RoomStatus, RoomStatusText } from '@/api/model/roomModel';
 import { createRoom, deleteRoom, getRoomList, updateRoom } from '@/api/room';
+import { formatDate } from '@/utils/date';
 
 defineOptions({
   name: 'HousingRoom',
@@ -898,10 +899,6 @@ function formatRent(rent?: number | null): string {
   return rent.toLocaleString('zh-CN');
 }
 
-function formatDate(date?: string | null): string {
-  if (!date) return '-';
-  return date.split('T')[0];
-}
 
 function formatProfit(profit: number): string {
   const sign = profit >= 0 ? '+' : '-';

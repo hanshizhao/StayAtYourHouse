@@ -44,11 +44,11 @@
         </div>
         <div class="info-row">
           <span class="label">入住日期：</span>
-          <span class="value">{{ rentalRecord?.checkInDate ?? '-' }}</span>
+          <span class="value">{{ formatDate(rentalRecord?.checkInDate) }}</span>
         </div>
         <div class="info-row">
           <span class="label">合同到期：</span>
-          <span class="value">{{ rentalRecord?.contractEndDate ?? '-' }}</span>
+          <span class="value">{{ formatDate(rentalRecord?.contractEndDate) }}</span>
         </div>
         <div class="info-row">
           <span class="label">剩余天数：</span>
@@ -131,7 +131,7 @@ import type { RentalRecordDto } from '@/api/model/rentalModel';
 import { DepositStatus } from '@/api/model/rentalModel';
 import type { TenantItem } from '@/api/model/tenantModel';
 import { checkOut, getRentalById } from '@/api/rental';
-import { getLocalDateString } from '@/utils/date';
+import { formatDate, getLocalDateString } from '@/utils/date';
 
 const props = defineProps<Props>();
 

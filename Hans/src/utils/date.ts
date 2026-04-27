@@ -14,23 +14,23 @@ export const LAST_30_DAYS = [
 /**
  * 格式化日期时间为本地格式
  * @param dateStr 日期字符串
- * @returns 格式化后的日期时间字符串，如 "2024/03/25 14:30"
+ * @returns 格式化后的日期时间字符串，如 "2024-03-25 14:30"
  */
 export function formatDateTime(dateStr?: string | null): string {
   if (!dateStr) return '-';
-  return dayjs(dateStr).format('YYYY/MM/DD HH:mm');
+  return dayjs(dateStr).format('YYYY-MM-DD HH:mm');
 }
 
 /**
  * 格式化日期为本地格式
  * @param dateStr 日期字符串
- * @returns 格式化后的日期字符串，如 "2024/03/25"
+ * @returns 格式化后的日期字符串，如 "2024-03-25"
  */
 export function formatDate(dateStr?: string | Date | null): string {
   if (!dateStr) return '-';
   try {
     const date = typeof dateStr === 'string' ? dayjs(dateStr) : dayjs(dateStr);
-    return date.format('YYYY/MM/DD');
+    return date.format('YYYY-MM-DD');
   } catch {
     return '-';
   }
