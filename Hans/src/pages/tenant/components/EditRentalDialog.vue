@@ -109,6 +109,7 @@
 <script setup lang="ts">
 import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
+import dayjs from 'dayjs';
 import { computed, ref, watch } from 'vue';
 
 import type { RentalRecordDto } from '@/api/model/rentalModel';
@@ -177,12 +178,20 @@ function onCheckInDateOrMonthsChange() {
 // 修改合同结束日期 → 自动计算租期月数
 function onContractEndDateChange(val: string) {
   if (!val || !formData.value.checkInDate) return;
-  const checkIn = new Date(formData.value.checkInDate);
-  const end = new Date(val);
-  const diffMonths = (end.getFullYear() - checkIn.getFullYear()) * 12 + (end.getMonth() - checkIn.getMonth());
-  const adjustedMonths = diffMonths + 1; // 因为 ContractEndDate = CheckInDate.AddMonths(n).AddDays(-1)
-  if (adjustedMonths >= 1 && adjustedMonths <= 36) {
-    formData.value.leaseMonths = adjustedMonths;
+  const checkIn = dayjs(formData.value.checkInDate);
+  const end = dayjs(val);
+  // 模拟后端逻辑：ContractEndDate = CheckInDate.AddMonths(n).AddDays(-1)
+  // 反推：找到 addMonths(n).subtract(1,'day') == end 的 n
+  for (let n = 1; n <= 36; n++) {
+    if (checkIn.add(n, 'month').subtract(1, 'day').isSame(end, 'day')) {
+      formData.value.leaseMonths = n;
+      return;
+    }
+  }
+  // 精确匹配不到时（用户手动选了非标准日期），计算近似月数
+  const approxMonths = end.diff(checkIn, 'month') + 1;
+  if (approxMonths >= 1 && approxMonths <= 36) {
+    formData.value.leaseMonths = approxMonths;
   }
 }
 
