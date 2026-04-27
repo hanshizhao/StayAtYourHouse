@@ -61,6 +61,24 @@ export interface CheckOutInput {
 }
 
 /**
+ * 修改租约请求参数
+ */
+export interface UpdateRentalInput {
+  /** 入住日期 */
+  checkInDate: string;
+  /** 租期月数 */
+  leaseMonths: number;
+  /** 合同结束日期 */
+  contractEndDate: string;
+  /** 月租金 */
+  monthlyRent: number;
+  /** 押金 */
+  deposit: number;
+  /** 备注 */
+  remark?: string;
+}
+
+/**
  * 租住记录DTO
  */
 export interface RentalRecordDto {

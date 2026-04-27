@@ -4,6 +4,7 @@ import type {
   RentalPageParams,
   RentalPageResult,
   RentalRecordDto,
+  UpdateRentalInput,
 } from '@/api/model/rentalModel';
 import { request } from '@/utils/request';
 
@@ -15,6 +16,7 @@ const Api = {
   CheckOut: '/rental/check-out',
   ConfirmAnJuCode: '/rental/confirm-anju-code',
   Delete: '/rental/remove',
+  Update: '/rental',
 };
 
 /**
@@ -81,5 +83,15 @@ export function deleteRental(id: number) {
 export function confirmAnjuCode(id: number) {
   return request.post<RentalRecordDto>({
     url: `${Api.ConfirmAnJuCode}/${id}`,
+  });
+}
+
+/**
+ * 修改租约
+ */
+export function updateRental(id: number, data: UpdateRentalInput) {
+  return request.put<RentalRecordDto>({
+    url: `${Api.Update}/${id}`,
+    data,
   });
 }
