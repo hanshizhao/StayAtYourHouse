@@ -234,7 +234,7 @@ const columns: PrimaryTableCol[] = [
   { colKey: 'status', title: '状态', width: 100 },
   { colKey: 'leasePeriod', title: '租期', width: 200 },
   { colKey: 'remark', title: '备注', width: 200, ellipsis: true },
-  { colKey: 'op', title: '操作', width: 120, fixed: 'right' },
+  { colKey: 'op', title: '操作', width: 200, fixed: 'right' },
 ];
 
 // 状态
