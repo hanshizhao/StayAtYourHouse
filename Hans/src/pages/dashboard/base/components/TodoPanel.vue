@@ -7,7 +7,7 @@
         <span class="weekday-text">{{ weekdayText }}</span>
       </div>
       <div class="todo-summary">
-        <t-tag theme="primary" variant="light"> 待办 {{ todoCount }} 项 </t-tag>
+        <t-tag theme="primary" variant="light"> 待办 {{ totalCount }} 项 </t-tag>
       </div>
     </div>
 
@@ -28,42 +28,39 @@
       <t-loading text="加载中..." />
     </div>
 
-    <!-- 待办列表 -->
-    <div v-else-if="todoItems.length > 0" class="todo-list">
+    <!-- 待办网格 -->
+    <div v-else-if="todoItems.length > 0" class="todo-grid">
       <div
         v-for="item in todoItems"
         :key="`${item.type}-${item.id}`"
-        class="todo-item"
-        :class="`todo-item--${getTodoTypeClass(item.type)}`"
+        class="todo-card"
+        :class="`todo-card--${getTodoTypeClass(item.type)}`"
         @click="handleTodoClick(item)"
       >
-        <div class="todo-icon" :class="`todo-icon--${getTodoTypeClass(item.type)}`">
-          <t-icon :name="getTodoIcon(item.type)" size="20px" />
-        </div>
-        <div class="todo-content">
-          <div class="todo-title">{{ item.roomInfo }}</div>
-          <div class="todo-desc">
-            <template v-if="item.type === TodoType.Utility">
-              <span class="todo-type-tag todo-type-tag--utility">水电费</span>
-              待收款 ¥{{ formatMoney(item.amount ?? 0) }}
-            </template>
-            <template v-else-if="item.type === TodoType.Rental">
-              <span class="todo-type-tag todo-type-tag--rental">催收房租</span>
-              {{ item.tenantName }} · ¥{{ formatMoney(item.monthlyRent ?? 0) }}/月
-              <span v-if="item.deferralCount > 0" class="deferral-badge"> 宽限{{ item.deferralCount }}次 </span>
-            </template>
-            <template v-else>
-              <span class="todo-type-tag todo-type-tag--maintenance">维修</span>
-              <t-tag :theme="getPriorityTheme(item.priority)" variant="light" size="small">
-                {{ item.priorityText }}
-              </t-tag>
-              {{ item.description }}
-            </template>
+        <div class="todo-card__header">
+          <div class="todo-card__icon" :class="`todo-card__icon--${getTodoTypeClass(item.type)}`">
+            <t-icon :name="getTodoIcon(item.type)" size="18px" />
           </div>
+          <span class="todo-card__type" :class="`todo-card__type--${getTodoTypeClass(item.type)}`">
+            {{ getTypeLabel(item.type) }}
+          </span>
         </div>
-        <div class="todo-arrow">
-          <t-icon name="chevron-right" size="16px" />
+        <div class="todo-card__room">{{ item.roomInfo }}</div>
+        <div class="todo-card__detail">
+          <template v-if="item.type === TodoType.Utility">
+            ¥{{ formatMoney(item.amount ?? 0) }}
+          </template>
+          <template v-else-if="item.type === TodoType.Rental">
+            {{ item.tenantName }} · ¥{{ formatMoney(item.monthlyRent ?? 0) }}/月
+          </template>
+          <template v-else>
+            {{ truncateText(item.description, 12) }}
+          </template>
         </div>
+        <div v-if="item.type === TodoType.Rental && item.deferralCount > 0" class="todo-card__badge">
+          宽限{{ item.deferralCount }}次
+        </div>
+        <t-icon name="chevron-right" class="todo-card__arrow" size="16px" />
       </div>
     </div>
 
@@ -71,6 +68,20 @@
     <div v-else class="todo-empty">
       <t-icon name="check-circle" size="48px" style="color: var(--td-success-color)" />
       <p>暂无待办事项</p>
+    </div>
+
+    <!-- 分页器 -->
+    <div v-if="totalCount > 0" class="todo-pagination">
+      <t-pagination
+        v-model="currentPage"
+        :total="totalCount"
+        :page-size="pageSize"
+        :page-size-options="[12, 24, 36]"
+        size="small"
+        show-jumper
+        @change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
+      />
     </div>
 
     <!-- 水电费收款弹窗 -->
@@ -121,14 +132,17 @@ type FilterTypeValue = TodoType | undefined;
 
 // ==================== 状态 ====================
 
-// 加载状态
 const loading = ref(false);
 const todoItems = ref<TodoItem[]>([]);
+const totalCount = ref(0);
+
+// 分页状态
+const currentPage = ref(1);
+const pageSize = ref(12);
 
 // 筛选状态
 const filterType = ref<FilterTypeValue>(undefined);
 
-// 类型筛选选项
 const typeOptions = [
   { label: '全部类型', value: undefined },
   { label: '水电费', value: TodoType.Utility },
@@ -148,32 +162,26 @@ const selectedMaintenanceRecord = ref<MaintenanceDetail | null>(null);
 
 // ==================== 计算属性 ====================
 
-// 当前日期（每次访问获取最新）
 const currentDate = computed(() => new Date());
 
-// 今日日期
 const todayDate = computed(() => {
   const date = currentDate.value;
   return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 });
 
-// 星期
 const weekdayText = computed(() => {
   const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
   return weekdays[currentDate.value.getDay()];
 });
 
-// 待办数量
-const todoCount = computed(() => todoItems.value.length);
-
 // ==================== 数据获取 ====================
 
-// 获取待办数据
 async function fetchTodos() {
   loading.value = true;
   try {
-    const res: TodoListResult | undefined = await getTodoList(filterType.value, 1, 10);
+    const res: TodoListResult | undefined = await getTodoList(filterType.value, currentPage.value, pageSize.value);
     todoItems.value = res?.items || [];
+    totalCount.value = res?.total ?? 0;
   } catch (e: unknown) {
     const error = e as { message?: string };
     MessagePlugin.error(error.message || '获取待办数据失败');
@@ -182,45 +190,49 @@ async function fetchTodos() {
   }
 }
 
-// 筛选变化
 function handleFilterChange() {
+  currentPage.value = 1;
+  fetchTodos();
+}
+
+function handlePageChange({ current }: { current: number }) {
+  currentPage.value = current;
+  fetchTodos();
+}
+
+function handlePageSizeChange(newPageSize: number) {
+  currentPage.value = 1;
+  pageSize.value = newPageSize;
   fetchTodos();
 }
 
 // ==================== 事件处理 ====================
 
-// 点击待办项
 function handleTodoClick(item: TodoItem) {
   if (item.type === TodoType.Utility) {
-    // 水电费待办 - 打开收款弹窗
     selectedUtilityBill.value = item.utilityBill ?? null;
     payUtilityDialogVisible.value = true;
   } else if (item.type === TodoType.Rental) {
-    // 催收房租待办 - 打开催收弹窗
     selectedRentalReminder.value = item;
     rentalReminderDialogVisible.value = true;
   } else {
-    // 维修待办 - 打开维修详情弹窗
     selectedMaintenanceRecord.value = item.maintenanceDetail ?? null;
     maintenanceDetailDialogVisible.value = true;
   }
 }
 
-// 水电费收款成功
 function handlePaySuccess() {
   payUtilityDialogVisible.value = false;
   selectedUtilityBill.value = null;
   fetchTodos();
 }
 
-// 催收房租操作成功（宽限/续租）
 function handleRentalSuccess() {
   rentalReminderDialogVisible.value = false;
   selectedRentalReminder.value = null;
   fetchTodos();
 }
 
-// 维修操作成功（标记完成）
 function handleMaintenanceSuccess() {
   maintenanceDetailDialogVisible.value = false;
   selectedMaintenanceRecord.value = null;
@@ -229,30 +241,31 @@ function handleMaintenanceSuccess() {
 
 // ==================== 辅助函数 ====================
 
-// 获取待办类型图标
 function getTodoIcon(type: TodoType): string {
   if (type === TodoType.Utility) return 'money-circle';
   if (type === TodoType.Rental) return 'home';
   return 'tool';
 }
 
-// 获取待办类型样式类名
 function getTodoTypeClass(type: TodoType): string {
   if (type === TodoType.Utility) return 'utility';
   if (type === TodoType.Rental) return 'rental';
   return 'maintenance';
 }
 
-// 获取优先级标签主题
-function getPriorityTheme(priority?: number): 'danger' | 'warning' | 'default' {
-  if (priority === MaintenancePriority.Urgent) return 'danger';
-  if (priority === MaintenancePriority.Normal) return 'warning';
-  return 'default';
+function getTypeLabel(type: TodoType): string {
+  if (type === TodoType.Utility) return '水电费';
+  if (type === TodoType.Rental) return '催收房租';
+  return '维修';
+}
+
+function truncateText(text?: string, maxLen = 12): string {
+  if (!text) return '';
+  return text.length > maxLen ? `${text.slice(0, maxLen)}...` : text;
 }
 
 // ==================== 生命周期 ====================
 
-// 暴露刷新方法供父组件调用
 defineExpose({
   refresh: fetchTodos,
 });
@@ -305,85 +318,104 @@ onMounted(() => {
 .todo-loading {
   display: flex;
   justify-content: center;
-  padding: 40px 0;
+  align-items: center;
+  min-height: 420px;
 }
 
-.todo-list {
+// ===== 网格布局 =====
+.todo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  min-height: 420px;
+}
+
+// ===== 小卡片 =====
+.todo-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.todo-item {
-  display: flex;
-  align-items: center;
+  gap: 4px;
   padding: 12px;
   background: var(--td-bg-color-container-hover);
   border-radius: var(--td-radius-default);
   cursor: pointer;
   transition: all 0.2s ease;
-  border-left: 3px solid transparent;
+  border-top: 3px solid transparent;
 
   &:hover {
     background: var(--td-bg-color-specialcomponent);
-    transform: translateX(2px);
-    box-shadow: var(--todo-hover-shadow);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
   }
 
-  // 水电费样式
   &--utility {
-    --todo-hover-shadow: 0 2px 8px rgba(0, 82, 217, 0.1);
-    border-left-color: var(--td-brand-color);
+    border-top-color: var(--td-brand-color);
   }
 
-  // 催收房租样式
   &--rental {
-    --todo-hover-shadow: 0 2px 8px rgba(237, 125, 43, 0.1);
-    border-left-color: var(--td-warning-color);
+    border-top-color: var(--td-warning-color);
   }
 
-  // 维修样式
   &--maintenance {
-    --todo-hover-shadow: 0 2px 8px rgba(0, 180, 42, 0.1);
-    border-left-color: var(--td-success-color);
+    border-top-color: var(--td-success-color);
   }
 }
 
-.todo-icon {
+.todo-card__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.todo-card__icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  margin-right: 12px;
   flex-shrink: 0;
 
-  // 水电费图标
   &--utility {
     background: rgba(0, 82, 217, 0.1);
     color: var(--td-brand-color);
   }
 
-  // 催收房租图标
   &--rental {
     background: rgba(237, 125, 43, 0.1);
     color: var(--td-warning-color);
   }
 
-  // 维修图标
   &--maintenance {
     background: rgba(0, 180, 42, 0.1);
     color: var(--td-success-color);
   }
 }
 
-.todo-content {
-  flex: 1;
-  min-width: 0;
+.todo-card__type {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+
+  &--utility {
+    background: rgba(0, 82, 217, 0.1);
+    color: var(--td-brand-color);
+  }
+
+  &--rental {
+    background: rgba(237, 125, 43, 0.1);
+    color: var(--td-warning-color);
+  }
+
+  &--maintenance {
+    background: rgba(0, 180, 42, 0.1);
+    color: var(--td-success-color);
+  }
 }
 
-.todo-title {
+.todo-card__room {
   font-size: 14px;
   font-weight: 500;
   color: var(--td-text-color-primary);
@@ -392,43 +424,17 @@ onMounted(() => {
   white-space: nowrap;
 }
 
-.todo-desc {
+.todo-card__detail {
   font-size: 12px;
   color: var(--td-text-color-secondary);
-  margin-top: 4px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.todo-type-tag {
+.todo-card__badge {
   display: inline-flex;
-  align-items: center;
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
-
-  &--utility {
-    background: rgba(0, 82, 217, 0.1);
-    color: var(--td-brand-color);
-  }
-
-  &--rental {
-    background: rgba(237, 125, 43, 0.1);
-    color: var(--td-warning-color);
-  }
-
-  &--maintenance {
-    background: rgba(0, 180, 42, 0.1);
-    color: var(--td-success-color);
-  }
-}
-
-.deferral-badge {
-  display: inline-flex;
-  align-items: center;
+  align-self: flex-start;
   padding: 1px 6px;
   background: rgba(227, 77, 77, 0.1);
   color: var(--td-error-color);
@@ -436,22 +442,50 @@ onMounted(() => {
   font-size: 11px;
 }
 
-.todo-arrow {
+.todo-card__arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--td-text-color-placeholder);
-  flex-shrink: 0;
 }
 
+// ===== 分页器 =====
+.todo-pagination {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+
+  :deep(.t-pagination) {
+    justify-content: center;
+  }
+}
+
+// ===== 空状态 =====
 .todo-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 0;
+  min-height: 420px;
   color: var(--td-text-color-placeholder);
 
   p {
     margin-top: 12px;
     font-size: 14px;
+  }
+}
+
+// ===== 响应式 =====
+@media (max-width: 900px) {
+  .todo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .todo-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

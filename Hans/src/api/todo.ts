@@ -36,7 +36,7 @@ function todoTypeToString(type?: TodoType): string | undefined {
  * @param page 页码
  * @param pageSize 每页数量
  */
-export function getTodoList(type?: TodoType, page = 1, pageSize = 10) {
+export function getTodoList(type?: TodoType, page = 1, pageSize = 12) {
   return request.get<TodoListResult>({
     url: Api.List,
     params: { type: todoTypeToString(type), page, pageSize },
