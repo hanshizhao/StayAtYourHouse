@@ -1,749 +1,159 @@
 {
-  "module": "debt-management",
+  "module": "todo-checkout",
   "features": [
     {
-      "id": "FEAT-168",
-      "category": "后端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端枚举：DebtStatus 和 PaymentChannel",
-      "acceptance_criteria": [
-        "创建 DebtStatus 枚举（Ongoing=0, Settled=1）",
-        "创建 PaymentChannel 枚举（Cash=0, WeChat=1, Alipay=2, BankTransfer=3）",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DebtStatus 枚举",
-          "file": "Gentle/Gentle.Core/Enums/DebtStatus.cs",
-          "code_hint": "定义 Ongoing=0, Settled=1"
-        },
-        {
-          "step": 2,
-          "action": "创建 PaymentChannel 枚举",
-          "file": "Gentle/Gentle.Core/Enums/PaymentChannel.cs",
-          "code_hint": "定义 Cash=0, WeChat=1, Alipay=2, BankTransfer=3"
-        },
-        {
-          "step": 3,
-          "action": "验证后端编译",
-          "verify_command": "cd Gentle && dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-168-debt-enums.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T12:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T12:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T00:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "minor_issues": [
-          "DebtStatus Settled 注释措辞为「已结清」vs 计划中的「已还清」，语义相同无需修改"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-169",
-      "category": "后端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端实体：Debt 和 DebtRepayment",
-      "acceptance_criteria": [
-        "创建 Debt 实体（继承 Entity<int>，实现 IEntitySeedData）",
-        "创建 DebtRepayment 实体（继承 Entity<int>，实现 IEntitySeedData）",
-        "Debt 关联 Tenant 和 Repayments 集合",
-        "DebtRepayment 关联 Debt",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 Debt 实体",
-          "file": "Gentle/Gentle.Core/Entities/Debt.cs",
-          "code_hint": "继承 Entity<int>, IEntitySeedData<Debt>；字段：TenantId, TotalAmount(decimal 10,2), Status, Description, Remark；导航属性：Tenant, Repayments"
-        },
-        {
-          "step": 2,
-          "action": "创建 DebtRepayment 实体",
-          "file": "Gentle/Gentle.Core/Entities/DebtRepayment.cs",
-          "code_hint": "继承 Entity<int>, IEntitySeedData<DebtRepayment>；字段：DebtId, Amount(decimal 10,2), PaymentDate, PaymentChannel, Remark；导航属性：Debt"
-        },
-        {
-          "step": 3,
-          "action": "验证后端编译",
-          "verify_command": "cd Gentle && dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-169-debt-entities.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T13:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T13:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T12:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "DebtRepayment.PaymentChannel 默认值 Cash 与计划模板略有差异，属合理业务选择",
-          "DebtStatus Settled 注释「已结清」vs 计划中「已还清」，语义相同无需修改"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-170",
-      "category": "后端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "后端 DTO：所有欠款相关 DTO",
-      "acceptance_criteria": [
-        "创建 DebtListDto、DebtDetailDto、DebtRepaymentDto",
-        "创建 DebtListInput、DebtListResult（分页）",
-        "创建 CreateDebtInput、UpdateDebtInput、AddRepaymentInput",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建所有欠款相关 DTO",
-          "file": "Gentle/Gentle.Application/Dtos/Debt/DebtDto.cs",
-          "code_hint": "包含 DebtListDto、DebtDetailDto、DebtRepaymentDto、DebtListInput、DebtListResult、CreateDebtInput、UpdateDebtInput、AddRepaymentInput"
-        },
-        {
-          "step": 2,
-          "action": "验证后端编译",
-          "verify_command": "cd Gentle && dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-170-debt-dtos.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T14:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T14:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T13:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "DebtListInput 的 Page/PageSize 缺少 Range 验证特性，与项目现有 TenantListInput 一致故保留",
-          "DebtListDto 未包含 Remark 字段（计划中有），但列表视图不需要显示备注，属合理省略"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-171",
-      "category": "后端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端服务层：IDebtService 接口和 DebtService 实现",
-      "acceptance_criteria": [
-        "IDebtService 继承 ITransient 自动注册",
-        "DebtService 实现完整的 CRUD + 还款操作",
-        "还清自动判定（Status 切换为 Settled）",
-        "删除还款记录时恢复 Status 为 Ongoing",
-        "删除欠款时校验无还款记录",
-        "dotnet build 构建成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建服务接口",
-          "file": "Gentle/Gentle.Application/Services/IDebtService.cs",
-          "code_hint": "继承 ITransient；方法：GetListAsync, GetByIdAsync, AddAsync, UpdateAsync, DeleteAsync, AddRepaymentAsync, DeleteRepaymentAsync"
-        },
-        {
-          "step": 2,
-          "action": "创建服务实现",
-          "file": "Gentle/Gentle.Application/Services/DebtService.cs",
-          "code_hint": "注入 IRepository<Debt>, IRepository<DebtRepayment>, IRepository<Tenant>；实现所有方法，含自动结算判定和还款校验"
-        },
-        {
-          "step": 3,
-          "action": "验证编译",
-          "verify_command": "cd Gentle && dotnet build"
-        }
-      ],
-      "test_file": "tests/e2e/feat-171-debt-service.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T16:00:00Z",
-      "verification": {
-        "api_routes_checked": false,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T16:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T15:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "IDebtService 返回类型与计划偏差（DebtDetailDto vs DebtListDto），属合理改进",
-          "DebtListInput 使用 Keyword 替代 TenantName，搜索范围更广属合理增强",
-          "AddRepaymentAsync/DeleteRepaymentAsync 中 SaveNowAsync 跨 Repository 调用依赖共享 DbContext，当前阶段可接受"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-172",
-      "category": "后端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "api_runtime",
-      "description": "后端 AppService：DebtAppService API 控制器",
-      "acceptance_criteria": [
-        "DebtAppService 实现 IDynamicApiController",
-        "路由 [Route(\"api/debt\")]",
-        "7 个端点：list, {id}, add, edit, remove/{id}, {id}/repay, repay/remove/{id}",
-        "dotnet build 构建成功",
-        "启动后 Swagger 中可见 7 个端点"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DebtAppService",
-          "file": "Gentle/Gentle.Application/Apps/DebtAppService.cs",
-          "code_hint": "[ApiDescriptionSettings(\"Debt\", Name=\"DebtApp\", Order=12)], [Route(\"api/debt\")], [Authorize]；7 个端点对应 IDebtService 方法"
-        },
-        {
-          "step": 2,
-          "action": "验证编译",
-          "verify_command": "cd Gentle && dotnet build"
-        },
-        {
-          "step": 3,
-          "action": "启动后端验证 API 端点",
-          "verify_command": "cd Gentle && dotnet run --project Gentle.Web.Entry"
-        }
-      ],
-      "test_file": "tests/e2e/feat-172-debt-appservice.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T18:00:00Z",
-      "verification": {
-        "api_routes_checked": true,
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T18:00:00Z",
-        "api_routes": {
-          "base": "/api/debt",
-          "endpoints": ["list", "{id}", "add", "edit", "remove/{id}", "{id}/repay", "repay/remove/{id}"]
-        }
-      },
-      "review": {
-        "last_review_at": "2026-04-19T17:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 1
-        },
-        "minor_issues": [
-          "方法名 Repay 改为 AddRepayment（更具描述性，属合理改进）"
-        ],
-        "fixes_applied": [
-          "GetList 添加 Math.Clamp(pageSize, 1, 100) 防止过大分页查询",
-          "计划文档 Task 5 返回类型同步为实际实现（DebtDetailDto/DebtRepaymentDto）"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-173",
-      "category": "后端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "static",
-      "description": "数据库迁移：AddDebtTables",
-      "acceptance_criteria": [
-        "生成迁移文件包含 debt 和 debt_repayment 两张表",
-        "dotnet ef database update 成功"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "生成迁移",
-          "verify_command": "cd Gentle && dotnet ef migrations add AddDebtTables --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
-        },
-        {
-          "step": 2,
-          "action": "应用迁移",
-          "verify_command": "cd Gentle && dotnet ef database update --project Gentle.Database.Migrations --startup-project Gentle.Web.Entry"
-        }
-      ],
-      "test_file": "tests/e2e/feat-173-debt-migration.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T20:00:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T20:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T19:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 1,
-        "issues": {
-          "critical": 0,
-          "important": 2,
-          "minor": 0
-        },
-        "important_notes": [
-          "I-1: FEAT 范围蔓延（实体 TenantId→DebtorId 重命名和 DebtService 同步修改混入迁移 FEAT），代码改进正确但超出 FEAT-173 计划范围",
-          "I-2: DebtService.AddAsync 从 Mapster Adapt 改为手动映射，属合理改进但不在迁移 scope 内"
-        ],
-        "fixes_applied": [
-          "优化测试文件：将多次 fs.readFileSync 改为 beforeAll 中一次性读取并复用"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-174",
+      "id": "FEAT-181",
       "category": "前端",
-      "module": "老赖管理",
+      "module": "待办面板退租操作",
       "priority": "high",
-      "test_type": "static",
-      "description": "前端 API 层 + 路由：debtModel 类型定义、API 调用、路由模块",
+      "test_type": "e2e",
+      "description": "扩展 CheckOutDialog 支持 rentalRecordId 入口",
       "acceptance_criteria": [
-        "创建 debtModel.ts（DebtStatus、PaymentChannel 枚举 + 所有接口类型）",
-        "创建 debt.ts（7 个 API 函数）",
-        "创建 debt.ts 路由模块（orderNo: 3）",
-        "npm run build:type 无类型错误"
+        "Props 接口新增 rentalRecordId 可选参数",
+        "新增 resolvedTenant ref 和 effectiveTenant computed",
+        "watch 支持通过 rentalRecordId 加载数据并自动获取租客信息",
+        "模板中 tenant 引用替换为 effectiveTenant",
+        "submit 中 rentalRecordId 获取方式更新",
+        "handleClose 清理 resolvedTenant",
+        "npx vue-tsc --noEmit 无错误"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建类型定义",
-          "file": "Hans/src/api/model/debtModel.ts",
-          "code_hint": "DebtStatus/PaymentChannel 枚举 + 映射 + DebtListItem/DebtDetail/DebtRepaymentItem/GetDebtListParams/DebtListResult/CreateDebtParams/UpdateDebtParams/AddRepaymentParams 接口"
+          "action": "添加 getTenantById 导入",
+          "file": "Hans/src/pages/tenant/components/CheckOutDialog.vue",
+          "code_hint": "在 import { checkOut, getRentalById } from '@/api/rental'; 后添加 import { getTenantById } from '@/api/tenant';"
         },
         {
           "step": 2,
-          "action": "创建 API 服务",
-          "file": "Hans/src/api/debt.ts",
-          "code_hint": "getDebtList, getDebtDetail, createDebt, updateDebt, deleteDebt, addRepayment, deleteRepayment"
+          "action": "扩展 Props 接口，新增 rentalRecordId 可选参数",
+          "file": "Hans/src/pages/tenant/components/CheckOutDialog.vue",
+          "code_hint": "在 Props 接口中添加 rentalRecordId?: number;"
         },
         {
           "step": 3,
-          "action": "创建路由模块",
-          "file": "Hans/src/router/modules/debt.ts",
-          "code_hint": "path: /debt, icon: money-circle, orderNo: 3, children: [{ path: list, component: debt/index.vue }]"
+          "action": "添加 resolvedTenant ref 和 effectiveTenant computed",
+          "file": "Hans/src/pages/tenant/components/CheckOutDialog.vue",
+          "code_hint": "const resolvedTenant = ref<TenantItem | null>(null); const effectiveTenant = computed(() => props.tenant ?? resolvedTenant.value);"
         },
         {
           "step": 4,
-          "action": "TypeScript 编译验证",
-          "verify_command": "cd Hans && npm run build:type"
+          "action": "修改 watch 数据加载逻辑，支持 rentalRecordId 入口",
+          "file": "Hans/src/pages/tenant/components/CheckOutDialog.vue",
+          "code_hint": "rentalId = props.tenant?.rentalRecordId ?? props.rentalRecordId; 无 tenant 时通过 getTenantById 获取"
+        },
+        {
+          "step": 5,
+          "action": "更新模板中的 tenant 引用为 effectiveTenant",
+          "file": "Hans/src/pages/tenant/components/CheckOutDialog.vue",
+          "code_hint": "替换 5 处：v-if, name, phone, currentRoom, fullInfo"
+        },
+        {
+          "step": 6,
+          "action": "更新 submit 中的 rentalRecordId 获取方式",
+          "file": "Hans/src/pages/tenant/components/CheckOutDialog.vue",
+          "code_hint": "const rentalRecordId = effectiveTenant.value?.rentalRecordId ?? props.rentalRecordId;"
+        },
+        {
+          "step": 7,
+          "action": "在 handleClose 中清理 resolvedTenant",
+          "file": "Hans/src/pages/tenant/components/CheckOutDialog.vue",
+          "code_hint": "添加 resolvedTenant.value = null;"
+        },
+        {
+          "step": 8,
+          "action": "运行类型检查确认编译通过",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit"
         }
       ],
-      "test_file": "tests/e2e/feat-174-debt-frontend-api.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T22:00:00Z",
+      "test_file": "tests/e2e/feat-181-checkout-dialog-rental-record-id.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T22:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T21:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "DebtListResult 包含 page/pageSize 字段（比 tenant 模式更完整，与后端 DTO 对齐正确）",
-          "amount 字段前后端 number/decimal 类型差异（JSON 序列化标准做法，无需处理）",
-          "TypeScript 编译测试 (test 12) 中 vue-tsc 非零退出码可能触发 execSync 异常（当前可接受）"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-175",
+      "id": "FEAT-182",
       "category": "前端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "static",
-      "design_file": "docs/prototypes/2026-04-18-debt-management-design-index.md",
-      "description": "前端 DebtCard 组件：欠款卡片展示",
-      "acceptance_criteria": [
-        "卡片展示租客姓名、电话、状态标签",
-        "进度条显示已还/欠款比例",
-        "底部操作按钮（还款、详情、编辑、删除）",
-        "npm run build:type 无类型错误"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DebtCard 组件",
-          "file": "Hans/src/pages/debt/components/DebtCard.vue",
-          "code_hint": "按设计索引中 CardGrid > DebtCard 节点布局；props: data: DebtListItem；emits: repay/detail/edit/delete"
-        },
-        {
-          "step": 2,
-          "action": "验证前端类型检查",
-          "verify_command": "cd Hans && npm run build:type"
-        }
-      ],
-      "test_file": "tests/e2e/feat-175-debt-card.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T23:30:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T23:30:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T23:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "S-1: formatAmount 对 NaN 输入已添加 Number.isFinite 防御（已修复）",
-          "S-2: execSync catch 块读取 stdout 而非 stderr，属项目共享模式暂不修改"
-        ],
-        "fixes_applied": [
-          "测试文件从 Jest 风格转换为 Playwright 风格（import, test.describe, test.beforeAll）",
-          "paidPercentage 计算 增加 Number.isFinite 防御",
-          "formatAmount 增加 Number.isFinite 防御",
-          "测试文件使用 test.beforeAll 预读文件内容并复用"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-176",
-      "category": "前端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "static",
-      "design_file": "docs/prototypes/2026-04-18-debt-management-design-index.md",
-      "description": "前端 DebtFormDialog 组件：新增/编辑弹窗",
-      "status": "passed",
-      "completed_at": "2026-04-19T23:45:00Z",
-      "acceptance_criteria": [
-        "支持新增和编辑模式",
-        "表单字段：租客选择、欠款金额、欠款说明、备注",
-        "编辑模式禁用租客选择",
-        "npm run build:type 无类型错误"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DebtFormDialog 组件",
-          "file": "Hans/src/pages/debt/components/DebtFormDialog.vue",
-          "code_hint": "按设计索引中 DebtFormModal 节点布局；props: visible/editData；表单字段: tenantId/totalAmount/description/remark"
-        },
-        {
-          "step": 2,
-          "action": "验证前端类型检查",
-          "verify_command": "cd Hans && npm run build:type"
-        }
-      ],
-      "test_file": "tests/e2e/feat-176-debt-form-dialog.spec.ts",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T23:45:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T23:30:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "M-1: FormData.tenantId 类型 number|undefined 与 CreateDebtParams.tenantId 的 number 不完全匹配（非空断言安全，无需修改）",
-          "M-2: 租户选择加载时无初始焦点（纯 UX 优化，超出 scope）",
-          "M-3: 组件尚未集成到页面（预期行为，页面集成是独立 FEAT）"
-        ],
-        "fixes_applied": [
-          "I-1: 添加 onBeforeUnmount 清理 searchTimer 防止内存泄漏",
-          "I-2: handleSubmit 成功路径末尾添加 formRef.value?.reset() 避免陈旧数据",
-          "I-3: loadTenants catch 块添加 MessagePlugin.warning 错误提示"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-177",
-      "category": "前端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "static",
-      "design_file": "docs/prototypes/2026-04-18-debt-management-design-index.md",
-      "description": "前端 RepayDialog 组件：还款弹窗",
-      "acceptance_criteria": [
-        "显示租客信息和剩余欠款",
-        "表单字段：还款金额、还款日期、还款方式、备注",
-        "还款金额不超过剩余欠款",
-        "npm run build:type 无类型错误"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 RepayDialog 组件",
-          "file": "Hans/src/pages/debt/components/RepayDialog.vue",
-          "code_hint": "按设计索引中 RepayModal 节点布局；props: visible/debt；表单字段: amount/paymentDate/paymentChannel/remark"
-        },
-        {
-          "step": 2,
-          "action": "验证前端类型检查",
-          "verify_command": "cd Hans && npm run build:type"
-        }
-      ],
-      "test_file": "tests/e2e/feat-177-repay-dialog.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T23:55:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T23:55:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T23:50:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 3,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 2
-        },
-        "minor_issues": [
-          "硬编码中文字符串（与项目 debt 模块一致，无 i18n）",
-          "confirm-btn 的 theme: 'primary' 与 DebtFormDialog 不一致（纯风格差异）"
-        ],
-        "fixes_applied": [
-          "C-1: 测试文件 execSync 从 node:fs 改为 node:child_process",
-          "I-1: FormData 接口重命名为 RepayFormData 避免全局冲突",
-          "I-2: 非空断言替换为防御性 if 检查",
-          "I-3: formRef.reset() 移到 emit('update:visible') 之前",
-          "I-4: 防御性检查移到 loading=true 之前避免状态泄漏",
-          "M-1: 测试文件移除未使用的 result 变量"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-178",
-      "category": "前端",
-      "module": "老赖管理",
-      "priority": "high",
-      "test_type": "static",
-      "design_file": "docs/prototypes/2026-04-18-debt-management-design-index.md",
-      "description": "前端 DebtDetailDialog 组件：详情弹窗",
-      "acceptance_criteria": [
-        "显示租客信息、状态、说明、备注",
-        "汇总区显示总欠款、已还、剩余",
-        "还款记录表格（含删除操作）",
-        "npm run build:type 无类型错误"
-      ],
-      "implementation_steps": [
-        {
-          "step": 1,
-          "action": "创建 DebtDetailDialog 组件",
-          "file": "Hans/src/pages/debt/components/DebtDetailDialog.vue",
-          "code_hint": "按设计索引中 DetailModal 节点布局；props: visible/debtId；汇总区 + 还款记录表格"
-        },
-        {
-          "step": 2,
-          "action": "验证前端类型检查",
-          "verify_command": "cd Hans && npm run build:type"
-        }
-      ],
-      "test_file": "tests/e2e/feat-178-debt-detail-dialog.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T12:10:00Z",
-      "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T12:10:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T23:58:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "M-1: 删除还款记录缺少二次确认对话框（UI最佳实践，非阻断）",
-          "M-2: formatAmount 函数与 RepayDialog 重复（可后续提取共享工具）",
-          "M-3: formatAmount(0) 走 fallback 而非 toFixed(0)，结果相同无视觉 bug"
-        ],
-        "fixes_applied": [
-          "I-1: 添加状态标签（t-tag + DebtStatus 枚举）",
-          "I-2: 添加备注字段显示",
-          "M-2: 移除 :footer=false 使自定义 footer slot 生效"
-        ]
-      }
-    },
-    {
-      "id": "FEAT-179",
-      "category": "前端",
-      "module": "老赖管理",
+      "module": "待办面板退租操作",
       "priority": "high",
       "test_type": "e2e",
-      "design_file": "docs/prototypes/2026-04-18-debt-management-design-index.md",
-      "description": "前端主页面：老赖管理列表页",
+      "description": "在 RentalReminderDialog 中增加退租按钮",
       "acceptance_criteria": [
-        "筛选栏：搜索租客 + 状态筛选 + 新增按钮",
-        "卡片网格布局（3列响应式）",
-        "分页功能",
-        "集成所有弹窗组件",
-        "菜单显示「老赖管理」",
-        "页面无控制台报错"
+        "导入 CheckOutDialog 组件",
+        "添加 checkOutDialogVisible 状态和 handleCheckOut/handleCheckOutSuccess 函数",
+        "操作按钮区域增加退租按钮（danger 主题）",
+        "模板中添加 CheckOutDialog 组件并传入 rentalRecordId",
+        "npx vue-tsc --noEmit 无错误"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建主列表页",
-          "file": "Hans/src/pages/debt/index.vue",
-          "code_hint": "按设计索引中主列表页布局：filterBar + CardGrid + 分页；集成 DebtCard/DebtFormDialog/RepayDialog/DebtDetailDialog"
+          "action": "导入 CheckOutDialog 组件",
+          "file": "Hans/src/pages/dashboard/base/components/RentalReminderDialog.vue",
+          "code_hint": "import CheckOutDialog from '@/pages/tenant/components/CheckOutDialog.vue';"
         },
         {
           "step": 2,
-          "action": "启动开发服务器验证",
-          "verify_command": "cd Hans && npm run dev"
+          "action": "添加退租弹窗状态和处理函数",
+          "file": "Hans/src/pages/dashboard/base/components/RentalReminderDialog.vue",
+          "code_hint": "checkOutDialogVisible ref + handleCheckOut() + handleCheckOutSuccess()"
+        },
+        {
+          "step": 3,
+          "action": "在操作按钮区域添加退租按钮",
+          "file": "Hans/src/pages/dashboard/base/components/RentalReminderDialog.vue",
+          "code_hint": "t-button theme=danger variant=outline icon=close-circle"
+        },
+        {
+          "step": 4,
+          "action": "在模板中添加 CheckOutDialog 组件",
+          "file": "Hans/src/pages/dashboard/base/components/RentalReminderDialog.vue",
+          "code_hint": "v-model:visible, :tenant=null, :rental-record-id=reminder?.rentalReminder?.rentalRecordId, @success=handleCheckOutSuccess"
+        },
+        {
+          "step": 5,
+          "action": "运行类型检查确认编译通过",
+          "verify_command": "cd Hans && npx vue-tsc --noEmit"
         }
       ],
-      "test_file": "tests/e2e/feat-179-debt-main-page.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T16:30:00Z",
+      "test_file": "tests/e2e/feat-182-rental-reminder-checkout-btn.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "verified_at": "2026-04-19T16:30:00Z",
-        "required_tests": ["page_access", "core_elements", "status_tabs", "search", "form_dialog", "pagination", "empty_state", "card_grid"],
-        "required_tests_passed": true
-      },
-      "review": {
-        "last_review_at": "2026-04-19T12:20:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 4
-        },
-        "minor_issues": [
-          "S-1: 删除确认消息不含租客姓名标识（纯 UX 优化）",
-          "S-2: fetchData 直接赋值 pagination.value.total（项目 Vue 模式可接受）",
-          "S-3: E2E 测试硬编码凭据（项目共享模式）",
-          "S-4: E2E test 4 和 test 7 概念重复（可合并但不阻断）"
-        ],
-        "fixes_applied": [
-          "I-1: 添加 onBeforeUnmount 清理 searchTimer 防止内存泄漏"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     },
     {
-      "id": "FEAT-180",
+      "id": "FEAT-183",
       "category": "集成",
-      "module": "老赖管理",
+      "module": "待办面板退租操作",
       "priority": "high",
       "test_type": "e2e",
-      "description": "E2E 测试：老赖管理完整流程",
+      "description": "端到端验证：待办面板退租操作完整流程",
       "acceptance_criteria": [
-        "菜单和页面可访问",
-        "创建欠款记录",
-        "添加还款",
-        "查看详情",
-        "4 个测试场景全部通过"
+        "现有退租流程不受影响（租客列表→退租弹窗）",
+        "待办面板退租新流程正常工作（催收待办→退租按钮→退租弹窗）",
+        "npm run build 构建成功"
       ],
       "implementation_steps": [
         {
           "step": 1,
-          "action": "创建 E2E 测试文件",
-          "file": "tests/e2e/feat-180-debt-e2e.spec.ts",
-          "code_hint": "test.describe('老赖管理')；场景：菜单页面显示、创建欠款、添加还款、查看详情"
+          "action": "启动开发服务器验证现有退租流程",
+          "verify_command": "cd Hans && npm run dev"
         },
         {
           "step": 2,
-          "action": "运行 E2E 测试",
-          "verify_command": "cd tests && npx playwright test e2e/feat-180-debt-e2e.spec.ts"
+          "action": "运行构建确认无编译错误",
+          "verify_command": "cd Hans && npm run build"
         }
       ],
-      "test_file": "tests/e2e/feat-180-debt-e2e.spec.ts",
-      "status": "passed",
-      "completed_at": "2026-04-19T18:00:00Z",
+      "test_file": "tests/e2e/feat-183-todo-checkout-e2e.spec.ts",
+      "status": "pending",
       "verification": {
-        "e2e_tests_created": true,
-        "e2e_tests_passed": true,
-        "required_tests": ["menu_visible", "create_debt", "add_repayment", "view_detail"],
-        "required_tests_passed": true,
-        "verified_at": "2026-04-19T18:00:00Z"
-      },
-      "review": {
-        "last_review_at": "2026-04-19T17:00:00Z",
-        "reviewer": "superpowers:code-reviewer",
-        "status": "passed",
-        "rounds": 2,
-        "issues": {
-          "critical": 0,
-          "important": 0,
-          "minor": 3
-        },
-        "minor_issues": [
-          "S-1: 测试3还款后 dialog 关闭验证使用了 .catch(() => {})，失败时静默通过",
-          "S-2: login 辅助函数与 tests/helpers/auth.ts 共享模块重复（项目共享模式）",
-          "S-3: 测试2租户选择无确认断言（依赖测试环境有预置数据）"
-        ],
-        "fixes_applied": [
-          "I-1: 测试2创建欠款后改为验证特定描述卡片出现",
-          "M-1: 替换所有 waitForTimeout 为条件等待（waitFor visible/hidden）",
-          "M-3: 测试3还款按钮不可见/禁用时改为 test.skip()"
-        ]
+        "e2e_tests_created": false,
+        "e2e_tests_passed": false
       }
     }
   ]
