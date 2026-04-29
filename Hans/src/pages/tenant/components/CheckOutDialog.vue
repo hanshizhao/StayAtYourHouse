@@ -8,26 +8,26 @@
     :on-confirm="handleSubmit"
     :on-close="handleClose"
   >
-    <div v-if="tenant" class="check-out-content">
+    <div v-if="effectiveTenant" class="check-out-content">
       <!-- 租客信息 -->
       <div class="info-section" data-testid="tenant-info">
         <div class="info-title">租客信息</div>
         <div class="info-row">
           <span class="label">租客姓名：</span>
-          <span class="value">{{ tenant.name }}</span>
+          <span class="value">{{ effectiveTenant.name }}</span>
         </div>
         <div class="info-row">
           <span class="label">联系电话：</span>
-          <span class="value">{{ tenant.phone }}</span>
+          <span class="value">{{ effectiveTenant.phone }}</span>
         </div>
       </div>
 
       <!-- 房间信息 -->
-      <div v-if="tenant.currentRoom" class="info-section" data-testid="room-info">
+      <div v-if="effectiveTenant.currentRoom" class="info-section" data-testid="room-info">
         <div class="info-title">房间信息</div>
         <div class="info-row">
           <span class="label">当前房间：</span>
-          <span class="value room-info">{{ tenant.currentRoom.fullInfo }}</span>
+          <span class="value room-info">{{ effectiveTenant.currentRoom.fullInfo }}</span>
         </div>
       </div>
 
@@ -131,6 +131,7 @@ import type { RentalRecordDto } from '@/api/model/rentalModel';
 import { DepositStatus } from '@/api/model/rentalModel';
 import type { TenantItem } from '@/api/model/tenantModel';
 import { checkOut, getRentalById } from '@/api/rental';
+import { getTenantById } from '@/api/tenant';
 import { formatDate, getLocalDateString } from '@/utils/date';
 
 const props = defineProps<Props>();
@@ -157,6 +158,8 @@ interface Props {
   visible: boolean;
   /** 租客信息 */
   tenant: TenantItem | null;
+  /** 租住记录ID（从待办面板入口传入） */
+  rentalRecordId?: number;
 }
 
 // 使用 computed 处理 v-model
@@ -178,6 +181,9 @@ const formRef = ref<FormInstanceFunctions>();
 const loading = ref(false);
 const deposit = ref(0);
 const rentalRecord = ref<RentalRecordDto | null>(null);
+const resolvedTenant = ref<TenantItem | null>(null);
+
+const effectiveTenant = computed(() => props.tenant ?? resolvedTenant.value);
 
 const formData = ref<CheckOutFormData>({
   checkOutDate: getLocalDateString(),
@@ -225,7 +231,8 @@ const formRules: Record<string, FormRule[]> = {
 watch(
   () => props.visible,
   async (newVisible) => {
-    if (newVisible && props.tenant?.rentalRecordId) {
+    const rentalId = props.tenant?.rentalRecordId ?? props.rentalRecordId;
+    if (newVisible && rentalId) {
       // 重置表单
       formData.value = {
         checkOutDate: getLocalDateString(),
@@ -236,9 +243,14 @@ watch(
 
       // 获取租住记录详情以获取押金金额
       try {
-        const record = await getRentalById(props.tenant.rentalRecordId);
+        const record = await getRentalById(rentalId);
         rentalRecord.value = record;
         deposit.value = record.deposit;
+
+        // 通过 rentalRecordId 入口时，需要额外获取租客信息
+        if (!props.tenant && record.tenantId) {
+          resolvedTenant.value = await getTenantById(record.tenantId);
+        }
       } catch (e: unknown) {
         const errorMessage = e instanceof Error ? e.message : '获取租住记录失败';
         MessagePlugin.error(errorMessage);
@@ -275,7 +287,7 @@ async function handleSubmit() {
   if (valid !== true) return;
 
   // 验证租住记录ID
-  const rentalRecordId = props.tenant?.rentalRecordId;
+  const rentalRecordId = effectiveTenant.value?.rentalRecordId ?? props.rentalRecordId;
   if (!rentalRecordId) {
     MessagePlugin.error('租住记录不存在');
     return;
@@ -317,6 +329,7 @@ async function handleSubmit() {
 
 function handleClose() {
   formRef.value?.reset();
+  resolvedTenant.value = null;
   emit('update:visible', false);
 }
 </script>
