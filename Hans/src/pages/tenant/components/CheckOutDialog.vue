@@ -83,7 +83,6 @@
             :clearable="false"
             placeholder="请选择退租日期"
             data-testid="checkout-date-input"
-            @change="calculateSettlement"
           />
         </t-form-item>
 
@@ -273,14 +272,6 @@ watch(
 
 // ==================== 方法 ====================
 
-// 预留扩展点：未来可基于退租日期计算未缴租金、水电费等
-// 当前版本仅计算押金-扣除金额
-function calculateSettlement() {
-  // Phase 2: 可在此添加基于退租日期的额外费用计算
-  // 例如：未缴租金 = (退租日期 - 上次缴费日期) * 日租金
-  // 例如：水电费 = 本次抄表 - 上次抄表
-}
-
 async function handleSubmit() {
   // 验证表单
   const valid = await formRef.value?.validate();
@@ -330,6 +321,8 @@ async function handleSubmit() {
 function handleClose() {
   formRef.value?.reset();
   resolvedTenant.value = null;
+  rentalRecord.value = null;
+  deposit.value = 0;
   emit('update:visible', false);
 }
 </script>

@@ -35,6 +35,7 @@
         :key="`${item.type}-${item.id}`"
         class="todo-card"
         :class="`todo-card--${getTodoTypeClass(item.type)}`"
+        data-testid="todo-item"
         @click="handleTodoClick(item)"
       >
         <div class="todo-card__header">

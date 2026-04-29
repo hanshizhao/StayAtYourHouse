@@ -45,8 +45,12 @@
         </div>
       </div>
 
-      <!-- 操作按钮 -->
+      <!-- 操作按钮：退租按钮前置以突出催收场景下的紧迫性 -->
       <div class="action-buttons">
+        <t-button variant="outline" theme="danger" data-testid="btn-checkout" @click="handleCheckOut">
+          <template #icon><t-icon name="close-circle" /></template>
+          退租
+        </t-button>
         <t-button variant="outline" @click="handleDefer">
           <template #icon><t-icon name="time" /></template>
           宽限处理
@@ -74,6 +78,14 @@
     <!-- 续租弹窗 -->
     <renew-rental-dialog v-model:visible="renewDialogVisible" :reminder="reminder" @success="handleRenewSuccess" />
 
+    <!-- 退租弹窗 -->
+    <check-out-dialog
+      v-model:visible="checkOutDialogVisible"
+      :tenant="null"
+      :rental-record-id="reminder?.rentalReminder?.rentalRecordId"
+      @success="handleCheckOutSuccess"
+    />
+
     <!-- 宽限记录弹窗 -->
     <deferral-records-dialog
       v-model:visible="deferralRecordsDialogVisible"
@@ -87,6 +99,8 @@ import { computed, ref } from 'vue';
 import type { TodoItem } from '@/api/model/todoModel';
 import { formatDate } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
+
+import CheckOutDialog from '@/pages/tenant/components/CheckOutDialog.vue';
 
 import DeferDialog from './DeferDialog.vue';
 import DeferralRecordsDialog from './DeferralRecordsDialog.vue';
@@ -114,6 +128,7 @@ const emit = defineEmits<{
 const deferDialogVisible = ref(false);
 const renewDialogVisible = ref(false);
 const deferralRecordsDialogVisible = ref(false);
+const checkOutDialogVisible = ref(false);
 
 // 计算属性：双向绑定 visible
 const dialogVisible = computed({
@@ -142,6 +157,17 @@ function handleRenew() {
 // 续租成功
 function handleRenewSuccess() {
   renewDialogVisible.value = false;
+  emit('success');
+}
+
+// 退租
+function handleCheckOut() {
+  checkOutDialogVisible.value = true;
+}
+
+// 退租成功
+function handleCheckOutSuccess() {
+  checkOutDialogVisible.value = false;
   emit('success');
 }
 
