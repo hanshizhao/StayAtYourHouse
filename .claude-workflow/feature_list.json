@@ -146,10 +146,39 @@
         }
       ],
       "test_file": "tests/e2e/feat-182-rental-reminder-checkout-btn.spec.ts",
-      "status": "pending",
+      "status": "blocked",
+      "blocked_reason": "E2E 测试质量不足：全部 7 个用例为 fs.readFileSync 静态代码检查，缺少真实浏览器冒烟测试",
+      "review": {
+        "status": "passed",
+        "round": 2,
+        "timestamp": "2026-04-30",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "critical_issues": [],
+        "important_issues": [],
+        "minor_issues": [],
+        "checked_dimensions": [
+          "安全",
+          "输入验证",
+          "DI注册",
+          "事务处理",
+          "架构设计",
+          "性能",
+          "错误处理",
+          "命名规范"
+        ]
+      },
       "verification": {
         "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_passed": false,
+        "quality_blocked": true,
+        "quality_issues": [
+          "S=7: 全部用例使用 fs.readFileSync 静态检查",
+          "SM=0: 缺少冒烟测试（浏览器交互）"
+        ]
       }
     },
     {
@@ -177,10 +206,50 @@
         }
       ],
       "test_file": "tests/e2e/feat-183-todo-checkout-e2e.spec.ts",
-      "status": "pending",
+      "status": "passed",
+      "completed_at": "2026-04-30T23:30:00Z",
+      "review": {
+        "status": "passed",
+        "round": 2,
+        "timestamp": "2026-04-30",
+        "issues": {
+          "critical": 0,
+          "important": 0,
+          "minor": 0
+        },
+        "critical_issues": [],
+        "important_issues": [],
+        "minor_issues": [],
+        "checked_dimensions": [
+          "安全: PASS — 硬编码凭据已修复，PASSWORD 未设置时 throw Error",
+          "输入验证: PASS",
+          "DI注册: N/A — 前端项目不适用",
+          "事务处理: PASS",
+          "架构设计: PASS",
+          "性能: PASS",
+          "错误处理: PASS",
+          "命名规范: PASS"
+        ]
+      },
       "verification": {
-        "e2e_tests_created": false,
-        "e2e_tests_passed": false
+        "e2e_tests_created": true,
+        "e2e_tests_passed": true,
+        "static_tests_passed": true,
+        "build_verified": true,
+        "browser_tests_passed": true,
+        "required_tests": [
+          "page_access_tenant_list",
+          "page_access_dashboard",
+          "checkout_button_visible",
+          "checkout_dialog_open",
+          "rental_reminder_dialog_open",
+          "rental_record_id_data_load",
+          "todo_section_visible",
+          "existing_flow_not_broken"
+        ],
+        "test_results": "14/14 passed (5 static + 9 browser)",
+        "verified_at": "2026-04-30T23:30:00Z",
+        "fix_applied": "isBackendAvailable: 改用根路径检查，兼容无 /api/health 端点的后端"
       }
     }
   ]
