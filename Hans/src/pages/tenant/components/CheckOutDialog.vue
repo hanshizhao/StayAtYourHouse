@@ -2,6 +2,7 @@
   <t-dialog
     v-model:visible="dialogVisible"
     header="退租办理"
+    top="50"
     width="520px"
     :confirm-btn="{ content: '确认退租', loading }"
     data-testid="checkout-dialog"
