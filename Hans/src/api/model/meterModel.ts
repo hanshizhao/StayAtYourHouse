@@ -35,6 +35,10 @@ export interface MeterRecordItem {
   electricPrice?: number;
   waterFee: number;
   electricFee: number;
+  elevatorFee?: number | null;
+  propertyFee?: number | null;
+  internetFee?: number | null;
+  otherFees?: number | null;
   totalFee: number;
   remark?: string;
   hasBill: boolean;
@@ -68,6 +72,10 @@ export interface UtilityBillItem {
   electricUsage: number;
   waterFee: number;
   electricFee: number;
+  elevatorFee?: number | null;
+  propertyFee?: number | null;
+  internetFee?: number | null;
+  otherFees?: number | null;
   totalAmount: number;
   status: UtilityBillStatus;
   statusText: string;

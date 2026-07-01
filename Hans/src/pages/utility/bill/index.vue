@@ -132,6 +132,18 @@
         <t-form-item label="电费">
           <span>¥{{ formatMoney(payingBill?.electricFee || 0) }}</span>
         </t-form-item>
+        <t-form-item v-if="payingBill?.elevatorFee" label="电梯费">
+          <span>¥{{ formatMoney(payingBill.elevatorFee) }}</span>
+        </t-form-item>
+        <t-form-item v-if="payingBill?.propertyFee" label="物业费">
+          <span>¥{{ formatMoney(payingBill.propertyFee) }}</span>
+        </t-form-item>
+        <t-form-item v-if="payingBill?.internetFee" label="网络费">
+          <span>¥{{ formatMoney(payingBill.internetFee) }}</span>
+        </t-form-item>
+        <t-form-item v-if="payingBill?.otherFees" label="其他费用">
+          <span>¥{{ formatMoney(payingBill.otherFees) }}</span>
+        </t-form-item>
         <t-form-item label="应收金额">
           <span class="total-fee">¥{{ formatMoney(payingBill?.totalAmount || 0) }}</span>
         </t-form-item>
@@ -175,6 +187,18 @@
         <t-descriptions-item label="用电量">{{ viewingBill.electricUsage.toFixed(2) }} 度</t-descriptions-item>
         <t-descriptions-item label="水费">¥{{ formatMoney(viewingBill.waterFee) }}</t-descriptions-item>
         <t-descriptions-item label="电费">¥{{ formatMoney(viewingBill.electricFee) }}</t-descriptions-item>
+        <t-descriptions-item v-if="viewingBill.elevatorFee" label="电梯费">
+          ¥{{ formatMoney(viewingBill.elevatorFee) }}
+        </t-descriptions-item>
+        <t-descriptions-item v-if="viewingBill.propertyFee" label="物业费">
+          ¥{{ formatMoney(viewingBill.propertyFee) }}
+        </t-descriptions-item>
+        <t-descriptions-item v-if="viewingBill.internetFee" label="网络费">
+          ¥{{ formatMoney(viewingBill.internetFee) }}
+        </t-descriptions-item>
+        <t-descriptions-item v-if="viewingBill.otherFees" label="其他费用">
+          ¥{{ formatMoney(viewingBill.otherFees) }}
+        </t-descriptions-item>
         <t-descriptions-item label="总金额">
           <span class="total-fee">¥{{ formatMoney(viewingBill.totalAmount) }}</span>
         </t-descriptions-item>
