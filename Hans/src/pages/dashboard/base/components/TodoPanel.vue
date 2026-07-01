@@ -62,7 +62,7 @@
           v-if="item.type === TodoType.Rental && getExpiryInfo(item.rentalReminder?.contractEndDate)"
           class="todo-card__expiry"
         >
-          合同到期 {{ item.rentalReminder?.contractEndDate }}
+          合同到期 {{ formatDate(item.rentalReminder?.contractEndDate) }}
           <span
             class="todo-card__expiry-tag"
             :class="{ 'is-danger': getExpiryInfo(item.rentalReminder?.contractEndDate)?.danger }"
@@ -129,7 +129,7 @@ import type { UtilityBillItem } from '@/api/model/meterModel';
 import type { TodoItem, TodoListResult } from '@/api/model/todoModel';
 import { TodoType } from '@/api/model/todoModel';
 import { getTodoList } from '@/api/todo';
-import { getDaysUntil } from '@/utils/date';
+import { formatDate, getDaysUntil } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
 
 import MaintenanceDetailDialog from './MaintenanceDetailDialog.vue';
