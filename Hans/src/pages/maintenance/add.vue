@@ -35,12 +35,17 @@
               <t-row :gutter="[24, 12]">
                 <t-col :span="6">
                   <t-form-item label="选择房间" name="roomId">
+                    <!-- 编辑模式：房间锁定，直接展示后端返回的地址，避免下拉选项不全时显示 roomId 数字 -->
+                    <div v-if="isEdit" class="room-readonly-info">
+                      {{ currentRoomInfo || '未知房间' }}
+                    </div>
+                    <!-- 新增模式：下拉选择 -->
                     <t-select
+                      v-else
                       v-model="formData.roomId"
                       placeholder="请选择房间"
                       filterable
                       :loading="roomLoading"
-                      :disabled="isEdit"
                       data-testid="room-select"
                     >
                       <t-option v-for="room in roomOptions" :key="room.id" :value="room.id" :label="room.fullInfo">
@@ -243,6 +248,8 @@ const submitLoading = ref(false);
 const roomLoading = ref(false);
 const detailLoading = ref(false);
 const roomOptions = ref<RoomOption[]>([]);
+// 编辑模式下，后端返回的房间地址（避免依赖房间下拉的 100 条选项匹配）
+const currentRoomInfo = ref('');
 
 // 编辑模式检测
 const editingId = computed(() => {
@@ -318,6 +325,7 @@ async function loadMaintenanceDetail(id: number) {
   try {
     const detail = await getMaintenanceById(id);
     if (detail) {
+      currentRoomInfo.value = detail.roomInfo || '';
       formData.value = {
         roomId: detail.roomId,
         description: detail.description,
@@ -504,5 +512,11 @@ onMounted(async () => {
   .room-info {
     font-weight: 500;
   }
+}
+
+.room-readonly-info {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--td-text-color-primary);
 }
 </style>
