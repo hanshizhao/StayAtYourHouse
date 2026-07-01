@@ -236,6 +236,27 @@
             </t-row>
           </div>
 
+          <!-- 安居码登记人员 -->
+          <div class="form-section">
+            <div class="section-title">
+              <user-icon class="section-icon" />
+              <span>安居码登记人员</span>
+            </div>
+            <t-row :gutter="24">
+              <t-col :span="8">
+                <t-form-item label="登记人员" name="anJuCodeRegisteredNames">
+                  <t-textarea
+                    v-model="formData.anJuCodeRegisteredNames"
+                    placeholder="多人用逗号或顿号分隔，如：张三、李四"
+                    :maxlength="200"
+                    :autosize="{ minRows: 2, maxRows: 4 }"
+                    data-testid="anju-registered-names"
+                  />
+                </t-form-item>
+              </t-col>
+            </t-row>
+          </div>
+
           <!-- 提交按钮 -->
           <div class="form-actions">
             <t-button variant="outline" @click="handleBack">取消</t-button>
@@ -295,6 +316,7 @@ interface CheckInFormData {
   deposit: number | undefined;
   remark: string;
   contractImage: string;
+  anJuCodeRegisteredNames: string;
 }
 
 interface RoomOption {
@@ -324,6 +346,7 @@ const formData = ref<CheckInFormData>({
   deposit: undefined,
   remark: '',
   contractImage: '',
+  anJuCodeRegisteredNames: '',
 });
 
 // 租客选项
@@ -489,6 +512,7 @@ async function handleSubmit() {
       deposit,
       remark: formData.value.remark || undefined,
       contractImage: formData.value.contractImage || undefined,
+      anJuCodeRegisteredNames: formData.value.anJuCodeRegisteredNames || undefined,
     });
     MessagePlugin.success('入住办理成功');
     router.push('/tenant/list');

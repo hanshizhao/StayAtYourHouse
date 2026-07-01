@@ -49,7 +49,9 @@ public interface IRentalRecordService : ITransient
     /// <summary>
     /// 确认安居码已提交
     /// </summary>
-    Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id);
+    /// <param name="id">租住记录ID</param>
+    /// <param name="anJuCodeRegisteredNames">安居码登记人员名单（可选，传入则更新）</param>
+    Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id, string? anJuCodeRegisteredNames = null);
 
     /// <summary>
     /// 修改租约

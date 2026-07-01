@@ -42,6 +42,8 @@ export interface CheckInInput {
   remark?: string;
   /** 合同图片路径 */
   contractImage?: string;
+  /** 安居码登记人员名单 */
+  anJuCodeRegisteredNames?: string;
 }
 
 /**
@@ -104,6 +106,8 @@ export interface RentalRecordDto {
   createdTime: string;
   /** 是否已提交安居码 */
   isAnJuCodeSubmitted: boolean;
+  /** 安居码登记人员名单 */
+  anJuCodeRegisteredNames?: string;
   /** 关联水电账单列表 */
   utilityBills?: UtilityBillItem[];
 }
