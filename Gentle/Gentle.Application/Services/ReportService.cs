@@ -144,6 +144,41 @@ public class ReportService : IReportService
             .Where(r => r.Status == RentalStatus.Active)
             .ToListAsync();
 
+        // ===== 状态自愈：修正 Status=Vacant 但实际有活跃租约的房间 =====
+        // rooms 查询为 AsQueryable(false)（不追踪），因此逐个 FindAsync 拉取追踪实体再更新，
+        // 与 RoomService.DeleteAsync / UpdateAsync 的既定模式一致。
+        var activeRentalRoomIds = activeRentals
+            .Select(r => r.RoomId)
+            .ToHashSet();
+        var staleRoomIds = rooms
+            .Where(r => IsVacantRoomActuallyRented(r.Status, activeRentalRoomIds.Contains(r.Id)))
+            .Select(r => r.Id)
+            .ToList();
+
+        if (staleRoomIds.Count > 0)
+        {
+            try
+            {
+                foreach (var staleId in staleRoomIds)
+                {
+                    var tracked = await _roomRepository.FindAsync(staleId);
+                    if (tracked == null) continue;
+                    tracked.Status = RoomStatus.Rented;
+                    await _roomRepository.UpdateAsync(tracked);
+                }
+                await _roomRepository.SaveNowAsync();
+            }
+            catch
+            {
+                // 自愈失败不阻断统计接口：仍以（已修正的内存状态）返回，避免 500。
+            }
+            // 同步内存中 rooms 集合，使后续统计基于修正后的状态
+            foreach (var room in rooms.Where(r => staleRoomIds.Contains(r.Id)))
+            {
+                room.Status = RoomStatus.Rented;
+            }
+        }
+
         // 已退租的记录（用于计算空置天数）
         var terminatedRentals = await _rentalRecordRepository
             .AsQueryable(false)
@@ -253,5 +288,14 @@ public class ReportService : IReportService
         };
 
         return result.Take(limit).ToList();
+    }
+
+    /// <summary>
+    /// 判断一个"标记为空置"的房间是否实际已入住（存在活跃租约）。
+    /// 用于空置房源统计自愈：Status=Vacant 但有 Active 租约 → 需修正为 Rented。
+    /// </summary>
+    internal static bool IsVacantRoomActuallyRented(RoomStatus status, bool hasActiveRental)
+    {
+        return status == RoomStatus.Vacant && hasActiveRental;
     }
 }
