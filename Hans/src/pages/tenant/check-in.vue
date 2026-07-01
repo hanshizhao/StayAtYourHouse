@@ -215,6 +215,7 @@
                   <t-upload
                     v-model="contractFiles"
                     action="/api/file/upload"
+                    :headers="uploadHeaders"
                     :auto-upload="true"
                     :size-limit="{ size: 10, unit: 'MB' }"
                     :format-response="formatUploadResponse"
@@ -297,6 +298,7 @@ import type { TenantItem } from '@/api/model/tenantModel';
 import { checkIn } from '@/api/rental';
 import { getRoomList } from '@/api/room';
 import { getTenantList } from '@/api/tenant';
+import { useUserStore } from '@/store';
 import { calculateContractEndDate, formatDate, getLocalDateString } from '@/utils/date';
 
 defineOptions({
@@ -304,6 +306,13 @@ defineOptions({
 });
 
 const router = useRouter();
+
+const userStore = useUserStore();
+// t-upload 不经过 Axios 拦截器，需手动注入 JWT token（格式与 request/index.ts 一致：Bearer token）
+const uploadHeaders = computed(() => {
+  const token = userStore.token;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+});
 
 // ==================== 类型定义 ====================
 

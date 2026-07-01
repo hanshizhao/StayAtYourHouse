@@ -41,6 +41,9 @@ public class Startup : AppStartup
         app.UseAuthentication();
         app.UseAuthorization();
 
+        // 启用静态文件服务（合同图片等上传文件通过 /uploads/... 访问）
+        app.UseStaticFiles();
+
         app.UseInject(string.Empty);
 
         app.UseEndpoints(endpoints =>

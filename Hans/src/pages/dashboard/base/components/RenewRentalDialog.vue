@@ -67,6 +67,7 @@
             <t-upload
               v-model="contractFiles"
               action="/api/file/upload"
+              :headers="uploadHeaders"
               :auto-upload="true"
               :size-limit="{ size: 10, unit: 'MB' }"
               :format-response="formatUploadResponse"
@@ -108,6 +109,7 @@ import { computed, ref, watch } from 'vue';
 
 import type { RenewRentalInput, TodoItem } from '@/api/model/todoModel';
 import { renewRental } from '@/api/todo';
+import { useUserStore } from '@/store';
 import { calculateContractEndDate, formatDate } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
 
@@ -130,6 +132,12 @@ const emit = defineEmits<{
 const loading = ref(false);
 const formRef = ref<FormInstanceFunctions>();
 const contractFiles = ref<UploadFile[]>([]);
+const userStore = useUserStore();
+// t-upload 不经过 Axios 拦截器，需手动注入 JWT token（格式与 request/index.ts 一致：Bearer token）
+const uploadHeaders = computed(() => {
+  const token = userStore.token;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+});
 
 const formData = ref<RenewRentalInput>({
   leaseMonths: 1,
