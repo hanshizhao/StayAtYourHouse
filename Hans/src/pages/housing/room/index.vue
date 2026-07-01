@@ -136,7 +136,7 @@
                     </template>
                   </t-button>
                 </t-tooltip>
-                <t-tooltip content="删除房间">
+                <t-tooltip content="回收房间">
                   <t-button
                     variant="text"
                     shape="square"
@@ -362,12 +362,12 @@
       </t-form>
     </t-dialog>
 
-    <!-- 删除确认对话框 -->
+    <!-- 回收确认对话框 -->
     <t-dialog
       v-model:visible="deleteConfirmVisible"
-      header="确认删除"
+      header="确认回收"
       :body="deleteConfirmBody"
-      :confirm-btn="{ theme: 'danger', content: '删除', loading: deleteLoading }"
+      :confirm-btn="{ theme: 'danger', content: '回收', loading: deleteLoading }"
       data-testid="confirm-dialog"
       @confirm="onConfirmDelete"
     >
@@ -797,13 +797,13 @@ const formRules: Record<string, FormRule[]> = {
   rentPrice: [{ required: true, message: '请输入出租价', trigger: 'blur' }],
 };
 
-// 删除确认
+// 回收确认
 const deleteConfirmVisible = ref(false);
 const deleteLoading = ref(false);
 const deletingRoom = ref<RoomItem | null>(null);
 const deleteConfirmBody = computed(() => {
   if (deletingRoom.value) {
-    return `确定要删除房间「${deletingRoom.value.building}栋 ${deletingRoom.value.roomNumber}」吗？删除后无法恢复。`;
+    return `确定回收此房间？回收后将从列表隐藏，历史记录保留，可在编辑中恢复为空置。（房间「${deletingRoom.value.building}栋 ${deletingRoom.value.roomNumber}」）`;
   }
   return '';
 });
@@ -1070,11 +1070,11 @@ async function onConfirmDelete() {
   deleteLoading.value = true;
   try {
     await deleteRoom(deletingRoom.value.id);
-    MessagePlugin.success('删除成功');
+    MessagePlugin.success('房间已回收');
     deleteConfirmVisible.value = false;
     await fetchData();
   } catch (e: any) {
-    MessagePlugin.error(e.message || '删除失败');
+    MessagePlugin.error(e.message || '回收失败');
     deleteConfirmVisible.value = false;
   } finally {
     deleteLoading.value = false;
