@@ -95,8 +95,8 @@ public class RoomService : IRoomService
 
         var sorted = dtoList
             .OrderBy(r => r.CommunityName)
-            .ThenBy(r => r.Building)
-            .ThenBy(r => r.RoomNumber)
+            .ThenBy(r => ExtractLeadingNumber(r.Building))
+            .ThenBy(r => ExtractLeadingNumber(r.RoomNumber))
             .ToList();
 
         var total = sorted.Count;
@@ -293,5 +293,16 @@ public class RoomService : IRoomService
         if (!endDate.HasValue)
             return null;
         return (DateTime.Today - endDate.Value.Date).Days;
+    }
+
+    /// <summary>
+    /// 提取字符串开头的数字，用于栋号/房号的自然数排序。
+    /// 纯数字开头（如 "10栋""204"）返回数值；空或非数字开头返回 int.MaxValue 排到末尾。
+    /// </summary>
+    private static int ExtractLeadingNumber(string? s)
+    {
+        if (string.IsNullOrEmpty(s)) return int.MaxValue;
+        var digits = new string(s.TakeWhile(char.IsDigit).ToArray());
+        return int.TryParse(digits, out var n) ? n : int.MaxValue;
     }
 }
