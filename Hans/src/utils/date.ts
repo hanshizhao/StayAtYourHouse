@@ -65,4 +65,17 @@ export function getLocalDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
+/**
+ * 计算今天（按自然日，忽略时分秒）距离目标日期的天数。
+ * 返回值：负数 = 未到期（剩 |n| 天）；0 = 今天到期；正数 = 已逾期 n 天。
+ * 输入为空或无效时返回 null。
+ */
+export function getDaysUntil(date: string | Date | undefined | null): number | null {
+  if (!date) return null;
+  const today = dayjs().startOf('day');
+  const target = dayjs(date).startOf('day');
+  if (!target.isValid()) return null;
+  return target.diff(today, 'day');
+}
+
 // 注意：formatMoney 函数已移至 @/utils/format.ts
