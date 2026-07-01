@@ -803,7 +803,7 @@ const deleteLoading = ref(false);
 const deletingRoom = ref<RoomItem | null>(null);
 const deleteConfirmBody = computed(() => {
   if (deletingRoom.value) {
-    return `确定回收此房间？回收后将从列表隐藏，历史记录保留，可在编辑中恢复为空置。（房间「${deletingRoom.value.building}栋 ${deletingRoom.value.roomNumber}」）`;
+    return `确定回收此房间？回收后房间状态变为「已收回」，历史记录保留。可在列表按状态筛选，或进入编辑恢复为空置。（房间「${deletingRoom.value.building}栋 ${deletingRoom.value.roomNumber}」）`;
   }
   return '';
 });

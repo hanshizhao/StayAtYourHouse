@@ -286,9 +286,9 @@ function truncateText(text?: string, maxLen = 12): string {
 function getExpiryInfo(contractEndDate?: string): { text: string; danger: boolean } | null {
   const days = getDaysUntil(contractEndDate);
   if (days === null) return null;
-  if (days < 0) return { text: `剩 ${-days} 天到期`, danger: false };
+  if (days < 0) return { text: `已逾期 ${-days} 天`, danger: true };
   if (days === 0) return { text: '今天到期', danger: true };
-  return { text: `已逾期 ${days} 天`, danger: true };
+  return { text: `剩 ${days} 天到期`, danger: false };
 }
 
 // ==================== 生命周期 ====================

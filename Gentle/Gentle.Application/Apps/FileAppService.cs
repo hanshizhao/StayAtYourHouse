@@ -50,12 +50,19 @@ public class FileAppService : IDynamicApiController
             throw Oops.Oh("仅支持 jpg/png/gif/webp 格式");
         }
 
+        // 扩展名白名单校验（防止 svg/html 等可执行内容绕过 content-type 伪造）
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        if (!allowedExtensions.Contains(ext))
+        {
+            throw Oops.Oh("仅支持 jpg/jpeg/png/gif/webp 格式");
+        }
+
         // 存储路径：{ContentRootPath}/wwwroot/uploads/contracts/{yyyyMMdd}/{guid}{ext}
         var dateDir = DateTime.Now.ToString("yyyyMMdd");
         var absDir = Path.Combine(_env.ContentRootPath, "wwwroot", "uploads", "contracts", dateDir);
         Directory.CreateDirectory(absDir);
 
-        var ext = Path.GetExtension(file.FileName);
         var fileName = $"{Guid.NewGuid():N}{ext}";
         var absPath = Path.Combine(absDir, fileName);
 

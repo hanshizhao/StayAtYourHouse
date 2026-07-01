@@ -67,7 +67,7 @@ export function getLocalDateString(): string {
 
 /**
  * 计算今天（按自然日，忽略时分秒）距离目标日期的天数。
- * 返回值：负数 = 未到期（剩 |n| 天）；0 = 今天到期；正数 = 已逾期 n 天。
+ * 返回值：正数 = 未到期（剩 N 天）；0 = 今天到期；负数 = 已逾期 |N| 天。
  * 输入为空或无效时返回 null。
  */
 export function getDaysUntil(date: string | Date | undefined | null): number | null {
