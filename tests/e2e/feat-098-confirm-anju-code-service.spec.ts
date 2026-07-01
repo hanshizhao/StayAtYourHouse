@@ -11,12 +11,12 @@ test.describe('FEAT-098: 后端服务层 — 新增 ConfirmAnJuCodeAsync 方法'
 
   test('IRentalRecordService 接口包含 ConfirmAnJuCodeAsync 方法签名', () => {
     const content = fs.readFileSync(interfacePath, 'utf-8');
-    test.expect(content).toContain('Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id)');
+    test.expect(content).toContain('Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id, string? anJuCodeRegisteredNames = null)');
   });
 
   test('RentalRecordService 实现类包含 ConfirmAnJuCodeAsync 方法', () => {
     const content = fs.readFileSync(servicePath, 'utf-8');
-    test.expect(content).toContain('public async Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id)');
+    test.expect(content).toContain('public async Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id, string? anJuCodeRegisteredNames = null)');
   });
 
   test('ConfirmAnJuCodeAsync 包含 UnitOfWork 特性', () => {
@@ -29,7 +29,7 @@ test.describe('FEAT-098: 后端服务层 — 新增 ConfirmAnJuCodeAsync 方法'
 
   test('ConfirmAnJuCodeAsync 包含幂等处理', () => {
     const content = fs.readFileSync(servicePath, 'utf-8');
-    const methodIndex = content.indexOf('ConfirmAnJuCodeAsync(int id)');
+    const methodIndex = content.indexOf('ConfirmAnJuCodeAsync(int id, string? anJuCodeRegisteredNames = null)');
     // 获取方法体（从方法声明到下一个方法声明）
     const nextMethodIndex = content.indexOf('private static', methodIndex);
     const methodBody = nextMethodIndex > 0

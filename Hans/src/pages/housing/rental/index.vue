@@ -62,6 +62,11 @@
           >
             未提交
           </t-link>
+          <div v-if="row.anJuCodeRegisteredNames" class="anju-registered-names">
+            <t-tooltip :content="row.anJuCodeRegisteredNames" placement="top">
+              <span class="registered-names-text">登记：{{ row.anJuCodeRegisteredNames }}</span>
+            </t-tooltip>
+          </div>
         </template>
         <template #roomInfo="{ row }">
           <span class="room-info">{{ row.roomInfo }}</span>
@@ -379,6 +384,22 @@ onUnmounted(() => {
 
   .anju-submitted {
     font-size: 16px;
+  }
+
+  .anju-registered-names {
+    margin-top: 4px;
+    line-height: 1.4;
+
+    .registered-names-text {
+      display: inline-block;
+      max-width: 90px;
+      font-size: 12px;
+      color: var(--td-text-color-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: help;
+    }
   }
 
   .room-info {

@@ -175,7 +175,8 @@ public class RentalRecordService : IRentalRecordService
             Deposit = input.Deposit,
             DepositStatus = DepositStatus.Received,
             Status = RentalStatus.Active,
-            Remark = input.Remark
+            Remark = input.Remark,
+            AnJuCodeRegisteredNames = input.AnJuCodeRegisteredNames
         };
 
         var entry = await _repository.InsertAsync(record);
@@ -313,7 +314,7 @@ public class RentalRecordService : IRentalRecordService
 
     /// <inheritdoc />
     [UnitOfWork]
-    public async Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id)
+    public async Task<RentalRecordDto> ConfirmAnJuCodeAsync(int id, string? anJuCodeRegisteredNames = null)
     {
         var record = await _repository
             .AsQueryable()
@@ -327,13 +328,24 @@ public class RentalRecordService : IRentalRecordService
             throw Oops.Oh($"租住记录 {id} 不存在");
         }
 
-        // 幂等处理：已提交则直接返回
+        // 幂等处理：已提交则直接返回（若传了名单则更新）
         if (record.IsAnJuCodeSubmitted)
         {
+            if (anJuCodeRegisteredNames != null)
+            {
+                record.AnJuCodeRegisteredNames = anJuCodeRegisteredNames;
+                await _repository.UpdateAsync(record);
+                await _repository.SaveNowAsync();
+            }
+
             return record.Adapt<RentalRecordDto>();
         }
 
         record.IsAnJuCodeSubmitted = true;
+        if (anJuCodeRegisteredNames != null)
+        {
+            record.AnJuCodeRegisteredNames = anJuCodeRegisteredNames;
+        }
         await _repository.UpdateAsync(record);
         await _repository.SaveNowAsync();
 

@@ -144,6 +144,12 @@ public class RentalRecord : Entity<int>, IEntitySeedData<RentalRecord>
     public bool IsAnJuCodeSubmitted { get; set; } = false;
 
     /// <summary>
+    /// 安居码登记人员名单（多人，自由文本，如"张三、李四"）
+    /// </summary>
+    [MaxLength(200, ErrorMessage = "安居码登记人员名单长度不能超过200个字符")]
+    public string? AnJuCodeRegisteredNames { get; set; }
+
+    /// <summary>
     /// 配置种子数据
     /// </summary>
     public IEnumerable<RentalRecord> HasData(DbContext dbContext, Type dbContextLocator)

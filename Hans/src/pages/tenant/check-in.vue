@@ -215,6 +215,7 @@
                   <t-upload
                     v-model="contractFiles"
                     action="/api/file/upload"
+                    :headers="uploadHeaders"
                     :auto-upload="true"
                     :size-limit="{ size: 10, unit: 'MB' }"
                     :format-response="formatUploadResponse"
@@ -231,6 +232,27 @@
                       </div>
                     </template>
                   </t-upload>
+                </t-form-item>
+              </t-col>
+            </t-row>
+          </div>
+
+          <!-- 安居码登记人员 -->
+          <div class="form-section">
+            <div class="section-title">
+              <user-icon class="section-icon" />
+              <span>安居码登记人员</span>
+            </div>
+            <t-row :gutter="24">
+              <t-col :span="8">
+                <t-form-item label="登记人员" name="anJuCodeRegisteredNames">
+                  <t-textarea
+                    v-model="formData.anJuCodeRegisteredNames"
+                    placeholder="多人用逗号或顿号分隔，如：张三、李四"
+                    :maxlength="200"
+                    :autosize="{ minRows: 2, maxRows: 4 }"
+                    data-testid="anju-registered-names"
+                  />
                 </t-form-item>
               </t-col>
             </t-row>
@@ -276,6 +298,7 @@ import type { TenantItem } from '@/api/model/tenantModel';
 import { checkIn } from '@/api/rental';
 import { getRoomList } from '@/api/room';
 import { getTenantList } from '@/api/tenant';
+import { useUserStore } from '@/store';
 import { calculateContractEndDate, formatDate, getLocalDateString } from '@/utils/date';
 
 defineOptions({
@@ -283,6 +306,13 @@ defineOptions({
 });
 
 const router = useRouter();
+
+const userStore = useUserStore();
+// t-upload 不经过 Axios 拦截器，需手动注入 JWT token（格式与 request/index.ts 一致：Bearer token）
+const uploadHeaders = computed(() => {
+  const token = userStore.token;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+});
 
 // ==================== 类型定义 ====================
 
@@ -295,6 +325,7 @@ interface CheckInFormData {
   deposit: number | undefined;
   remark: string;
   contractImage: string;
+  anJuCodeRegisteredNames: string;
 }
 
 interface RoomOption {
@@ -324,6 +355,7 @@ const formData = ref<CheckInFormData>({
   deposit: undefined,
   remark: '',
   contractImage: '',
+  anJuCodeRegisteredNames: '',
 });
 
 // 租客选项
@@ -489,6 +521,7 @@ async function handleSubmit() {
       deposit,
       remark: formData.value.remark || undefined,
       contractImage: formData.value.contractImage || undefined,
+      anJuCodeRegisteredNames: formData.value.anJuCodeRegisteredNames || undefined,
     });
     MessagePlugin.success('入住办理成功');
     router.push('/tenant/list');

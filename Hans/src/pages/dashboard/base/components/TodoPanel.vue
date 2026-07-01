@@ -58,6 +58,18 @@
             {{ truncateText(item.description, 12) }}
           </template>
         </div>
+        <div
+          v-if="item.type === TodoType.Rental && getExpiryInfo(item.rentalReminder?.contractEndDate)"
+          class="todo-card__expiry"
+        >
+          合同到期 {{ formatDate(item.rentalReminder?.contractEndDate) }}
+          <span
+            class="todo-card__expiry-tag"
+            :class="{ 'is-danger': getExpiryInfo(item.rentalReminder?.contractEndDate)?.danger }"
+          >
+            · {{ getExpiryInfo(item.rentalReminder?.contractEndDate)?.text }}
+          </span>
+        </div>
         <div v-if="item.type === TodoType.Rental && item.deferralCount > 0" class="todo-card__badge">
           宽限{{ item.deferralCount }}次
         </div>
@@ -117,6 +129,7 @@ import type { UtilityBillItem } from '@/api/model/meterModel';
 import type { TodoItem, TodoListResult } from '@/api/model/todoModel';
 import { TodoType } from '@/api/model/todoModel';
 import { getTodoList } from '@/api/todo';
+import { formatDate, getDaysUntil } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
 
 import MaintenanceDetailDialog from './MaintenanceDetailDialog.vue';
@@ -263,6 +276,19 @@ function getTypeLabel(type: TodoType): string {
 function truncateText(text?: string, maxLen = 12): string {
   if (!text) return '';
   return text.length > maxLen ? `${text.slice(0, maxLen)}...` : text;
+}
+
+/**
+ * 返回催收房租待办的合同到期文案与主题色
+ * @param contractEndDate 合同到期日期
+ * @returns 文案与是否为危险（逾期/今日到期）状态；无日期时返回 null
+ */
+function getExpiryInfo(contractEndDate?: string): { text: string; danger: boolean } | null {
+  const days = getDaysUntil(contractEndDate);
+  if (days === null) return null;
+  if (days < 0) return { text: `已逾期 ${-days} 天`, danger: true };
+  if (days === 0) return { text: '今天到期', danger: true };
+  return { text: `剩 ${days} 天到期`, danger: false };
 }
 
 // ==================== 生命周期 ====================
@@ -431,6 +457,22 @@ onMounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.todo-card__expiry {
+  font-size: 12px;
+  color: var(--td-text-color-secondary);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.todo-card__expiry-tag {
+  &.is-danger {
+    color: var(--td-error-color);
+    font-weight: 500;
+  }
 }
 
 .todo-card__badge {

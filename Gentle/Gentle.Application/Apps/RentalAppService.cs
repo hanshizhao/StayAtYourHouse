@@ -121,10 +121,12 @@ public class RentalAppService : IDynamicApiController
     /// <summary>
     /// 确认安居码提交
     /// </summary>
+    /// <param name="id">租住记录ID</param>
+    /// <param name="anJuCodeRegisteredNames">安居码登记人员名单（可选，传入则更新/记录）</param>
     [HttpPost("confirm-anju-code/{id}")]
-    public async Task<RentalRecordDto> ConfirmAnJuCode(int id)
+    public async Task<RentalRecordDto> ConfirmAnJuCode(int id, string? anJuCodeRegisteredNames = null)
     {
-        return await _rentalRecordService.ConfirmAnJuCodeAsync(id);
+        return await _rentalRecordService.ConfirmAnJuCodeAsync(id, anJuCodeRegisteredNames);
     }
 
     /// <summary>

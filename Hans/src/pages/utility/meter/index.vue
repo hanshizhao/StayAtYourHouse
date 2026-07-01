@@ -201,6 +201,32 @@
             </t-form-item>
           </t-col>
         </t-row>
+        <!-- 固定费用（取自房间配置，只读；仅在房间配置了任一固定费用时展示） -->
+        <template v-if="hasFixedFees">
+          <t-divider>固定费用（取自房间配置）</t-divider>
+          <t-row :gutter="24">
+            <t-col v-if="selectedRoom?.elevatorFee" :span="6">
+              <t-form-item label="电梯费">
+                <span class="fee-text">¥{{ formatMoney(selectedRoom.elevatorFee) }}</span>
+              </t-form-item>
+            </t-col>
+            <t-col v-if="selectedRoom?.propertyFee" :span="6">
+              <t-form-item label="物业费">
+                <span class="fee-text">¥{{ formatMoney(selectedRoom.propertyFee) }}</span>
+              </t-form-item>
+            </t-col>
+            <t-col v-if="selectedRoom?.internetFee" :span="6">
+              <t-form-item label="网络费">
+                <span class="fee-text">¥{{ formatMoney(selectedRoom.internetFee) }}</span>
+              </t-form-item>
+            </t-col>
+            <t-col v-if="selectedRoom?.otherFees" :span="6">
+              <t-form-item label="其他费用">
+                <span class="fee-text">¥{{ formatMoney(selectedRoom.otherFees) }}</span>
+              </t-form-item>
+            </t-col>
+          </t-row>
+        </template>
         <t-form-item label="合计费用">
           <span class="total-fee-large">¥{{ formatMoney(calculatedFees.total) }}</span>
         </t-form-item>
@@ -358,13 +384,26 @@ const calculatedUsage = computed(() => {
   return { water, electric };
 });
 
+// 是否配置了任一固定费用（决定固定费用区块是否展示）
+const hasFixedFees = computed(() => {
+  const room = selectedRoom.value;
+  if (!room) return false;
+  return Boolean(room.elevatorFee || room.propertyFee || room.internetFee || room.otherFees);
+});
+
 // 计算费用
 const calculatedFees = computed(() => {
   const waterPrice = selectedRoom.value?.waterPrice || 0;
   const electricPrice = selectedRoom.value?.electricPrice || 0;
   const water = calculatedUsage.value.water * waterPrice;
   const electric = calculatedUsage.value.electric * electricPrice;
-  const total = water + electric;
+  // 固定费用取自房间配置（null → 0）
+  const fixedTotal =
+    (selectedRoom.value?.elevatorFee ?? 0) +
+    (selectedRoom.value?.propertyFee ?? 0) +
+    (selectedRoom.value?.internetFee ?? 0) +
+    (selectedRoom.value?.otherFees ?? 0);
+  const total = water + electric + fixedTotal;
   return { water, electric, total };
 });
 

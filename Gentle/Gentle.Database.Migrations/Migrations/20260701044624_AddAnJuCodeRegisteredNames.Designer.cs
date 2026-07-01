@@ -3,6 +3,7 @@ using System;
 using Gentle.EntityFramework.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gentle.Database.Migrations.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    partial class DefaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260701044624_AddAnJuCodeRegisteredNames")]
+    partial class AddAnJuCodeRegisteredNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,26 +272,14 @@ namespace Gentle.Database.Migrations.Migrations
                     b.Property<decimal>("ElectricUsage")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<decimal?>("ElevatorFee")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("InternetFee")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<DateTime>("MeterDate")
                         .HasColumnType("date");
-
-                    b.Property<decimal?>("OtherFees")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("PrevElectricReading")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PrevWaterReading")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PropertyFee")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Remark")
                         .HasMaxLength(500)
@@ -616,17 +607,8 @@ namespace Gentle.Database.Migrations.Migrations
                     b.Property<decimal>("ElectricUsage")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("ElevatorFee")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("InternetFee")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<int>("MeterRecordId")
                         .HasColumnType("int");
-
-                    b.Property<decimal?>("OtherFees")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal?>("PaidAmount")
                         .HasColumnType("decimal(10,2)");
@@ -639,9 +621,6 @@ namespace Gentle.Database.Migrations.Migrations
 
                     b.Property<DateTime>("PeriodStart")
                         .HasColumnType("date");
-
-                    b.Property<decimal?>("PropertyFee")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Remark")
                         .HasMaxLength(500)

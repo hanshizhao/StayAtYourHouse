@@ -120,6 +120,11 @@ public class RentalRecordDto
     public bool IsAnJuCodeSubmitted { get; set; }
 
     /// <summary>
+    /// 安居码登记人员名单
+    /// </summary>
+    public string? AnJuCodeRegisteredNames { get; set; }
+
+    /// <summary>
     /// 创建时间
     /// </summary>
     public DateTimeOffset CreatedTime { get; set; }

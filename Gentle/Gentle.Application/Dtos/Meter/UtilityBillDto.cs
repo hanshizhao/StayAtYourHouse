@@ -72,6 +72,18 @@ public class UtilityBillDto
     /// </summary>
     public decimal ElectricFee { get; set; }
 
+    /// <summary>电梯费快照</summary>
+    public decimal? ElevatorFee { get; set; }
+
+    /// <summary>物业费快照</summary>
+    public decimal? PropertyFee { get; set; }
+
+    /// <summary>网络费快照</summary>
+    public decimal? InternetFee { get; set; }
+
+    /// <summary>其他费用快照</summary>
+    public decimal? OtherFees { get; set; }
+
     /// <summary>
     /// 总金额（元）
     /// </summary>

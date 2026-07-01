@@ -29,7 +29,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+		<PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Gentle.Tests" />
 	</ItemGroup>
 
 </Project>

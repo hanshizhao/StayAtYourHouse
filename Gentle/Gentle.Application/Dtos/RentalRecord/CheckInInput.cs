@@ -52,4 +52,9 @@ public class CheckInInput
     /// 合同图片路径（上传到服务器后的路径）
     /// </summary>
     public string? ContractImage { get; set; }
+
+    /// <summary>
+    /// 安居码登记人员名单（可选）
+    /// </summary>
+    public string? AnJuCodeRegisteredNames { get; set; }
 }

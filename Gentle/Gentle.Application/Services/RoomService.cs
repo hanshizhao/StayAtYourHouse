@@ -95,8 +95,8 @@ public class RoomService : IRoomService
 
         var sorted = dtoList
             .OrderBy(r => r.CommunityName)
-            .ThenBy(r => r.Building)
-            .ThenBy(r => r.RoomNumber)
+            .ThenBy(r => ExtractLeadingNumber(r.Building))
+            .ThenBy(r => ExtractLeadingNumber(r.RoomNumber))
             .ToList();
 
         var total = sorted.Count;
@@ -253,25 +253,34 @@ public class RoomService : IRoomService
             throw Oops.Oh($"房间 {id} 不存在");
         }
 
-        // 检查房间状态，已出租的房间不能删除
-        if (room.Status == RoomStatus.Rented)
+        // 仅检查活跃租约（在租中）——历史已退租记录不再阻止回收
+        var hasActiveRental = await _rentalRecordRepository.AsQueryable(false)
+            .AnyAsync(r => r.RoomId == id && r.Status == RentalStatus.Active);
+
+        // 已出租 或 有活跃租约 → 必须先办理退租
+        if (!CanReclaim(room.Status, hasActiveRental))
         {
-            throw Oops.Oh("已出租的房间无法删除，请先办理退租");
+            throw Oops.Oh("房间有在租租客，请先办理退租后再回收");
         }
 
-        // 检查是否有关联的租赁记录（包括历史记录）
-        var hasRentalRecords = await _rentalRecordRepository.AsQueryable(false)
-            .AnyAsync(r => r.RoomId == id);
-        if (hasRentalRecords)
-        {
-            throw Oops.Oh("该房间存在租赁记录，无法删除");
-        }
-
-        await _repository.DeleteAsync(room);
+        // 回收：转为 Reclaimed 状态（不物理删除），历史租赁记录保留可追溯
+        room.Status = RoomStatus.Reclaimed;
+        await _repository.UpdateAsync(room);
         await _repository.SaveNowAsync();
     }
 
     private const int LeaseAlertThresholdDays = 7;
+
+    /// <summary>
+    /// 判断房间是否可回收（转 Reclaimed 状态）。
+    /// 已出租（Rented）必须先退租；有活跃租约的也不可回收。
+    /// </summary>
+    internal static bool CanReclaim(RoomStatus status, bool hasActiveRental)
+    {
+        if (status == RoomStatus.Rented) return false;
+        if (hasActiveRental) return false;
+        return true;
+    }
 
     private static LeaseStatus CalculateLeaseStatus(DateTime? endDate)
     {
@@ -293,5 +302,16 @@ public class RoomService : IRoomService
         if (!endDate.HasValue)
             return null;
         return (DateTime.Today - endDate.Value.Date).Days;
+    }
+
+    /// <summary>
+    /// 提取字符串开头的数字，用于栋号/房号的自然数排序。
+    /// 纯数字开头（如 "10栋""204"）返回数值；空或非数字开头返回 int.MaxValue 排到末尾。
+    /// </summary>
+    private static int ExtractLeadingNumber(string? s)
+    {
+        if (string.IsNullOrEmpty(s)) return int.MaxValue;
+        var digits = new string(s.TakeWhile(char.IsDigit).ToArray());
+        return int.TryParse(digits, out var n) ? n : int.MaxValue;
     }
 }

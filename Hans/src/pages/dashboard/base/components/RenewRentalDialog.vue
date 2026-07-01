@@ -67,6 +67,7 @@
             <t-upload
               v-model="contractFiles"
               action="/api/file/upload"
+              :headers="uploadHeaders"
               :auto-upload="true"
               :size-limit="{ size: 10, unit: 'MB' }"
               :format-response="formatUploadResponse"
@@ -108,7 +109,8 @@ import { computed, ref, watch } from 'vue';
 
 import type { RenewRentalInput, TodoItem } from '@/api/model/todoModel';
 import { renewRental } from '@/api/todo';
-import { formatDate } from '@/utils/date';
+import { useUserStore } from '@/store';
+import { calculateContractEndDate, formatDate } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
 
 defineOptions({
@@ -130,6 +132,12 @@ const emit = defineEmits<{
 const loading = ref(false);
 const formRef = ref<FormInstanceFunctions>();
 const contractFiles = ref<UploadFile[]>([]);
+const userStore = useUserStore();
+// t-upload 不经过 Axios 拦截器，需手动注入 JWT token（格式与 request/index.ts 一致：Bearer token）
+const uploadHeaders = computed(() => {
+  const token = userStore.token;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+});
 
 const formData = ref<RenewRentalInput>({
   leaseMonths: 1,
@@ -198,6 +206,29 @@ watch(
         remark: '',
       };
       contractFiles.value = [];
+      // 立即按默认月数 1 算出到期日（原到期日 + 1 月 − 1 天）
+      const originalEndDate = props.reminder.rentalReminder?.contractEndDate;
+      if (originalEndDate) {
+        const calculated = calculateContractEndDate(originalEndDate, 1);
+        if (calculated) {
+          formData.value.contractEndDate = calculated;
+        }
+      }
+    }
+  },
+);
+
+// 监听租期月数变化，自动计算合同到期日 = 原合同到期日 + 月数 − 1 天
+// 用户仍可在日期选择器手动覆盖
+watch(
+  () => formData.value.leaseMonths,
+  (months) => {
+    if (!props.reminder) return;
+    const originalEndDate = props.reminder.rentalReminder?.contractEndDate;
+    if (!originalEndDate || !months) return;
+    const calculated = calculateContractEndDate(originalEndDate, months);
+    if (calculated) {
+      formData.value.contractEndDate = calculated;
     }
   },
 );

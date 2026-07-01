@@ -80,10 +80,24 @@ public class MeterRecordDto
     /// </summary>
     public decimal ElectricFee { get; set; }
 
+    /// <summary>电梯费快照</summary>
+    public decimal? ElevatorFee { get; set; }
+
+    /// <summary>物业费快照</summary>
+    public decimal? PropertyFee { get; set; }
+
+    /// <summary>网络费快照</summary>
+    public decimal? InternetFee { get; set; }
+
+    /// <summary>其他费用快照</summary>
+    public decimal? OtherFees { get; set; }
+
     /// <summary>
     /// 总费用（元）
     /// </summary>
-    public decimal TotalFee => WaterFee + ElectricFee;
+    public decimal TotalFee => WaterFee + ElectricFee
+        + (ElevatorFee ?? 0) + (PropertyFee ?? 0)
+        + (InternetFee ?? 0) + (OtherFees ?? 0);
 
     /// <summary>
     /// 备注

@@ -43,6 +43,18 @@ public class MeterService : IMeterService
         _rentalRecordRepository = rentalRecordRepository;
     }
 
+    /// <summary>
+    /// 计算固定费用合计（电梯+物业+网络+其他），null 视为 0。
+    /// </summary>
+    /// <remarks>纯计算方法，便于单元测试（账单合计与此处保持一致）。</remarks>
+    internal static decimal SumFixedFees(
+        decimal? elevatorFee, decimal? propertyFee,
+        decimal? internetFee, decimal? otherFees)
+    {
+        return (elevatorFee ?? 0m) + (propertyFee ?? 0m)
+             + (internetFee ?? 0m) + (otherFees ?? 0m);
+    }
+
     /// <inheritdoc />
     public async Task<(List<MeterRecordDto> Items, int Total)> GetListAsync(
         int? communityId = null,
@@ -165,6 +177,11 @@ public class MeterService : IMeterService
             ElectricUsage = electricUsage,
             WaterFee = waterFee,
             ElectricFee = electricFee,
+            // 固定费用快照（取房间当前配置，null → 字段存 null，账单合计按 0）
+            ElevatorFee = room.ElevatorFee,
+            PropertyFee = room.PropertyFee,
+            InternetFee = room.InternetFee,
+            OtherFees = room.OtherFees,
             Remark = input.Remark
         };
 
@@ -406,7 +423,16 @@ public class MeterService : IMeterService
             ElectricUsage = meterRecord.ElectricUsage,
             WaterFee = meterRecord.WaterFee,
             ElectricFee = meterRecord.ElectricFee,
-            TotalAmount = meterRecord.WaterFee + meterRecord.ElectricFee,
+            // 固定费用快照（与抄表记录一致）
+            ElevatorFee = meterRecord.ElevatorFee,
+            PropertyFee = meterRecord.PropertyFee,
+            InternetFee = meterRecord.InternetFee,
+            OtherFees = meterRecord.OtherFees,
+            TotalAmount = meterRecord.WaterFee
+                         + meterRecord.ElectricFee
+                         + SumFixedFees(
+                             meterRecord.ElevatorFee, meterRecord.PropertyFee,
+                             meterRecord.InternetFee, meterRecord.OtherFees),
             Status = UtilityBillStatus.Pending
         };
 
