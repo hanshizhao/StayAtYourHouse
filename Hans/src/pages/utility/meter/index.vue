@@ -93,149 +93,150 @@
     <t-dialog
       v-model:visible="dialogVisible"
       header="抄表录入"
-      width="600px"
+      width="820px"
+      dialog-class-name="meter-reading-dialog"
       :confirm-btn="{ content: '确定', loading: submitLoading }"
       data-testid="meter-form-dialog"
       :on-confirm="handleSubmit"
       :on-close="handleDialogClose"
     >
       <t-form ref="formRef" :data="formData" :rules="formRules" label-align="right" label-width="120px">
-        <t-form-item label="选择房间" name="roomId">
-          <t-select
-            v-model="formData.roomId"
-            :options="roomOptions"
-            placeholder="请选择房间"
-            filterable
-            data-testid="room-select"
-            @change="handleRoomChange"
-          />
-        </t-form-item>
-        <t-form-item label="抄表日期" name="meterDate">
-          <t-date-picker
-            v-model="formData.meterDate"
-            :clearable="false"
-            data-testid="meter-date-input"
-            style="width: 100%"
-          />
-        </t-form-item>
-        <t-divider>上次读数</t-divider>
         <t-row :gutter="24">
           <t-col :span="12">
-            <t-form-item label="水表读数">
-              <span class="prev-reading">{{ lastReadings.waterReading.toFixed(2) }}</span>
-            </t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="电表读数">
-              <span class="prev-reading">{{ lastReadings.electricReading.toFixed(2) }}</span>
-            </t-form-item>
-          </t-col>
-        </t-row>
-        <t-divider>本次读数</t-divider>
-        <t-row :gutter="24">
-          <t-col :span="12">
-            <t-form-item label="水表读数" name="waterReading">
-              <t-input-number
-                v-model="formData.waterReading"
-                placeholder="请输入水表读数"
-                :min="0"
-                :decimal-places="2"
-                data-testid="water-reading-input"
-                style="width: 100%"
-                @change="calculateUsage"
+            <t-form-item label="选择房间" name="roomId">
+              <t-select
+                v-model="formData.roomId"
+                :options="roomOptions"
+                placeholder="请选择房间"
+                filterable
+                data-testid="room-select"
+                @change="handleRoomChange"
               />
             </t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="电表读数" name="electricReading">
-              <t-input-number
-                v-model="formData.electricReading"
-                placeholder="请输入电表读数"
-                :min="0"
-                :decimal-places="2"
-                data-testid="electric-reading-input"
+            <t-form-item label="抄表日期" name="meterDate">
+              <t-date-picker
+                v-model="formData.meterDate"
+                :clearable="false"
+                data-testid="meter-date-input"
                 style="width: 100%"
-                @change="calculateUsage"
               />
             </t-form-item>
           </t-col>
         </t-row>
-        <t-divider>用量计算</t-divider>
-        <t-row :gutter="24">
+        <table class="meter-table">
+          <thead>
+            <tr>
+              <th class="col-label"></th>
+              <th class="col-meter">💧 水</th>
+              <th class="col-meter">⚡ 电</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 上次读数（只读灰字） -->
+            <tr>
+              <td class="row-label">上次读数</td>
+              <td>
+                <span class="prev-reading">{{ lastReadings.waterReading.toFixed(2) }}</span>
+              </td>
+              <td>
+                <span class="prev-reading">{{ lastReadings.electricReading.toFixed(2) }}</span>
+              </td>
+            </tr>
+            <!-- 本次读数（输入，校验挂在此行） -->
+            <tr>
+              <td class="row-label">本次读数</td>
+              <td>
+                <t-form-item name="waterReading" class="cell-form-item">
+                  <t-input-number
+                    v-model="formData.waterReading"
+                    placeholder="请输入水表读数"
+                    :min="0"
+                    :decimal-places="2"
+                    data-testid="water-reading-input"
+                    style="width: 100%"
+                    @change="calculateUsage"
+                  />
+                </t-form-item>
+              </td>
+              <td>
+                <t-form-item name="electricReading" class="cell-form-item">
+                  <t-input-number
+                    v-model="formData.electricReading"
+                    placeholder="请输入电表读数"
+                    :min="0"
+                    :decimal-places="2"
+                    data-testid="electric-reading-input"
+                    style="width: 100%"
+                    @change="calculateUsage"
+                  />
+                </t-form-item>
+              </td>
+            </tr>
+            <!-- 用量（超阈值红字警告） -->
+            <tr>
+              <td class="row-label">用量</td>
+              <td>
+                <span :class="{ 'usage-warning': calculatedUsage.water > 50 }">
+                  {{ calculatedUsage.water.toFixed(2) }} 吨
+                </span>
+              </td>
+              <td>
+                <span :class="{ 'usage-warning': calculatedUsage.electric > 200 }">
+                  {{ calculatedUsage.electric.toFixed(2) }} 度
+                </span>
+              </td>
+            </tr>
+            <!-- 单价（取自房间配置，未设置显示"未设置"） -->
+            <tr>
+              <td class="row-label">单价</td>
+              <td>
+                <span>{{ selectedRoom?.waterPrice ? `¥${selectedRoom.waterPrice.toFixed(2)}/吨` : '未设置' }}</span>
+              </td>
+              <td>
+                <span>{{
+                  selectedRoom?.electricPrice ? `¥${selectedRoom.electricPrice.toFixed(2)}/度` : '未设置'
+                }}</span>
+              </td>
+            </tr>
+            <!-- 小计（水费/电费） -->
+            <tr>
+              <td class="row-label">小计</td>
+              <td>
+                <span class="fee-text">¥{{ formatMoney(calculatedFees.water) }}</span>
+              </td>
+              <td>
+                <span class="fee-text">¥{{ formatMoney(calculatedFees.electric) }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <t-row :gutter="24" class="fee-summary-row">
           <t-col :span="12">
-            <t-form-item label="用水量">
-              <span :class="{ 'usage-warning': calculatedUsage.water > 50 }">
-                {{ calculatedUsage.water.toFixed(2) }} 吨
-              </span>
-            </t-form-item>
+            <div v-if="hasFixedFees" class="fixed-fees-block">
+              <div class="block-title">固定费用</div>
+              <div class="fixed-fees-tags">
+                <span v-if="selectedRoom?.elevatorFee">电梯 ¥{{ formatMoney(selectedRoom.elevatorFee) }}</span>
+                <span v-if="selectedRoom?.propertyFee">物业 ¥{{ formatMoney(selectedRoom.propertyFee) }}</span>
+                <span v-if="selectedRoom?.internetFee">网络 ¥{{ formatMoney(selectedRoom.internetFee) }}</span>
+                <span v-if="selectedRoom?.otherFees">其他 ¥{{ formatMoney(selectedRoom.otherFees) }}</span>
+              </div>
+            </div>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="用电量">
-              <span :class="{ 'usage-warning': calculatedUsage.electric > 200 }">
-                {{ calculatedUsage.electric.toFixed(2) }} 度
-              </span>
-            </t-form-item>
+            <div class="total-fee-block">
+              <span class="block-title">合计费用</span>
+              <span class="total-fee-large">¥{{ formatMoney(calculatedFees.total) }}</span>
+            </div>
           </t-col>
         </t-row>
-        <t-row :gutter="24">
-          <t-col :span="12">
-            <t-form-item label="水费单价">
-              <span>{{ selectedRoom?.waterPrice ? `¥${selectedRoom.waterPrice.toFixed(2)}/吨` : '未设置' }}</span>
-            </t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="电费单价">
-              <span>{{ selectedRoom?.electricPrice ? `¥${selectedRoom.electricPrice.toFixed(2)}/度` : '未设置' }}</span>
-            </t-form-item>
-          </t-col>
-        </t-row>
-        <t-row :gutter="24">
-          <t-col :span="12">
-            <t-form-item label="水费">
-              <span class="fee-text">¥{{ formatMoney(calculatedFees.water) }}</span>
-            </t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="电费">
-              <span class="fee-text">¥{{ formatMoney(calculatedFees.electric) }}</span>
-            </t-form-item>
-          </t-col>
-        </t-row>
-        <!-- 固定费用（取自房间配置，只读；仅在房间配置了任一固定费用时展示） -->
-        <template v-if="hasFixedFees">
-          <t-divider>固定费用（取自房间配置）</t-divider>
-          <t-row :gutter="24">
-            <t-col v-if="selectedRoom?.elevatorFee" :span="6">
-              <t-form-item label="电梯费">
-                <span class="fee-text">¥{{ formatMoney(selectedRoom.elevatorFee) }}</span>
-              </t-form-item>
-            </t-col>
-            <t-col v-if="selectedRoom?.propertyFee" :span="6">
-              <t-form-item label="物业费">
-                <span class="fee-text">¥{{ formatMoney(selectedRoom.propertyFee) }}</span>
-              </t-form-item>
-            </t-col>
-            <t-col v-if="selectedRoom?.internetFee" :span="6">
-              <t-form-item label="网络费">
-                <span class="fee-text">¥{{ formatMoney(selectedRoom.internetFee) }}</span>
-              </t-form-item>
-            </t-col>
-            <t-col v-if="selectedRoom?.otherFees" :span="6">
-              <t-form-item label="其他费用">
-                <span class="fee-text">¥{{ formatMoney(selectedRoom.otherFees) }}</span>
-              </t-form-item>
-            </t-col>
-          </t-row>
-        </template>
-        <t-form-item label="合计费用">
-          <span class="total-fee-large">¥{{ formatMoney(calculatedFees.total) }}</span>
-        </t-form-item>
         <t-form-item label="备注" name="remark">
           <t-textarea
             v-model="formData.remark"
             placeholder="请输入备注信息"
             :maxlength="500"
-            :autosize="{ minRows: 2, maxRows: 4 }"
+            :autosize="{ minRows: 1, maxRows: 3 }"
             data-testid="remark-input"
           />
         </t-form-item>
@@ -685,6 +686,97 @@ onMounted(() => {
     font-size: 18px;
     font-weight: 600;
     color: var(--td-brand-color);
+  }
+
+  /* 水/电双列对照表 */
+  .meter-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--td-comp-margin-s);
+
+    th,
+    td {
+      padding: var(--td-comp-margin-xs) var(--td-comp-margin-s);
+      vertical-align: middle;
+    }
+
+    thead th {
+      text-align: left;
+      font-weight: 500;
+      color: var(--td-text-color-secondary);
+      border-bottom: 1px solid var(--td-component-stroke);
+    }
+
+    tbody tr + tr td {
+      border-top: 1px solid var(--td-component-stroke);
+    }
+
+    .col-label {
+      width: 80px;
+    }
+
+    .col-meter {
+      width: calc((100% - 80px) / 2);
+    }
+
+    .row-label {
+      color: var(--td-text-color-secondary);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* 单元格内的 form-item 去掉 label 与默认外边距，贴合表格行高 */
+    .cell-form-item {
+      margin-bottom: 0;
+
+      :deep(.t-form__label) {
+        display: none;
+      }
+    }
+  }
+
+  /* 底部：固定费用 + 合计 并排区 */
+  .fee-summary-row {
+    margin-top: var(--td-comp-margin-s);
+  }
+
+  .block-title {
+    color: var(--td-text-color-secondary);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .fixed-fees-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+
+    span {
+      color: var(--td-text-color-primary);
+      font-weight: 500;
+    }
+  }
+
+  .total-fee-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    padding: var(--td-comp-margin-s) var(--td-comp-margin-l);
+    background: var(--td-brand-color-light);
+    border-radius: 4px;
+  }
+}
+</style>
+<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
+<style lang="less">
+/* 抄表录入弹窗：内容区滚动兜底，header/footer 始终可见。
+   此处为全局样式（非 scoped），因为 t-dialog teleport 到 body，
+   scoped 的 :deep() 无法穿透。用 .meter-reading-dialog 限定作用域，避免影响其它弹窗。 */
+.meter-reading-dialog {
+  .t-dialog__body {
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
   }
 }
 </style>
