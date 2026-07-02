@@ -15,7 +15,6 @@ public static class RoomStatusExtensions
             RoomStatus.Vacant => "空置",
             RoomStatus.Rented => "已出租",
             RoomStatus.Renovating => "装修中",
-            RoomStatus.Reclaimed => "已收回",
             _ => "未知"
         };
     }

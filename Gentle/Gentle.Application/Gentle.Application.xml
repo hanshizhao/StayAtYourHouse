@@ -98,6 +98,21 @@
             删除还款记录
             </summary>
         </member>
+        <member name="T:Gentle.Application.Apps.FileAppService">
+            <summary>
+            文件上传应用服务
+            </summary>
+            <remarks>
+            提供合同图片等文件上传，存储到本地 wwwroot 并返回可访问的 URL。
+            </remarks>
+        </member>
+        <member name="M:Gentle.Application.Apps.FileAppService.Upload(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            上传文件（合同图片等），返回可访问的 URL。
+            </summary>
+            <param name="file">单文件，仅图片，≤10MB</param>
+            <returns>包含 url 的对象</returns>
+        </member>
         <member name="T:Gentle.Application.Apps.LandlordLeaseAppService">
             <summary>
             房东租约管理应用服务
@@ -302,10 +317,12 @@
             修改租约
             </summary>
         </member>
-        <member name="M:Gentle.Application.Apps.RentalAppService.ConfirmAnJuCode(System.Int32)">
+        <member name="M:Gentle.Application.Apps.RentalAppService.ConfirmAnJuCode(System.Int32,System.String)">
             <summary>
             确认安居码提交
             </summary>
+            <param name="id">租住记录ID</param>
+            <param name="anJuCodeRegisteredNames">安居码登记人员名单（可选，传入则更新/记录）</param>
         </member>
         <member name="M:Gentle.Application.Apps.RentalAppService.Remove(System.Int32)">
             <summary>
@@ -1630,6 +1647,18 @@
             电费（元）
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.ElevatorFee">
+            <summary>电梯费快照</summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.PropertyFee">
+            <summary>物业费快照</summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.InternetFee">
+            <summary>网络费快照</summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.OtherFees">
+            <summary>其他费用快照</summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Meter.MeterRecordDto.TotalFee">
             <summary>
             总费用（元）
@@ -1770,6 +1799,18 @@
             电费（元）
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.ElevatorFee">
+            <summary>电梯费快照</summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.PropertyFee">
+            <summary>物业费快照</summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.InternetFee">
+            <summary>网络费快照</summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.OtherFees">
+            <summary>其他费用快照</summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Meter.UtilityBillDto.TotalAmount">
             <summary>
             总金额（元）
@@ -1853,6 +1894,11 @@
         <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.ContractImage">
             <summary>
             合同图片路径（上传到服务器后的路径）
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.CheckInInput.AnJuCodeRegisteredNames">
+            <summary>
+            安居码登记人员名单（可选）
             </summary>
         </member>
         <member name="T:Gentle.Application.Dtos.RentalRecord.CheckOutInput">
@@ -1993,6 +2039,11 @@
         <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.IsAnJuCodeSubmitted">
             <summary>
             安居码是否已提交
+            </summary>
+        </member>
+        <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.AnJuCodeRegisteredNames">
+            <summary>
+            安居码登记人员名单
             </summary>
         </member>
         <member name="P:Gentle.Application.Dtos.RentalRecord.RentalRecordDto.CreatedTime">
@@ -3631,10 +3682,12 @@
             删除租住记录
             </summary>
         </member>
-        <member name="M:Gentle.Application.Services.IRentalRecordService.ConfirmAnJuCodeAsync(System.Int32)">
+        <member name="M:Gentle.Application.Services.IRentalRecordService.ConfirmAnJuCodeAsync(System.Int32,System.String)">
             <summary>
             确认安居码已提交
             </summary>
+            <param name="id">租住记录ID</param>
+            <param name="anJuCodeRegisteredNames">安居码登记人员名单（可选，传入则更新）</param>
         </member>
         <member name="M:Gentle.Application.Services.IRentalRecordService.UpdateAsync(System.Int32,Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput)">
             <summary>
@@ -3846,6 +3899,12 @@
             最大分页大小
             </summary>
         </member>
+        <member name="M:Gentle.Application.Services.MeterService.SumFixedFees(System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+            <summary>
+            计算固定费用合计（电梯+物业+网络+其他），null 视为 0。
+            </summary>
+            <remarks>纯计算方法，便于单元测试（账单合计与此处保持一致）。</remarks>
+        </member>
         <member name="M:Gentle.Application.Services.MeterService.GetListAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32,System.Int32)">
             <inheritdoc />
         </member>
@@ -3924,7 +3983,7 @@
         <member name="M:Gentle.Application.Services.RentalRecordService.DeleteAsync(System.Int32)">
             <inheritdoc />
         </member>
-        <member name="M:Gentle.Application.Services.RentalRecordService.ConfirmAnJuCodeAsync(System.Int32)">
+        <member name="M:Gentle.Application.Services.RentalRecordService.ConfirmAnJuCodeAsync(System.Int32,System.String)">
             <inheritdoc />
         </member>
         <member name="M:Gentle.Application.Services.RentalRecordService.UpdateAsync(System.Int32,Gentle.Application.Dtos.RentalRecord.UpdateRentalRecordInput)">
@@ -3988,6 +4047,12 @@
         <member name="M:Gentle.Application.Services.ReportService.GetRoomProfitRankingAsync(System.String,System.Int32)">
             <inheritdoc />
         </member>
+        <member name="M:Gentle.Application.Services.ReportService.IsVacantRoomActuallyRented(Gentle.Core.Enums.RoomStatus,System.Boolean)">
+            <summary>
+            判断一个"标记为空置"的房间是否实际已入住（存在活跃租约）。
+            用于空置房源统计自愈：Status=Vacant 但有 Active 租约 → 需修正为 Rented。
+            </summary>
+        </member>
         <member name="T:Gentle.Application.Services.RoomService">
             <summary>
             房间服务实现
@@ -4007,6 +4072,12 @@
         </member>
         <member name="M:Gentle.Application.Services.RoomService.DeleteAsync(System.Int32)">
             <inheritdoc />
+        </member>
+        <member name="M:Gentle.Application.Services.RoomService.ExtractLeadingNumber(System.String)">
+            <summary>
+            提取字符串开头的数字，用于栋号/房号的自然数排序。
+            纯数字开头（如 "10栋""204"）返回数值；空或非数字开头返回 int.MaxValue 排到末尾。
+            </summary>
         </member>
         <member name="T:Gentle.Application.Services.TenantService">
             <summary>

@@ -130,12 +130,11 @@ public class ReportService : IReportService
     /// <inheritdoc />
     public async Task<HousingOverviewDto> GetHousingOverviewAsync()
     {
-        // 获取所有房间及其小区信息（排除已收回房间）
+        // 获取所有房间及其小区信息
         var rooms = await _roomRepository
             .AsQueryable(false)
             .Include(r => r.Community)
             .Include(r => r.LandlordLease)
-            .Where(r => r.Status != RoomStatus.Reclaimed)
             .ToListAsync();
 
         // 获取活跃租住记录以计算空置天数
@@ -247,12 +246,11 @@ public class ReportService : IReportService
         // 参数边界验证
         if (limit < 1 || limit > 200) limit = 50;
 
-        // 获取所有房间及关联信息（排除已收回房间）
+        // 获取所有房间及关联信息
         var rooms = await _roomRepository
             .AsQueryable(false)
             .Include(r => r.Community)
             .Include(r => r.LandlordLease)
-            .Where(r => r.Status != RoomStatus.Reclaimed)
             .ToListAsync();
 
         // 获取当前活跃租住记录

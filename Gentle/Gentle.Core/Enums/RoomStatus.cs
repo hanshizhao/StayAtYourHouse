@@ -18,10 +18,5 @@ public enum RoomStatus
     /// <summary>
     /// 装修中
     /// </summary>
-    Renovating = 2,
-
-    /// <summary>
-    /// 已收回
-    /// </summary>
-    Reclaimed = 3
+    Renovating = 2
 }

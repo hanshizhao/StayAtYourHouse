@@ -24,8 +24,6 @@ export enum RoomStatus {
   Rented = 1,
   /** 装修中 */
   Renovating = 2,
-  /** 已收回 */
-  Reclaimed = 3,
 }
 
 /**
@@ -35,7 +33,6 @@ export const RoomStatusText: Record<RoomStatus, string> = {
   [RoomStatus.Vacant]: '空置',
   [RoomStatus.Rented]: '已出租',
   [RoomStatus.Renovating]: '装修中',
-  [RoomStatus.Reclaimed]: '已收回',
 };
 
 /**

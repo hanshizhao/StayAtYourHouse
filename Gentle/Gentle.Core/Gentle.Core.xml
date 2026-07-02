@@ -334,6 +334,18 @@
             电费（元）
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.ElevatorFee">
+            <summary>电梯费（抄表时的房间月固定费用快照）</summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.PropertyFee">
+            <summary>物业费快照</summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.InternetFee">
+            <summary>网络费快照</summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.MeterRecord.OtherFees">
+            <summary>其他费用快照</summary>
+        </member>
         <member name="P:Gentle.Core.Entities.MeterRecord.Remark">
             <summary>
             备注
@@ -473,6 +485,11 @@
         <member name="P:Gentle.Core.Entities.RentalRecord.IsAnJuCodeSubmitted">
             <summary>
             安居码是否已提交
+            </summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.RentalRecord.AnJuCodeRegisteredNames">
+            <summary>
+            安居码登记人员名单（多人，自由文本，如"张三、李四"）
             </summary>
         </member>
         <member name="M:Gentle.Core.Entities.RentalRecord.HasData(Microsoft.EntityFrameworkCore.DbContext,System.Type)">
@@ -775,6 +792,18 @@
             电费（元）
             </summary>
         </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.ElevatorFee">
+            <summary>电梯费（抄表时的房间月固定费用快照）</summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.PropertyFee">
+            <summary>物业费快照</summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.InternetFee">
+            <summary>网络费快照</summary>
+        </member>
+        <member name="P:Gentle.Core.Entities.UtilityBill.OtherFees">
+            <summary>其他费用快照</summary>
+        </member>
         <member name="P:Gentle.Core.Entities.UtilityBill.TotalAmount">
             <summary>
             总金额（元）
@@ -1038,11 +1067,6 @@
         <member name="F:Gentle.Core.Enums.RoomStatus.Renovating">
             <summary>
             装修中
-            </summary>
-        </member>
-        <member name="F:Gentle.Core.Enums.RoomStatus.Reclaimed">
-            <summary>
-            已收回
             </summary>
         </member>
         <member name="T:Gentle.Core.Enums.RoomStatusExtensions">

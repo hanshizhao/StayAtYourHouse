@@ -217,7 +217,6 @@ function getStatusTheme(status: RoomStatus): 'success' | 'warning' | 'primary' |
     [RoomStatus.Vacant]: 'success',
     [RoomStatus.Rented]: 'warning',
     [RoomStatus.Renovating]: 'primary',
-    [RoomStatus.Reclaimed]: 'default',
   };
   return themes[status] ?? 'default';
 }

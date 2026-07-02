@@ -153,11 +153,6 @@ public class RoomService : IRoomService
         }
 
         var room = input.Adapt<Room>();
-        // 新建房间不允许直接设为已收回状态
-        if (room.Status == RoomStatus.Reclaimed)
-        {
-            throw Oops.Oh("新建房间不允许直接设为已收回状态");
-        }
         room.CreatedTime = DateTimeOffset.Now;
         // 设置 Community 导航属性，以便 Mapster 映射 CommunityName
         room.Community = community;
@@ -201,24 +196,6 @@ public class RoomService : IRoomService
             throw Oops.Oh($"小区 {community.Name} 的 {input.Building}栋 {input.RoomNumber} 号房间已存在");
         }
 
-        // 状态转换校验
-        if (input.Status != existing.Status)
-        {
-            var transitionValid = (existing.Status, input.Status) switch
-            {
-                (RoomStatus.Vacant, RoomStatus.Reclaimed) => true,    // 空置 → 已收回
-                (RoomStatus.Reclaimed, RoomStatus.Vacant) => true,    // 已收回 → 空置
-                (RoomStatus.Reclaimed, _) => false,                    // 已收回不能转为其他状态
-                (_, RoomStatus.Reclaimed) => false,                    // 只有空置可以转为已收回
-                _ => true                                              // 其他状态转换允许
-            };
-
-            if (!transitionValid)
-            {
-                throw Oops.Oh("状态转换不合法：仅空置状态可收回，已收回状态只能恢复为空置");
-            }
-        }
-
         // 更新字段
         existing.CommunityId = input.CommunityId;
         existing.Building = input.Building;
@@ -253,34 +230,22 @@ public class RoomService : IRoomService
             throw Oops.Oh($"房间 {id} 不存在");
         }
 
-        // 仅检查活跃租约（在租中）——历史已退租记录不再阻止回收
+        // 有活跃租约（在租中）→ 必须先办理退租
         var hasActiveRental = await _rentalRecordRepository.AsQueryable(false)
             .AnyAsync(r => r.RoomId == id && r.Status == RentalStatus.Active);
 
-        // 已出租 或 有活跃租约 → 必须先办理退租
-        if (!CanReclaim(room.Status, hasActiveRental))
+        if (room.Status == RoomStatus.Rented || hasActiveRental)
         {
-            throw Oops.Oh("房间有在租租客，请先办理退租后再回收");
+            throw Oops.Oh("房间有在租租客，请先办理退租后再删除");
         }
 
-        // 回收：转为 Reclaimed 状态（不物理删除），历史租赁记录保留可追溯
-        room.Status = RoomStatus.Reclaimed;
-        await _repository.UpdateAsync(room);
+        // 物理删除房间，关联数据（历史租约、抄表、水电账单、维修记录、房东租约）
+        // 由数据库外键 OnDelete(Cascade) 自动级联删除
+        await _repository.DeleteAsync(room);
         await _repository.SaveNowAsync();
     }
 
     private const int LeaseAlertThresholdDays = 7;
-
-    /// <summary>
-    /// 判断房间是否可回收（转 Reclaimed 状态）。
-    /// 已出租（Rented）必须先退租；有活跃租约的也不可回收。
-    /// </summary>
-    internal static bool CanReclaim(RoomStatus status, bool hasActiveRental)
-    {
-        if (status == RoomStatus.Rented) return false;
-        if (hasActiveRental) return false;
-        return true;
-    }
 
     private static LeaseStatus CalculateLeaseStatus(DateTime? endDate)
     {

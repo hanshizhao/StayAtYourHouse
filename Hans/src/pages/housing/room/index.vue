@@ -136,7 +136,7 @@
                     </template>
                   </t-button>
                 </t-tooltip>
-                <t-tooltip content="回收房间">
+                <t-tooltip content="彻底删除">
                   <t-button
                     variant="text"
                     shape="square"
@@ -362,12 +362,12 @@
       </t-form>
     </t-dialog>
 
-    <!-- 回收确认对话框 -->
+    <!-- 彻底删除确认对话框 -->
     <t-dialog
       v-model:visible="deleteConfirmVisible"
-      header="确认回收"
+      header="确认彻底删除"
       :body="deleteConfirmBody"
-      :confirm-btn="{ theme: 'danger', content: '回收', loading: deleteLoading }"
+      :confirm-btn="{ theme: 'danger', content: '彻底删除', loading: deleteLoading }"
       data-testid="confirm-dialog"
       @confirm="onConfirmDelete"
     >
@@ -758,7 +758,6 @@ const statusOptions: SelectOption[] = [
   { label: '空置', value: RoomStatus.Vacant },
   { label: '已出租', value: RoomStatus.Rented },
   { label: '装修中', value: RoomStatus.Renovating },
-  { label: '已收回', value: RoomStatus.Reclaimed },
 ];
 
 // 异常租约选项
@@ -797,13 +796,13 @@ const formRules: Record<string, FormRule[]> = {
   rentPrice: [{ required: true, message: '请输入出租价', trigger: 'blur' }],
 };
 
-// 回收确认
+// 彻底删除确认
 const deleteConfirmVisible = ref(false);
 const deleteLoading = ref(false);
 const deletingRoom = ref<RoomItem | null>(null);
 const deleteConfirmBody = computed(() => {
   if (deletingRoom.value) {
-    return `确定回收此房间？回收后房间状态变为「已收回」，历史记录保留。可在列表按状态筛选，或进入编辑恢复为空置。（房间「${deletingRoom.value.building}栋 ${deletingRoom.value.roomNumber}」）`;
+    return `确定彻底删除此房间？此操作不可恢复，将同时删除该房间的关联数据（历史租约、抄表、水电账单、维修记录、房东租约）。（房间「${deletingRoom.value.building}栋 ${deletingRoom.value.roomNumber}」）`;
   }
   return '';
 });
@@ -857,9 +856,8 @@ function getStatusTheme(status: RoomStatus): 'success' | 'warning' | 'primary' |
     [RoomStatus.Vacant]: 'success',
     [RoomStatus.Rented]: 'warning',
     [RoomStatus.Renovating]: 'primary',
-    [RoomStatus.Reclaimed]: 'default',
   };
-  return themes[status];
+  return themes[status] ?? 'default';
 }
 
 function getStatusText(status: RoomStatus): string {
@@ -1070,11 +1068,11 @@ async function onConfirmDelete() {
   deleteLoading.value = true;
   try {
     await deleteRoom(deletingRoom.value.id);
-    MessagePlugin.success('房间已回收');
+    MessagePlugin.success('房间已删除');
     deleteConfirmVisible.value = false;
     await fetchData();
   } catch (e: any) {
-    MessagePlugin.error(e.message || '回收失败');
+    MessagePlugin.error(e.message || '删除失败');
     deleteConfirmVisible.value = false;
   } finally {
     deleteLoading.value = false;
