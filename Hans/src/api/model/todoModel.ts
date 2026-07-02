@@ -101,6 +101,8 @@ export interface TodoItem {
   deferralCount: number;
   /** 催收提醒详情 */
   rentalReminder?: RentalReminderItem;
+  /** 当前合同图片路径（催收房租专用，用于续租弹窗回显） */
+  contractImage?: string;
 
   // ===== 维修待办专用字段 =====
   /** 维修描述（维修专用） */
