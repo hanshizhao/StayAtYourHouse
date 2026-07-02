@@ -66,6 +66,11 @@ public class TodoItemDto
     public decimal? MonthlyRent { get; set; }
 
     /// <summary>
+    /// 当前合同图片路径（催收房租专用，用于续租弹窗回显）
+    /// </summary>
+    public string? ContractImage { get; set; }
+
+    /// <summary>
     /// 宽限次数（催收房租专用）
     /// </summary>
     public int DeferralCount { get; set; }

@@ -206,6 +206,7 @@ public class TodoService : ITodoService
             TenantName = rentalRecord?.Renter?.Name,
             MonthlyRent = rentalRecord?.MonthlyRent ?? 0,
             DeferralCount = reminder.Deferrals?.Count ?? 0,
+            ContractImage = room?.ContractImage,
             RentalReminder = new RentalReminderDto
             {
                 Id = reminder.Id,
