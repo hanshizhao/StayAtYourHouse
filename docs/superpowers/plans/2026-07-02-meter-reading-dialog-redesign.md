@@ -42,7 +42,7 @@
 
 - [ ] **Step 1: 修改 t-dialog 开始标签**
 
-把 `<t-dialog>` 的 `width="600px"` 改为 `width="820px"`，并新增 `dialog-class="meter-reading-dialog"`（TDesign Vue Next 通过 `dialogClass` prop 透传 class 到 dialog 根节点）。
+把 `<t-dialog>` 的 `width="600px"` 改为 `width="820px"`，并新增 `dialog-class-name="meter-reading-dialog"`（TDesign Vue Next Dialog 的 prop 名为 `dialogClassName`，模板中写法 `dialog-class-name`；它会透传到弹窗根元素）。
 
 将 `Hans/src/pages/utility/meter/index.vue:93-101`：
 ```html
@@ -62,7 +62,7 @@
       v-model:visible="dialogVisible"
       header="抄表录入"
       width="820px"
-      dialog-class="meter-reading-dialog"
+      dialog-class-name="meter-reading-dialog"
       :confirm-btn="{ content: '确定', loading: submitLoading }"
       data-testid="meter-form-dialog"
       :on-confirm="handleSubmit"
@@ -70,17 +70,25 @@
     >
 ```
 
-- [ ] **Step 2: 新增弹窗 body 滚动样式**
+- [ ] **Step 2: 新增弹窗 body 滚动样式（非 scoped 块）**
 
-在 scoped less 的 `.meter-management { ... }` 块内（当前结束于 689 行 `}` 前）追加针对该弹窗 body 的滚动约束。使用 `:deep()` 穿透到 TDesign 内部 `.t-dialog__body`，并用 `.meter-reading-dialog` 限定作用域，避免影响其它弹窗。
+注意：TDesign Dialog 默认 teleport 到 `document.body`，**scoped 样式的 `:deep()` 无法作用到被 teleport 的弹窗**（本项目无此类先例）。因此必须用一个**独立的全局 `<style>` 块**（不带 `scoped`）来约束弹窗 body。
 
-在 `Hans/src/pages/utility/meter/index.vue` 的 `.meter-management { ... }` 块内（紧接 `.total-fee-large { ... }` 之后、`}` 闭合括号之前）插入：
+在 `Hans/src/pages/utility/meter/index.vue` 文件末尾，在现有 `</style>`（scoped 块，约 690 行）之后，新增一个**非 scoped** 的 `<style lang="less">` 块：
 ```less
-  /* 抄表录入弹窗：内容区滚动兜底，header/footer 始终可见 */
-  :deep(.meter-reading-dialog .t-dialog__body) {
+</style>
+
+<style lang="less">
+/* 抄表录入弹窗：内容区滚动兜底，header/footer 始终可见。
+   此处为全局样式（非 scoped），因为 t-dialog teleport 到 body，
+   scoped 的 :deep() 无法穿透。用 .meter-reading-dialog 限定作用域，避免影响其它弹窗。 */
+.meter-reading-dialog {
+  .t-dialog__body {
     max-height: calc(85vh - 140px);
     overflow-y: auto;
   }
+}
+</style>
 ```
 
 - [ ] **Step 3: 启动前端验证弹窗可打开**
