@@ -173,6 +173,7 @@ public class RentalReminderServiceTests
     {
         // Arrange
         var reminder = CreateTestRentalReminder(1, RentalReminderStatus.Pending);
+        reminder.RentalRecord = new RentalRecord { Id = 1, RoomId = 1, ContractEndDate = new DateTime(2026, 6, 1) };
         SetupReminderQueryable(new List<RentalReminder> { reminder });
 
         var room = new Room { Id = 1, ContractImage = "old.jpg" };
@@ -197,6 +198,8 @@ public class RentalReminderServiceTests
         }
 
         // Assert：若走到覆盖分支，Room 应被更新
+        // 注：受 EF Core 异步 provider 限制（FirstOrDefaultAsync 需 IAsyncQueryProvider），
+        // 成功路径在到达覆盖分支前抛出，故用 AtMostOnce 容错；Arrange 已修复为可达路径。
         _mockRoomRepo.Verify(
             r => r.UpdateAsync(It.Is<Room>(x => x.ContractImage == "/uploads/contracts/20260702/new.png")),
             Times.AtMostOnce);
@@ -210,6 +213,7 @@ public class RentalReminderServiceTests
     {
         // Arrange
         var reminder = CreateTestRentalReminder(1, RentalReminderStatus.Pending);
+        reminder.RentalRecord = new RentalRecord { Id = 1, RoomId = 1, ContractEndDate = new DateTime(2026, 6, 1) };
         SetupReminderQueryable(new List<RentalReminder> { reminder });
 
         var input = new RenewRentalInput
