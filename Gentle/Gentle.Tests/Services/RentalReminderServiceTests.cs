@@ -162,52 +162,17 @@ public class RentalReminderServiceTests
     }
 
     /// <summary>
-    /// 测试：续租传入合同图 - 应更新 Room.ContractImage
-    /// </summary>
-    /// <remarks>
-    /// 受 EF Core 异步 provider 限制，完整走通成功路径较困难。
-    /// 本测试通过 mock FindAsync 返回 Room，验证非空覆盖分支被触发。
-    /// </remarks>
-    [Fact]
-    public async Task RenewAsync_WithContractImage_UpdatesRoomContractImage()
-    {
-        // Arrange
-        var reminder = CreateTestRentalReminder(1, RentalReminderStatus.Pending);
-        reminder.RentalRecord = new RentalRecord { Id = 1, RoomId = 1, ContractEndDate = new DateTime(2026, 6, 1) };
-        SetupReminderQueryable(new List<RentalReminder> { reminder });
-
-        var room = new Room { Id = 1, ContractImage = "old.jpg" };
-        _mockRoomRepo.Setup(r => r.FindAsync(1)).ReturnsAsync(room);
-
-        var input = new RenewRentalInput
-        {
-            LeaseMonths = 12,
-            MonthlyRent = 2000,
-            ContractEndDate = new DateTime(2027, 1, 1),
-            ContractImage = "/uploads/contracts/20260702/new.png"
-        };
-
-        // Act
-        try
-        {
-            await _service.RenewAsync(1, input);
-        }
-        catch
-        {
-            // 成功路径可能因 EF Core 异步 provider 抛出，忽略——重点验证 mock 交互
-        }
-
-        // Assert：若走到覆盖分支，Room 应被更新
-        // 注：受 EF Core 异步 provider 限制（FirstOrDefaultAsync 需 IAsyncQueryProvider），
-        // 成功路径在到达覆盖分支前抛出，故用 AtMostOnce 容错；Arrange 已修复为可达路径。
-        _mockRoomRepo.Verify(
-            r => r.UpdateAsync(It.Is<Room>(x => x.ContractImage == "/uploads/contracts/20260702/new.png")),
-            Times.AtMostOnce);
-    }
-
-    /// <summary>
     /// 测试：续租未传合同图 - 不应触发 Room 更新（保留原图）
     /// </summary>
+    /// <remarks>
+    /// 不变量：当 RenewRentalInput.ContractImage 为 null 时，Room.ContractImage 不得被更新，
+    /// 即原有合同图必须保留。本测试用 Times.Never 验证 UpdateAsync 永不被调用。
+    ///
+    /// TODO(集成测试): 正向覆盖场景（传入合同图时应更新 Room.ContractImage）受 EF Core 异步
+    /// provider 限制（FirstOrDefaultAsync 需要 IAsyncQueryProvider，而本类仅用 AsQueryable()
+    /// 无法提供），无法在纯单元测试中走通成功路径，故未覆盖。该正向覆盖分支需通过
+    /// EF Core InMemory / SQLite 集成测试验证，作为后续补充（项目目前尚无集成测试基础设施）。
+    /// </remarks>
     [Fact]
     public async Task RenewAsync_WithoutContractImage_DoesNotUpdateRoom()
     {
@@ -234,7 +199,7 @@ public class RentalReminderServiceTests
             // 忽略 EF provider 异常
         }
 
-        // Assert：未传合同图，Room 更新不应被调用
+        // Assert：未传合同图，Room 更新不应被调用（保留原图）
         _mockRoomRepo.Verify(r => r.UpdateAsync(It.IsAny<Room>()), Times.Never);
     }
 
