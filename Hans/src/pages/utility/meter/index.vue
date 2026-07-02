@@ -226,7 +226,7 @@
             v-model="formData.remark"
             placeholder="请输入备注信息"
             :maxlength="500"
-            :autosize="{ minRows: 2, maxRows: 4 }"
+            :autosize="{ minRows: 1, maxRows: 3 }"
             data-testid="remark-input"
           />
         </t-form-item>
