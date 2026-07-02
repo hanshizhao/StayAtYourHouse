@@ -93,7 +93,8 @@
     <t-dialog
       v-model:visible="dialogVisible"
       header="抄表录入"
-      width="600px"
+      width="820px"
+      dialog-class-name="meter-reading-dialog"
       :confirm-btn="{ content: '确定', loading: submitLoading }"
       data-testid="meter-form-dialog"
       :on-confirm="handleSubmit"
@@ -685,6 +686,18 @@ onMounted(() => {
     font-size: 18px;
     font-weight: 600;
     color: var(--td-brand-color);
+  }
+}
+</style>
+
+<style lang="less">
+/* 抄表录入弹窗：内容区滚动兜底，header/footer 始终可见。
+   此处为全局样式（非 scoped），因为 t-dialog teleport 到 body，
+   scoped 的 :deep() 无法穿透。用 .meter-reading-dialog 限定作用域，避免影响其它弹窗。 */
+.meter-reading-dialog {
+  .t-dialog__body {
+    max-height: calc(85vh - 140px);
+    overflow-y: auto;
   }
 }
 </style>
