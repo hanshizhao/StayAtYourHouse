@@ -110,8 +110,21 @@ import { computed, ref, watch } from 'vue';
 import type { RenewRentalInput, TodoItem } from '@/api/model/todoModel';
 import { renewRental } from '@/api/todo';
 import { useUserStore } from '@/store';
-import { calculateContractEndDate, formatDate } from '@/utils/date';
+import { formatDate } from '@/utils/date';
 import { formatMoney } from '@/utils/format';
+import dayjs from 'dayjs';
+
+/**
+ * 计算续租合同到期日：原合同到期日 + 租期月数。
+ * 注意：不含 -1 天，与入住/修改租约使用的 calculateContractEndDate 规则不同。
+ */
+function calculateRenewEndDate(
+  originalEndDate: string | null | undefined,
+  leaseMonths: number | null | undefined,
+): string | null {
+  if (!originalEndDate || !leaseMonths) return null;
+  return dayjs(originalEndDate).add(leaseMonths, 'month').format('YYYY-MM-DD');
+}
 
 defineOptions({
   name: 'RenewRentalDialog',
@@ -206,10 +219,10 @@ watch(
         remark: '',
       };
       contractFiles.value = [];
-      // 立即按默认月数 1 算出到期日（原到期日 + 1 月 − 1 天）
+      // 立即按默认月数 1 算出到期日（原到期日 + 1 月）
       const originalEndDate = props.reminder.rentalReminder?.contractEndDate;
       if (originalEndDate) {
-        const calculated = calculateContractEndDate(originalEndDate, 1);
+        const calculated = calculateRenewEndDate(originalEndDate, 1);
         if (calculated) {
           formData.value.contractEndDate = calculated;
         }
@@ -218,7 +231,7 @@ watch(
   },
 );
 
-// 监听租期月数变化，自动计算合同到期日 = 原合同到期日 + 月数 − 1 天
+// 监听租期月数变化，自动计算合同到期日 = 原合同到期日 + 月数
 // 用户仍可在日期选择器手动覆盖
 watch(
   () => formData.value.leaseMonths,
@@ -226,7 +239,7 @@ watch(
     if (!props.reminder) return;
     const originalEndDate = props.reminder.rentalReminder?.contractEndDate;
     if (!originalEndDate || !months) return;
-    const calculated = calculateContractEndDate(originalEndDate, months);
+    const calculated = calculateRenewEndDate(originalEndDate, months);
     if (calculated) {
       formData.value.contractEndDate = calculated;
     }
