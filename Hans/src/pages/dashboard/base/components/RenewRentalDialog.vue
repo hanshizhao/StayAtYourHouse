@@ -77,7 +77,13 @@
               tips="支持 jpg、png 格式，单个文件不超过 10MB（可选）"
               @success="handleUploadSuccess"
               @fail="handleUploadFail"
-            />
+            >
+              <template #file-list-display>
+                <div v-if="formData.contractImage" class="contract-image-preview">
+                  <img :src="formData.contractImage" alt="合同图片" />
+                </div>
+              </template>
+            </t-upload>
           </t-form-item>
           <t-form-item label="备注" name="remark">
             <t-textarea
@@ -215,7 +221,7 @@ watch(
         leaseMonths: 1,
         monthlyRent: props.reminder.monthlyRent,
         contractEndDate: '',
-        contractImage: '',
+        contractImage: props.reminder.contractImage ?? '',
         remark: '',
       };
       contractFiles.value = [];
@@ -390,6 +396,17 @@ function handleClose() {
   p {
     margin-top: 12px;
     font-size: 14px;
+  }
+}
+
+.contract-image-preview {
+  margin-top: 8px;
+
+  img {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 4px;
+    object-fit: cover;
   }
 }
 </style>
