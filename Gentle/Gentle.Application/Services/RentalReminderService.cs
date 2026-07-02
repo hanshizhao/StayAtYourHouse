@@ -16,6 +16,7 @@ public class RentalReminderService : IRentalReminderService
     private readonly IRepository<RentalReminder> _reminderRepository;
     private readonly IRepository<RentalDeferral> _deferralRepository;
     private readonly IRepository<RentalRecord> _rentalRecordRepository;
+    private readonly IRepository<Room> _roomRepository;
 
     /// <summary>
     /// 初始化催收提醒服务
@@ -23,14 +24,17 @@ public class RentalReminderService : IRentalReminderService
     /// <param name="reminderRepository">提醒仓储</param>
     /// <param name="deferralRepository">宽限记录仓储</param>
     /// <param name="rentalRecordRepository">租赁记录仓储</param>
+    /// <param name="roomRepository">房间仓储</param>
     public RentalReminderService(
         IRepository<RentalReminder> reminderRepository,
         IRepository<RentalDeferral> deferralRepository,
-        IRepository<RentalRecord> rentalRecordRepository)
+        IRepository<RentalRecord> rentalRecordRepository,
+        IRepository<Room> roomRepository)
     {
         _reminderRepository = reminderRepository;
         _deferralRepository = deferralRepository;
         _rentalRecordRepository = rentalRecordRepository;
+        _roomRepository = roomRepository;
     }
 
     /// <inheritdoc />
@@ -132,6 +136,17 @@ public class RentalReminderService : IRentalReminderService
         };
 
         await _rentalRecordRepository.InsertAsync(newRecord);
+
+        // 续租合同图片：非空才覆盖（与入住逻辑一致）
+        if (!string.IsNullOrEmpty(input.ContractImage))
+        {
+            var room = await _roomRepository.FindAsync(originalRecord.RoomId);
+            if (room != null)
+            {
+                room.ContractImage = input.ContractImage;
+                await _roomRepository.UpdateAsync(room);
+            }
+        }
 
         // 更新原租赁记录状态为已终止
         originalRecord.Status = RentalStatus.Terminated;
