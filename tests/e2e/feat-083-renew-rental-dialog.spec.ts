@@ -32,4 +32,16 @@ test.describe('FEAT-083: 创建 RenewRentalDialog 组件', () => {
   test('5. 验证前端构建成功', async () => {
     execSync('npm run build:type', { cwd: path.join(projectRoot, 'Hans'), stdio: 'pipe' });
   });
+
+  test('6. 续租弹窗应回显当前房间的合同图', async () => {
+    // 校验回显链路：reminder.contractImage -> formData.contractImage -> .contract-image-preview img[src]
+    const content = fs.readFileSync(componentPath, 'utf-8');
+
+    // 预览容器与 <img>，img 的 src 绑定到 formData.contractImage
+    expect(content).toContain('class="contract-image-preview"');
+    expect(content).toContain(':src="formData.contractImage"');
+
+    // 弹窗打开时，formData.contractImage 由 reminder.contractImage 初始化（存在则回显）
+    expect(content).toContain('props.reminder.contractImage');
+  });
 });
