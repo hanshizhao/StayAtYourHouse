@@ -3206,6 +3206,11 @@
             月租金（催收房租专用）
             </summary>
         </member>
+        <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.ContractImage">
+            <summary>
+            当前合同图片路径（催收房租专用，用于续租弹窗回显）
+            </summary>
+        </member>
         <member name="P:Gentle.Application.Dtos.Todo.TodoItemDto.DeferralCount">
             <summary>
             宽限次数（催收房租专用）
@@ -4016,13 +4021,14 @@
             提供催收提醒的宽限、续租和宽限记录查询功能。
             </remarks>
         </member>
-        <member name="M:Gentle.Application.Services.RentalReminderService.#ctor(Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalReminder},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalDeferral},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalRecord})">
+        <member name="M:Gentle.Application.Services.RentalReminderService.#ctor(Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalReminder},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalDeferral},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.RentalRecord},Furion.DatabaseAccessor.IRepository{Gentle.Core.Entities.Room})">
             <summary>
             初始化催收提醒服务
             </summary>
             <param name="reminderRepository">提醒仓储</param>
             <param name="deferralRepository">宽限记录仓储</param>
             <param name="rentalRecordRepository">租赁记录仓储</param>
+            <param name="roomRepository">房间仓储</param>
         </member>
         <member name="M:Gentle.Application.Services.RentalReminderService.DeferAsync(System.Int32,Gentle.Application.Dtos.Rental.DeferReminderInput)">
             <inheritdoc />
