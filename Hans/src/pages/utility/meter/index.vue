@@ -101,34 +101,27 @@
       :on-close="handleDialogClose"
     >
       <t-form ref="formRef" :data="formData" :rules="formRules" label-align="right" label-width="120px">
-        <t-form-item label="选择房间" name="roomId">
-          <t-select
-            v-model="formData.roomId"
-            :options="roomOptions"
-            placeholder="请选择房间"
-            filterable
-            data-testid="room-select"
-            @change="handleRoomChange"
-          />
-        </t-form-item>
-        <t-form-item label="抄表日期" name="meterDate">
-          <t-date-picker
-            v-model="formData.meterDate"
-            :clearable="false"
-            data-testid="meter-date-input"
-            style="width: 100%"
-          />
-        </t-form-item>
-        <t-divider>上次读数</t-divider>
         <t-row :gutter="24">
           <t-col :span="12">
-            <t-form-item label="水表读数">
-              <span class="prev-reading">{{ lastReadings.waterReading.toFixed(2) }}</span>
+            <t-form-item label="选择房间" name="roomId">
+              <t-select
+                v-model="formData.roomId"
+                :options="roomOptions"
+                placeholder="请选择房间"
+                filterable
+                data-testid="room-select"
+                @change="handleRoomChange"
+              />
             </t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="电表读数">
-              <span class="prev-reading">{{ lastReadings.electricReading.toFixed(2) }}</span>
+            <t-form-item label="抄表日期" name="meterDate">
+              <t-date-picker
+                v-model="formData.meterDate"
+                :clearable="false"
+                data-testid="meter-date-input"
+                style="width: 100%"
+              />
             </t-form-item>
           </t-col>
         </t-row>
