@@ -202,35 +202,25 @@
             </tr>
           </tbody>
         </table>
-        <!-- 固定费用（取自房间配置，只读；仅在房间配置了任一固定费用时展示） -->
-        <template v-if="hasFixedFees">
-          <t-divider>固定费用（取自房间配置）</t-divider>
-          <t-row :gutter="24">
-            <t-col v-if="selectedRoom?.elevatorFee" :span="6">
-              <t-form-item label="电梯费">
-                <span class="fee-text">¥{{ formatMoney(selectedRoom.elevatorFee) }}</span>
-              </t-form-item>
-            </t-col>
-            <t-col v-if="selectedRoom?.propertyFee" :span="6">
-              <t-form-item label="物业费">
-                <span class="fee-text">¥{{ formatMoney(selectedRoom.propertyFee) }}</span>
-              </t-form-item>
-            </t-col>
-            <t-col v-if="selectedRoom?.internetFee" :span="6">
-              <t-form-item label="网络费">
-                <span class="fee-text">¥{{ formatMoney(selectedRoom.internetFee) }}</span>
-              </t-form-item>
-            </t-col>
-            <t-col v-if="selectedRoom?.otherFees" :span="6">
-              <t-form-item label="其他费用">
-                <span class="fee-text">¥{{ formatMoney(selectedRoom.otherFees) }}</span>
-              </t-form-item>
-            </t-col>
-          </t-row>
-        </template>
-        <t-form-item label="合计费用">
-          <span class="total-fee-large">¥{{ formatMoney(calculatedFees.total) }}</span>
-        </t-form-item>
+        <t-row :gutter="24" class="fee-summary-row">
+          <t-col :span="12">
+            <div v-if="hasFixedFees" class="fixed-fees-block">
+              <div class="block-title">固定费用</div>
+              <div class="fixed-fees-tags">
+                <span v-if="selectedRoom?.elevatorFee">电梯 ¥{{ formatMoney(selectedRoom.elevatorFee) }}</span>
+                <span v-if="selectedRoom?.propertyFee">物业 ¥{{ formatMoney(selectedRoom.propertyFee) }}</span>
+                <span v-if="selectedRoom?.internetFee">网络 ¥{{ formatMoney(selectedRoom.internetFee) }}</span>
+                <span v-if="selectedRoom?.otherFees">其他 ¥{{ formatMoney(selectedRoom.otherFees) }}</span>
+              </div>
+            </div>
+          </t-col>
+          <t-col :span="12">
+            <div class="total-fee-block">
+              <span class="block-title">合计费用</span>
+              <span class="total-fee-large">¥{{ formatMoney(calculatedFees.total) }}</span>
+            </div>
+          </t-col>
+        </t-row>
         <t-form-item label="备注" name="remark">
           <t-textarea
             v-model="formData.remark"
@@ -733,6 +723,35 @@ onMounted(() => {
         display: none;
       }
     }
+  }
+
+  /* 底部：固定费用 + 合计 并排区 */
+  .fee-summary-row {
+    margin-top: var(--td-comp-margin-s);
+  }
+
+  .block-title {
+    color: var(--td-text-color-secondary);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .fixed-fees-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+
+    span {
+      color: var(--td-text-color-primary);
+      font-weight: 500;
+    }
+  }
+
+  .total-fee-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
   }
 }
 </style>
