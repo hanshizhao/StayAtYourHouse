@@ -752,6 +752,9 @@ onMounted(() => {
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
+    padding: var(--td-comp-margin-s) var(--td-comp-margin-l);
+    background: var(--td-brand-color-light);
+    border-radius: 4px;
   }
 }
 </style>
