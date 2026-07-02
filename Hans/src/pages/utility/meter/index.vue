@@ -137,8 +137,12 @@
             <!-- 上次读数（只读灰字） -->
             <tr>
               <td class="row-label">上次读数</td>
-              <td><span class="prev-reading">{{ lastReadings.waterReading.toFixed(2) }}</span></td>
-              <td><span class="prev-reading">{{ lastReadings.electricReading.toFixed(2) }}</span></td>
+              <td>
+                <span class="prev-reading">{{ lastReadings.waterReading.toFixed(2) }}</span>
+              </td>
+              <td>
+                <span class="prev-reading">{{ lastReadings.electricReading.toFixed(2) }}</span>
+              </td>
             </tr>
             <!-- 本次读数（输入，校验挂在此行） -->
             <tr>
@@ -191,14 +195,20 @@
                 <span>{{ selectedRoom?.waterPrice ? `¥${selectedRoom.waterPrice.toFixed(2)}/吨` : '未设置' }}</span>
               </td>
               <td>
-                <span>{{ selectedRoom?.electricPrice ? `¥${selectedRoom.electricPrice.toFixed(2)}/度` : '未设置' }}</span>
+                <span>{{
+                  selectedRoom?.electricPrice ? `¥${selectedRoom.electricPrice.toFixed(2)}/度` : '未设置'
+                }}</span>
               </td>
             </tr>
             <!-- 小计（水费/电费） -->
             <tr>
               <td class="row-label">小计</td>
-              <td><span class="fee-text">¥{{ formatMoney(calculatedFees.water) }}</span></td>
-              <td><span class="fee-text">¥{{ formatMoney(calculatedFees.electric) }}</span></td>
+              <td>
+                <span class="fee-text">¥{{ formatMoney(calculatedFees.water) }}</span>
+              </td>
+              <td>
+                <span class="fee-text">¥{{ formatMoney(calculatedFees.electric) }}</span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -758,7 +768,7 @@ onMounted(() => {
   }
 }
 </style>
-
+<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
 <style lang="less">
 /* 抄表录入弹窗：内容区滚动兜底，header/footer 始终可见。
    此处为全局样式（非 scoped），因为 t-dialog teleport 到 body，
